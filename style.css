@@ -1044,4 +1044,24 @@ body.premium-theme .section-title { color: #fbbf24 !important; }
             background: #00f2fe;
             box-shadow: 0 0 10px #00f2fe;
         }
-        
+        .btn-achievements {
+    background: #2d1b0e; 
+    border: 1px solid #f59e0b; 
+    color: #fbd38d; 
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2); 
+    letter-spacing: 0.5px;
+}
+/* Başarımlar Ekranı Özel Scrollbar Tasarımı */
+#achievements-screen::-webkit-scrollbar {
+    width: 6px;
+}
+#achievements-screen::-webkit-scrollbar-track {
+    background: #0b1126; 
+}
+#achievements-screen::-webkit-scrollbar-thumb {
+    background: #1e293b; 
+    border-radius: 10px;
+}
+#achievements-screen::-webkit-scrollbar-thumb:hover {
+    background: #fbbf24; 
+}
