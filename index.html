@@ -17,14 +17,14 @@
         .profile-stat-label { font-size: 13px; color: #94a3b8; font-weight: 800; text-transform: uppercase; }
         .profile-stat-value { font-size: 18px; color: #fff; font-weight: 900; }
 
-        #summary-modal, #reset-confirm-modal, #bankruptcy-modal, #store-modal, #ai-modal, #chart-modal, #beta-warning-modal, #milestone-modal, #achievements-modal {
+        #summary-modal, #reset-confirm-modal, #bankruptcy-modal, #store-modal, #ai-modal, #chart-modal, #beta-warning-modal, #milestone-modal, #achievements-modal, #patch-notes-modal {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
             width: 90%; max-width: 350px; background: #0b1126; border: 1px solid #1e293b;
             border-radius: 20px; padding: 24px; z-index: 1000; opacity: 0; pointer-events: none;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
         }
         
-        #summary-modal.show, #reset-confirm-modal.show, #bankruptcy-modal.show, #store-modal.show, #ai-modal.show, #chart-modal.show, #beta-warning-modal.show, #milestone-modal.show, #achievements-modal.show { 
+        #summary-modal.show, #reset-confirm-modal.show, #bankruptcy-modal.show, #store-modal.show, #ai-modal.show, #chart-modal.show, #beta-warning-modal.show, #milestone-modal.show, #achievements-modal.show, #patch-notes-modal.show {
             opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); 
         }
         #summary-overlay {
@@ -198,6 +198,29 @@
             Oyun deneyiminiz sırasında bazı hatalarla karşılaşabilirsiniz. Anlayışınız için teşekkür ederiz!
         </p>
         <button class="trade-btn" id="btn-close-beta-warning" style="width: 100%; padding: 12px; font-size: 13px; background: #fbbf24; color: #000; box-shadow: 0 5px 15px rgba(251, 191, 36, 0.3);">ANLADIM</button>
+    </div>
+    <!-- SÜRÜM NOTLARI (GÜNCELLEMELER) MODALI -->
+    <div id="patch-notes-modal">
+        <div style="text-align: center; border-bottom: 1px solid #1e293b; padding-bottom: 15px; margin-bottom: 15px;">
+            <span style="font-size: 28px; display: block; margin-bottom: 8px;">🚀</span>
+            <h2 style="color: #00f2fe; font-size: 18px; font-weight: 900; margin: 0;">YENİ SÜRÜM NOTLARI v1.2</h2>
+        </div>
+        <div style="color: #cbd5e1; font-size: 12px; text-align: left; margin-bottom: 20px; line-height: 1.6; max-height: 220px; overflow-y: auto; padding-right: 5px;">
+            <p><strong style="color: #10b981;">✨ Önemli Yenilikler:</strong></p>
+            <ul style="margin: 5px 0 15px 15px; padding: 0;">
+                <li><strong>Kalıcı Fiyatlar:</strong> Oyundan çıkıp tekrar girdiğinizde hisseler ve kripto paralar en son kaldığı güncel fiyattan başlar.</li>
+                <li><strong>Haberler Arşivi:</strong> Flaş haberler artık sekme değiştirdiğinizde kaybolmuyor, hafızada saklanıyor.</li>
+                <li><strong>Bas-Tut Max İşlem:</strong> Satın al/Sat tuşlarına 1.2 saniye basılı tutarak portföyün tamamıyla (%100) hızlı işlem yapabilirsiniz.</li>
+                <li><strong>Güvenli Çıkış:</strong> Ana menüdeki çıkış tuşu verilerinizi kaydederek güvenli kapanış sağlar.</li>
+            </ul>
+            <p><strong style="color: #fbbf24;">🛠️ Hata Düzeltmeleri:</strong></p>
+            <ul style="margin: 5px 0 0 15px; padding: 0;">
+                <li>Hisse değer artış/azalış renklerindeki (Yeşil/Kırmızı) hatalı gösterimler tamamen giderildi.</li>
+                <li>Alım-satım miktarındaki çift tetiklenme sorunu çözüldü.</li>
+                <li>Likidasyon ve acil durum uyarılarının renk uyumsuzlukları düzeltildi.</li>
+            </ul>
+        </div>
+        <button class="trade-btn" id="btn-close-patch-notes" style="width: 100%; padding: 12px; font-size: 13px; background: #00f2fe; color: #000; box-shadow: 0 5px 15px rgba(0, 242, 254, 0.4); font-weight: 900;">HARİKA, BAŞLAYALIM!</button>
     </div>
     <!-- BAŞARIMLAR VE HEDEFLER TAM EKRANI -->
     <div id="achievements-screen" class="mobile-screen" style="display: none; justify-content: flex-start; flex-direction: column; overflow-y: auto; padding-bottom: 20px;">
