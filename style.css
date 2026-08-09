@@ -1065,3 +1065,19 @@ body.premium-theme .section-title { color: #fbbf24 !important; }
 #achievements-screen::-webkit-scrollbar-thumb:hover {
     background: #fbbf24; 
 }
+/* --- OYUNA ÖZEL MODERN VE NEON SCROLLBAR --- */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #00f2fe;
+            border-radius: 10px;
+            box-shadow: 0 0 8px rgba(0, 242, 254, 0.6);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3bf6fc;
+        }
