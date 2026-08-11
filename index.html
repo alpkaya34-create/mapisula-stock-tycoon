@@ -25,44 +25,23 @@
         /* ORİJİNAL OYUN KODLARI (POP-UP GİZLEME VE ANİMASYONLAR)    */
         /* ======================================================== */
         .btn-profile { background: rgba(139, 92, 246, 0.2); border: 2px solid #8b5cf6; color: #c4b5fd; }
-        .profile-stat-box {
-            background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; 
-            padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;
-        }
+        .profile-stat-box { background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
         .profile-stat-label { font-size: 13px; color: #94a3b8; font-weight: 800; text-transform: uppercase; }
         .profile-stat-value { font-size: 18px; color: #fff; font-weight: 900; }
 
-        /* MODALLARIN (POP-UP) GİZLENMESİ - (Burası silindiği için oyun bozulmuştu) */
         #summary-modal, #reset-confirm-modal, #bankruptcy-modal, #store-modal, #ai-modal, #chart-modal, #beta-warning-modal, #milestone-modal, #achievements-modal, #patch-notes-modal {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
-            width: 90%; max-width: 350px; background: #0b1126; border: 1px solid #1e293b;
-            border-radius: 20px; padding: 24px; z-index: 1000; opacity: 0; pointer-events: none;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 90%; max-width: 350px; background: #0b1126; border: 1px solid #1e293b; border-radius: 20px; padding: 24px; z-index: 1000; opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
         }
-        
-        #summary-modal.show, #reset-confirm-modal.show, #bankruptcy-modal.show, #store-modal.show, #ai-modal.show, #chart-modal.show, #beta-warning-modal.show, #milestone-modal.show, #achievements-modal.show, #patch-notes-modal.show {
-            opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); 
-        }
-        #summary-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7);
-            z-index: 999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
-        }
+        #summary-modal.show, #reset-confirm-modal.show, #bankruptcy-modal.show, #store-modal.show, #ai-modal.show, #chart-modal.show, #beta-warning-modal.show, #milestone-modal.show, #achievements-modal.show, #patch-notes-modal.show { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
+        #summary-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         #summary-overlay.active { opacity: 1; pointer-events: auto; }
 
         .toggle-switch { position: relative; display: inline-block; width: 50px; height: 26px; }
         .toggle-switch input { opacity: 0; width: 0; height: 0; }
-        .toggle-switch .slider {
-            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #1e293b; transition: .4s; border-radius: 34px; border: 1px solid #334155;
-        }
-        .toggle-switch .slider:before {
-            position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
-            background-color: #94a3b8; transition: .4s; border-radius: 50%;
-        }
+        .toggle-switch .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #1e293b; transition: .4s; border-radius: 34px; border: 1px solid #334155; }
+        .toggle-switch .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: #94a3b8; transition: .4s; border-radius: 50%; }
         .toggle-switch input:checked + .slider { background-color: rgba(0, 242, 254, 0.15); border-color: #00f2fe; }
-        .toggle-switch input:checked + .slider:before {
-            transform: translateX(24px); background-color: #00f2fe; box-shadow: 0 0 10px #00f2fe;
-        }
+        .toggle-switch input:checked + .slider:before { transform: translateX(24px); background-color: #00f2fe; box-shadow: 0 0 10px #00f2fe; }
 
         .brand-name { color: #00f2fe !important; text-shadow: 0 0 10px rgba(0, 242, 254, 0.6) !important; font-weight: 900; transition: all 0.3s ease; }
         .tycoon-text { stroke-width: 1.5px; stroke-dasharray: 400; stroke-dashoffset: 400; animation: drawAndFillNormal 4.5s ease forwards !important; }
@@ -85,19 +64,17 @@
         body.premium-theme .btn-play { background: linear-gradient(135deg, #fbbf24 0%, #b45309 100%) !important; color: #000 !important; border-color: #fbbf24 !important; box-shadow: 0 5px 20px rgba(251, 191, 36, 0.4) !important; font-weight: 900; }
 
         /* ======================================================== */
-        /* KESİN ÇÖZÜM: TÜM EKRANI GÜVENLİ ALANA HAPSEDEN CSS      */
+        /* KESİN ÇÖZÜM: BİLGİSAYAR VE TELEFON İÇİN KUSURSUZ MERKEZLEME */
         /* ======================================================== */
         html, body {
-            background-color: #0b1126 !important;
+            background-color: #050814 !important; /* PC'de dış arkaplan daha koyu (siyaha yakın) dursun */
             margin: 0 !important;
             padding: 0 !important;
             width: 100vw !important;
             height: 100vh !important;
             height: 100dvh !important;
             overflow: hidden !important;
-            display: flex !important;
-            justify-content: center !important;
-            align-items: center !important;
+            position: relative !important;
         }
 
         .mobile-screen, .game-page {
@@ -105,17 +82,32 @@
             max-width: 450px !important;
             height: 100% !important;
             max-height: 100dvh !important;
-            background-color: #0b1126 !important;
-            position: relative !important;
+            background-color: #0b1126 !important; /* Oyunun kendi lacivert arkaplanı */
+            
+            /* KUSURSUZ MERKEZLEME FORMÜLÜ (Hem PC'de ortalar, hem telefonda üst üste bindirir) */
+            position: absolute !important;
+            top: 0 !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            
             overflow-y: auto !important;
             overflow-x: hidden !important;
             box-sizing: border-box !important;
             
-            /* Çentik (Safe Area) Boşlukları */
+            /* Çentik Boşlukları */
             padding-top: 50px !important; 
             padding-top: calc(env(safe-area-inset-top) + 15px) !important; 
             padding-bottom: 30px !important;
             padding-bottom: calc(env(safe-area-inset-bottom) + 15px) !important;
+        }
+
+        /* Bilgisayar/Tablet görünümü için oyun kenarlarına hafif çizgi ve neon gölge */
+        @media (min-width: 451px) {
+            .mobile-screen, .game-page {
+                border-left: 1px solid #1e293b;
+                border-right: 1px solid #1e293b;
+                box-shadow: 0 0 50px rgba(0, 242, 254, 0.05) !important;
+            }
         }
 
         #game-screen {
