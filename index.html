@@ -67,7 +67,7 @@
         .mobile-btn { flex: 0 0 auto !important; height: auto !important; padding: 16px 15px !important; font-size: 14px !important; min-height: 50px !important; }
 
         /* ======================================================== */
-        /* 2. EKRAN KAYMALARINI BİTİREN KESİN MOBİL YAPI            */
+        /* 2. SOLA YAPIŞMAYI ÇÖZEN KUSURSUZ MOBİL YAPI              */
         /* ======================================================== */
         html, body {
             background-color: #0b1126 !important; 
@@ -87,12 +87,7 @@
             html, body { background-color: #050814 !important; }
         }
 
-        /* 
-           TESPİT: Yaşam Alanı ve diğer yan ekranlardaki "sola kayma" hatasını çözmek için:
-           1. transform: none eklendi (Sola kaydıran görünmez animasyonu iptal eder)
-           2. #lifestyle-screen açıkça hedeflendi 
-        */
-        .mobile-screen, .game-page, #lifestyle-screen, #profile-screen, div[id$="-screen"] {
+        .mobile-screen, .game-page, #lifestyle-screen, #lifestyle-page, #profile-screen, div[id$="-screen"] {
             width: 100% !important;
             max-width: 450px !important;
             height: 100% !important;
@@ -108,28 +103,44 @@
             overflow-y: auto !important;
             overflow-x: hidden !important;
             box-sizing: border-box !important;
-            padding: 0 !important; 
-            
-            /* KESİN ÇÖZÜM: JavaScript'in sayfayı yana itmesini yasaklar, tam merkeze oturtur! */
             transform: none !important; 
         }
 
+        /* --- ORİJİNAL TASARIMDAKİ SAĞ/SOL BOŞLUKLARI (PADDİNG) GERİ YÜKLEDİK --- */
+        .mobile-screen { padding: 0 24px !important; }
+        #game-screen { padding: 0 !important; }
+        #lifestyle-screen, #lifestyle-page, #profile-screen { padding: 0 15px !important; }
+
         @media (min-width: 451px) {
-            .mobile-screen, .game-page, #lifestyle-screen, #profile-screen, div[id$="-screen"] {
+            .mobile-screen, .game-page, #lifestyle-screen, #lifestyle-page, #profile-screen, div[id$="-screen"] {
                 border-left: 1px solid #1e293b !important;
                 border-right: 1px solid #1e293b !important;
                 box-shadow: 0 0 50px rgba(0, 242, 254, 0.05) !important;
             }
         }
 
-        /* --- OYUN İÇİ ÜST PANELLER (TAVANA KİLİTLENİR) --- */
-        .top-dashboard, .lifestyle-header {
+        /* --- OYUN İÇİ ÜST PANELLER (TAVANA KİLİTLENİR VE YATAY HİZALANIR) --- */
+        .top-dashboard {
+            padding-top: calc(max(env(safe-area-inset-top), 20px) + 15px) !important; 
+            padding-bottom: 15px !important;
+            padding-left: 24px !important; /* KASA alanının sola yapışmasını engeller */
+            padding-right: 24px !important;
+            margin-top: 0 !important;
+            box-sizing: border-box !important;
+            width: 100% !important;
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 100 !important;
+            background-color: #0b1126 !important;
+            border-bottom: 1px solid rgba(30, 41, 59, 0.8) !important;
+        }
+
+        .lifestyle-header {
             padding-top: calc(max(env(safe-area-inset-top), 20px) + 15px) !important; 
             padding-bottom: 15px !important;
             margin-top: 0 !important;
             box-sizing: border-box !important;
             width: 100% !important;
-            
             position: sticky !important;
             top: 0 !important;
             z-index: 100 !important;
@@ -167,11 +178,8 @@
             z-index: 999 !important;
         }
 
-        /* 
-           TESPİT 2: Alt menü olmayan sayfalarda (Yaşam Alanı) içeriklerin yere yapışmasını engellemek 
-           ve alt menüsü olan sayfalarda hisselerin kapanmasını önlemek için mükemmel boşluk.
-        */
-        .market-container, #luxury-items, #achievements-list, #portfolio-list, #positions-list, #ai-stock-list {
+        /* --- LİSTELERİN ALTINA GÖRÜNMEZ KAYDIRMA BOŞLUĞU --- */
+        .market-container, #luxury-items, #achievements-list, #portfolio-list, #positions-list, #ai-stock-list, #bank-container {
             padding-bottom: calc(max(env(safe-area-inset-bottom), 20px) + 100px) !important; 
         }
     </style>
