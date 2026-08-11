@@ -13,27 +13,28 @@
 }
 
 body {
-    /* Arkaplanın en tepeye kadar uzanmasını garanti eder */
-    background-color: #0b1126; 
-    margin: 0;
-    padding: 0;
+    background-color: #050814; /* Çok koyu siber lacivert */
+    color: #ffffff;
     width: 100vw;
     height: 100vh;
-    overflow: hidden;
+    overflow: hidden; /* Kaydırmayı engeller */
+    display: flex;
+    justify-content: center;
 }
 
 /* ==========================================================================
    📱 ANA MENÜ KONTEYNERİ (DİKEY HİZALAMA)
    ========================================================================== */
 .mobile-screen {
-    /* Mevcut kodlarının altına bunları ekle */
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
-    
-    /* İçeriklerin üstten biraz daha nefes alması için (opsiyonel) */
-    box-sizing: border-box;
+    width: 100%;
+    max-width: 450px; /* Tabletlerde bile telefon boyutunda tutar */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Üst, Orta ve Altı eşit dağıtır */
+    padding: 40px 24px 20px 24px;
+    background: radial-gradient(circle at top center, #111a3a 0%, #050814 80%);
+    position: relative;
 }
 
 /* ==========================================================================
@@ -1355,4 +1356,44 @@ body.premium-theme .section-title { color: #fbbf24 !important; }
     border: none !important;
     box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
     cursor: pointer !important;
+}
+/* --- EKRAN BOZULMASINI DÜZELTEN VE ÇENTİK KORUMASI SAĞLAYAN KESİN KOD --- */
+
+/* 1. Arka planı koyu yap ve ekranı ortala (Bilgisayar/Tablet görünümleri için) */
+body, html {
+    background-color: #050814 !important; 
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100%;
+    height: 100%;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+/* 2. Oyun ekranını telefon boyutuna (max-width) sabitle ve kendi lacivert arka planını ver */
+.mobile-screen {
+    width: 100% !important;
+    max-width: 450px !important; /* Ekranın yayılmasını engeller, telefon boyutunda tutar */
+    height: 100% !important;
+    max-height: 100dvh !important; /* Tarayıcı çubuklarını hesaba katarak tam ekran yapar */
+    background-color: #0b1126 !important;
+    box-shadow: 0 0 50px rgba(0,0,0,0.8) !important;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* 3. Evrensel Çentik (Safe Area) Koruması */
+.top-dashboard, .lifestyle-header {
+    padding-top: calc(max(env(safe-area-inset-top), 30px) + 10px) !important;
+    height: auto !important; 
+    min-height: max-content !important; 
+}
+
+.menu-header {
+    margin-top: calc(max(env(safe-area-inset-top), 30px) + 20px) !important;
+}
+
+.bottom-tab-bar {
+    padding-bottom: calc(max(env(safe-area-inset-bottom), 15px) + 10px) !important;
 }
