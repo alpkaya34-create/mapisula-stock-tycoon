@@ -1357,23 +1357,23 @@ body.premium-theme .section-title { color: #fbbf24 !important; }
     box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
     cursor: pointer !important;
 }
-/* --- EKRAN VE ÇENTİK (SAFE AREA) KESİN ÇÖZÜMÜ --- */
+/* --- EKRAN TAŞMALARINI VE BOZULMALARINI ÇÖZEN KESİN (FİNAL) KOD --- */
 
-/* 1. Tüm sayfanın zeminini oyunun kendi rengi yap (Üstteki siyah çizgiyi yok eder) */
+/* 1. Tüm sayfanın dışarı kaymasını engelle, sadece iç kısımlar kaysın */
 body, html {
     background-color: #0b1126 !important; 
     margin: 0 !important;
     padding: 0 !important;
-    width: 100vw !important; /* vw ve vh kullanarak ekranın kesin sınırlarına yapıştırıyoruz */
+    width: 100vw !important;
     height: 100vh !important;
-    height: 100dvh !important; /* Yeni nesil telefonlar için dinamik yükseklik */
+    height: 100dvh !important; 
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
-    overflow: hidden !important; /* Dışarıya siyahlık taşmasını engeller */
+    overflow: hidden !important; 
 }
 
-/* 2. Oyun Ekranı ve Yaşam Alanı Ekranı Ayarları (.game-page eklendi) */
+/* 2. Oyun Ekranları (Taşmaları önlemek için box-sizing ve scroll eklendi) */
 .mobile-screen, .game-page {
     width: 100% !important;
     max-width: 450px !important;
@@ -1381,10 +1381,18 @@ body, html {
     max-height: 100dvh !important;
     background-color: #0b1126 !important;
     position: relative;
-    overflow-x: hidden;
+    overflow-y: auto !important; /* İçeriğin ekranın dışına taşmasını engeller, kaydırma (scroll) sağlar */
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+    /* Ekranın en altındaki butonların (Profil vb.) ev çizgisine (home indicator) değmemesi için */
+    padding-bottom: calc(max(env(safe-area-inset-bottom), 15px) + 20px) !important;
 }
 
-/* Bilgisayar/Tablette açıldığında telefonu belirginleştirmek için hafif çerçeve */
+/* Eğer ekranda alt menü (Borsa, Mağaza) varsa, ana ekranın alt boşluğunu sıfırla ki menü tam otursun */
+#game-screen {
+    padding-bottom: 0 !important;
+}
+
 @media (min-width: 451px) {
     .mobile-screen, .game-page {
         box-shadow: 0 0 50px rgba(0, 242, 254, 0.05) !important;
@@ -1393,18 +1401,23 @@ body, html {
     }
 }
 
-/* 3. Çentik (Safe Area) Boşlukları - (Tasarımı bozan height ayarları silindi) */
-.top-dashboard, .lifestyle-header {
-    /* Çentik varsa onu kullan, yoksa 20px standart boşluk bırak */
-    padding-top: calc(env(safe-area-inset-top, 20px) + 15px) !important;
+/* 3. Üst Paneller (Saat ve Şarj ile çakışmayı önler, kutuyu şişirmez) */
+.top-dashboard, .lifestyle-header, .menu-header {
+    padding-top: calc(max(env(safe-area-inset-top), 35px) + 15px) !important;
+    box-sizing: border-box !important; /* Eklenen boşluğun kutuyu dışarı taşırmasını engeller */
+    flex-shrink: 0 !important; /* Başlıkların ezilmesini veya daralmasını önler */
 }
 
 .menu-header {
-    /* Margin yerine padding kullanarak arkaplanın üste kadar uzanmasını sağladık */
-    padding-top: calc(env(safe-area-inset-top, 20px) + 20px) !important;
     margin-top: 0 !important; 
 }
 
+/* 4. Alt Menü (Home Indicator koruması) */
 .bottom-tab-bar {
-    padding-bottom: calc(env(safe-area-inset-bottom, 15px) + 10px) !important;
+    padding-bottom: calc(max(env(safe-area-inset-bottom), 15px) + 15px) !important;
+    box-sizing: border-box !important;
+    position: sticky !important; 
+    bottom: 0;
+    z-index: 999;
+    background: #0b1126; /* Altından yazı geçmesini engeller */
 }
