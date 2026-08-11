@@ -20,9 +20,10 @@
     <link rel="apple-touch-icon" href="icon.png">
     <link rel="icon" type="image/png" href="icon.png">
     
+   <!-- KESİN ÇÖZÜM: KUSURSUZ TAM EKRAN VE APP DENEYİMİ -->
     <style>
         /* ======================================================== */
-        /* ORİJİNAL OYUN KODLARI (POP-UP GİZLEME VE ANİMASYONLAR)    */
+        /* 1. ORİJİNAL OYUN KODLARI (POP-UP VE ANİMASYONLAR)        */
         /* ======================================================== */
         .btn-profile { background: rgba(139, 92, 246, 0.2); border: 2px solid #8b5cf6; color: #c4b5fd; }
         .profile-stat-box { background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
@@ -64,10 +65,10 @@
         body.premium-theme .btn-play { background: linear-gradient(135deg, #fbbf24 0%, #b45309 100%) !important; color: #000 !important; border-color: #fbbf24 !important; box-shadow: 0 5px 20px rgba(251, 191, 36, 0.4) !important; font-weight: 900; }
 
         /* ======================================================== */
-        /* KESİN ÇÖZÜM: BİLGİSAYAR VE TELEFON İÇİN KUSURSUZ MERKEZLEME */
+        /* 2. EKRAN TAŞMALARINI BİTİREN KUSURSUZ MOBİL YAPI         */
         /* ======================================================== */
         html, body {
-            background-color: #050814 !important; /* PC'de dış arkaplan daha koyu (siyaha yakın) dursun */
+            background-color: #0b1126 !important; 
             margin: 0 !important;
             padding: 0 !important;
             width: 100vw !important;
@@ -77,14 +78,18 @@
             position: relative !important;
         }
 
+        /* Sadece bilgisayar/tablet ekranında dışarıyı koyu yapar */
+        @media (min-width: 451px) {
+            html, body { background-color: #050814 !important; }
+        }
+
         .mobile-screen, .game-page {
             width: 100% !important;
             max-width: 450px !important;
             height: 100% !important;
             max-height: 100dvh !important;
-            background-color: #0b1126 !important; /* Oyunun kendi lacivert arkaplanı */
+            background-color: #0b1126 !important;
             
-            /* KUSURSUZ MERKEZLEME FORMÜLÜ (Hem PC'de ortalar, hem telefonda üst üste bindirir) */
             position: absolute !important;
             top: 0 !important;
             left: 50% !important;
@@ -94,14 +99,10 @@
             overflow-x: hidden !important;
             box-sizing: border-box !important;
             
-            /* Çentik Boşlukları */
-            padding-top: 50px !important; 
-            padding-top: calc(env(safe-area-inset-top) + 15px) !important; 
-            padding-bottom: 30px !important;
-            padding-bottom: calc(env(safe-area-inset-bottom) + 15px) !important;
+            /* Dış çerçevenin paddingleri SIFIRLANDI! */
+            padding: 0 !important; 
         }
 
-        /* Bilgisayar/Tablet görünümü için oyun kenarlarına hafif çizgi ve neon gölge */
         @media (min-width: 451px) {
             .mobile-screen, .game-page {
                 border-left: 1px solid #1e293b;
@@ -110,20 +111,42 @@
             }
         }
 
-        #game-screen {
-            padding-bottom: 0 !important;
-        }
-
+        /* --- ÜST BAŞLIKLAR (TAVANA KİLİTLENİR VE AŞAĞI KAYMAZ) --- */
         .top-dashboard, .lifestyle-header, .menu-header {
-            padding-top: 10px !important;
+            padding-top: calc(env(safe-area-inset-top, 20px) + 15px) !important;
             margin-top: 0 !important;
-            flex-shrink: 0 !important;
+            box-sizing: border-box !important;
+            width: 100% !important;
+            
+            /* Sticky ile başlıkları yukarı kilitliyoruz. Sen aşağı kaydırsan da onlar üstte kalır! */
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 100 !important;
+            background-color: #0b1126 !important;
         }
 
+        .menu-header { padding-bottom: 15px !important; }
+
+        /* --- ALT MENÜ (TABANA KİLİTLENİR) --- */
         .bottom-tab-bar {
-            padding-bottom: 25px !important; 
-            padding-bottom: calc(env(safe-area-inset-bottom) + 10px) !important;
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            width: 100% !important;
+            max-width: 450px !important;
+            background-color: #0f172a !important; /* Menü daha şık görünsün diye */
+            border-top: 1px solid #1e293b !important;
+            
+            padding-top: 12px !important;
+            padding-bottom: calc(env(safe-area-inset-bottom, 15px) + 12px) !important;
             box-sizing: border-box !important;
+            z-index: 999 !important;
+        }
+
+        /* Sabitlenen alt menünün listelerin sonunu kapatmaması için görünmez boşluk */
+        .market-container, #luxury-items {
+            padding-bottom: calc(env(safe-area-inset-bottom, 15px) + 90px) !important;
         }
     </style>
 </head>
