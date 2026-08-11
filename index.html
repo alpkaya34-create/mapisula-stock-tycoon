@@ -20,7 +20,8 @@
     <link rel="apple-touch-icon" href="icon.png">
     <link rel="icon" type="image/png" href="icon.png">
     
-<style>
+<!-- KESİN ÇÖZÜM: KUSURSUZ TAM EKRAN VE APP DENEYİMİ -->
+    <style>
         /* ======================================================== */
         /* 1. ORİJİNAL OYUN KODLARI (POP-UP VE ANİMASYONLAR)        */
         /* ======================================================== */
@@ -64,6 +65,24 @@
         body.premium-theme .btn-play { background: linear-gradient(135deg, #fbbf24 0%, #b45309 100%) !important; color: #000 !important; border-color: #fbbf24 !important; box-shadow: 0 5px 20px rgba(251, 191, 36, 0.4) !important; font-weight: 900; }
 
         /* ======================================================== */
+        /* YENİ: ANA MENÜ BUTONLARININ SÜNMESİNİ ENGELLEYEN KOD     */
+        /* ======================================================== */
+        .menu-actions {
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            gap: 15px !important;
+            flex: 1 !important;
+        }
+        .mobile-btn {
+            flex: 0 0 auto !important; /* Butonların lastik gibi esnemesini (büyümesini) kapatır */
+            height: auto !important;
+            padding: 16px 15px !important; /* Standart ve şık buton kalınlığı */
+            font-size: 14px !important;
+            min-height: 50px !important;
+        }
+
+        /* ======================================================== */
         /* 2. EKRANI ÇİVİLEYEN VE ALT BOŞLUĞU SIFIRLAYAN YAPI       */
         /* ======================================================== */
         html, body {
@@ -71,14 +90,7 @@
             margin: 0 !important;
             padding: 0 !important;
             width: 100vw !important;
-            height: 100% !important;
-            
-            /* KESİN ÇÖZÜM: Tüm gövdeyi ekranın 4 köşesine çiviledik! */
-            position: fixed !important;
-            top: 0 !important;
-            bottom: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
+            height: 100dvh !important; /* Yeni nesil dinamik yükseklik */
             overflow: hidden !important;
         }
 
@@ -90,14 +102,17 @@
         .mobile-screen, .game-page {
             width: 100% !important;
             max-width: 450px !important;
-            height: 100% !important;
+            height: 100dvh !important;
             background-color: #0b1126 !important;
             
+            /* KESİN ÇÖZÜM: Transform kaldırıldı, margin ile ortalandı! 
+               Böylece alt menü boşlukta kalmayıp direkt ekranın camına (en alta) yapışacak. */
             position: absolute !important;
             top: 0 !important;
             bottom: 0 !important;
-            left: 50% !important;
-            transform: translateX(-50%) !important;
+            left: 0 !important;
+            right: 0 !important;
+            margin: 0 auto !important;
             
             overflow-y: auto !important;
             overflow-x: hidden !important;
@@ -115,7 +130,8 @@
 
         /* --- OYUN İÇİ ÜST PANELLER (TAVANA KİLİTLENİR) --- */
         .top-dashboard, .lifestyle-header {
-            padding-top: calc(env(safe-area-inset-top, 45px) + 10px) !important; 
+            padding-top: 45px !important; 
+            padding-top: calc(max(env(safe-area-inset-top), 20px) + 15px) !important; 
             padding-bottom: 15px !important;
             margin-top: 0 !important;
             box-sizing: border-box !important;
@@ -129,7 +145,7 @@
         }
 
         .menu-header {
-            padding-top: calc(env(safe-area-inset-top, 45px) + 20px) !important;
+            padding-top: calc(max(env(safe-area-inset-top), 20px) + 20px) !important;
             margin-top: 0 !important;
             box-sizing: border-box !important;
             width: 100% !important;
@@ -140,7 +156,10 @@
             position: fixed !important; 
             bottom: 0 !important;
             left: 0 !important;
+            right: 0 !important;
+            margin: 0 auto !important;
             width: 100% !important;
+            max-width: 450px !important;
             
             background-color: #0f172a !important;
             border-top: 1px solid #1e293b !important;
@@ -149,7 +168,9 @@
             min-height: 75px !important; 
             
             padding-top: 15px !important;
-            padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 15px) !important; 
+            /* Alt boşluk sorunu burada bitiyor! */
+            padding-bottom: 30px !important; 
+            padding-bottom: calc(max(env(safe-area-inset-bottom), 15px) + 10px) !important; 
             
             box-sizing: border-box !important;
             z-index: 999 !important;
