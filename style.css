@@ -1357,3 +1357,43 @@ body.premium-theme .section-title { color: #fbbf24 !important; }
     box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
     cursor: pointer !important;
 }
+/* ======================================================== */
+/* 🚀 SADECE ÇENTİK VE TAM EKRAN YAMASI (ORİJİNALİ BOZMAZ)  */
+/* ======================================================== */
+
+/* 1. Safari'nin alt boşluk bırakmasını engeller (Orijinal arka planı bozmaz) */
+html, body {
+    height: 100dvh !important;
+}
+
+.mobile-screen, div[id$="-screen"], #lifestyle-page {
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+}
+
+/* 2. Üst taraftaki saat/şarj (çentik) çakışmasını önler */
+.top-dashboard {
+    padding-top: calc(20px + env(safe-area-inset-top)) !important;
+}
+.lifestyle-header {
+    padding-top: env(safe-area-inset-top) !important; 
+}
+
+/* 3. Alt menünün çentikte ezilmesini önler ve boyunu korur */
+.bottom-tab-bar {
+    height: calc(70px + env(safe-area-inset-bottom)) !important;
+    padding-bottom: env(safe-area-inset-bottom) !important;
+}
+
+/* 4. Listelerin alt menü altında kalmasını engeller */
+.market-container, #bank-container, #achievements-list, #portfolio-list, #positions-list, #ai-stock-list {
+    padding-bottom: calc(90px + env(safe-area-inset-bottom)) !important;
+}
+
+/* 5. Ana menü en alt yazısının (Powered by) ve Yaşam Alanı'nın iPhone çizgisine değmesini engeller */
+.menu-footer {
+    padding-bottom: calc(15px + env(safe-area-inset-bottom)) !important;
+}
+.luxury-items-container {
+    padding-bottom: calc(50px + env(safe-area-inset-bottom)) !important;
+}
