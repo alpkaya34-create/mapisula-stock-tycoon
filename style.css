@@ -1358,54 +1358,26 @@ body.premium-theme .section-title { color: #fbbf24 !important; }
     cursor: pointer !important;
 }
 /* ======================================================== */
-/* 🚀 EKRANI 4 KÖŞEDEN KİLİTLEYEN KESİN ÇÖZÜM YAMASI        */
+/* 🚀 EN NET VE KESİN TAM EKRAN DÜZELTMESİ                  */
 /* ======================================================== */
 
-/* 1. Safari'nin alt boşluk bırakmasını engeller (Dış çerçeveyi kilitler) */
+/* 1. Sayfanın arkasındaki tüm boşlukları oyunun lacivertiyle doldurur */
 html, body {
+    background-color: #0b1126 !important;
+    height: 100vh !important;
     height: 100dvh !important;
-    position: fixed !important; 
-    top: 0 !important; 
-    bottom: 0 !important; 
-    left: 0 !important; 
-    right: 0 !important;
+    overflow: hidden !important;
 }
 
-/* 2. Oyun Ekranını tam tabana sıfıra sıfır çiviler (Siyah boşluğu tamamen yok eder) */
-.mobile-screen, div[id$="-screen"], #lifestyle-page {
-    position: absolute !important;
-    top: 0 !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    margin: 0 auto !important; /* PC ekranında ortada tutar */
-    height: 100dvh !important;
-}
-
-/* 3. Ana menü alt ve üst boşluklarını çentiğe göre otomatik esnetir */
+/* 2. Oyun ekranını dikeyde tamamen esnetir */
 .mobile-screen {
-    padding-top: calc(40px + env(safe-area-inset-top)) !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    max-height: none !important;
+    justify-content: space-between !important;
+}
+
+/* 3. Alt yazının (Powered by) iPhone alt çizgi çentiğine yapışmasını önler */
+.menu-footer {
     padding-bottom: calc(20px + env(safe-area-inset-bottom)) !important;
-}
-
-/* 4. Oyun içi başlıkların çentik (kamera) uyumu */
-.top-dashboard {
-    padding-top: calc(20px + env(safe-area-inset-top)) !important;
-}
-.lifestyle-header {
-    padding-top: env(safe-area-inset-top) !important; 
-}
-
-/* 5. Alt menünün tam cama oturması ve orijinal boyunu koruması */
-.bottom-tab-bar {
-    height: calc(70px + env(safe-area-inset-bottom)) !important;
-    padding-bottom: env(safe-area-inset-bottom) !important;
-}
-
-/* 6. Hisselerin ve kartların alt menü/çizgi altında kalmasını engeller */
-.market-container, #bank-container, #achievements-list, #portfolio-list, #positions-list, #ai-stock-list {
-    padding-bottom: calc(90px + env(safe-area-inset-bottom)) !important;
-}
-.luxury-items-container {
-    padding-bottom: calc(50px + env(safe-area-inset-bottom)) !important;
 }
