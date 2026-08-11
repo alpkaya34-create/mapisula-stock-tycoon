@@ -1357,11 +1357,11 @@ body.premium-theme .section-title { color: #fbbf24 !important; }
     box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
     cursor: pointer !important;
 }
-/* --- EKRAN BOZULMASINI DÜZELTEN VE ÇENTİK KORUMASI SAĞLAYAN KESİN KOD --- */
+/* --- EKRAN VE ÇENTİK (SAFE AREA) KESİN ÇÖZÜMÜ --- */
 
-/* 1. Arka planı koyu yap ve ekranı ortala (Bilgisayar/Tablet görünümleri için) */
+/* 1. Tüm sayfanın zeminini oyunun kendi rengi yap (Üstteki siyah çizgiyi yok eder) */
 body, html {
-    background-color: #050814 !important; 
+    background-color: #0b1126 !important; /* Oyunun kendi laciverti. Saat ve şarj kısmıyla bütünleşir */
     margin: 0 !important;
     padding: 0 !important;
     width: 100%;
@@ -1371,29 +1371,38 @@ body, html {
     align-items: center !important;
 }
 
-/* 2. Oyun ekranını telefon boyutuna (max-width) sabitle ve kendi lacivert arka planını ver */
-.mobile-screen {
+/* 2. Oyun Ekranı ve Yaşam Alanı Ekranı Ayarları (.game-page eklendi) */
+.mobile-screen, .game-page {
     width: 100% !important;
-    max-width: 450px !important; /* Ekranın yayılmasını engeller, telefon boyutunda tutar */
+    max-width: 450px !important;
     height: 100% !important;
-    max-height: 100dvh !important; /* Tarayıcı çubuklarını hesaba katarak tam ekran yapar */
+    max-height: 100dvh !important;
     background-color: #0b1126 !important;
-    box-shadow: 0 0 50px rgba(0,0,0,0.8) !important;
     position: relative;
     overflow-x: hidden;
 }
 
-/* 3. Evrensel Çentik (Safe Area) Koruması */
+/* Bilgisayar/Tablette açıldığında telefonu belirginleştirmek için hafif çerçeve */
+@media (min-width: 451px) {
+    .mobile-screen, .game-page {
+        box-shadow: 0 0 50px rgba(0, 242, 254, 0.05) !important;
+        border-left: 1px solid #1e293b;
+        border-right: 1px solid #1e293b;
+    }
+}
+
+/* 3. Çentik (Safe Area) Boşlukları - (Tasarımı bozan height ayarları silindi) */
 .top-dashboard, .lifestyle-header {
-    padding-top: calc(max(env(safe-area-inset-top), 30px) + 10px) !important;
-    height: auto !important; 
-    min-height: max-content !important; 
+    /* Çentik varsa onu kullan, yoksa 20px standart boşluk bırak */
+    padding-top: calc(env(safe-area-inset-top, 20px) + 15px) !important;
 }
 
 .menu-header {
-    margin-top: calc(max(env(safe-area-inset-top), 30px) + 20px) !important;
+    /* Margin yerine padding kullanarak arkaplanın üste kadar uzanmasını sağladık */
+    padding-top: calc(env(safe-area-inset-top, 20px) + 20px) !important;
+    margin-top: 0 !important; 
 }
 
 .bottom-tab-bar {
-    padding-bottom: calc(max(env(safe-area-inset-bottom), 15px) + 10px) !important;
+    padding-bottom: calc(env(safe-area-inset-bottom, 15px) + 10px) !important;
 }
