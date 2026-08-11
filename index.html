@@ -104,7 +104,56 @@
             font-weight: 900;
         }
     </style>
-</head>
+<!-- KESİN ÇÖZÜM: Önbelleği (Cache) Ezen Tam Ekran ve Çentik CSS Ayarları -->
+    <style>
+        html, body {
+            background-color: #0b1126 !important; 
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            height: 100dvh !important; 
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            overflow: hidden !important; 
+        }
+
+        /* Tüm Ana Ekranlar ve Pop-up Sayfalar (Taşmaları Engeller) */
+        .mobile-screen, .game-page {
+            width: 100% !important;
+            max-width: 450px !important;
+            height: 100% !important;
+            max-height: 100dvh !important;
+            background-color: #0b1126 !important;
+            position: relative !important;
+            overflow-y: auto !important; /* Kaydırma çubuğunu aktif eder, ezilmeyi önler */
+            overflow-x: hidden !important;
+            box-sizing: border-box !important;
+            padding-bottom: calc(max(env(safe-area-inset-bottom), 15px) + 20px) !important;
+        }
+
+        /* Oyun içi ana ekranın altında menü olduğu için alt boşluğu sıfırla */
+        #game-screen {
+            padding-bottom: 0 !important;
+        }
+
+        /* Üst Paneller (Saat ve Şarj ile Çakışmayı Önler) */
+        .top-dashboard, .lifestyle-header, .menu-header {
+            padding-top: calc(max(env(safe-area-inset-top), 35px) + 15px) !important;
+            margin-top: 0 !important;
+            box-sizing: border-box !important; /* Çentik boşluğunun ekranı şişirmesini engeller */
+            flex-shrink: 0 !important; 
+            width: 100% !important;
+        }
+
+        /* Alt Menü (Home Indicator - Yatay Çizgi Koruması) */
+        .bottom-tab-bar {
+            padding-bottom: calc(max(env(safe-area-inset-bottom), 15px) + 15px) !important;
+            box-sizing: border-box !important;
+        }
+    </style>
+</head> <!-- Senin HTML dosyanın Head bitişi -->
 <body>
 
     <div id="mobile-main-menu" class="mobile-screen">
