@@ -13,13 +13,17 @@
 }
 
 body {
-    background-color: #050814; /* Çok koyu siber lacivert */
+    background-color: #0b1126 !important; /* Arka plan rengini oyunla tamamen aynı yaptık */
     color: #ffffff;
     width: 100vw;
     height: 100vh;
-    overflow: hidden; /* Kaydırmayı engeller */
+    height: 100dvh;
+    overflow: hidden; 
     display: flex;
     justify-content: center;
+    align-items: center; /* Dikeyde de ortalayıp boşluğu yok eder */
+    margin: 0;
+    padding: 0;
 }
 
 /* ==========================================================================
@@ -27,11 +31,12 @@ body {
    ========================================================================== */
 .mobile-screen {
     width: 100%;
-    max-width: 450px; /* Tabletlerde bile telefon boyutunda tutar */
-    height: 100%;
+    max-width: 450px; 
+    height: 100vh !important; /* Yüzdeyi kaldırıp tam ekran yaptık */
+    height: 100dvh !important;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Üst, Orta ve Altı eşit dağıtır */
+    justify-content: space-between; 
     padding: 40px 24px 20px 24px;
     background: radial-gradient(circle at top center, #111a3a 0%, #050814 80%);
     position: relative;
