@@ -19,107 +19,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="apple-touch-icon" href="icon.png">
     <link rel="icon" type="image/png" href="icon.png">
+    <!-- KESİN ÇÖZÜM: Tüm Ekranı Güvenli Alana (Safe Area) Hapseden CSS -->
     <style>
-        .btn-profile { background: rgba(139, 92, 246, 0.2); border: 2px solid #8b5cf6; color: #c4b5fd; }
-        .profile-stat-box {
-            background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; 
-            padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;
-        }
-        .profile-stat-label { font-size: 13px; color: #94a3b8; font-weight: 800; text-transform: uppercase; }
-        .profile-stat-value { font-size: 18px; color: #fff; font-weight: 900; }
-
-        #summary-modal, #reset-confirm-modal, #bankruptcy-modal, #store-modal, #ai-modal, #chart-modal, #beta-warning-modal, #milestone-modal, #achievements-modal, #patch-notes-modal {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
-            width: 90%; max-width: 350px; background: #0b1126; border: 1px solid #1e293b;
-            border-radius: 20px; padding: 24px; z-index: 1000; opacity: 0; pointer-events: none;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
-        }
-        
-        #summary-modal.show, #reset-confirm-modal.show, #bankruptcy-modal.show, #store-modal.show, #ai-modal.show, #chart-modal.show, #beta-warning-modal.show, #milestone-modal.show, #achievements-modal.show, #patch-notes-modal.show {
-            opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); 
-        }
-        #summary-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7);
-            z-index: 999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
-        }
-        #summary-overlay.active { opacity: 1; pointer-events: auto; }
-
-        .toggle-switch { position: relative; display: inline-block; width: 50px; height: 26px; }
-        .toggle-switch input { opacity: 0; width: 0; height: 0; }
-        .toggle-switch .slider {
-            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #1e293b; transition: .4s; border-radius: 34px; border: 1px solid #334155;
-        }
-        .toggle-switch .slider:before {
-            position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
-            background-color: #94a3b8; transition: .4s; border-radius: 50%;
-        }
-        .toggle-switch input:checked + .slider { background-color: rgba(0, 242, 254, 0.15); border-color: #00f2fe; }
-        .toggle-switch input:checked + .slider:before {
-            transform: translateX(24px); background-color: #00f2fe; box-shadow: 0 0 10px #00f2fe;
-        }
-
-        /* --- MENÜ, ANİMASYON VE PREMİUM RENK AYARLARI --- */
-        .brand-name {
-            color: #00f2fe !important;
-            text-shadow: 0 0 10px rgba(0, 242, 254, 0.6) !important;
-            font-weight: 900;
-            transition: all 0.3s ease;
-        }
-        
-        .tycoon-text {
-            stroke-width: 1.5px;
-            stroke-dasharray: 400;
-            stroke-dashoffset: 400;
-            /* Animasyon süresi 2.5s'den 4.5s'ye çıkarılarak çizim yavaşlatıldı */
-            animation: drawAndFillNormal 4.5s ease forwards !important; 
-        }
-
-        @keyframes drawAndFillNormal {
-            0% { stroke-dashoffset: 400; fill: transparent; stroke: #00f2fe; filter: drop-shadow(0 0 0 transparent); }
-            60% { stroke-dashoffset: 0; fill: transparent; stroke: #00f2fe; filter: drop-shadow(0 0 5px rgba(0, 242, 254, 0.4)); }
-            100% { stroke-dashoffset: 0; fill: #00f2fe; stroke: #00f2fe; filter: drop-shadow(0 0 10px rgba(0, 242, 254, 0.8)); }
-        }
-
-        body.premium-theme .brand-name {
-            color: #fbbf24 !important;
-            text-shadow: 0 0 10px rgba(251, 191, 36, 0.8) !important;
-        }
-
-        body.premium-theme .tycoon-text {
-            animation: drawAndFillPremium 4.5s ease forwards !important;
-        }
-
-        @keyframes drawAndFillPremium {
-            0% { stroke-dashoffset: 400; fill: transparent; stroke: #fbbf24; filter: drop-shadow(0 0 0 transparent); }
-            60% { stroke-dashoffset: 0; fill: transparent; stroke: #fbbf24; filter: drop-shadow(0 0 5px rgba(251, 191, 36, 0.4)); }
-            100% { stroke-dashoffset: 0; fill: #fbbf24; stroke: #fbbf24; filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.8)); }
-        }
-
-        body.premium-theme .btn-play {
-            background: linear-gradient(135deg, #fbbf24 0%, #b45309 100%) !important;
-            color: #000 !important;
-            border-color: #fbbf24 !important;
-            box-shadow: 0 5px 20px rgba(251, 191, 36, 0.4) !important;
-            font-weight: 900;
-        }
-    </style>
-<!-- KESİN ÇÖZÜM: Önbelleği (Cache) Ezen Tam Ekran ve Çentik CSS Ayarları -->
-    <style>
+        /* 1. Dış Çerçeve ve Zemin */
         html, body {
-            background-color: #0b1126 !important; 
+            background-color: #0b1126 !important;
             margin: 0 !important;
             padding: 0 !important;
             width: 100vw !important;
             height: 100vh !important;
-            height: 100dvh !important; 
+            height: 100dvh !important;
+            overflow: hidden !important;
             display: flex !important;
             justify-content: center !important;
             align-items: center !important;
-            overflow: hidden !important; 
         }
 
-        /* Tüm Ana Ekranlar ve Pop-up Sayfalar (Taşmaları Engeller) */
+        /* 2. Mobil Ekran Çerçevesi (Çentik Koruması BURAYA eklendi) */
         .mobile-screen, .game-page {
             width: 100% !important;
             max-width: 450px !important;
@@ -127,33 +43,37 @@
             max-height: 100dvh !important;
             background-color: #0b1126 !important;
             position: relative !important;
-            overflow-y: auto !important; /* Kaydırma çubuğunu aktif eder, ezilmeyi önler */
+            overflow-y: auto !important;
             overflow-x: hidden !important;
             box-sizing: border-box !important;
-            padding-bottom: calc(max(env(safe-area-inset-bottom), 15px) + 20px) !important;
+
+            /* KESİN ÇÖZÜM: Tüm ekranın içeriğini üstten ve alttan güvenli alana iter */
+            padding-top: 50px !important; /* env() desteklemeyen tarayıcılar için GARANTİ boşluk */
+            padding-top: calc(env(safe-area-inset-top) + 15px) !important; /* Modern cihazlar için */
+            
+            padding-bottom: 30px !important;
+            padding-bottom: calc(env(safe-area-inset-bottom) + 15px) !important;
         }
 
-        /* Oyun içi ana ekranın altında menü olduğu için alt boşluğu sıfırla */
+        /* Borsa (Oyun) ekranının altında sabit menü olduğu için alt boşluğu eziyoruz */
         #game-screen {
             padding-bottom: 0 !important;
         }
 
-        /* Üst Paneller (Saat ve Şarj ile Çakışmayı Önler) */
+        /* 3. Başlıklardaki eski boşlukları sıfırlıyoruz (İçerikler iki kere aşağı inmesin diye) */
         .top-dashboard, .lifestyle-header, .menu-header {
-            padding-top: calc(max(env(safe-area-inset-top), 35px) + 15px) !important;
+            padding-top: 10px !important;
             margin-top: 0 !important;
-            box-sizing: border-box !important; /* Çentik boşluğunun ekranı şişirmesini engeller */
-            flex-shrink: 0 !important; 
-            width: 100% !important;
+            flex-shrink: 0 !important;
         }
 
-        /* Alt Menü (Home Indicator - Yatay Çizgi Koruması) */
+        /* 4. Alt Menü (Home Indicator - iPhone alt çizgi koruması) */
         .bottom-tab-bar {
-            padding-bottom: calc(max(env(safe-area-inset-bottom), 15px) + 15px) !important;
+            padding-bottom: 25px !important; /* Garanti boşluk */
+            padding-bottom: calc(env(safe-area-inset-bottom) + 10px) !important;
             box-sizing: border-box !important;
         }
     </style>
-</head> <!-- Senin HTML dosyanın Head bitişi -->
 <body>
 
     <div id="mobile-main-menu" class="mobile-screen">
