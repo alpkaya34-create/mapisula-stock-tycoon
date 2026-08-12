@@ -64,19 +64,14 @@
         .mobile-btn { flex: 0 0 auto !important; height: auto !important; padding: 16px 15px !important; font-size: 14px !important; min-height: 50px !important; }
 
         /* ======================================================== */
-        /* 2. SOLA YAPIŞMAYI ÇÖZEN KUSURSUZ MOBİL YAPI              */
+        /* 2. SOLA YAPIŞMAYI VE ALT BOŞLUĞU ÇÖZEN MOBİL YAPI        */
         /* ======================================================== */
         html, body {
             background-color: #0b1126 !important; 
             margin: 0 !important;
             padding: 0 !important;
             width: 100vw !important;
-            height: 100% !important;
-            position: fixed !important; 
-            top: 0 !important;
-            bottom: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
+            height: 100dvh !important; /* Dinamik tam ekran (Safari boşluğunu yutar) */
             overflow: hidden !important;
         }
 
@@ -87,20 +82,12 @@
         .mobile-screen, .game-page, #lifestyle-screen, #lifestyle-page, #profile-screen, div[id$="-screen"] {
             width: 100% !important;
             max-width: 450px !important;
-            height: 100% !important;
+            height: 100dvh !important; /* Çerçeveyi tam tabana iter */
             background-color: #0b1126 !important;
-            
-            position: absolute !important;
-            top: 0 !important;
-            bottom: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
             margin: 0 auto !important;
-            
             overflow-y: auto !important;
             overflow-x: hidden !important;
             box-sizing: border-box !important;
-            transform: none !important; 
         }
 
         /* --- ORİJİNAL TASARIMDAKİ SAĞ/SOL BOŞLUKLARI KORUNUYOR --- */
@@ -152,7 +139,7 @@
             width: 100% !important;
         }
 
-        /* --- ALT MENÜ VE SIFIR YAPAY BOŞLUK (MÜKEMMEL NATIVE UYUM) --- */
+        /* --- ALT MENÜ VE SIFIR YAPAY BOŞLUK --- */
         .bottom-tab-bar {
             position: fixed !important; 
             bottom: 0 !important;
@@ -165,7 +152,6 @@
             background-color: #0f172a !important;
             border-top: 1px solid #1e293b !important;
             
-            /* Menü boyu netleştirildi */
             height: calc(60px + env(safe-area-inset-bottom, 15px)) !important;
             min-height: auto !important; 
             
@@ -176,12 +162,11 @@
             z-index: 999 !important;
         }
 
-        /* YAPAY BOŞLUK SİLİNDİ: Liste sadece menü boyu + zarif 20px pay ile duracak */
+        /* Listelerin altta ezilmesini önler */
         .market-container, #luxury-items, #achievements-list, #portfolio-list, #positions-list, #ai-stock-list, #bank-container {
             padding-bottom: calc(80px + env(safe-area-inset-bottom, 15px)) !important; 
         }
     </style>
-<body>
 
     <div id="mobile-main-menu" class="mobile-screen">
         <div class="menu-header">
