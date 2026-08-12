@@ -1400,3 +1400,53 @@ html, body {
 .menu-footer {
     padding-bottom: calc(20px + env(safe-area-inset-bottom)) !important;
 }
+/* ======================================================== */
+/* 🚀 BOZDUĞUM ALT KISMI ORİJİNALİNE DÖNDÜREN KESİN YAMA    */
+/* ======================================================== */
+
+/* 1. Tüm zorlama kodlar silindi, orijinal 100vh ölçüsüne dönüldü */
+html, body {
+    background-color: #050814 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    overflow: hidden !important;
+    display: flex !important;
+    justify-content: center !important;
+}
+
+/* 2. Senin Orijinal Yapın: Relative ve %100 (Bütün sır buydu) */
+.mobile-screen, div[id$="-screen"], #lifestyle-page {
+    width: 100% !important;
+    max-width: 450px !important;
+    height: 100% !important; 
+    position: relative !important; 
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+}
+
+/* 3. Sadece en başta yapmamız gereken Üst Çentik boşluğu */
+.top-dashboard, .lifestyle-header {
+    padding-top: calc(max(env(safe-area-inset-top), 20px) + 15px) !important;
+}
+.menu-header {
+    padding-top: calc(max(env(safe-area-inset-top), 20px) + 20px) !important;
+}
+
+/* 4. BENİM BOZDUĞUM, SENİN ORİJİNAL ALT MENÜ KODUN (absolute ve bottom: 0) */
+.bottom-tab-bar {
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 70px !important;
+    padding-bottom: env(safe-area-inset-bottom) !important;
+    z-index: 999 !important;
+}
+
+/* 5. Alt menünün listeleri kapatmaması için gereken pay */
+.market-container, #bank-container, #luxury-items, #achievements-list, #portfolio-list, #positions-list, #ai-stock-list {
+    padding-bottom: calc(85px + env(safe-area-inset-bottom)) !important;
+}
