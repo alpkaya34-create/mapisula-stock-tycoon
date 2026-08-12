@@ -64,46 +64,51 @@
         .mobile-btn { flex: 0 0 auto !important; height: auto !important; padding: 16px 15px !important; font-size: 14px !important; min-height: 50px !important; }
 
         /* ======================================================== */
-        /* 2. SAFARİ ALT BOŞLUĞUNU BİTİREN KESİN MOBİL YAPI         */
+        /* 2. SOLA YAPIŞMAYI ÇÖZEN KUSURSUZ MOBİL YAPI              */
         /* ======================================================== */
-        html {
-            background-color: #0b1126 !important;
-        }
-
-        body {
-            background-color: #0b1126 !important;
-            color: #ffffff;
-            width: 100vw !important;
-            height: 100dvh !important; /* DİNAMİK TAM EKRAN (Safari Boşluğunu Yutar) */
-            overflow: hidden !important;
+        html, body {
+            background-color: #0b1126 !important; 
             margin: 0 !important;
             padding: 0 !important;
-            display: flex !important;
-            justify-content: center !important;
-            /* DİKKAT: position: fixed; top: 0; bottom: 0; SİLİNDİ! Sorunu yaratan buydu. */
+            width: 100vw !important;
+            height: 100% !important;
+            position: fixed !important; 
+            top: 0 !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            overflow: hidden !important;
+        }
+
+        @media (min-width: 451px) {
+            html, body { background-color: #050814 !important; }
         }
 
         .mobile-screen, .game-page, #lifestyle-screen, #lifestyle-page, #profile-screen, div[id$="-screen"] {
             width: 100% !important;
             max-width: 450px !important;
-            height: 100dvh !important; /* Ekranı sonuna kadar iter */
+            height: 100% !important;
             background-color: #0b1126 !important;
-            position: relative !important; /* absolute VEYA fixed YAPILMAMALI */
+            
+            position: absolute !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
             margin: 0 auto !important;
-            display: flex !important;
-            flex-direction: column !important;
+            
+            overflow-y: auto !important;
             overflow-x: hidden !important;
             box-sizing: border-box !important;
-            transform: none !important;
+            transform: none !important; 
         }
 
-        /* --- SAĞ/SOL BOŞLUKLAR --- */
+        /* --- ORİJİNAL TASARIMDAKİ SAĞ/SOL BOŞLUKLARI KORUNUYOR --- */
         .mobile-screen { padding: 0 24px !important; }
         #game-screen { padding: 0 !important; }
         #lifestyle-screen, #lifestyle-page, #profile-screen { padding: 0 15px !important; }
 
         @media (min-width: 451px) {
-            body { background-color: #050814 !important; }
             .mobile-screen, .game-page, #lifestyle-screen, #lifestyle-page, #profile-screen, div[id$="-screen"] {
                 border-left: 1px solid #1e293b !important;
                 border-right: 1px solid #1e293b !important;
@@ -111,11 +116,11 @@
             }
         }
 
-        /* --- OYUN İÇİ ÜST PANELLER (TAVANA YAPIŞIR) --- */
+        /* --- OYUN İÇİ ÜST PANELLER (TAVANA KİLİTLENİR VE YATAY HİZALANIR) --- */
         .top-dashboard {
-            padding-top: calc(max(env(safe-area-inset-top), 20px) + 15px) !important;
+            padding-top: calc(max(env(safe-area-inset-top), 20px) + 15px) !important; 
             padding-bottom: 15px !important;
-            padding-left: 24px !important;
+            padding-left: 24px !important; 
             padding-right: 24px !important;
             margin-top: 0 !important;
             box-sizing: border-box !important;
@@ -125,14 +130,11 @@
             z-index: 100 !important;
             background-color: #0b1126 !important;
             border-bottom: 1px solid rgba(30, 41, 59, 0.8) !important;
-            flex-shrink: 0 !important;
         }
 
         .lifestyle-header {
-            padding-top: calc(max(env(safe-area-inset-top), 20px) + 15px) !important;
+            padding-top: calc(max(env(safe-area-inset-top), 20px) + 15px) !important; 
             padding-bottom: 15px !important;
-            padding-left: 15px !important;
-            padding-right: 15px !important;
             margin-top: 0 !important;
             box-sizing: border-box !important;
             width: 100% !important;
@@ -141,7 +143,6 @@
             z-index: 100 !important;
             background-color: #0b1126 !important;
             border-bottom: 1px solid rgba(30, 41, 59, 0.8) !important;
-            flex-shrink: 0 !important;
         }
 
         .menu-header {
@@ -149,40 +150,35 @@
             margin-top: 0 !important;
             box-sizing: border-box !important;
             width: 100% !important;
-            flex-shrink: 0 !important;
         }
 
-        /* --- İÇERİK (ORTA ALAN) --- */
-        .market-container, #bank-container, #luxury-items, #achievements-list, #portfolio-list, #positions-list, #ai-stock-list {
-            flex: 1 !important; /* Kalan boşluğu doldurur */
-            overflow-y: auto !important; /* Sadece burası kayar */
-            padding-bottom: 20px !important; /* Yapay boşluk silindi, çünkü menü zaten en altta duracak */
-        }
-
-        #lifestyle-page {
-            overflow-y: auto !important;
-            padding-bottom: calc(30px + env(safe-area-inset-bottom)) !important;
-        }
-
-        .menu-footer {
-            padding-bottom: calc(15px + env(safe-area-inset-bottom)) !important;
-        }
-
-        /* --- ALT MENÜ (FLEXBOX İLE TABANA YAPIŞTIRILIR) --- */
+        /* --- ALT MENÜ VE SIFIR YAPAY BOŞLUK (MÜKEMMEL NATIVE UYUM) --- */
         .bottom-tab-bar {
-            position: relative !important; /* fixed SİLİNDİ, hata yaratan buydu */
-            margin-top: auto !important; /* Esnek kutunun en dibine, camın sınırına iter */
+            position: fixed !important; 
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            margin: 0 auto !important;
             width: 100% !important;
             max-width: 450px !important;
+            
             background-color: #0f172a !important;
             border-top: 1px solid #1e293b !important;
-            height: calc(65px + env(safe-area-inset-bottom, 15px)) !important;
-            min-height: auto !important;
+            
+            /* Menü boyu netleştirildi */
+            height: calc(60px + env(safe-area-inset-bottom, 15px)) !important;
+            min-height: auto !important; 
+            
             padding-top: 10px !important;
-            padding-bottom: env(safe-area-inset-bottom, 15px) !important;
+            padding-bottom: env(safe-area-inset-bottom, 15px) !important; 
+            
             box-sizing: border-box !important;
             z-index: 999 !important;
-            flex-shrink: 0 !important; /* Menünün ezilmesini engeller */
+        }
+
+        /* YAPAY BOŞLUK SİLİNDİ: Liste sadece menü boyu + zarif 20px pay ile duracak */
+        .market-container, #luxury-items, #achievements-list, #portfolio-list, #positions-list, #ai-stock-list, #bank-container {
+            padding-bottom: calc(80px + env(safe-area-inset-bottom, 15px)) !important; 
         }
     </style>
 <body>
