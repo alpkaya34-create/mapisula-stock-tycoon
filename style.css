@@ -6,22 +6,29 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Nunito', sans-serif;
-    /* Mobilde yazıyı seçmeyi ve mavi tıklama gölgesini engeller */
     -webkit-tap-highlight-color: transparent;
     -webkit-user-select: none;
     user-select: none;
 }
 
+/* En alt katmanı oyunun kendi rengine boyuyoruz */
+html {
+    background-color: #0b1126 !important;
+    height: 100%;
+}
+
 body {
-    background-color: #0b1126 !important; /* Arka planı tamamen oyunun laciverti yaptık */
+    background-color: #0b1126 !important; 
     color: #ffffff;
     width: 100vw;
+    /* PWA (Uygulama) için kesin tam ekran değerleri */
     height: 100vh;
     height: 100dvh;
     overflow: hidden; 
     margin: 0;
     padding: 0;
-    position: fixed; /* Safari'nin esnemesini engeller, ekrana çiviler */
+    /* Sayfayı 4 köşeden kilitler, kaymayı engeller */
+    position: fixed; 
     top: 0;
     left: 0;
     right: 0;
@@ -31,18 +38,21 @@ body {
 .mobile-screen {
     width: 100%;
     max-width: 450px; 
-    height: 100% !important; /* Yüksekliği ekranın en son sınırına zorlar */
+    height: 100% !important; /* body'nin %100'ünü kaplar */
     position: absolute !important;
     top: 0 !important;
     bottom: 0 !important;
     left: 0 !important;
     right: 0 !important;
-    margin: 0 auto !important; /* Bilgisayarda ortalar, mobilde tam kaplatır */
+    margin: 0 auto !important; 
     display: flex;
     flex-direction: column;
     justify-content: space-between; 
-    padding: 40px 24px calc(20px + env(safe-area-inset-bottom)) 24px; /* iPhone alt çizgi güvenli alanı */
-    background: radial-gradient(circle at top center, #111a3a 0%, #0b1126 80%); /* Arka plan ton farkını bitiren geçiş */
+    
+    /* Çentik (safe-area) boşluklarını otomatik hesaplar ve ekranın içine yedirir */
+    padding: calc(40px + env(safe-area-inset-top)) 24px calc(20px + env(safe-area-inset-bottom)) 24px; 
+    
+    background: radial-gradient(circle at top center, #111a3a 0%, #0b1126 80%); 
     box-sizing: border-box;
 }
 
