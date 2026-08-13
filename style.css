@@ -11,16 +11,18 @@
     user-select: none;
 }
 
-/* dvh iptal edildi. Ekran 4 köşeden camın fiziksel sonuna çivilendi */
+/* ==========================================================================
+   📱 GERÇEK MOBİL UYGULAMA (NATIVE) YAPI - YAPAY BOYAMA YOK
+   ========================================================================== */
 html, body {
-    background-color: #0b1126;
+    background-color: #0b1126; /* Sahte boyamalar iptal, oyunun kendi orijinal rengi */
     color: #ffffff;
-    width: 100%;
-    height: 100%; 
+    width: 100vw;
+    height: 100vh; /* Uygulama modunda 100vh doğrudan cihaz camının ölçüsüdür */
     overflow: hidden; 
     margin: 0;
     padding: 0;
-    position: fixed; 
+    position: fixed; /* Ekranı 4 köşeden kilitler */
     top: 0;
     left: 0;
     right: 0;
@@ -37,12 +39,11 @@ html, body {
     left: 0;
     right: 0;
     margin: 0 auto;
-    
     display: flex;
     flex-direction: column;
     justify-content: space-between; 
     
-    /* DİKKAT: Alt boşluğu SIFIR (0) yaptık ki menüler tam dibe yapışsın */
+    /* Üst çentik (kamera) boşluğu */
     padding: calc(40px + env(safe-area-inset-top, 0px)) 24px 0 24px; 
     background: radial-gradient(circle at top center, #111a3a 0%, #0b1126 80%); 
     box-sizing: border-box;
@@ -357,21 +358,29 @@ html, body {
 .trend-up { border-left: 3px solid #10b981; }
 .trend-down { border-left: 3px solid #ef4444; }
 
-/* --- ALT TAB BAR --- */
+/* --- ALT TAB BAR (SAĞA KAYMA HATASI KESİN ÇÖZÜLDÜ) --- */
 .bottom-tab-bar {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: calc(70px + env(safe-area-inset-bottom, 0px)); /* Yüksekliği güvenli alanla birleştirdik */
-    background: rgba(11, 17, 38, 0.95);
-    backdrop-filter: blur(10px);
-    border-top: 1px solid rgba(61, 74, 122, 0.3);
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-    z-index: 999;
+    position: fixed !important; 
+    bottom: 0 !important; 
+    
+    /* EKRANI SAĞA SOLA KAYMADAN KUSURSUZ ORTALAR */
+    left: 0 !important; 
+    right: 0 !important; 
+    margin: 0 auto !important; 
+    
+    width: 100% !important;
+    max-width: 450px !important; 
+    
+    height: calc(70px + env(safe-area-inset-bottom, 0px)) !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+    
+    background: rgba(11, 17, 38, 0.95) !important;
+    backdrop-filter: blur(10px) !important;
+    border-top: 1px solid rgba(61, 74, 122, 0.3) !important;
+    display: flex !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+    z-index: 9999 !important;
 }
 
 .tab-item {
