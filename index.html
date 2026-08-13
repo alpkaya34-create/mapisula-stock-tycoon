@@ -63,33 +63,6 @@
         .menu-actions { display: flex !important; flex-direction: column !important; justify-content: center !important; gap: 15px !important; flex: 1 !important; }
         .mobile-btn { flex: 0 0 auto !important; height: auto !important; padding: 16px 15px !important; font-size: 14px !important; min-height: 50px !important; }
 
-        /* ======================================================== */
-        /* 2. SOLA YAPIŞMAYI VE ALT BOŞLUĞU ÇÖZEN MOBİL YAPI        */
-        /* ======================================================== */
-        html, body {
-            background-color: #0b1126 !important; 
-            margin: 0 !important;
-            padding: 0 !important;
-            width: 100vw !important;
-            height: 100dvh !important; /* Dinamik tam ekran (Safari boşluğunu yutar) */
-            overflow: hidden !important;
-        }
-
-        @media (min-width: 451px) {
-            html, body { background-color: #050814 !important; }
-        }
-
-        .mobile-screen, .game-page, #lifestyle-screen, #lifestyle-page, #profile-screen, div[id$="-screen"] {
-            width: 100% !important;
-            max-width: 450px !important;
-            height: 100dvh !important; /* Çerçeveyi tam tabana iter */
-            background-color: #0b1126 !important;
-            margin: 0 auto !important;
-            overflow-y: auto !important;
-            overflow-x: hidden !important;
-            box-sizing: border-box !important;
-        }
-
         /* --- ORİJİNAL TASARIMDAKİ SAĞ/SOL BOŞLUKLARI KORUNUYOR --- */
         .mobile-screen { padding: 0 24px !important; }
         #game-screen { padding: 0 !important; }
