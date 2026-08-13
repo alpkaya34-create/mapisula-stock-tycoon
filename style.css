@@ -1,5 +1,5 @@
 /* ==========================================================================
-   📱 MOBİL SIFIRLAMA VE TEMEL AYARLAR
+   📱 MOBİL SIFIRLAMA VE TEMEL AYARLAR (SON KESİN ÇÖZÜM)
    ========================================================================== */
 * {
     margin: 0;
@@ -11,23 +11,15 @@
     user-select: none;
 }
 
-/* En alt katmanı oyunun kendi rengine boyuyoruz */
-html {
-    background-color: #0b1126 !important;
-    height: 100%;
-}
-
-body {
-    background-color: #0b1126 !important; 
+/* dvh iptal edildi. Ekran 4 köşeden camın fiziksel sonuna çivilendi */
+html, body {
+    background-color: #0b1126;
     color: #ffffff;
-    width: 100vw;
-    /* PWA (Uygulama) için kesin tam ekran değerleri */
-    height: 100vh;
-    height: 100dvh;
+    width: 100%;
+    height: 100%; 
     overflow: hidden; 
     margin: 0;
     padding: 0;
-    /* Sayfayı 4 köşeden kilitler, kaymayı engeller */
     position: fixed; 
     top: 0;
     left: 0;
@@ -38,23 +30,27 @@ body {
 .mobile-screen {
     width: 100%;
     max-width: 450px; 
-    height: 100% !important; /* body'nin %100'ünü kaplar */
-    position: absolute !important;
-    top: 0 !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    margin: 0 auto !important; 
+    height: 100%;
+    position: absolute; 
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    
     display: flex;
     flex-direction: column;
     justify-content: space-between; 
     
-    /* Çentik (safe-area) boşluklarını otomatik hesaplar ve ekranın içine yedirir */
-    padding: calc(40px + env(safe-area-inset-top)) 24px calc(20px + env(safe-area-inset-bottom)) 24px; 
-    
+    /* DİKKAT: Alt boşluğu SIFIR (0) yaptık ki menüler tam dibe yapışsın */
+    padding: calc(40px + env(safe-area-inset-top, 0px)) 24px 0 24px; 
     background: radial-gradient(circle at top center, #111a3a 0%, #0b1126 80%); 
     box-sizing: border-box;
 }
+
+/* Kendi orijinal koruma boşlukların */
+#game-screen { padding: 0 !important; display: block; }
+#lifestyle-screen, #lifestyle-page, #profile-screen { padding: 0 15px; }
 
 /* ==========================================================================
    ✨ BAŞLIK VE LOGO ALANI
@@ -196,7 +192,8 @@ body {
    ========================================================================== */
 .menu-footer {
     text-align: center;
-    padding-bottom: 15px;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+    margin-top: auto; /* Yazıyı kibarca en alta iter */
 }
 
 .menu-footer p {
@@ -366,14 +363,15 @@ body {
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 70px;
+    height: calc(70px + env(safe-area-inset-bottom, 0px)); /* Yüksekliği güvenli alanla birleştirdik */
     background: rgba(11, 17, 38, 0.95);
     backdrop-filter: blur(10px);
     border-top: 1px solid rgba(61, 74, 122, 0.3);
     display: flex;
     justify-content: space-around;
     align-items: center;
-    padding-bottom: env(safe-area-inset-bottom); /* iPhone alt çizgi uyumu */
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    z-index: 999;
 }
 
 .tab-item {
@@ -1213,26 +1211,32 @@ body.premium-theme .section-title { color: #fbbf24 !important; }
     margin-bottom: 20px;
     line-height: 1.5;
 }
-/* Tam Ekran Sayfa Yapısı (Glow Taşmalarını Engelleyen Kusursuz Versiyon) */
+/* ==========================================================================
+   💎 YAŞAM ALANI (LIFESTYLE) KUSURSUZ EKRAN DÜZELTMESİ
+   ========================================================================== */
 #lifestyle-page {
-    position: fixed;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
-    max-width: 400px;
-    height: 100%;
-    background: #090e17;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-    padding: 20px 15px;
-    box-sizing: border-box;
-    /* SİHİRLİ DOKUNUŞ BURADA: 
-       1. Kendi renginden 25px kalınlığında sert bir dış katman yayarak alttaki butonların neon parlamalarını yutar.
-       2. İkinci bir katman olarak ekranın (monitörün) geri kalanını simsiyah yapar. */
-    box-shadow: 0 0 0 25px #090e17, 0 0 0 100vw #000000;
+    position: absolute !important; 
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    transform: none !important; 
+    margin: 0 auto !important;
+    
+    width: 100% !important;
+    max-width: 450px !important; 
+    height: 100% !important;
+    
+    background-color: #0b1126 !important;
+    background: radial-gradient(circle at top center, #111a3a 0%, #0b1126 80%) !important;
+    z-index: 1000 !important;
+    
+    /* display: flex !important; KISMI SİLİNDİ! (Oyunun gizleme mantığını bozmamak için) */
+    flex-direction: column !important;
+    overflow-y: auto !important;
+    padding: calc(env(safe-area-inset-top, 0px) + 20px) 24px calc(env(safe-area-inset-bottom, 0px) + 20px) 24px !important;
+    box-sizing: border-box !important;
+    box-shadow: none !important; 
 }
 
 .lifestyle-header {
@@ -1375,78 +1379,4 @@ body.premium-theme .section-title { color: #fbbf24 !important; }
     border: none !important;
     box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
     cursor: pointer !important;
-}
-/* ======================================================== */
-/* 🚀 EN NET VE KESİN TAM EKRAN DÜZELTMESİ                  */
-/* ======================================================== */
-
-/* 1. Sayfanın arkasındaki tüm boşlukları oyunun lacivertiyle doldurur */
-html, body {
-    background-color: #0b1126 !important;
-    height: 100vh !important;
-    height: 100dvh !important;
-    overflow: hidden !important;
-}
-
-/* 2. Oyun ekranını dikeyde tamamen esnetir */
-.mobile-screen {
-    height: 100vh !important;
-    height: 100dvh !important;
-    max-height: none !important;
-    justify-content: space-between !important;
-}
-
-/* 3. Alt yazının (Powered by) iPhone alt çizgi çentiğine yapışmasını önler */
-.menu-footer {
-    padding-bottom: calc(20px + env(safe-area-inset-bottom)) !important;
-}
-/* ======================================================== */
-/* 🚀 BOZDUĞUM ALT KISMI ORİJİNALİNE DÖNDÜREN KESİN YAMA    */
-/* ======================================================== */
-
-/* 1. Tüm zorlama kodlar silindi, orijinal 100vh ölçüsüne dönüldü */
-html, body {
-    background-color: #050814 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    overflow: hidden !important;
-    display: flex !important;
-    justify-content: center !important;
-}
-
-/* 2. Senin Orijinal Yapın: Relative ve %100 (Bütün sır buydu) */
-.mobile-screen, div[id$="-screen"], #lifestyle-page {
-    width: 100% !important;
-    max-width: 450px !important;
-    height: 100% !important; 
-    position: relative !important; 
-    margin: 0 auto !important;
-    box-sizing: border-box !important;
-}
-
-/* 3. Sadece en başta yapmamız gereken Üst Çentik boşluğu */
-.top-dashboard, .lifestyle-header {
-    padding-top: calc(max(env(safe-area-inset-top), 20px) + 15px) !important;
-}
-.menu-header {
-    padding-top: calc(max(env(safe-area-inset-top), 20px) + 20px) !important;
-}
-
-/* 4. BENİM BOZDUĞUM, SENİN ORİJİNAL ALT MENÜ KODUN (absolute ve bottom: 0) */
-.bottom-tab-bar {
-    position: absolute !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: auto !important;
-    min-height: 70px !important;
-    padding-bottom: env(safe-area-inset-bottom) !important;
-    z-index: 999 !important;
-}
-
-/* 5. Alt menünün listeleri kapatmaması için gereken pay */
-.market-container, #bank-container, #luxury-items, #achievements-list, #portfolio-list, #positions-list, #ai-stock-list {
-    padding-bottom: calc(85px + env(safe-area-inset-bottom)) !important;
 }
