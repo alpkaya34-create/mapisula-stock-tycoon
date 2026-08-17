@@ -24,9 +24,6 @@ html, body {
     left: 0;
     right: 0;
     bottom: 0;
-    
-    /* İŞTE BURAYI EKLİYORUZ: İçeriği yukarı kaydırıp o alt şeridin Alanını sıfırlar */
-    padding-bottom: env(safe-area-inset-bottom);
 }
 .mobile-screen {
     width: 100%;
@@ -357,26 +354,29 @@ html, body {
 .trend-up { border-left: 3px solid #10b981; }
 .trend-down { border-left: 3px solid #ef4444; }
 
-/* --- ALT TAB BAR --- */
 .bottom-tab-bar {
-    position: fixed; 
-    bottom: 0; 
-    left: 0; 
-    right: 0; 
-    margin: 0 auto; 
-    width: 100%;
-    max-width: 450px; 
-    min-height: calc(70px + env(safe-area-inset-bottom, 0px));
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-    background: rgba(11, 17, 38, 0.95);
-    backdrop-filter: blur(10px);
-    border-top: 1px solid rgba(61, 74, 122, 0.3);
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    z-index: 9999;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    margin: 0 auto !important;
+    width: 100% !important;
+    max-width: 450px !important;
+    
+    background-color: #0f172a !important;
+    border-top: 1px solid #1e293b !important;
+    
+    height: 55px !important;
+    display: flex !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+    
+    /* Buradaki tüm safe-area boşluklarını sıfırlıyoruz ki en alta yapışsın */
+    padding-bottom: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    z-index: 99999 !important;
 }
-
 .tab-item {
     display: flex;
     flex-direction: column;
