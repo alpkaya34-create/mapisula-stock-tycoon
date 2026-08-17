@@ -117,20 +117,34 @@
             width: 100% !important;
         }
 
-        /* Alt çubuğu tamamen kaldırıp ekranın akışına bıraktık */
+        /* --- ALT MENÜ ÇUBUĞU KUSURSUZ SABİTLEME --- */
         .bottom-tab-bar {
-            position: relative !important;
+            position: fixed !important; 
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            margin: 0 auto !important;
             width: 100% !important;
+            max-width: 450px !important; /* Mobil çerçeve genişliği */
+            
             background-color: #0f172a !important;
             border-top: 1px solid #1e293b !important;
-            padding: 10px 0 !important;
+            
+            height: calc(55px + env(safe-area-inset-bottom, 15px)) !important;
+            display: flex !important;
+            justify-content: space-around !important;
+            align-items: flex-start !important;
+            
+            padding-top: 8px !important;
+            padding-bottom: env(safe-area-inset-bottom, 15px) !important;
+            
             box-sizing: border-box !important;
-            z-index: 99 !important;
+            z-index: 999 !important;
         }
 
-        /* Alt boşlukları sıfırlayarak tam ekran yayılma sağlandı */
+        /* Listelerin alt menünün altında kalmasını önleyen akıllı boşluk */
         .market-container, #luxury-items, #achievements-list, #portfolio-list, #positions-list, #ai-stock-list, #bank-container {
-            padding-bottom: 20px !important; 
+            padding-bottom: calc(90px + env(safe-area-inset-bottom, 15px)) !important; 
         }
     </style>
 <body>
