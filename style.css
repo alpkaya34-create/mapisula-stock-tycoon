@@ -15,22 +15,18 @@
    📱 GERÇEK MOBİL UYGULAMA (NATIVE) YAPI - YAPAY BOYAMA YOK
    ========================================================================== */
 html, body {
-    background-color: #0b1126; /* Oyunun ana rengi */
+    background-color: #0b1126;
     color: #ffffff;
-    width: 100%;
-    height: 100%;
-    /* 100vh yerine 100dvh kullanmak mobil tarayıcılarda alt çubukla daha uyumludur */
-    height: 100dvh; 
+    width: 100vw;
+    height: 100vh; /* 100dvh SİLİNDİ. Apple hatasını önlemek için 100vh ŞARTTIR. */
+    overflow: hidden; 
     margin: 0;
     padding: 0;
-    overflow: hidden;
-    position: fixed;
+    position: fixed; 
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    /* İŞTE ÇÖZÜM: Apple cihazlarda alt şeridi oyunun rengiyle birleştirir */
-    background-color: #0b1126; 
 }
 
 /* Tüm alt dolguları temizleyerek oyunun en alta kadar uzanmasını sağlar */
