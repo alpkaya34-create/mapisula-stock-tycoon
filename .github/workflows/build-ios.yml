@@ -19,10 +19,14 @@ jobs:
           node-version: 22
 
       - name: Install Dependencies
+        env:
+          CI: true
         run: |
-          npm install --no-audit --no-fund
+          npm install --legacy-peer-deps --no-audit --no-fund
 
       - name: Add and Sync iOS
+        env:
+          CI: true
         run: |
           npx cap add ios || true
           npx cap sync ios
