@@ -24,6 +24,16 @@ jobs:
         run: |
           npm install --legacy-peer-deps --no-audit --no-fund
 
+      - name: Prepare Web Directory
+        run: |
+          mkdir -p www
+          cp index.html www/ 2>/dev/null || true
+          cp style.css www/ 2>/dev/null || true
+          cp *.js www/ 2>/dev/null || true
+          cp icon.png www/ 2>/dev/null || true
+          cp -r assets www/ 2>/dev/null || true
+          cp -r images www/ 2>/dev/null || true
+
       - name: Add and Sync iOS
         env:
           CI: true
