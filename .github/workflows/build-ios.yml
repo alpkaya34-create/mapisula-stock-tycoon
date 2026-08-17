@@ -34,22 +34,18 @@ jobs:
           cp -r assets www/ 2>/dev/null || true
           cp -r images www/ 2>/dev/null || true
 
-      - name: Add and Sync iOS
+      - name: Generate Clean iOS Project
         env:
           CI: true
         run: |
-          npx cap add ios || true
+          rm -rf ios
+          npx cap add ios
           npx cap sync ios
 
-      - name: Install CocoaPods (Workspace Fix)
+      - name: Build Xcode Archive (SPM)
         run: |
           cd ios/App
-          pod install
-
-      - name: Build Xcode Archive
-        run: |
-          cd ios/App
-          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -destination 'generic/platform=iOS' -archivePath build/App.xcarchive archive CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
+          xcodebuild -project App.xcodeproj -scheme App -configuration Release -destination 'generic/platform=iOS' -archivePath build/App.xcarchive archive CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
 
       - name: Package Unsigned IPA
         run: |
