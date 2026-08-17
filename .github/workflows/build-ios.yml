@@ -18,29 +18,9 @@ jobs:
         with:
           node-version: 20
 
-      - name: Setup CocoaPods
+      - name: Install Dependencies & Sync iOS
         run: |
-          sudo gem install cocoapods
-
-      - name: Setup Web Directory & Capacitor Config
-        run: |
-          mkdir -p www
-          find . -maxdepth 1 ! -name 'www' ! -name '.git' ! -name '.github' ! -name 'node_modules' -exec cp -r {} www/ \;
-          npm init -y
-          npm install @capacitor/core @capacitor/cli @capacitor/ios
-          cat << 'EOF' > capacitor.config.json
-          {
-            "appId": "com.mapisula.stockmarket",
-            "appName": "Stock Market Game",
-            "webDir": "www",
-            "bundledWebRuntime": false
-          }
-          EOF
-
-      - name: Add and Sync iOS Platform
-        run: |
-          npx cap add ios
-          cd ios/App && pod install && cd ../..
+          npm ci || npm install
           npx cap sync ios
 
       - name: Build Xcode Archive
