@@ -16,17 +16,20 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
-      - name: Install Dependencies
+      - name: Initialize Capacitor & iOS Platform
         run: |
-          npm install
+          npm init -y
+          npm install @capacitor/core @capacitor/cli @capacitor/ios
+          npx cap init "Stock Market Game" "com.mapisula.stockmarket" --web-dir "."
+          npx cap add ios
           npx cap sync ios
 
-      - name: Build Xcode Project
+      - name: Build Xcode Archive
         run: |
           cd ios/App
-          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -destination 'generic/platform=iOS' -archivePath build/App.xcarchive archive CODE_SIGNING_ALLOWED=NO
+          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -destination 'generic/platform=iOS' -archivePath build/App.xcarchive archive CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
 
       - name: Package Unsigned IPA
         run: |
