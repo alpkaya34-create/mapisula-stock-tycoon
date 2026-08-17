@@ -18,9 +18,19 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install Dependencies & Build iOS
+      - name: Install Dependencies
         run: |
-          npm ci || npm install
+          npm install
+
+      - name: Ensure Web Directory
+        run: |
+          if [ ! -d "www" ]; then
+            mkdir -p www
+            find . -maxdepth 1 ! -name 'www' ! -name '.git' ! -name '.github' ! -name 'node_modules' ! -name 'ios' ! -name 'android' -exec cp -r {} www/ \;
+          fi
+
+      - name: Add and Sync iOS
+        run: |
           npx cap add ios || true
           npx cap sync ios
 
