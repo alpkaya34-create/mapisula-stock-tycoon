@@ -1,0 +1,1412 @@
+/* ==========================================================================
+   📱 MOBİL SIFIRLAMA VE TEMEL AYARLAR (SON KESİN ÇÖZÜM)
+   ========================================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Nunito', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+html, body {
+    background-color: #0b1126;
+    color: #ffffff;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden; 
+    margin: 0;
+    padding: 0;
+    position: fixed; 
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    
+    /* İŞTE BURAYI EKLİYORUZ: İçeriği yukarı kaydırıp o alt şeridin Alanını sıfırlar */
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+.mobile-screen {
+    width: 100%;
+    max-width: 450px; 
+    height: 100%;
+    position: absolute; 
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    
+    /* Üst çentik (kamera) boşluğu */
+    padding: calc(40px + env(safe-area-inset-top, 0px)) 24px 0 24px; 
+    background: radial-gradient(circle at top center, #111a3a 0%, #0b1126 80%); 
+    box-sizing: border-box;
+}
+
+/* Kendi orijinal koruma boşlukların */
+#game-screen { padding: 0 !important; display: block; }
+#lifestyle-screen, #lifestyle-page, #profile-screen { padding: 0 15px; }
+
+/* ==========================================================================
+   ✨ BAŞLIK VE LOGO ALANI
+   ========================================================================== */
+.menu-header {
+    text-align: center;
+    position: relative;
+    margin-top: 10vh; /* Ekranın %10'u kadar aşağıdan başlar */
+}
+
+/* Logonun arkasındaki gizli neon ışıma */
+.glow-orb {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150px;
+    height: 150px;
+    background: #00f2fe;
+    filter: blur(80px);
+    opacity: 0.3;
+    z-index: -1;
+}
+
+.game-title {
+    font-size: 32px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: #ffffff;
+    text-shadow: 0 0 15px rgba(0, 242, 254, 0.5);
+    margin-bottom: -5px;
+}
+
+/* ==========================================================================
+   ✨ TYCOON ÇİZİLME ANİMASYONU (EŞZAMANLI VE NEON)
+   ========================================================================== */
+.tycoon-anim-container {
+    width: 100%;
+    height: 40px;
+    margin-top: 2px;
+}
+
+.tycoon-svg {
+    width: 100%;
+    height: 100%;
+    /* Çizgilerin kutu dışına taşmasını engeller */
+    overflow: visible; 
+}
+
+.tycoon-text {
+    font-family: 'Nunito', sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 6px;
+    
+    fill: transparent; /* Başlangıçta yazının içi tamamen boş */
+    stroke: #00f2fe; /* Turkuaz neon kalem rengi */
+    stroke-width: 1.2px; /* Kalemin kalınlığı */
+    
+    stroke-dasharray: 400; 
+    stroke-dashoffset: 400; /* Çizgiyi başlangıçta tamamen gizle */
+    
+    /* YENİ SÜRELER: Çizim 3.5 saniye sürer, içi 3.2'nci saniyede yavaşça dolmaya başlar */
+    animation: 
+        drawTycoon 3.5s ease-in-out forwards,
+        fillTycoon 0.8s ease-in 3.2s forwards;
+}
+
+/* Kalemle çizgilerin çekilme aşaması */
+@keyframes drawTycoon {
+    0% { stroke-dashoffset: 400; }
+    100% { stroke-dashoffset: 0; }
+}
+
+/* Çizim biterken yazının içinin neonla dolma aşaması */
+@keyframes fillTycoon {
+    0% { 
+        fill: transparent; 
+        filter: drop-shadow(0 0 0px transparent); 
+    }
+    100% { 
+        fill: #00f2fe; 
+        stroke-width: 0; /* İç dolduğunda kenarlıkları erit ki kalın durmasın */
+        filter: drop-shadow(0 0 12px rgba(0, 242, 254, 0.5)); /* Dışarıya neon ışık saç */
+    }
+}
+
+/* ==========================================================================
+   🔘 DOKUNMATİK MOBİL BUTONLAR (UX Odaklı)
+   ========================================================================== */
+.menu-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 16px; /* Butonlar arası rahat tıklama boşluğu */
+    margin-bottom: 5vh;
+}
+
+.mobile-btn {
+    width: 100%;
+    padding: 18px 20px;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    border: none;
+    outline: none;
+    transition: transform 0.1s ease, filter 0.1s ease; /* Sadece 0.1s - Anında tepki */
+}
+
+/* HOVER YERİNE ACTIVE KULLANIYORUZ: Oyuncu ekrana dokunduğu an buton çöker */
+.mobile-btn:active {
+    transform: scale(0.95); /* %5 küçülme hissi */
+    filter: brightness(0.8);
+}
+
+/* Başla Butonu (Turkuaz / Yeşil arası Neon) */
+.btn-play {
+    background: linear-gradient(135deg, #00f2fe 0%, #10b981 100%);
+    color: #050814;
+    box-shadow: 0 8px 25px rgba(0, 242, 254, 0.3);
+}
+
+/* Ayarlar Butonu (Koyu Siber Mavi) */
+.btn-settings {
+    background: rgba(30, 41, 59, 0.8);
+    border: 2px solid #334155;
+    color: #cbd5e1;
+}
+
+/* Çıkış Butonu (Kırmızı) */
+.btn-exit {
+    background: rgba(239, 68, 68, 0.1);
+    border: 2px solid #ef4444;
+    color: #ef4444;
+}
+
+/* ==========================================================================
+   👑 MAPISULA MARKASI (FOOTER VE NEON EFEKTİ)
+   ========================================================================== */
+.menu-footer {
+    text-align: center;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+    margin-top: auto; /* Yazıyı kibarca en alta iter */
+}
+
+.menu-footer p {
+    font-size: 11px;
+    color: #64748b;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.brand-name {
+    color: #ffd700; /* Mapisula altın rengi */
+    font-size: 14px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    display: inline-block;
+    margin-left: 4px;
+    /* Neon parlama animasyonunu bağlıyoruz */
+    animation: mapisulaNeonPulse 2s infinite alternate;
+}
+
+/* 🌟 KESİNTİSİZ NEON PARLAMA ANİMASYONU */
+@keyframes mapisulaNeonPulse {
+    0% {
+        text-shadow: 0 0 5px #ffd700, 0 0 10px rgba(255, 215, 0, 0.3);
+        filter: brightness(1);
+    }
+    100% {
+        text-shadow: 0 0 10px #fff, 0 0 20px #ffd700, 0 0 40px #ffd700, 0 0 80px rgba(255, 215, 0, 0.8);
+        filter: brightness(1.25);
+    }
+}
+/* ==========================================================================
+   📱 OYUN EKRANI (BORSA) TASARIMI
+   ========================================================================== */
+#game-screen {
+    padding: 0; /* Ana menüdeki padding'i eziyoruz, tam ekran kullanacağız */
+    background: #050814;
+}
+
+/* --- ÜST PANEL (KASA) --- */
+.top-dashboard {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 24px 15px 24px;
+    background: #0b1126;
+    border-bottom: 1px solid rgba(61, 74, 122, 0.4);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    z-index: 10;
+}
+
+.dashboard-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.right-align {
+    align-items: flex-end;
+}
+
+.dash-label {
+    font-size: 10px;
+    font-weight: 800;
+    color: #64748b;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+
+.dash-value {
+    font-size: 20px;
+    font-weight: 900;
+    color: #ffffff;
+}
+.text-gold { color: #ffd700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
+
+/* --- ORTA ALAN (HİSSE LİSTESİ) --- */
+.market-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px;
+    padding-bottom: 90px; /* Alt tab barın altında kalmaması için */
+}
+
+.section-title {
+    font-size: 13px;
+    font-weight: 900;
+    color: #94a3b8;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+}
+
+/* HİSSE KARTLARI */
+.stock-card {
+    background: #0f172a;
+    border: 1px solid #1e293b;
+    border-radius: 14px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    transition: transform 0.1s;
+}
+
+.stock-card:active {
+    transform: scale(0.97);
+    background: #1e293b;
+}
+
+.stock-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-right: 14px;
+    flex-shrink: 0;
+}
+
+.stock-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.stock-name {
+    font-size: 15px;
+    font-weight: 800;
+    color: #f8fafc;
+    margin-bottom: 4px;
+}
+
+.stock-owned {
+    font-size: 11px;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.stock-price-data {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.stock-price {
+    font-size: 16px;
+    font-weight: 900;
+    color: #ffffff;
+    margin-bottom: 4px;
+}
+
+.stock-change {
+    font-size: 12px;
+    font-weight: 800;
+}
+
+/* Yükseliş / Düşüş Renklendirmeleri */
+.trend-up .stock-change { color: #10b981; }
+.trend-down .stock-change { color: #ef4444; }
+.trend-up { border-left: 3px solid #10b981; }
+.trend-down { border-left: 3px solid #ef4444; }
+
+/* --- ALT TAB BAR --- */
+.bottom-tab-bar {
+    position: fixed; 
+    bottom: 0; 
+    left: 0; 
+    right: 0; 
+    margin: 0 auto; 
+    width: 100%;
+    max-width: 450px; 
+    min-height: calc(70px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background: rgba(11, 17, 38, 0.95);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(61, 74, 122, 0.3);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 9999;
+}
+
+.tab-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    opacity: 0.7;
+    width: 33%;
+    height: 100%;
+}
+
+.tab-item.active {
+    color: #00f2fe;
+    opacity: 1;
+}
+
+.tab-icon {
+    font-size: 20px;
+    margin-bottom: 4px;
+}
+
+.tab-text {
+    font-size: 10px;
+    font-weight: 800;
+}
+/* ==========================================================================
+   📱 TİCARET PANELİ (BOTTOM SHEET) TASARIMI
+   ========================================================================== */
+
+/* Arka Planı Karartan Katman */
+.trade-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(2, 6, 23, 0.85);
+    backdrop-filter: blur(4px);
+    z-index: 99;
+    display: none; /* Varsayılan olarak kapalı */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.trade-overlay.active { display: block; opacity: 1; }
+
+/* Panel Gövdesi */
+.trade-panel {
+    position: fixed;
+    bottom: 0;
+    left: 50%; /* Ekranın tam ortasına hizala */
+    width: 100%;
+    max-width: 450px; /* Mobil ekran dışına taşmasını engelle */
+    background: #0b1126;
+    border-top: 2px solid #1e293b;
+    border-radius: 24px 24px 0 0;
+    padding: 20px 24px 100px 24px !important;
+    z-index: 100;
+    
+    /* Paneli hem yatayda ortala hem de dikeyde ekranın altına sakla */
+    transform: translate(-50%, 100%); 
+    transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.6);
+    padding-bottom: calc(100px + env(safe-area-inset-bottom)) !important;
+}
+
+/* Panel açıldığında yatay ortalamayı koruyarak yukarı çıksın */
+.trade-panel.open { 
+    transform: translate(-50%, 0); 
+}
+
+.trade-handle {
+    width: 40px;
+    height: 5px;
+    background: #334155;
+    border-radius: 10px;
+    margin: 0 auto 20px auto;
+}
+
+.trade-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.trade-header h2 { font-size: 20px; font-weight: 900; color: #fff; margin-bottom: 4px; }
+.trade-price { font-size: 24px; font-weight: 900; color: #00f2fe; text-shadow: 0 0 10px rgba(0, 242, 254, 0.3); }
+
+.trade-owned-badge {
+    background: rgba(30, 41, 59, 0.6);
+    border: 1px solid #334155;
+    padding: 8px 12px;
+    border-radius: 10px;
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+}
+.trade-owned-badge span { font-size: 10px; color: #94a3b8; font-weight: 700; margin-bottom: 2px; text-transform: uppercase; }
+.trade-owned-badge strong { font-size: 16px; color: #fff; font-weight: 900; }
+
+/* Adet Seçim Alanı */
+.trade-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #050814;
+    border: 1px solid #1e293b;
+    border-radius: 14px;
+    padding: 8px;
+    margin-bottom: 20px;
+}
+
+.qty-btn {
+    width: 45px;
+    height: 45px;
+    background: #1e293b;
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 24px;
+    font-weight: 900;
+    outline: none;
+    transition: background 0.1s;
+}
+.qty-btn:active { background: #334155; transform: scale(0.92); }
+
+#trade-qty {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    font-weight: 900;
+    text-align: center;
+    width: 100px;
+    outline: none;
+}
+
+.trade-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding: 0 5px;
+}
+.trade-summary span { font-size: 14px; color: #94a3b8; font-weight: 800; text-transform: uppercase; }
+.trade-summary strong { font-size: 22px; }
+
+/* Butonlar */
+.trade-actions { display: flex; gap: 12px; }
+.trade-btn {
+    flex: 1;
+    padding: 16px;
+    border: none;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 900;
+    color: #050814;
+    transition: transform 0.1s;
+}
+.trade-btn:active { transform: scale(0.95); }
+
+.btn-buy { background: linear-gradient(135deg, #00f2fe, #10b981); box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3); }
+.btn-sell { background: linear-gradient(135deg, #ef4444, #b91c1c); color: #fff; box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3); }
+/* ==========================================================================
+   📱 FLAŞ HABER SİSTEMİ (TOAST BİLDİRİMİ)
+   ========================================================================== */
+.news-toast {
+    position: fixed;
+    top: -120px; /* Başlangıçta ekranın üstünde gizli */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 400px;
+    background: rgba(11, 17, 38, 0.95);
+    backdrop-filter: blur(8px);
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    z-index: 1000;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    /* Yaylanarak inme efekti */
+    transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Bildirim geldiğinde devreye girecek sınıf */
+.news-toast.show {
+    top: calc(20px + env(safe-area-inset-top)); /* Telefonun çentik (kamera) boşluğunu hesaba katar */
+}
+
+/* Haberin türüne göre renklenen neon çerçeveler */
+.news-toast.positive { border-color: #10b981; box-shadow: 0 5px 25px rgba(16, 185, 129, 0.3); }
+.news-toast.negative { border-color: #ef4444; box-shadow: 0 5px 25px rgba(239, 68, 68, 0.3); }
+
+.news-icon {
+    font-size: 26px;
+    margin-right: 14px;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.2));
+}
+
+.news-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.news-content h4 {
+    font-size: 11px;
+    font-weight: 900;
+    color: #94a3b8;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+    letter-spacing: 1px;
+}
+
+.news-content p {
+    font-size: 13px;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.4;
+}
+/* ==========================================================================
+   📱 PORTFÖY EKRANI TASARIMI
+   ========================================================================== */
+.portfolio-summary-card {
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    border: 1px solid #3b82f6;
+    border-radius: 14px;
+    padding: 24px 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 5px 25px rgba(59, 130, 246, 0.15);
+    text-align: center;
+}
+
+.summary-label {
+    font-size: 11px;
+    font-weight: 800;
+    color: #94a3b8;
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.summary-value {
+    font-size: 32px;
+    font-weight: 900;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 50px 20px;
+    background: rgba(15, 23, 42, 0.4);
+    border: 1px dashed #334155;
+    border-radius: 14px;
+    margin-top: 10px;
+}
+
+.empty-state span {
+    font-size: 45px;
+    display: block;
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
+
+.empty-state p {
+    font-size: 14px;
+    color: #64748b;
+    font-weight: 700;
+}
+/* ==========================================================================
+   📱 HABERLER ARŞİVİ EKRANI TASARIMI
+   ========================================================================== */
+.archive-news-card {
+    background: #0f172a;
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.archive-news-card.positive { border-left: 3px solid #10b981; }
+.archive-news-card.negative { border-left: 3px solid #ef4444; }
+
+.archive-news-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.archive-news-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.archive-news-time {
+    font-size: 9px;
+    font-weight: 800;
+    color: #64748b;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+    letter-spacing: 0.5px;
+}
+
+.archive-news-text {
+    font-size: 12.5px;
+    color: #f8fafc;
+    line-height: 1.4;
+    font-weight: 600;
+}
+/* ==========================================================================
+   🏦 BANKA EKRANI DÜZELTME STİLİ
+   ========================================================================== */
+#bank-container {
+    overflow-y: auto;
+    padding: 20px 24px;
+    padding-bottom: 90px; /* Alt tab barın altında kalmaması için */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+/* Ekranları gizleme ve gösterme kuralları */
+.market-container {
+    display: none; /* Varsayılan olarak tüm ekranlar gizli */
+}
+
+.market-container.active-screen {
+    display: block; /* Sadece aktif olan sınıfı taşıyan ekranda görünür */
+    overflow-y: auto;
+    padding: 20px 24px;
+    padding-bottom: 90px;
+}
+/* ==========================================================================
+   ⚡ FUTURES (VADELİ) İŞLEM STİLLERİ
+   ========================================================================== */
+.trade-mode-tabs {
+    display: flex;
+    background: #1e293b;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    padding: 4px;
+}
+
+.trade-mode-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    background: transparent;
+    color: #64748b;
+    font-weight: 900;
+    font-size: 12px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+}
+
+.trade-mode-btn.active {
+    background: #0b1126;
+    color: #00f2fe;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.position-card {
+    background: #0f172a;
+    border: 1px solid #1e293b;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 12px;
+    position: relative;
+    overflow: hidden;
+}
+
+.position-card.long { border-left: 3px solid #10b981; }
+.position-card.short { border-left: 3px solid #ef4444; }
+
+.pos-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.pos-name { font-size: 15px; font-weight: 900; color: #fff; }
+.pos-type { font-size: 10px; font-weight: 900; padding: 4px 8px; border-radius: 6px; color: #fff; }
+.pos-type.long { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+.pos-type.short { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+
+.pos-details { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+.pos-stat { display: flex; flex-direction: column; }
+.pos-label { font-size: 9px; color: #64748b; font-weight: 800; text-transform: uppercase; }
+.pos-val { font-size: 13px; font-weight: 900; color: #cbd5e1; }
+.pos-pnl { font-size: 16px; font-weight: 900; text-align: right; }
+.pnl-green { color: #10b981; }
+.pnl-red { color: #ef4444; }
+
+.btn-close-pos {
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    border: 1px solid #334155;
+    color: #fff;
+    border-radius: 8px;
+    font-weight: 800;
+    font-size: 12px;
+    transition: background 0.2s;
+}
+.btn-close-pos:active { background: #1e293b; }
+/* ==========================================================================
+   🎚️ ÖZEL SCROLLBAR TASARIMI (SİBERPUNK)
+   ========================================================================== */
+.market-container::-webkit-scrollbar {
+    width: 6px; 
+}
+
+.market-container::-webkit-scrollbar-track {
+    background: #0b1120; 
+    border-radius: 10px;
+}
+
+.market-container::-webkit-scrollbar-thumb {
+    background: #1e293b; 
+    border-radius: 10px;
+}
+
+.market-container::-webkit-scrollbar-thumb:hover,
+.market-container::-webkit-scrollbar-thumb:active {
+    background: #00f2fe; 
+}
+/* ==========================================================================
+   📂 KATEGORİ VE KİLİT SİSTEMİ STİLLERİ
+   ========================================================================== */
+.category-tabs {
+    display: flex;
+    gap: 10px;
+    padding: 15px 24px 10px 24px;
+    overflow-x: auto;
+    background: #0b1126;
+    border-bottom: 1px solid rgba(61, 74, 122, 0.4);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.category-tabs::-webkit-scrollbar { display: none; /* Mobilde scrollbarı gizler */ }
+
+.cat-btn {
+    background: #1e293b;
+    color: #94a3b8;
+    border: 1px solid #334155;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 900;
+    white-space: nowrap;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    outline: none;
+}
+
+.cat-btn.active {
+    background: rgba(0, 242, 254, 0.1);
+    color: #00f2fe;
+    border-color: #00f2fe;
+    box-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
+}
+
+.cat-btn.locked {
+    opacity: 0.5;
+    pointer-events: none; /* Tıklanmayı engeller */
+}
+
+.lock-icon {
+    font-size: 10px;
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.2);
+    padding: 2px 6px;
+    border-radius: 6px;
+}
+
+/* Kilitli Hisse Kartı Görünümü */
+.stock-card { position: relative; }
+
+.stock-card.locked-card {
+    opacity: 0.4;
+    pointer-events: none; /* Tıklanıp işlem yapılmasını engeller */
+    filter: grayscale(80%);
+}
+
+.locked-overlay-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 13px;
+    font-weight: 900;
+    color: #ef4444;
+    background: rgba(15, 23, 42, 0.95);
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid #ef4444;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+    display: none;
+    white-space: nowrap;
+    letter-spacing: 1px;
+}
+
+.stock-card.locked-card .locked-overlay-text {
+    display: block;
+}
+/* ==========================================================================
+   💳 BANKA NEON EFEKTİ (DÖNEN IŞIK)
+   ========================================================================== */
+.neon-debt-box {
+    position: relative;
+    border: none !important;
+    overflow: hidden;
+    border-radius: 14px;
+    background: transparent !important;
+}
+
+.neon-debt-box.active-neon::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: conic-gradient(from 0deg, transparent 70%, #ef4444 100%);
+    animation: spinNeon 2s linear infinite;
+    z-index: 0;
+}
+
+.neon-debt-box::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    background: linear-gradient(135deg, #0f172a 0%, #450a0a 100%);
+    border-radius: 12px;
+    z-index: 1;
+}
+
+.neon-debt-box > * {
+    position: relative;
+    z-index: 2;
+}
+
+@keyframes spinNeon {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+/* ==========================================================================
+   💎 MAĞAZA, MENÜ BUTONU VE PREMİUM (VIP) TEMA
+   ========================================================================== */
+.btn-menu-back {
+    background: transparent;
+    border: 1px solid #334155;
+    color: #94a3b8;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 11px;
+    font-weight: 900;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: all 0.2s;
+}
+
+/* Premium Tema Aktifleştiğinde Tüm Renkleri Altın/Siyah Yapar */
+body.premium-theme { background: #050505; }
+body.premium-theme .mobile-screen { background: radial-gradient(circle at top, #1a1500 0%, #050505 100%); }
+body.premium-theme .glow-orb { background: #fbbf24; }
+body.premium-theme .top-dashboard { border-bottom: 1px solid rgba(251, 191, 36, 0.3); background: rgba(10, 10, 10, 0.9); }
+body.premium-theme .dashboard-box .text-gold { color: #fbbf24 !important; text-shadow: 0 0 10px rgba(251, 191, 36, 0.4); }
+body.premium-theme .btn-menu-back { border-color: rgba(251, 191, 36, 0.4); color: #fbbf24; }
+body.premium-theme .category-tabs { background: #0a0a0a; border-bottom: 1px solid rgba(251, 191, 36, 0.3); }
+body.premium-theme .cat-btn { background: #111; border-color: #27272a; color: #71717a; }
+body.premium-theme .cat-btn.active { color: #fbbf24; border-color: #fbbf24; background: rgba(251, 191, 36, 0.1); box-shadow: 0 0 10px rgba(251, 191, 36, 0.2); }
+body.premium-theme .stock-card { border-color: #27272a; background: #0f0f0f; }
+body.premium-theme .bottom-tab-bar { background: #0a0a0a; border-top: 1px solid rgba(251, 191, 36, 0.2); }
+body.premium-theme .tab-item.active { color: #fbbf24; }
+body.premium-theme .section-title { color: #fbbf24 !important; }
+/* Aktif Borç Varken Banka Butonunun Nefes Alması */
+@keyframes pulseRedAlert {
+    0% { transform: scale(1); color: #ef4444; text-shadow: 0 0 0 transparent; }
+    50% { transform: scale(1.15); color: #ef4444; text-shadow: 0 0 10px rgba(239, 68, 68, 0.8); }
+    100% { transform: scale(1); color: #ef4444; text-shadow: 0 0 0 transparent; }
+}
+
+.debt-alert .tab-icon, .debt-alert .tab-text {
+    animation: pulseRedAlert 1.5s infinite !important;
+    color: #ef4444 !important;
+}
+/* --- TEKNİK ANALİZ GRAFİK MODALI --- */
+        #chart-modal {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
+            width: 92%; max-width: 400px; background: #0b1126; border: 1px solid #1e293b;
+            border-radius: 20px; padding: 22px; z-index: 1100; opacity: 0; pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 15px 50px rgba(0,0,0,0.8);
+        }
+        #chart-modal.show { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
+        
+        .chart-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .chart-badge { font-size: 11px; font-weight: 900; padding: 4px 10px; border-radius: 8px; display: flex; align-items: center; gap: 4px; }
+        .chart-badge.up { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .chart-badge.down { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+
+        .chart-canvas-box {
+            background: #050814; border: 1px solid #1e293b; border-radius: 14px;
+            padding: 15px 10px 10px 10px; height: 180px; position: relative; overflow: hidden;
+        }
+        .chart-footer-row { display: flex; justify-content: space-between; margin-top: 10px; font-size: 11px; font-weight: 800; color: #64748b; }
+        /* Basılı tutunca dolan buton efektleri */
+        .trade-btn {
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .trade-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; bottom: 0;
+            width: 0%;
+            background: rgba(255, 255, 255, 0.25);
+            z-index: -1;
+            transition: width 0.05s linear;
+        }
+        .trade-btn.filling::before {
+            width: 100% !important;
+            transition: width 1.2s linear; /* 1.2 saniyede tamamen dolar */
+        }
+        /* Yapay Zeka Üst Bar Butonu */
+        .btn-ai-nav {
+            background: linear-gradient(135deg, rgba(0, 242, 254, 0.15) 0%, rgba(59, 130, 246, 0.15) 100%);
+            border: 1px solid #00f2fe; color: #00f2fe; padding: 6px 12px; border-radius: 12px;
+            font-size: 11px; font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 5px;
+            box-shadow: 0 0 12px rgba(0, 242, 254, 0.2); transition: all 0.3s ease;
+        }
+        .btn-ai-nav:active { transform: scale(0.95); }
+
+        /* Yapay Zeka Modalı */
+        #ai-modal {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
+            width: 92%; max-width: 380px; background: #0b1126; border: 1px solid #1e293b;
+            border-radius: 20px; padding: 20px; z-index: 1100; opacity: 0; pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 15px 50px rgba(0,0,0,0.8);
+        }
+        #ai-modal.show { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
+        
+        .ai-stock-select-btn {
+            background: #0f172a; border: 1px solid #1e293b; color: #cbd5e1; padding: 10px 14px;
+            border-radius: 10px; font-size: 12px; font-weight: 800; text-align: left; cursor: pointer;
+            width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;
+            transition: all 0.2s ease;
+        }
+        .ai-stock-select-btn:hover { border-color: #00f2fe; background: rgba(0, 242, 254, 0.05); color: #fff; }
+        /* Sadece Parlayan Altın Efekti (Büyüme Yok) */
+        @keyframes goldGlowOnly {
+            0% { color: #fbbf24; text-shadow: 0 0 2px rgba(251, 191, 36, 0.3); }
+            50% { color: #fde047; text-shadow: 0 0 14px rgba(251, 191, 36, 0.9), 0 0 22px rgba(245, 158, 11, 0.7); }
+            100% { color: #fbbf24; text-shadow: 0 0 2px rgba(251, 191, 36, 0.3); }
+        }
+
+        .gold-glow-text {
+            display: inline-block;
+            animation: goldGlowOnly 2s infinite ease-in-out;
+            font-weight: 900;
+        }
+        /* --- OYUN İLE UYUMLU ÖZEL SCROLLBAR --- */
+        #ai-stock-list::-webkit-scrollbar,
+        body::-webkit-scrollbar,
+        .market-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #ai-stock-list::-webkit-scrollbar-track,
+        body::-webkit-scrollbar-track,
+        .market-container::-webkit-scrollbar-track {
+            background: rgba(11, 17, 38, 0.6);
+            border-radius: 10px;
+        }
+
+        #ai-stock-list::-webkit-scrollbar-thumb,
+        body::-webkit-scrollbar-thumb,
+        .market-container::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 242, 254, 0.2);
+        }
+
+        #ai-stock-list::-webkit-scrollbar-thumb:hover,
+        body::-webkit-scrollbar-thumb:hover,
+        .market-container::-webkit-scrollbar-thumb:hover {
+            background: #00f2fe;
+            box-shadow: 0 0 10px #00f2fe;
+        }
+        .btn-achievements {
+    background: #2d1b0e; 
+    border: 1px solid #f59e0b; 
+    color: #fbd38d; 
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2); 
+    letter-spacing: 0.5px;
+}
+/* Başarımlar Ekranı Özel Scrollbar Tasarımı */
+#achievements-screen::-webkit-scrollbar {
+    width: 6px;
+}
+#achievements-screen::-webkit-scrollbar-track {
+    background: #0b1126; 
+}
+#achievements-screen::-webkit-scrollbar-thumb {
+    background: #1e293b; 
+    border-radius: 10px;
+}
+#achievements-screen::-webkit-scrollbar-thumb:hover {
+    background: #fbbf24; 
+}
+/* --- OYUNA ÖZEL MODERN VE NEON SCROLLBAR --- */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #00f2fe;
+            border-radius: 10px;
+            box-shadow: 0 0 8px rgba(0, 242, 254, 0.6);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3bf6fc;
+        }
+        /* Premium Buton Parlama Efekti */
+.premium-glow {
+    background: linear-gradient(45deg, #1e3a8a, #9333ea, #1e3a8a);
+    background-size: 200% 200%;
+    animation: gradientGlow 3s ease infinite;
+    border: 1px solid #c084fc;
+    box-shadow: 0 0 10px rgba(147, 51, 234, 0.5);
+}
+
+@keyframes gradientGlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Yaşam Alanı Paneli Animasyonu */
+.overlay {
+    display: none; /* Gizli başlar */
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.overlay.active {
+    display: flex;
+    opacity: 1;
+}
+
+.animated-panel {
+    background: #0f172a;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 15px;
+    border: 2px solid #00f2fe;
+    transform: translateY(50px) scale(0.9);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    padding: 20px;
+    box-shadow: 0 15px 35px rgba(0, 242, 254, 0.2);
+}
+
+.overlay.active .animated-panel {
+    transform: translateY(0) scale(1);
+}
+
+/* Eşya Kartları */
+.luxury-card {
+    background: #1e293b;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 4px solid #9333ea;
+    transition: all 0.3s ease;
+}
+
+.luxury-card:hover {
+    transform: translateX(5px);
+    box-shadow: 0 5px 15px rgba(147, 51, 234, 0.3);
+}
+
+.btn-buy-luxury {
+    background: #10b981;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+}
+.btn-buy-luxury:disabled {
+    background: #475569;
+    cursor: not-allowed;
+}
+/* Oyun İçi Uyarı Kutusu */
+.custom-alert-box {
+    background: #0f172a;
+    border: 2px solid #ef4444; /* Kırmızı uyarı çerçevesi */
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+    max-width: 400px;
+    width: 85%;
+    box-shadow: 0 10px 30px rgba(239, 68, 68, 0.4);
+    transform: scale(0.8);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+#custom-alert-overlay.active .custom-alert-box {
+    transform: scale(1);
+}
+
+#custom-alert-title {
+    color: #ef4444;
+    font-size: 1.5rem;
+    margin-top: 0;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+}
+
+#custom-alert-message {
+    color: #cbd5e1;
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+/* ==========================================================================
+   💎 YAŞAM ALANI (LIFESTYLE) KUSURSUZ EKRAN DÜZELTMESİ
+   ========================================================================== */
+#lifestyle-page {
+    position: absolute !important; 
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    transform: none !important; 
+    margin: 0 auto !important;
+    
+    width: 100% !important;
+    max-width: 450px !important; 
+    height: 100% !important;
+    
+    background-color: #0b1126 !important;
+    background: radial-gradient(circle at top center, #111a3a 0%, #0b1126 80%) !important;
+    z-index: 1000 !important;
+    
+    /* display: flex !important; KISMI SİLİNDİ! (Oyunun gizleme mantığını bozmamak için) */
+    flex-direction: column !important;
+    overflow-y: auto !important;
+    padding: calc(env(safe-area-inset-top, 0px) + 20px) 24px calc(env(safe-area-inset-bottom, 0px) + 20px) 24px !important;
+    box-sizing: border-box !important;
+    box-shadow: none !important; 
+}
+
+.lifestyle-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #1e293b;
+    padding-bottom: 10px;
+}
+
+.back-btn {
+    background: transparent;
+    border: 1px solid #334155;
+    color: #cbd5e1;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Görsel Varlık Alanı */
+.visual-area {
+    height: 180px;
+    background: linear-gradient(to bottom, #1e293b, #0f172a);
+    border-radius: 15px;
+    border: 2px dashed #334155;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.empty-visual-text {
+    color: #64748b;
+    text-align: center;
+    margin-top: 75px;
+    font-size: 0.9rem;
+}
+
+/* Satın Alınan Eşyaların Animasyonları */
+.asset-icon {
+    font-size: 3rem;
+    position: absolute;
+    opacity: 0;
+    transform: scale(0);
+    animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes popIn {
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Uçak için özel süzülme animasyonu */
+.asset-floating {
+    animation: popIn 0.6s forwards, floatAsset 3s ease-in-out infinite;
+}
+
+@keyframes floatAsset {
+    0% { transform: translateY(0px) scale(1); }
+    50% { transform: translateY(-10px) scale(1.05); }
+    100% { transform: translateY(0px) scale(1); }
+}
+
+/* Mobil Uyumlu Kartlar */
+.luxury-items-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-bottom: 50px;
+}
+
+/* --- MOBİL KART & DOKUNMA (TAP) EFEKTLERİ --- */
+.luxury-card {
+    background: linear-gradient(145deg, #162032, #0d131f);
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #1e293b;
+    border-left: 4px solid #8b5cf6;
+    margin-bottom: 15px;
+    transition: transform 0.1s ease; /* Mobilde anlık tepki için süre çok kısa tutuldu */
+}
+
+.luxury-card:active {
+    transform: scale(0.98); /* Dokunulduğunda kart hafifçe içe çöker */
+}
+
+.luxury-info h3 { margin: 0 0 5px 0; font-size: 1.15rem; color: #f8fafc; }
+.luxury-info p { margin: 0; font-size: 1rem; color: #10b981; font-weight: bold; }
+
+/* --- BUTONLARIN MOBİL DURUMLARI --- */
+.btn-buy-luxury {
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: bold;
+    border: none;
+    transition: transform 0.1s ease, filter 0.1s ease;
+}
+
+/* 1. Alınabilir Durum (Paran Yettiğinde) */
+.btn-buy-luxury.can-buy {
+    background: linear-gradient(45deg, #8b5cf6, #3b82f6);
+    color: #ffffff;
+    box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+}
+.btn-buy-luxury.can-buy:active {
+    transform: scale(0.92); /* Butona basılma tepkisi */
+    filter: brightness(1.2); /* Basıldığında anlık parlama */
+}
+
+/* 2. Kilitli Durum (Paran Yetmediğinde) - Estetiği bozmayan premium kilit görünümü */
+.btn-buy-luxury.locked {
+    background: rgba(30, 41, 59, 0.6);
+    color: #475569;
+    border: 1px dashed #334155; /* Paran yetmediğini belirten ince kesik çizgi */
+}
+
+/* 3. Sahip Olunan Durum */
+.btn-buy-luxury.owned {
+    background: #090e17;
+    color: #10b981;
+    border: 1px solid #10b981;
+    box-shadow: inset 0 0 10px rgba(16, 185, 129, 0.1);
+}
+/* --- KİLİTLİ BUTONLAR İÇİN KESİN ÇÖZÜM --- */
+.btn-buy-luxury:disabled {
+    background: rgba(30, 41, 59, 0.5) !important;
+    color: #64748b !important;
+    border: 1px dashed #475569 !important;
+    cursor: not-allowed !important;
+    opacity: 1 !important;
+}
+
+/* Aktif (Paranın yettiği) Butonlar */
+.btn-buy-luxury.can-buy {
+    background: linear-gradient(45deg, #8b5cf6, #3b82f6) !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+    cursor: pointer !important;
+}
+/* ==========================================================================
+   📈 TİCARET PANELİ - FİYAT DEĞİŞİM ROZETİ
+   ========================================================================== */
+.trade-change {
+    font-size: 14px;
+    font-weight: 900;
+    padding: 4px 8px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    letter-spacing: 0.5px;
+}
+
+/* Yükseliş (Yeşil Rozet) */
+.trade-change.trend-up {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+/* Düşüş (Kırmızı Rozet) */
+.trade-change.trend-down {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
