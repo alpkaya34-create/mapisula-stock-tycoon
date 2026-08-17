@@ -11,14 +11,11 @@
     user-select: none;
 }
 
-/* ==========================================================================
-   📱 GERÇEK MOBİL UYGULAMA (NATIVE) YAPI - YAPAY BOYAMA YOK
-   ========================================================================== */
 html, body {
     background-color: #0b1126;
     color: #ffffff;
     width: 100vw;
-    height: 100vh; /* 100dvh SİLİNDİ. Apple hatasını önlemek için 100vh ŞARTTIR. */
+    height: 100vh;
     overflow: hidden; 
     margin: 0;
     padding: 0;
@@ -27,8 +24,10 @@ html, body {
     left: 0;
     right: 0;
     bottom: 0;
+    
+    /* İŞTE BURAYI EKLİYORUZ: İçeriği yukarı kaydırıp o alt şeridin Alanını sıfırlar */
+    padding-bottom: env(safe-area-inset-bottom);
 }
-
 .mobile-screen {
     width: 100%;
     max-width: 450px; 
