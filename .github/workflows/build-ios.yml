@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-14
 
     steps:
       - name: Checkout Code
@@ -18,14 +18,29 @@ jobs:
         with:
           node-version: 20
 
-      - name: Prepare Web Assets & Capacitor
+      - name: Setup CocoaPods
+        run: |
+          sudo gem install cocoapods
+
+      - name: Setup Web Directory & Capacitor Config
         run: |
           mkdir -p www
           find . -maxdepth 1 ! -name 'www' ! -name '.git' ! -name '.github' ! -name 'node_modules' -exec cp -r {} www/ \;
           npm init -y
           npm install @capacitor/core @capacitor/cli @capacitor/ios
-          npx cap init "Stock Market Game" "com.mapisula.stockmarket" --web-dir "www"
+          cat << 'EOF' > capacitor.config.json
+          {
+            "appId": "com.mapisula.stockmarket",
+            "appName": "Stock Market Game",
+            "webDir": "www",
+            "bundledWebRuntime": false
+          }
+          EOF
+
+      - name: Add and Sync iOS Platform
+        run: |
           npx cap add ios
+          cd ios/App && pod install && cd ../..
           npx cap sync ios
 
       - name: Build Xcode Archive
