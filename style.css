@@ -1108,6 +1108,9 @@ body.premium-theme .section-title { color: #fbbf24 !important; }
     animation: gradientGlow 3s ease infinite;
     border: 1px solid #c084fc;
     box-shadow: 0 0 10px rgba(147, 51, 234, 0.5);
+    /* DEĞİŞİKLİK BURADA: Yazı rengi saf beyaz yapıldı ve arka plandan kopması için koyu gölge eklendi */
+    color: #ffffff !important; 
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important;
 }
 
 @keyframes gradientGlow {
