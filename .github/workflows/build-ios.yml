@@ -18,9 +18,10 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install Dependencies & Sync iOS
+      - name: Install Dependencies & Build iOS
         run: |
           npm ci || npm install
+          npx cap add ios || true
           npx cap sync ios
 
       - name: Build Xcode Archive
