@@ -16,8 +16,6 @@ html, body {
     color: #ffffff;
     width: 100vw;
     height: 100vh;
-    /* iOS için kritik: tarayıcıya "alanı benim için doldur" der */
-    height: -webkit-fill-available; 
     overflow: hidden; 
     margin: 0;
     padding: 0;
@@ -27,10 +25,8 @@ html, body {
     right: 0;
     bottom: 0;
     
-    /* ÜST ve ALT boşlukları tamamen sıfırlayıp içeriği zorla yayar */
-    padding-top: env(safe-area-inset-top);
+    /* İŞTE BURAYI EKLİYORUZ: İçeriği yukarı kaydırıp o alt şeridin Alanını sıfırlar */
     padding-bottom: env(safe-area-inset-bottom);
-    box-sizing: border-box;
 }
 .mobile-screen {
     width: 100%;
