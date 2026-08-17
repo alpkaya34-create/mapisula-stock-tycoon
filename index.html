@@ -129,18 +129,21 @@
             background-color: #0f172a !important;
             border-top: 1px solid #1e293b !important;
             
-            height: 50px !important;
+            /* DEĞİŞİKLİK BURADA: Sabit 50px yerine iOS alt bar boşluğunu dinamik hesaplar */
+            height: calc(55px + env(safe-area-inset-bottom, 20px)) !important;
+            padding-bottom: env(safe-area-inset-bottom, 20px) !important;
+            
             display: flex !important;
             justify-content: space-around !important;
             align-items: center !important;
-            
-            padding: 0 !important;
             box-sizing: border-box !important;
             z-index: 9999 !important;
         }
+
         /* Listelerin alt menünün altında düzgün bitmesi için gereken minimum akış payı */
         .market-container, #luxury-items, #achievements-list, #portfolio-list, #positions-list, #ai-stock-list, #bank-container {
-            padding-bottom: 70px !important; 
+            /* DEĞİŞİKLİK BURADA: Sayfa sonu boşluğu alt barın yüksekliği kadar artırıldı */
+            padding-bottom: calc(85px + env(safe-area-inset-bottom, 20px)) !important; 
         }
     </style>
 <body>
