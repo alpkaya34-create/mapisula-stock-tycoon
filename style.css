@@ -378,13 +378,6 @@ html, body {
     z-index: 9999;
 }
 
-/* Listelerin alt menü altında kalmaması için kayma payı */
-.market-container, #bank-container, #luxury-items, #achievements-list, #portfolio-list, #positions-list, #ai-stock-list {
-    flex: 1;
-    overflow-y: auto;
-    padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px)); 
-}
-
 .tab-item {
     display: flex;
     flex-direction: column;
@@ -1390,4 +1383,30 @@ body.premium-theme .section-title { color: #fbbf24 !important; }
     border: none !important;
     box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
     cursor: pointer !important;
+}
+/* ==========================================================================
+   📈 TİCARET PANELİ - FİYAT DEĞİŞİM ROZETİ
+   ========================================================================== */
+.trade-change {
+    font-size: 14px;
+    font-weight: 900;
+    padding: 4px 8px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    letter-spacing: 0.5px;
+}
+
+/* Yükseliş (Yeşil Rozet) */
+.trade-change.trend-up {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+/* Düşüş (Kırmızı Rozet) */
+.trade-change.trend-down {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
 }
