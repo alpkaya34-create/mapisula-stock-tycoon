@@ -117,7 +117,7 @@
             width: 100% !important;
         }
 
-/* --- ALT MENÜ ÇUBUĞU KUSURSUZ SABİTLEME --- */
+/* Alt menü çubuğu yerinde kalır, ancak altındaki koyu kapatıcı/dolgu tamamen kaldırılır */
         .bottom-tab-bar {
             position: fixed !important; 
             bottom: 0 !important;
@@ -125,26 +125,27 @@
             right: 0 !important;
             margin: 0 auto !important;
             width: 100% !important;
-            max-width: 450px !important; /* Mobil çerçeve genişliği */
+            max-width: 450px !important;
             
             background-color: #0f172a !important;
             border-top: 1px solid #1e293b !important;
             
-            height: calc(55px + env(safe-area-inset-bottom, 15px)) !important;
+            height: 55px !important; /* Ekstra safe-area yüksekliği kaldırıldı */
             display: flex !important;
             justify-content: space-around !important;
-            align-items: flex-start !important;
+            align-items: center !important;
             
-            padding-top: 8px !important;
-            padding-bottom: env(safe-area-inset-bottom, 15px) !important;
+            padding: 0 !important;
+            padding-bottom: 0 !important;
+            margin-bottom: 0 !important;
             
             box-sizing: border-box !important;
             z-index: 999 !important;
         }
 
-        /* Listelerin alt menünün altında kalmasını önleyen akıllı boşluk */
+        /* Listelerin alt menünün altında düzgün bitmesi için gereken minimum akış payı */
         .market-container, #luxury-items, #achievements-list, #portfolio-list, #positions-list, #ai-stock-list, #bank-container {
-            padding-bottom: calc(90px + env(safe-area-inset-bottom, 15px)) !important; 
+            padding-bottom: 70px !important; 
         }
     </style>
 <body>
