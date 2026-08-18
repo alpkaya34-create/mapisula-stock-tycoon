@@ -23,8 +23,9 @@ jobs:
           CI: true
         run: |
           npm install --legacy-peer-deps --no-audit --no-fund
+          npm install -g @capacitor/assets
 
-      - name: Prepare Web Directory
+      - name: Prepare Web Directory & Assets
         run: |
           mkdir -p www
           cp index.html www/ 2>/dev/null || true
@@ -33,13 +34,20 @@ jobs:
           cp icon.png www/ 2>/dev/null || true
           cp -r assets www/ 2>/dev/null || true
           cp -r images www/ 2>/dev/null || true
+          
+          # Otomatik ikon üretimi için assets klasörünü yapılandır
+          mkdir -p assets
+          cp icon.png assets/icon.png 2>/dev/null || true
+          cp icon.png assets/icon-only.png 2>/dev/null || true
+          cp icon.png assets/icon-foreground.png 2>/dev/null || true
 
-      - name: Generate Clean iOS Project
+      - name: Generate Clean iOS Project & Icons
         env:
           CI: true
         run: |
           rm -rf ios
           npx cap add ios
+          npx @capacitor/assets generate --ios || true
           npx cap sync ios
 
       - name: Build Xcode Archive (SPM)
