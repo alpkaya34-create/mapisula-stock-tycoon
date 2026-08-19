@@ -625,13 +625,15 @@ html, body {
 }
 
 .empty-state {
-    text-align: center;
-    padding: 24px 15px; /* 50px yerine 24px yapılarak boşluk dengelendi */
-    background: rgba(15, 23, 42, 0.4);
-    border: 1px dashed #334155;
-    border-radius: 14px;
-    margin-top: 8px;
-    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    min-height: 350px; /* Sayfanın kalan boşluğunu dikeyde tamamen doldurur */
+    width: 100%;
+    padding: 40px 20px;
+    box-sizing: border-box;
 }
 
 .empty-state span {
@@ -1474,4 +1476,84 @@ body.premium-theme .section-title { color: #fbbf24 !important; }
     opacity: 1 !important; 
     pointer-events: auto !important; 
     transform: translate(-50%, -50%) scale(1) !important; 
+}
+/* Portföy Sekme Butonları */
+.portfolio-tab-btn {
+    flex: 1;
+    padding: 12px;
+    background: #1e293b;
+    border: 1px solid #334155;
+    color: #94a3b8;
+    font-weight: bold;
+    font-size: 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.portfolio-tab-btn.active {
+    background: rgba(255, 170, 0, 0.15);
+    border-color: #f59e0b;
+    color: #f59e0b;
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
+}
+/* --- LÜKS VE CIVIL CIVIL PREMIUM TEMA EFEKTLERİ --- */
+
+/* Premium Yazılar ve Vurgular (Canlı Altın/Platin Geçişli) */
+.text-gold, .premium-text {
+    background: linear-gradient(135deg, #ffd700 0%, #ffaa00 50%, #ffdf73 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.4));
+}
+
+/* Premium Kartlar ve Paneller (Parıltılı Çerçeve) */
+.premium-card, .market-container .portfolio-summary-card {
+    background: linear-gradient(145deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95)) !important;
+    border: 1px solid rgba(255, 215, 0, 0.4) !important;
+    box-shadow: 0 0 20px rgba(255, 170, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Premium Kartlara Hareketli Parlama Çizgisi */
+.premium-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 150%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+    animation: premiumGlowSweep 4s infinite;
+}
+
+@keyframes premiumGlowSweep {
+    0% { left: -150%; }
+    50% { left: 150%; }
+    100% { left: 150%; }
+}
+
+/* Aktif / Seçili Sekme Butonları (Cıvıl Cıvıl Altın Neon) */
+.portfolio-tab-btn.active {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 140, 0, 0.2)) !important;
+    border-color: #ffd700 !important;
+    color: #ffd700 !important;
+    box-shadow: 0 0 18px rgba(255, 215, 0, 0.4), inset 0 0 10px rgba(255, 215, 0, 0.2) !important;
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+}
+
+/* Mağaza veya VIP Butonları İçin Canlı Premium Efekt */
+.vip-button-glow {
+    background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+    border: 1px solid #fef3c7 !important;
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.6) !important;
+    color: #fff !important;
+    font-weight: bold;
+    animation: vipPulse 2s infinite alternate;
+}
+
+@keyframes vipPulse {
+    0% { box-shadow: 0 0 10px rgba(245, 158, 11, 0.4); }
+    100% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.8), 0 0 5px rgba(255, 255, 255, 0.8); }
 }
