@@ -1557,14 +1557,3 @@ body.premium-theme .section-title { color: #fbbf24 !important; }
     0% { box-shadow: 0 0 10px rgba(245, 158, 11, 0.4); }
     100% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.8), 0 0 5px rgba(255, 255, 255, 0.8); }
 }
-/* Butonların sıkışmasını/ezilmesini engeller */
-.menu-btn, .ai-analyst-btn {
-    flex-shrink: 0 !important;
-    white-space: nowrap; /* İçindeki yazının alt satıra kaymasını önler */
-}
-
-/* Para miktarının fontunu ekrana sığacak şekilde dinamik yapar */
-#displayPlayerBalance {
-    font-size: clamp(14px, 4vw, 22px); 
-    white-space: nowrap;
-}
