@@ -1852,18 +1852,26 @@ if (feeDisplay) {
 
             // --- HAYALET TIKLAMA (GHOST CLICK) KORUMASI SİSTEMİ ---
 let isTradePanelLocked = false;
+let tradePanelUnlockTimer = null;
 
 function closeTradePanelSafely() {
+    if (!tradePanel || !tradeOverlay) return;
+
     isTradePanelLocked = true;
-    tradePanel.style.pointerEvents = 'none';
+
+    // iOS/WebKit'te sadece class kaldırmak bazen görsel durumu bir frame geciktirebilir.
+    // Bu yüzden paneli hem class hem inline state ile deterministik kapatıyoruz.
     tradePanel.classList.remove('open');
     tradeOverlay.classList.remove('active');
-    
-    // Panel kapandıktan sonra 500ms boyunca arkadaki hisselerin kazara açılmasını engeller
-    setTimeout(() => { 
-        tradePanel.style.pointerEvents = 'auto'; 
-        isTradePanelLocked = false; 
-    }, 500);
+    tradePanel.setAttribute('aria-hidden', 'true');
+    tradePanel.style.pointerEvents = 'none';
+
+    if (tradePanelUnlockTimer) clearTimeout(tradePanelUnlockTimer);
+    tradePanelUnlockTimer = setTimeout(() => {
+        tradePanel.style.pointerEvents = 'auto';
+        isTradePanelLocked = false;
+        tradePanelUnlockTimer = null;
+    }, 450);
 }
 
 // ARADIĞIN O DOĞRU DÖNGÜ BURASI:
@@ -2212,52 +2220,75 @@ try {
             let futuresActionLock = false;
 
             function openFuturesPosition(type) {
-                if (futuresActionLock) return;
+                if (futuresActionLock) return false;
+
                 const qty = parseInt(inputQty.value, 10) || 0;
                 const price = Number(currentStockPrice) || 0;
                 const lev = parseInt(levSlider.value, 10) || 1;
-                if (!currentStockCard || qty <= 0 || price <= 0 || lev <= 0) return;
+                if (!currentStockCard || qty <= 0 || price <= 0 || lev <= 0) return false;
+
+                const positionType = String(type || '').toUpperCase();
+                if (positionType !== 'LONG' && positionType !== 'SHORT') return false;
 
                 futuresActionLock = true;
-                const margin = qty * price;
-                const effectiveAmount = qty * lev; 
 
-                // Vadeli komisyon hesabı (Pozisyon büyüklüğü üzerinden)
-                let commissionRate = isPremium ? 0.001 : 0.002;
-                let commissionFee = effectiveAmount * commissionRate;
-                let totalRequiredMoney = margin + commissionFee; // Teminat + Komisyon
+                try {
+                    const margin = qty * price;
+                    const effectiveAmount = qty * lev;
+                    const commissionRate = isPremium ? 0.001 : 0.002;
+                    const commissionFee = effectiveAmount * commissionRate;
+                    const totalRequiredMoney = margin + commissionFee;
 
-                if (playerBalance >= totalRequiredMoney) {
-                    playerBalance -= totalRequiredMoney; // Kasadan hem teminat hem komisyon düşer
-                    playSound('buy');
-                    updateBalanceUI();
+                    if (playerBalance < totalRequiredMoney) {
+                        playSound('error');
+                        if (marginDisplay) {
+                            marginDisplay.style.color = '#ef4444';
+                            setTimeout(() => { marginDisplay.style.color = '#ffffff'; }, 600);
+                        }
+                        return false;
+                    }
 
-                    activePositions.push({
-                        id: Date.now(),
-                        name: currentStockCard.dataset.name,
-                        type: type,
-                        amount: effectiveAmount, 
-                        entryPrice: currentStockPrice,
+                    const stockName = currentStockCard.dataset.name;
+                    const entryPrice = price;
+                    const position = {
+                        id: Date.now() + Math.floor(Math.random() * 1000),
+                        name: stockName,
+                        type: positionType,
+                        amount: effectiveAmount,
+                        entryPrice: entryPrice,
                         leverage: lev,
                         margin: margin
-                    });
+                    };
 
+                    // State'i önce oluştur. UI güncellemesi daha sonra yapılır.
+                    playerBalance -= totalRequiredMoney;
+                    activePositions.push(position);
                     gameStats.trades++;
                     dailyTrades++;
-                    // Çift tıklamayı ve takılı kalmayı %100 engeller
+
+                    playSound('buy');
+
+                    // Paneli işlemin hemen sonunda kapat; aşağıdaki herhangi bir
+                    // UI/storage hatası panelin açık kalmasına sebep olmasın.
                     closeTradePanelSafely();
-                    saveGame();
-                    refreshLiveUI(true);
-                    } else {
-                    playSound('error');
-                    marginDisplay.style.color = '#ef4444';
-                    setTimeout(() => { marginDisplay.style.color = '#ffffff'; }, 600);
+
+                    // UI ve kayıt işlemlerini hata yalıtımı ile çalıştır.
+                    try { updateBalanceUI(); } catch (e) { console.warn('Futures balance UI:', e); }
+                    try { saveGame(); } catch (e) { console.warn('Futures save:', e); }
+                    try { refreshLiveUI(true); } catch (e) { console.warn('Futures refresh:', e); }
+
+                    if (window.getComputedStyle(profileScreen).display !== 'none') {
+                        try { btnProfile.click(); } catch (e) {}
+                    }
+
+                    return true;
+                } catch (err) {
+                    console.error('openFuturesPosition error:', err);
+                    return false;
+                } finally {
+                    // Kilit hiçbir koşulda takılı kalmasın.
+                    futuresActionLock = false;
                 }
-                futuresActionLock = false;
-                // Profil ekranı açıksa state'i de yenile.
-                if (window.getComputedStyle(profileScreen).display !== 'none') {
-        btnProfile.click();
-    }
             }
 
 
@@ -4586,51 +4617,68 @@ window.confirmNameChange = function() {
     closeNameModal();
 };
 // ==========================================
-// VADELİ BUTONLARI: iOS / ANDROID UYUMLU POINTER EVENT SİSTEMİ
+// VADELİ BUTONLARI: iOS / ANDROID UYUMLU TEK EVENT SİSTEMİ
 // ==========================================
 (function setupFuturesButtons() {
     const oldLong = document.getElementById('btn-long');
     const oldShort = document.getElementById('btn-short');
     if (!oldLong || !oldShort) return;
 
-    // Önceki click/touch listener'larını tamamen temizlemek için klonla.
+    // Üst tarafta bağlanan eski click/touch listener'larını kaldırmak için klonla.
     const newLong = oldLong.cloneNode(true);
     const newShort = oldShort.cloneNode(true);
     oldLong.replaceWith(newLong);
     oldShort.replaceWith(newShort);
 
+    [newLong, newShort].forEach(btn => {
+        btn.style.touchAction = 'manipulation';
+        btn.style.webkitTapHighlightColor = 'transparent';
+        btn.setAttribute('type', 'button');
+    });
+
     function setupButton(btn, type) {
         let timer = null;
         let pressed = false;
         let longTriggered = false;
+        let pointerId = null;
         let lastAction = 0;
 
-        const clearPress = () => {
+        const cleanup = () => {
             pressed = false;
+            longTriggered = false;
             if (timer) { clearTimeout(timer); timer = null; }
             btn.classList.remove('filling');
-            try { if (btn.hasPointerCapture?.(activePointerId)) btn.releasePointerCapture(activePointerId); } catch (e) {}
+            if (pointerId !== null) {
+                try {
+                    if (btn.hasPointerCapture && btn.hasPointerCapture(pointerId)) {
+                        btn.releasePointerCapture(pointerId);
+                    }
+                } catch (e) {}
+            }
+            pointerId = null;
         };
-        let activePointerId = null;
 
         btn.addEventListener('pointerdown', (e) => {
-            if (e.button !== undefined && e.button !== 0) return;
+            if (e.pointerType === 'mouse' && e.button !== 0) return;
+            if (futuresActionLock || Date.now() - lastAction < 350) {
+                e.preventDefault();
+                return;
+            }
+
             e.preventDefault();
             e.stopPropagation();
-            if (futuresActionLock || Date.now() - lastAction < 450) return;
-
-            activePointerId = e.pointerId;
             pressed = true;
             longTriggered = false;
+            pointerId = e.pointerId;
             btn.classList.add('filling');
+
             try { btn.setPointerCapture(e.pointerId); } catch (err) {}
 
             timer = setTimeout(() => {
                 if (!pressed || futuresActionLock) return;
                 longTriggered = true;
                 lastAction = Date.now();
-                executeMaxAction(type);
-                clearPress();
+                try { executeMaxAction(type); } finally { cleanup(); }
             }, 1600);
         }, { passive: false });
 
@@ -4639,15 +4687,17 @@ window.confirmNameChange = function() {
             e.stopPropagation();
             if (!pressed) return;
 
-            if (!longTriggered && !futuresActionLock && Date.now() - lastAction >= 450 && parseInt(inputQty.value, 10) > 0) {
+            const isTap = !longTriggered;
+            cleanup();
+
+            if (isTap && !futuresActionLock && Date.now() - lastAction >= 350) {
                 lastAction = Date.now();
                 openFuturesPosition(type);
             }
-            clearPress();
         }, { passive: false });
 
-        btn.addEventListener('pointercancel', clearPress);
-        btn.addEventListener('lostpointercapture', clearPress);
+        btn.addEventListener('pointercancel', cleanup);
+        btn.addEventListener('lostpointercapture', cleanup);
         btn.addEventListener('contextmenu', e => e.preventDefault());
     }
 
