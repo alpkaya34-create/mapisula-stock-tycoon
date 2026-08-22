@@ -36,6 +36,28 @@
 </head>
 <body>
     <style>
+        /* Küresel Kumbara Pembe Neon Çerçeve Animasyonu */
+    @keyframes neonPulsePink {
+        0% { box-shadow: 0 0 10px rgba(236,72,153,0.3), inset 0 0 10px rgba(236,72,153,0.1); border-color: #ec4899; }
+        50% { box-shadow: 0 0 35px rgba(236,72,153,0.8), inset 0 0 20px rgba(236,72,153,0.4); border-color: #ff2a85; }
+        100% { box-shadow: 0 0 10px rgba(236,72,153,0.3), inset 0 0 10px rgba(236,72,153,0.1); border-color: #ec4899; }
+    }
+
+    /* Premium Abonelik Altın/Sarı Neon Çerçeve Animasyonu */
+    @keyframes neonPulseGold {
+        0% { box-shadow: 0 0 10px rgba(251,191,36,0.3), inset 0 0 10px rgba(251,191,36,0.1); border-color: #fbbf24; }
+        50% { box-shadow: 0 0 35px rgba(251,191,36,0.8), inset 0 0 20px rgba(251,191,36,0.4); border-color: #fff176; }
+        100% { box-shadow: 0 0 10px rgba(251,191,36,0.3), inset 0 0 10px rgba(251,191,36,0.1); border-color: #fbbf24; }
+    }
+
+    .piggy-neon-box {
+        animation: neonPulsePink 2s infinite ease-in-out;
+        transition: animation-duration 0.3s ease;
+    }
+
+    .premium-neon-box {
+        animation: neonPulseGold 2.5s infinite ease-in-out;
+    }
         /* ======================================================== */
         /* 1. ORİJİNAL OYUN KODLARI (POP-UP VE ANİMASYONLAR)        */
         /* ======================================================== */
@@ -956,11 +978,12 @@
             <!-- ========================================== -->
             <!-- KÜRESEL KUMBARA (PIGGY BANK) ARAYÜZÜ       -->
             <!-- ========================================== -->
-            <div class="stock-card" style="flex-direction: column; align-items: stretch; gap: 15px; padding: 20px; border: 2px solid #ec4899; background: linear-gradient(145deg, rgba(236,72,153,0.1), rgba(15,23,42,0.8)); box-shadow: 0 0 25px rgba(236,72,153,0.15); margin-bottom: 20px;">
+            <div class="stock-card piggy-neon-box" id="piggy-card-container" style="flex-direction: column; align-items: stretch; gap: 15px; padding: 20px; border: 2px solid #ec4899; background: linear-gradient(145deg, rgba(236,72,153,0.1), rgba(15,23,42,0.8)); box-shadow: 0 0 25px rgba(236,72,153,0.15); margin-bottom: 20px;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div style="flex: 1;">
                         <h4 style="color:#ec4899; font-size: 16px; font-weight:900; margin-bottom: 6px; text-shadow: 0 0 10px rgba(236,72,153,0.4);">🐷 KÜRESEL KUMBARA</h4>
-                        <p style="font-size:11px; color:#94a3b8; font-weight: 700;">Tüm oyuncular doldurur, bar dolduğunda katkı sağlayanlar büyük ödülü paylaşır!</p>
+                        <!-- İŞTE GÜNCELLENEN AÇIKLAMA METNİ -->
+                        <p style="font-size:11px; color:#94a3b8; font-weight: 700; line-height: 1.4;">Bar dolduğunda katkı sağlayanlar büyük ödülü paylaşır! <br><span style="color: #fbbf24; font-size: 10px;">(Ödüller: $350.000'a Varan Nakit, %5 Rastgele Şirket Payı, 1 Aylık Premium)</span></p>
                     </div>
                 </div>
                 
@@ -974,7 +997,7 @@
             </div>
             <!-- ========================================== -->
             
-            <div class="stock-card" style="flex-direction: column; align-items: stretch; gap: 15px; padding: 22px 20px; border: 2px solid #fbbf24; background: linear-gradient(145deg, rgba(251,191,36,0.1), rgba(15,23,42,0.8)); box-shadow: 0 0 25px rgba(251,191,36,0.15);">
+            <div class="stock-card premium-neon-box" style="flex-direction: column; align-items: stretch; gap: 15px; padding: 22px 20px; border: 2px solid #fbbf24; background: linear-gradient(145deg, rgba(251,191,36,0.1), rgba(15,23,42,0.8)); box-shadow: 0 0 25px rgba(251,191,36,0.15);">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                     <div style="flex: 1;">
                         <h4 style="color:#fbbf24; font-size: 17px; font-weight:900; margin-bottom: 12px; text-shadow: 0 0 10px rgba(251,191,36,0.4); letter-spacing: 0.5px;">👑 PREMIUM ABONELİK</h4>
@@ -4884,6 +4907,19 @@ piggyRef.on('value', (snapshot) => {
     let percent = (current / target) * 100;
     if (percent > 100) percent = 100;
 
+    // --- BURAYA YAPIŞTIRACAKSIN (HIZLANDIRMA KODU) ---
+    const piggyCard = document.getElementById('piggy-card-container');
+    if (piggyCard) {
+        if (percent > 80) {
+            piggyCard.style.animationDuration = '0.5s'; // Çok hızlı (Heyecan dorukta!)
+        } else if (percent > 50) {
+            piggyCard.style.animationDuration = '1s';   // Orta hız
+        } else {
+            piggyCard.style.animationDuration = '2s';   // Normal sakin tempo
+        }
+    }
+    // ------------------------------------------------
+
     const progressBar = document.getElementById('piggy-progress-bar');
     const progressText = document.getElementById('piggy-progress-text');
     
@@ -4935,22 +4971,38 @@ piggyRef.on('value', (snapshot) => {
             } 
             else {
                 // %5 İhtimal: 1 Aylık Ücretsiz Premium Abonelik
-                isPremium = true;
-                document.body.classList.add('premium-theme');
-                localStorage.setItem('cts_theme_active', 'true');
-                localStorage.setItem('cts_premium', 'true');
-                categoryRequirements['vip'] = 0;
-                
-                const premiumBtn = document.getElementById('btn-buy-premium');
-                if (premiumBtn) {
-                    premiumBtn.innerText = "TEMA DEĞİŞTİR";
-                    premiumBtn.style.background = "#1e293b";
-                    premiumBtn.style.color = "#fff";
-                    premiumBtn.style.boxShadow = "none";
+                // KONTROL: Oyuncunun zaten halihazırda Premium'u var mı?
+                let alreadyPremium = typeof isPremium !== 'undefined' ? isPremium : (localStorage.getItem('cts_premium') === 'true');
+
+                if (alreadyPremium) {
+                    // EĞER ZATEN PRENS/VIP İSE: Mevcut nakit parasının %25'i kadar devasa ikramiye ver!
+                    let bonusCash = Math.floor(playerBalance * 0.25);
+                    // Eğer kasası bomboşsa veya çok azsa en az 100.000 garanti nakit verelim
+                    if (bonusCash < 100000) bonusCash = 100000; 
+
+                    playerBalance += bonusCash;
+                    
+                    prizeTitle = "🌟 VIP NAKİT İKRAMİYESİ (%25)";
+                    prizeDesc = `Zaten aktif bir <strong>Premium</strong> üyeliğin olduğu için şansına havuzdan nakit ikramiye vurdu! Mevcut varlıklarının %25'i olan <strong style="color:#10b981;">$${bonusCash.toLocaleString()}</strong> nakit kasana eklendi!`;
+                } else {
+                    // NORMAL DURUM: Premium'u yoksa 1 aylık VIP üyeliği başlat
+                    isPremium = true;
+                    document.body.classList.add('premium-theme');
+                    localStorage.setItem('cts_theme_active', 'true');
+                    localStorage.setItem('cts_premium', 'true');
+                    categoryRequirements['vip'] = 0;
+                    
+                    const premiumBtn = document.getElementById('btn-buy-premium');
+                    if (premiumBtn) {
+                        premiumBtn.innerText = "TEMA DEĞİŞTİR";
+                        premiumBtn.style.background = "#1e293b";
+                        premiumBtn.style.color = "#fff";
+                        premiumBtn.style.boxShadow = "none";
+                    }
+                    
+                    prizeTitle = "🌟 1 AYLIK PREMIUM KAZANDIN!";
+                    prizeDesc = `İnanılmaz nadir şans! Küresel kumbara sana <strong>1 Aylık Ücretsiz VIP Abonelik</strong> hediye etti!`;
                 }
-                
-                prizeTitle = "🌟 1 AYLLIK PREMIUM KAZANDIN!";
-                prizeDesc = `İnanılmaz nadir şans! Küresel kumbara sana <strong>1 Aylık Ücretsiz VIP Abonelik</strong> hediye etti!`;
             }
 
             updateBalanceUI();
