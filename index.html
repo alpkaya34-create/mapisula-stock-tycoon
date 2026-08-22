@@ -200,6 +200,7 @@
         <div class="menu-actions">
             <button id="btn-start" class="mobile-btn btn-play">SİMÜLASYONU BAŞLAT</button>
             <button id="btn-profile" class="mobile-btn btn-profile">PROFİL & İSTATİSTİKLER</button>
+            <button id="btn-open-leaderboard" class="mobile-btn" style="background: rgba(245, 158, 11, 0.15); border: 2px solid #f59e0b; color: #fbbf24;">🌍 KÜRESEL LİDERLİK TABLOSU</button>
             <button id="btn-open-achievements" class="mobile-btn btn-achievements">🏆 BAŞARIMLAR VE HEDEFLER</button>
             <button id="btn-lifestyle" class="mobile-btn btn-lifestyle premium-glow">💎 YAŞAM ALANI (PREMIUM)</button>
             <button id="btn-settings" class="mobile-btn btn-settings">AYARLAR</button>
@@ -258,6 +259,32 @@
         </div>
         <div class="menu-actions" style="margin-top: 20px; width: 100%;">
             <button id="btn-close-profile" class="mobile-btn btn-settings">ANA MENÜYE DÖN</button>
+        </div>
+    </div>
+    <!-- ========================================== -->
+    <!-- KÜRESEL LİDERLİK TABLOSU EKRANI            -->
+    <!-- ========================================== -->
+    <div id="leaderboard-screen" class="mobile-screen" style="display: none; justify-content: flex-start; flex-direction: column;">
+        <div class="menu-header" style="margin-top: 5vh; margin-bottom: 20px;">
+            <div class="glow-orb" style="background: #f59e0b; opacity: 0.2;"></div>
+            <h1 class="game-title" style="font-size: 24px; color: #fbbf24; text-shadow: 0 0 15px rgba(251, 191, 36, 0.5);">LİDERLİK TABLOSU</h1>
+            <p style="color: #94a3b8; font-size: 11px; font-weight: 900; margin-top: 3px; letter-spacing: 2px;">DÜNYANIN EN İYİLERİ</p>
+        </div>
+        
+        <!-- Sekmeler (Zenginler / İflaslar) -->
+        <div style="display: flex; gap: 10px; margin: 0 20px 15px 20px;">
+            <button id="tab-lb-wealth" class="portfolio-tab-btn active" style="flex: 1;">💰 En Zenginler</button>
+            <button id="tab-lb-bankrupt" class="portfolio-tab-btn" style="flex: 1;">☠️ Batanlar</button>
+        </div>
+
+        <!-- Sıralama Listesi -->
+        <div id="leaderboard-list" style="flex: 1; overflow-y: auto; padding: 0 20px; display: flex; flex-direction: column; gap: 8px; padding-bottom: 20px;">
+            <div class="empty-state"><span>🔄</span><p>Veriler yükleniyor...</p></div>
+        </div>
+
+        <!-- Kapatma Butonu -->
+        <div class="menu-actions" style="margin-top: auto; padding: 20px 20px 30px 20px; width: 100%; box-sizing: border-box;">
+            <button id="btn-close-leaderboard" class="mobile-btn btn-settings">ANA MENÜYE DÖN</button>
         </div>
     </div>
 
@@ -555,6 +582,26 @@
         <div style="display: flex; gap: 10px;">
             <button class="trade-btn" id="btn-close-takeover" style="flex: 1; background: #1e293b; color: #fff; padding: 12px; font-size: 13px;">İPTAL</button>
             <button class="trade-btn" id="btn-rebrand-company" style="flex: 1; background: #fbbf24; color: #000; padding: 12px; font-size: 13px; font-weight: 900;">KAYDET</button>
+        </div>
+    </div>
+    <!-- ========================================== -->
+    <!-- OYUNCU GİRİŞ / KAYIT EKRANI                -->
+    <!-- ========================================== -->
+    <div id="auth-modal" style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 17, 38, 0.95); z-index: 99999; justify-content: center; align-items: center; backdrop-filter: blur(10px);">
+        <div style="background: linear-gradient(145deg, #1e293b, #0f172a); border: 1px solid #00f2fe; border-radius: 16px; padding: 30px; width: 85%; max-width: 350px; text-align: center; box-shadow: 0 0 30px rgba(0, 242, 254, 0.2);">
+            <div style="font-size: 40px; margin-bottom: 10px; animation: ctsNeonPulse 2s infinite alternate;">🌐</div>
+            <h2 style="color: #00f2fe; margin-bottom: 5px; font-size: 20px; font-weight: 900; letter-spacing: 1px;">CTS TYCOON AĞI</h2>
+            <p style="color: #94a3b8; font-size: 12px; margin-bottom: 25px;">Milyarderler kulübüne katılmak için giriş yap veya kayıt ol.</p>
+            
+            <input type="email" id="auth-email" placeholder="E-Posta Adresi" style="width: 100%; padding: 14px; background: #050814; border: 1px solid #334155; color: #fff; border-radius: 10px; font-size: 14px; outline: none; margin-bottom: 15px; box-sizing: border-box;">
+            <input type="password" id="auth-password" placeholder="Şifre (En az 6 hane)" style="width: 100%; padding: 14px; background: #050814; border: 1px solid #334155; color: #fff; border-radius: 10px; font-size: 14px; outline: none; margin-bottom: 25px; box-sizing: border-box;">
+            
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button id="btn-login" style="width: 100%; padding: 14px; background: #00f2fe; color: #000; border: none; border-radius: 8px; font-weight: 900; cursor: pointer; font-size: 14px; box-shadow: 0 5px 15px rgba(0, 242, 254, 0.3);">GİRİŞ YAP</button>
+                <button id="btn-register" style="width: 100%; padding: 14px; background: transparent; color: #00f2fe; border: 1px solid #00f2fe; border-radius: 8px; font-weight: 900; cursor: pointer; font-size: 14px;">YENİ HESAP OLUŞTUR</button>
+            </div>
+            
+            <p id="auth-error-msg" style="color: #ef4444; font-size: 11px; margin-top: 15px; font-weight: bold; min-height: 15px;"></p>
         </div>
     </div>
 
@@ -906,6 +953,26 @@
 
         <div id="store-container" class="market-container" style="display: none;">
             <h3 class="section-title text-gold" style="margin-bottom: 20px;">CTS MAĞAZA (TRY)</h3>
+            <!-- ========================================== -->
+            <!-- KÜRESEL KUMBARA (PIGGY BANK) ARAYÜZÜ       -->
+            <!-- ========================================== -->
+            <div class="stock-card" style="flex-direction: column; align-items: stretch; gap: 15px; padding: 20px; border: 2px solid #ec4899; background: linear-gradient(145deg, rgba(236,72,153,0.1), rgba(15,23,42,0.8)); box-shadow: 0 0 25px rgba(236,72,153,0.15); margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="flex: 1;">
+                        <h4 style="color:#ec4899; font-size: 16px; font-weight:900; margin-bottom: 6px; text-shadow: 0 0 10px rgba(236,72,153,0.4);">🐷 KÜRESEL KUMBARA</h4>
+                        <p style="font-size:11px; color:#94a3b8; font-weight: 700;">Tüm oyuncular doldurur, bar dolduğunda katkı sağlayanlar büyük ödülü paylaşır!</p>
+                    </div>
+                </div>
+                
+                <!-- İlerleme Barı -->
+                <div style="background: #0f172a; border-radius: 12px; height: 24px; width: 100%; position: relative; overflow: hidden; border: 1px solid #334155;">
+                    <div id="piggy-progress-bar" style="background: linear-gradient(90deg, #ec4899, #f43f5e); height: 100%; width: 0%; transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);"></div>
+                    <div id="piggy-progress-text" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; color: #fff; text-shadow: 0 0 4px rgba(0,0,0,0.8); letter-spacing: 1px;">BAĞLANIYOR...</div>
+                </div>
+
+                <button class="trade-btn" id="btn-feed-piggy" style="background: linear-gradient(135deg, #ec4899 0%, #be185d 100%); color: #fff; box-shadow: 0 5px 15px rgba(236, 72, 153, 0.3); padding: 14px; font-size: 13px; font-weight: 900;">HAVUZA ₺50 YATIR</button>
+            </div>
+            <!-- ========================================== -->
             
             <div class="stock-card" style="flex-direction: column; align-items: stretch; gap: 15px; padding: 22px 20px; border: 2px solid #fbbf24; background: linear-gradient(145deg, rgba(251,191,36,0.1), rgba(15,23,42,0.8)); box-shadow: 0 0 25px rgba(251,191,36,0.15);">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start;">
@@ -937,7 +1004,7 @@
                     </div>
                 </div>
                 
-                <button class="trade-btn" id="btn-buy-premium" style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color:#000; box-shadow: 0 5px 15px rgba(251, 191, 36, 0.4); font-weight: 900; font-size: 14px; padding: 14px; margin-top: 5px; letter-spacing: 0.5px;">₺149.99 SATIN AL</button>
+                <button class="trade-btn" id="btn-buy-premium" style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color:#000; box-shadow: 0 5px 15px rgba(251, 191, 36, 0.4); font-weight: 900; font-size: 14px; padding: 14px; margin-top: 5px; letter-spacing: 0.5px;">₺149.99 / AY (ABONE OL)</button>
             </div>
 
             <div class="stock-card" style="flex-direction: column; align-items: stretch; gap: 15px; padding: 20px; margin-top: 10px;">
@@ -1047,107 +1114,185 @@
             <div class="tab-item" id="tab-store" style="flex: 1;"><span class="tab-icon">🛒</span><span class="tab-text">Mağaza</span></div>
         </div>
     </div>
+<!-- ========================================== -->
+    <!-- FIREBASE VERİTABANI VE HESAP BAĞLANTISI    -->
+    <!-- ========================================== -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    <!-- YENİ EKLENEN KİMLİK DOĞRULAMA KÜTÜPHANESİ -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDBoPk43LcT9qPtZkXXpyrfRpdJmWDnvrA",
+            authDomain: "cts-tycoon.firebaseapp.com",
+            // İŞTE EKSİK OLAN VE OYUNUN YOLUNU BULAMAMASINA SEBEP OLAN SATIR:
+            databaseURL: "https://cts-tycoon-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "cts-tycoon",
+            storageBucket: "cts-tycoon.firebasestorage.app",
+            messagingSenderId: "4333586201",
+            appId: "1:4333586201:web:8535dcd2345ec8ae272788"
+        };
 
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const auth = firebase.auth(); // YENİ: Hesap yönetim motoru eklendi
+        console.log("Firebase Veritabanı ve Auth Başarılı! 🚀");
+    </script>
     <!-- OYUN MANTIĞI -->
     <script>
-        // ==========================================================================
-// 🎵 TARAYICI ENGELSİZ YERLEŞİK SES VE AMBİYANS MOTORU (WEB AUDIO API)
+// ==========================================================================
+// 🎵 YENİ NESİL SES VE AMBİYANS MOTORU (ŞINGIRTI VE EFEKTLER)
 // ==========================================================================
 let audioCtx = null;
 let ambientInterval = null;
+let bgmStep = 0; 
 
-// Tarayıcı kilitlerini aşmak için AudioContext'i kullanıcı etkileşimiyle başlatır
 function initAudio() {
-    if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
+    try {
+        if (!audioCtx) {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (AudioContext) {
+                audioCtx = new AudioContext();
+            }
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+            audioCtx.resume().catch(e => console.log("Ses engeli"));
+        }
+    } catch (error) {
+        console.log("Mobil ses engellendi.");
     }
 }
 
 function playSynthSound(type) {
     if (!isSoundEnabled) return;
-    initAudio();
-    if (!audioCtx) return;
+    try {
+        initAudio();
+        if (!audioCtx) return;
 
-    const now = audioCtx.currentTime;
-    const osc = audioCtx.createOscillator();
-    const gainNode = audioCtx.createGain();
-    osc.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
 
-    if (type === 'buy') {
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(987.77, now); 
-        osc.frequency.setValueAtTime(1318.51, now + 0.08); 
-        gainNode.gain.setValueAtTime(0.2, now);
-        gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
-        osc.start(now);
-        osc.stop(now + 0.3);
-    } 
-    else if (type === 'sell') {
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(523.25, now); 
-        osc.frequency.setValueAtTime(659.25, now + 0.1); 
-        gainNode.gain.setValueAtTime(0.3, now);
-        gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
-        osc.start(now);
-        osc.stop(now + 0.25);
-    } 
-    else if (type === 'error') {
-        // Yumuşak ve tok hata sesi
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(180, now); 
-        osc.frequency.setValueAtTime(130, now + 0.1); 
-        gainNode.gain.setValueAtTime(0.12, now); 
-        gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
-        osc.start(now);
-        osc.stop(now + 0.22);
-    }
-    else if (type === 'milestone') {
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(523.25, now);       
-        osc.frequency.setValueAtTime(659.25, now + 0.1);  
-        osc.frequency.setValueAtTime(783.99, now + 0.2);  
-        osc.frequency.setValueAtTime(1046.50, now + 0.3); 
-        gainNode.gain.setValueAtTime(0.25, now);
-        gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
-        osc.start(now);
-        osc.stop(now + 0.6);
-    }
+        if (type === 'buy') {
+            // YENİ: PARA ŞINGIRTISI (Altın Sesi)
+            // İki yüksek frekanslı sinyal birbirine çarpıp şıngırtı hissi verir
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(2500, now); // Çok ince başlangıç
+            osc.frequency.setValueAtTime(3200, now + 0.03); 
+            gainNode.gain.setValueAtTime(0.4, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+            
+            // Şıngırtıyı zenginleştiren ikinci yankı
+            const osc2 = audioCtx.createOscillator();
+            const gain2 = audioCtx.createGain();
+            osc2.type = 'triangle';
+            osc2.frequency.setValueAtTime(4000, now + 0.02);
+            gain2.gain.setValueAtTime(0.2, now + 0.02);
+            gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+            osc2.connect(gain2);
+            gain2.connect(audioCtx.destination);
+            osc2.start(now + 0.02);
+            osc2.stop(now + 0.2);
+
+            osc.start(now);
+            osc.stop(now + 0.15);
+        } 
+        else if (type === 'sell') {
+            // YENİ: SATIŞ SESİ (Nakit/Kasa Sesi gibi tok ve hızlı)
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(800, now); 
+            osc.frequency.exponentialRampToValueAtTime(200, now + 0.15); 
+            gainNode.gain.setValueAtTime(0.15, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+            osc.start(now);
+            osc.stop(now + 0.15);
+        } 
+        else if (type === 'error') {
+            // YENİ: YUMUŞAK HATA SESİ (Kulak tırmalamayan tok uyarı)
+            osc.type = 'sine'; 
+            osc.frequency.setValueAtTime(220, now); 
+            osc.frequency.exponentialRampToValueAtTime(110, now + 0.2); 
+            gainNode.gain.setValueAtTime(0.3, now); // Sesi epey kıstık
+            gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+            osc.start(now);
+            osc.stop(now + 0.2);
+        }
+        else if (type === 'bankruptcy') {
+            // YENİ: İFLAS SESİ (Dramatik, dibe çakılan sistem çöküşü)
+            osc.type = 'sawtooth'; // Keskin ve rahatsız edici dalga
+            osc.frequency.setValueAtTime(300, now); // Yüksekten başlar
+            osc.frequency.exponentialRampToValueAtTime(30, now + 1.2); // 1.2 saniyede hızla dibe (30Hz) çakılır
+            
+            gainNode.gain.setValueAtTime(0.6, now); // Yüksek sesle başlar
+            gainNode.gain.linearRampToValueAtTime(0.001, now + 1.2); // Yavaşça sönümlenir
+            
+            osc.start(now);
+            osc.stop(now + 1.2);
+        }
+        else if (type === 'tick') {
+            // YENİ: ARAYÜZ TIKLAMA SESİ (Sekme değiştirirken çıkan tatlı tık sesi)
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(1200, now);
+            gainNode.gain.setValueAtTime(0.08, now); // Çok hafif
+            gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.05); // Çok kısa
+            osc.start(now);
+            osc.stop(now + 0.05);
+        }
+        else if (type === 'milestone') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(523.25, now);       
+            osc.frequency.setValueAtTime(659.25, now + 0.1);  
+            osc.frequency.setValueAtTime(783.99, now + 0.2);  
+            osc.frequency.setValueAtTime(1046.50, now + 0.3); 
+            gainNode.gain.setValueAtTime(0.4, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+            osc.start(now);
+            osc.stop(now + 0.6);
+        }
+    } catch (e) {}
 }
 
 function playSound(type) {
     playSynthSound(type);
 }
 
+// 🎵 ARKA PLAN MÜZİĞİ (Odaklanma - Tycoon Teması)
 function handleBGM() {
     if (isMusicEnabled) {
-        initAudio();
-        if (!audioCtx) return;
-        if (ambientInterval) return;
+        try {
+            initAudio();
+            if (!audioCtx) return;
+            if (ambientInterval) return;
 
-        ambientInterval = setInterval(() => {
-            if (!isMusicEnabled || !audioCtx) return;
-            const now = audioCtx.currentTime;
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            
-            osc.type = 'sine';
-            const chords = [220, 261.63, 329.63, 392.00]; 
-            osc.frequency.setValueAtTime(chords[Math.floor(Math.random() * chords.length)], now);
-            
-            gain.gain.setValueAtTime(0.01, now);
-            gain.gain.linearRampToValueAtTime(0.03, now + 2);
-            gain.gain.linearRampToValueAtTime(0.001, now + 5);
-            
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            
-            osc.start(now);
-            osc.stop(now + 5);
-        }, 4000);
+            ambientInterval = setInterval(() => {
+                try {
+                    if (!isMusicEnabled || !audioCtx) return;
+                    const now = audioCtx.currentTime;
+                    
+                    const oscBase = audioCtx.createOscillator();
+                    const gainBase = audioCtx.createGain();
+                    oscBase.type = 'triangle'; 
+                    
+                    const melody = [220.00, 261.63, 329.63, 293.66, 392.00, 329.63]; 
+                    const note = melody[bgmStep % melody.length];
+                    bgmStep++;
+
+                    oscBase.frequency.setValueAtTime(note / 2, now); 
+                    
+                    gainBase.gain.setValueAtTime(0.001, now);
+                    gainBase.gain.linearRampToValueAtTime(0.15, now + 1.2);
+                    gainBase.gain.linearRampToValueAtTime(0.001, now + 2.8);
+                    
+                    oscBase.connect(gainBase);
+                    gainBase.connect(audioCtx.destination);
+                    oscBase.start(now);
+                    oscBase.stop(now + 3);
+                } catch(e) {}
+            }, 3000); 
+        } catch(e) {}
 
     } else {
         if (ambientInterval) {
@@ -1313,23 +1458,28 @@ function handleBGM() {
                 settingsScreen.style.display = 'flex';
             });
 
-            // --- ÇIKIŞ BUTONU İŞLEVİ ---
+            // --- ÇIKIŞ (GÜVENLİ HESAP ÇIKIŞI) BUTONU İŞLEVİ ---
             const btnExit = document.getElementById('btn-exit');
             if (btnExit) {
+                // Eski kodu tamamen ezip yeni halini (Log Out) ekliyoruz
                 btnExit.addEventListener('click', () => {
-                    // 1. Oyunu kalıcı olarak kaydet
+                    // 1. Çıkmadan önce oyuncunun son ilerlemesini yerel olarak kaydet
                     saveGame();
-                    
-                    // 2. Tarayıcı sekmesini kapatmayı dene
-                    window.close();
-                    
-                    // 3. Tarayıcı engellerse şık bir kapanış ekranı göster
-                    document.body.innerHTML = `
-                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #0b1126; color: #fff; font-family: 'Nunito', sans-serif; text-align: center; padding: 20px;">
-                            <h1 style="color: #00f2fe; margin-bottom: 10px; font-weight: 900;">SİMÜLASYON KAYDEDİLDİ</h1>
-                            <p style="color: #94a3b8; font-size: 14px; font-weight: 700;">Tüm ilerlemeniz başarıyla kaydedildi. Bu sekmeyi güvenle kapatabilirsiniz.</p>
-                        </div>
-                    `;
+                    if (typeof syncLeaderboardData === 'function') syncLeaderboardData();
+
+                    // 2. Firebase'den güvenli çıkış yap
+                    auth.signOut().then(() => {
+                        console.log("Güvenli çıkış yapıldı.");
+                        playSound('tick');
+                        
+                        // 3. Sayfayı yenileyerek belleği temizle ve giriş ekranını (Auth Modal) geri getir
+                        location.reload(); 
+                    }).catch((error) => {
+                        console.error("Çıkış yapılırken hata oluştu:", error);
+                        if (typeof showCustomAlert === 'function') {
+                            showCustomAlert("Çıkış yapılamadı: " + error.message);
+                        }
+                    });
                 });
             }
             // --- BÜYÜK SAYILARI KISALTMA FONKSİYONU ---
@@ -2316,6 +2466,7 @@ try {
 
             let isCryptoView = false;
             tabMarket.addEventListener('click', () => {
+                playSound('tick');
                 if (tabMarket.classList.contains('active')) {
                     // Sekme zaten seçiliyken bir kez daha tıklanırsa (GEÇİŞ YAP)
                     if (playerBalance >= 20000000 || reachedMilestones.m20) { 
@@ -2362,6 +2513,7 @@ try {
             });
 
             tabPortfolio.addEventListener('click', () => {
+                playSound('tick');
                 document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active')); tabPortfolio.classList.add('active');
                 hideAllScreens(); portfolioContainer.style.display = 'block'; 
                 updatePortfolioView(); 
@@ -2369,16 +2521,19 @@ try {
             });
 
             tabNews.addEventListener('click', () => {
+                playSound('tick');
                 document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active')); tabNews.classList.add('active');
                 hideAllScreens(); newsArchiveContainer.style.display = 'block'; renderNewsArchive();
             });
 
             tabBank.addEventListener('click', () => {
+                playSound('tick');
                 document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active')); tabBank.classList.add('active');
                 hideAllScreens(); bankContainer.style.display = 'block'; updateBankUI();
             });
 
             tabStore.addEventListener('click', () => {
+                playSound('tick');
                 document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active')); tabStore.classList.add('active');
                 hideAllScreens(); storeContainer.style.display = 'block';
                 updateStoreUI();
@@ -2700,6 +2855,9 @@ try {
                 localStorage.removeItem('cts_principal_debt'); localStorage.removeItem('cts_start_wealth');
                 localStorage.removeItem('cts_tick_count'); localStorage.removeItem('cts_daily_trades');
                 localStorage.removeItem('cts_portfolio'); localStorage.removeItem('cts_futures');
+                
+                // İŞTE YENİ İFLAS SESİMİZİ BURADA ÇALDIRIYORUZ!
+                playSound('bankruptcy');
                 
                 document.getElementById('summary-overlay').classList.add('active');
                 bankruptcyModal.classList.add('show');
@@ -3352,6 +3510,7 @@ if (btnCloseWalletStats) {
     });
 }
             function saveGame() {
+                if (typeof syncLeaderboardData === 'function') syncLeaderboardData();
                 localStorage.setItem('cts_balance', playerBalance);
                 localStorage.setItem('cts_debt', playerDebt);
                 localStorage.setItem('cts_principal_debt', playerPrincipalDebt);
@@ -4704,6 +4863,364 @@ window.confirmNameChange = function() {
     setupButton(newLong, 'LONG');
     setupButton(newShort, 'SHORT');
 })();
+// ==========================================================================
+// 🐷 KÜRESEL KUMBARA - GARANTİLİ VE YASAL ORANTILI ÖDÜL SİSTEMİ
+// (Çekiliş/Şans faktörü tamamen kaldırıldı, herkes katkısı kadar payını alır)
+// ==========================================================================
+const piggyRef = database.ref('global/piggyBank');
+let isPiggyExploding = false; 
+
+piggyRef.on('value', (snapshot) => {
+    let data = snapshot.val();
+    
+    if (!data) {
+        piggyRef.set({ currentAmount: 0, target: 5000, contributors: {} });
+        return;
+    }
+
+    let current = data.currentAmount || 0;
+    let target = data.target || 5000;
+    let contributors = data.contributors || {}; 
+    
+    let percent = (current / target) * 100;
+    if (percent > 100) percent = 100;
+
+    const progressBar = document.getElementById('piggy-progress-bar');
+    const progressText = document.getElementById('piggy-progress-text');
+    
+    if (progressBar) progressBar.style.width = percent + '%';
+    if (progressText) progressText.innerText = `₺${current.toLocaleString()} / ₺${target.toLocaleString()}`;
+
+    // KUMBARA PATLAMA ANI VE GARANTİLİ DAĞITIM
+    if (current >= target && !isPiggyExploding) {
+        isPiggyExploding = true;
+        
+        let myUid = localStorage.getItem('cts_player_uid');
+        let myContribution = contributors[myUid] || 0; 
+        
+        if (myContribution > 0) {
+            let totalRewardPool = 500000; // Toplam Nakit Havuzu
+            
+            // 1. GARANTİLİ NAKİT: Yatırdığın TL miktarının hedefe oranı kadar nakit garanti!
+            let myShareRatio = myContribution / target;
+            let myCashPrize = Math.floor(totalRewardPool * myShareRatio);
+            
+            playerBalance += myCashPrize;
+            
+            // 2. GARANTİLİ ŞİRKET PAYI VE PREMIUM: 
+            // Çekiliş yok! Havuza katkı sağlayan herkes yatırdığı oranda (%5 Şirket Payı / 1 Ay Premium hakları) payını garantili alır.
+            // Örnek: Katkı sağlayan herkese orantılı hisse ve abonelik ekleniyor.
+            
+            const allCards = document.querySelectorAll('#market-container .stock-card');
+            let grantedShareText = "";
+            
+            if (allCards.length > 0 && myContribution >= 50) {
+                // Yatırılan her 50 TL baz alınarak orantılı şirket payı hesaplanır
+                let shareUnits = Math.floor(myContribution / 50); 
+                let addedShares = shareUnits * 5000; // Her 50 TL için 5.000 adet hisse garanti!
+                
+                let randomCard = allCards[Math.floor(Math.random() * allCards.length)];
+                let companyDisplayName = randomCard.querySelector('.stock-name').textContent;
+                
+                let currentOwned = parseInt(randomCard.querySelector('.stock-owned').textContent.replace(/[^0-9]/g, "")) || 0;
+                let newOwned = currentOwned + addedShares;
+                if (newOwned > 1000000) newOwned = 1000000;
+                randomCard.querySelector('.stock-owned').textContent = "Portföy: " + newOwned + " Adet";
+                
+                grantedShareText = `<br>🎁 Garanti Şirket Payı: <strong>${companyDisplayName}</strong> şirketinden <strong>${addedShares.toLocaleString()} Adet</strong> portföyüne eklendi!`;
+            }
+
+            // 3. GARANTİLİ PREMIUM DESTEĞİ (Havuza katılan herkese 1 haftalık/1 aylık orantılı VIP tanımlanır)
+            // Yasal risk olmaması için her katılımcıya bu paketten garanti pay verilir:
+            let isGrantedVIP = false;
+            if (myContribution >= 200) { // Belirli bir katkı eşiğini geçen herkese garanti 1 Aylık Premium!
+                isPremium = true;
+                document.body.classList.add('premium-theme');
+                localStorage.setItem('cts_theme_active', 'true');
+                localStorage.setItem('cts_premium', 'true');
+                categoryRequirements['vip'] = 0;
+                isGrantedVIP = true;
+                
+                const premiumBtn = document.getElementById('btn-buy-premium');
+                if (premiumBtn) {
+                    premiumBtn.innerText = "TEMA DEĞİŞTİR";
+                    premiumBtn.style.background = "#1e293b";
+                    premiumBtn.style.color = "#fff";
+                    premiumBtn.style.boxShadow = "none";
+                }
+            }
+
+            updateBalanceUI();
+            saveGame();
+            if (typeof syncLeaderboardData === 'function') syncLeaderboardData();
+            
+            let vipText = isGrantedVIP ? `<br>🌟 <span style="color:#fbbf24;">Tebrikler! Havuz katkı eşiğini aştığın için <strong>1 Aylık Ücretsiz Premium Abonelik</strong> hesabına tanımlandı!</span>` : "";
+
+            if (typeof showStoreModal === 'function') {
+                showStoreModal("🐷 KUMBARA DAĞITIMI TAMAMLANDI", 
+                    `Havuza yaptığın ₺${myContribution} katkı karşılığı hak ettiğin garantili ödüller:<br><br>` +
+                    `<strong style="color:#10b981;">💰 Nakit Payı: $${myCashPrize.toLocaleString()}</strong>` +
+                    grantedShareText +
+                    vipText, 
+                    true);
+                playSound('milestone');
+            }
+        } else {
+            if (typeof showStoreModal === 'function') {
+                showStoreModal("🐷 KUMBARA PATLADI!", "Küresel havuz doldu ve ödüller dağıtıldı!<br><br><span style='color:#ef4444;'>Havuza katkıda bulunmadığın için bu turdan ödül alamadın.</span>", false);
+            }
+        }
+        
+        setTimeout(() => {
+            isPiggyExploding = false;
+        }, 3000);
+    }
+});
+
+// Katkı butonu
+const btnFeedPiggy = document.getElementById('btn-feed-piggy');
+if (btnFeedPiggy) {
+    btnFeedPiggy.addEventListener('click', () => {
+        let myUid = localStorage.getItem('cts_player_uid');
+        if (!myUid) {
+            if (typeof showCustomAlert === 'function') showCustomAlert("Havuza katılmak için önce giriş yapmalısınız.");
+            return;
+        }
+
+        playSound('buy'); 
+        if (typeof showStoreModal === 'function') {
+            showStoreModal("ÖDEME BAŞARILI", "₺50 ödemeniz alındı. Garantili ödül havuzundaki yerinizi aldınız!", true);
+        }
+        
+        piggyRef.child('currentAmount').transaction((currentVal) => {
+            let newVal = (currentVal || 0) + 50;
+            if (newVal >= 5000) {
+                setTimeout(() => {
+                    piggyRef.set({ currentAmount: 0, target: 5000, contributors: {} });
+                }, 2500);
+            }
+            return newVal;
+        });
+        
+        piggyRef.child('contributors').child(myUid).transaction((myTotal) => {
+            return (myTotal || 0) + 50;
+        });
+        
+        btnFeedPiggy.style.transform = 'scale(0.95)';
+        setTimeout(() => { btnFeedPiggy.style.transform = 'scale(1)'; }, 100);
+    });
+}
+// ==========================================================================
+// 🏆 KÜRESEL LİDERLİK TABLOSU (FIREBASE) SİSTEMİ
+// ==========================================================================
+const lbWealthRef = database.ref('global/leaderboard/wealth');
+const lbBankruptRef = database.ref('global/leaderboard/bankruptcies');
+
+let currentLbTab = 'wealth'; // Varsayılan sekme
+
+// Oyuncunun skorunu ve VIP durumunu Firebase'e gönderen fonksiyon
+function syncLeaderboardData() {
+    let uid = localStorage.getItem('cts_player_uid');
+    let pName = localStorage.getItem('cts_player_name') || "CTS TRADER";
+    // Oyuncunun Premium olup olmadığını kontrol ediyoruz
+    let premiumStatus = typeof isPremium !== 'undefined' ? isPremium : (localStorage.getItem('cts_premium') === 'true');
+    
+    if (!uid) return;
+
+    lbWealthRef.child(uid).set({
+        name: pName,
+        score: gameStats.maxWealth,
+        orderScore: -gameStats.maxWealth,
+        isVIP: premiumStatus // YENİ: VIP durumunu veritabanına ekledik
+    });
+
+    if (gameStats.bankruptcies > 0) {
+        lbBankruptRef.child(uid).set({
+            name: pName,
+            score: gameStats.bankruptcies,
+            orderScore: -gameStats.bankruptcies,
+            isVIP: premiumStatus // YENİ: VIP durumunu veritabanına ekledik
+        });
+    }
+}
+
+// Ana menüden Liderlik Tablosunu açma/kapama
+const btnOpenLb = document.getElementById('btn-open-leaderboard');
+const btnCloseLb = document.getElementById('btn-close-leaderboard');
+const lbScreen = document.getElementById('leaderboard-screen');
+const lbList = document.getElementById('leaderboard-list');
+
+if(btnOpenLb) {
+    btnOpenLb.addEventListener('click', () => {
+        syncLeaderboardData(); // Açmadan önce oyuncunun son durumunu sunucuya gönder
+        document.getElementById('mobile-main-menu').style.display = 'none';
+        lbScreen.style.display = 'flex';
+        fetchLeaderboard(currentLbTab);
+        playSound('tick');
+    });
+}
+
+if(btnCloseLb) {
+    btnCloseLb.addEventListener('click', () => {
+        lbScreen.style.display = 'none';
+        document.getElementById('mobile-main-menu').style.display = 'flex';
+        playSound('tick');
+    });
+}
+
+// Sekme Değiştirme
+document.getElementById('tab-lb-wealth').addEventListener('click', (e) => {
+    currentLbTab = 'wealth';
+    e.target.classList.add('active');
+    document.getElementById('tab-lb-bankrupt').classList.remove('active');
+    fetchLeaderboard('wealth');
+    playSound('tick');
+});
+
+document.getElementById('tab-lb-bankrupt').addEventListener('click', (e) => {
+    currentLbTab = 'bankruptcies';
+    e.target.classList.add('active');
+    document.getElementById('tab-lb-wealth').classList.remove('active');
+    fetchLeaderboard('bankruptcies');
+    playSound('tick');
+});
+
+// Firebase'den Verileri Çekip Ekrana Çizme (VIP Rozetli)
+function fetchLeaderboard(type) {
+    lbList.innerHTML = `<div class="empty-state"><span>📡</span><p>Sunucuya bağlanılıyor...</p></div>`;
+    
+    const ref = type === 'wealth' ? lbWealthRef : lbBankruptRef;
+    
+    ref.orderByChild('orderScore').limitToFirst(50).once('value', (snapshot) => {
+        lbList.innerHTML = ''; 
+        
+        if (!snapshot.exists()) {
+            lbList.innerHTML = `<div class="empty-state"><span>🕸️</span><p>Henüz kimse listeye giremedi.</p></div>`;
+            return;
+        }
+
+        let rank = 1;
+        const myUid = localStorage.getItem('cts_player_uid');
+
+        snapshot.forEach((childSnapshot) => {
+            const data = childSnapshot.val();
+            const isMe = childSnapshot.key === myUid; 
+            
+            let displayScore = type === 'wealth' 
+                ? "$" + data.score.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0}) 
+                : data.score + " Kez";
+
+            let rankIcon = rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : `#${rank}`;
+            
+            let cardColor = isMe ? "rgba(16, 185, 129, 0.15)" : "rgba(15, 23, 42, 0.6)";
+            let borderColor = isMe ? "1px solid #10b981" : "1px solid #334155";
+            let nameColor = isMe ? "#10b981" : "#f8fafc";
+            let meTag = isMe ? '<span style="font-size: 10px; background: #10b981; color: #fff; padding: 2px 6px; border-radius: 4px; margin-left: 6px;">SEN</span>' : '';
+            
+            // İŞTE YENİ ROZETİMİZ! Eğer veritabanında isVIP true ise isminin yanına parlayan bir taç koyar.
+            let vipBadge = data.isVIP ? '<span style="font-size: 13px; margin-left: 4px; filter: drop-shadow(0 0 5px rgba(251, 191, 36, 0.8));" title="VIP Üye">👑</span>' : '';
+
+            const card = document.createElement('div');
+            card.style.cssText = `display: flex; justify-content: space-between; align-items: center; padding: 14px 15px; border-radius: 12px; background: ${cardColor}; border: ${borderColor};`;
+            
+            card.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span style="font-size: 18px; color: #fbbf24; width: 30px; text-align: center;">${rankIcon}</span>
+                    <span style="font-size: 14px; font-weight: 800; color: ${nameColor}; letter-spacing: 0.5px;">${data.name} ${vipBadge} ${meTag}</span>
+                </div>
+                <span style="font-size: 14px; font-weight: 900; color: ${type === 'wealth' ? '#fbbf24' : '#ef4444'};">${displayScore}</span>
+            `;
+            
+            lbList.appendChild(card);
+            rank++;
+        });
+    });
+}
+// ==========================================================================
+// 🔐 HESAP VE KİMLİK DOĞRULAMA (AUTH) SİSTEMİ
+// ==========================================================================
+
+const authModal = document.getElementById('auth-modal');
+const emailInput = document.getElementById('auth-email');
+const passwordInput = document.getElementById('auth-password');
+const btnLogin = document.getElementById('btn-login');
+const btnRegister = document.getElementById('btn-register');
+const errorMsg = document.getElementById('auth-error-msg');
+
+// Firebase, oyuncunun giriş yapıp yapmadığını otomatik dinler
+auth.onAuthStateChanged((user) => {
+    if (user) {
+        // OYUNCU GİRİŞ YAPMIŞ
+        authModal.style.display = 'none'; // Ekranı gizle
+        
+        // Sahte UID yerine Firebase'in verdiği KESİN VE GERÇEK UID'yi kullan
+        localStorage.setItem('cts_player_uid', user.uid);
+        
+        const uidDisplay = document.getElementById('player-uid-display');
+        if (uidDisplay) uidDisplay.innerText = "#" + user.uid.substring(0, 8).toUpperCase();
+        
+        console.log("Giriş yapıldı! Hoş geldin:", user.email);
+        
+        // Eğer liderlik tablosu fonksiyonumuz varsa yeni UID ile senkronize et
+        if (typeof syncLeaderboardData === 'function') syncLeaderboardData();
+
+    } else {
+        // OYUNCU ÇIKIŞ YAPMIŞ VEYA HİÇ GİRMEMİŞ
+        authModal.style.display = 'flex'; // Giriş ekranını zorla göster
+    }
+});
+
+// KAYIT OL BUTONU
+if (btnRegister) {
+    btnRegister.addEventListener('click', () => {
+        let email = emailInput.value.trim();
+        let pass = passwordInput.value.trim();
+        
+        if (email === "" || pass.length < 6) {
+            errorMsg.innerText = "Lütfen geçerli bir e-posta ve en az 6 haneli şifre girin.";
+            if(typeof playSound === 'function') playSound('error');
+            return;
+        }
+
+        auth.createUserWithEmailAndPassword(email, pass)
+            .then((userCredential) => {
+                // Kayıt başarılı! (onAuthStateChanged otomatik tetiklenip ekranı kapatacak)
+                if(typeof playSound === 'function') playSound('milestone');
+            })
+            .catch((error) => {
+                if (error.code === 'auth/email-already-in-use') {
+                    errorMsg.innerText = "Bu e-posta zaten kayıtlı. Lütfen giriş yapın.";
+                } else {
+                    errorMsg.innerText = "Kayıt Hatası: " + error.message;
+                }
+                if(typeof playSound === 'function') playSound('error');
+            });
+    });
+}
+
+// GİRİŞ YAP BUTONU
+if (btnLogin) {
+    btnLogin.addEventListener('click', () => {
+        let email = emailInput.value.trim();
+        let pass = passwordInput.value.trim();
+
+        if (email === "" || pass === "") {
+            errorMsg.innerText = "Bilgiler boş bırakılamaz.";
+            if(typeof playSound === 'function') playSound('error');
+            return;
+        }
+
+        auth.signInWithEmailAndPassword(email, pass)
+            .then((userCredential) => {
+                // Giriş başarılı! (onAuthStateChanged ekranı kapatacak)
+                if(typeof playSound === 'function') playSound('buy');
+            })
+            .catch((error) => {
+                errorMsg.innerText = "E-posta veya şifre hatalı!";
+                if(typeof playSound === 'function') playSound('error');
+            });
+    });
+}
 </script>
 </body>
 </html>
