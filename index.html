@@ -4864,8 +4864,7 @@ window.confirmNameChange = function() {
     setupButton(newShort, 'SHORT');
 })();
 // ==========================================================================
-// 🐷 KÜRESEL KUMBARA - GARANTİLİ VE YASAL ORANTILI ÖDÜL SİSTEMİ
-// (Çekiliş/Şans faktörü tamamen kaldırıldı, herkes katkısı kadar payını alır)
+// 🐷 KÜRESEL KUMBARA - TEKİL ÖDÜL VE RASTGELE NAKİT SİSTEMİ
 // ==========================================================================
 const piggyRef = database.ref('global/piggyBank');
 let isPiggyExploding = false; 
@@ -4891,7 +4890,7 @@ piggyRef.on('value', (snapshot) => {
     if (progressBar) progressBar.style.width = percent + '%';
     if (progressText) progressText.innerText = `₺${current.toLocaleString()} / ₺${target.toLocaleString()}`;
 
-    // KUMBARA PATLAMA ANI VE GARANTİLİ DAĞITIM
+    // KUMBARA PATLAMA ANI VE TEKİL ÖDÜL SEÇİMİ
     if (current >= target && !isPiggyExploding) {
         isPiggyExploding = true;
         
@@ -4899,47 +4898,48 @@ piggyRef.on('value', (snapshot) => {
         let myContribution = contributors[myUid] || 0; 
         
         if (myContribution > 0) {
-            let totalRewardPool = 500000; // Toplam Nakit Havuzu
             
-            // 1. GARANTİLİ NAKİT: Yatırdığın TL miktarının hedefe oranı kadar nakit garanti!
-            let myShareRatio = myContribution / target;
-            let myCashPrize = Math.floor(totalRewardPool * myShareRatio);
-            
-            playerBalance += myCashPrize;
-            
-            // 2. GARANTİLİ ŞİRKET PAYI VE PREMIUM: 
-            // Çekiliş yok! Havuza katkı sağlayan herkes yatırdığı oranda (%5 Şirket Payı / 1 Ay Premium hakları) payını garantili alır.
-            // Örnek: Katkı sağlayan herkese orantılı hisse ve abonelik ekleniyor.
-            
-            const allCards = document.querySelectorAll('#market-container .stock-card');
-            let grantedShareText = "";
-            
-            if (allCards.length > 0 && myContribution >= 50) {
-                // Yatırılan her 50 TL baz alınarak orantılı şirket payı hesaplanır
-                let shareUnits = Math.floor(myContribution / 50); 
-                let addedShares = shareUnits * 5000; // Her 50 TL için 5.000 adet hisse garanti!
-                
-                let randomCard = allCards[Math.floor(Math.random() * allCards.length)];
-                let companyDisplayName = randomCard.querySelector('.stock-name').textContent;
-                
-                let currentOwned = parseInt(randomCard.querySelector('.stock-owned').textContent.replace(/[^0-9]/g, "")) || 0;
-                let newOwned = currentOwned + addedShares;
-                if (newOwned > 1000000) newOwned = 1000000;
-                randomCard.querySelector('.stock-owned').textContent = "Portföy: " + newOwned + " Adet";
-                
-                grantedShareText = `<br>🎁 Garanti Şirket Payı: <strong>${companyDisplayName}</strong> şirketinden <strong>${addedShares.toLocaleString()} Adet</strong> portföyüne eklendi!`;
-            }
+            // --- TEKİL ZAR ATMA (%80 Nakit, %15 Şirket Payı, %5 Premium) ---
+            let roll = Math.random(); 
+            let prizeTitle = "";
+            let prizeDesc = "";
 
-            // 3. GARANTİLİ PREMIUM DESTEĞİ (Havuza katılan herkese 1 haftalık/1 aylık orantılı VIP tanımlanır)
-            // Yasal risk olmaması için her katılımcıya bu paketten garanti pay verilir:
-            let isGrantedVIP = false;
-            if (myContribution >= 200) { // Belirli bir katkı eşiğini geçen herkese garanti 1 Aylık Premium!
+            if (roll < 0.80) {
+                // %80 İhtimal: Tamamen Rastgele Nakit Ödül
+                let randomCash = Math.floor(50000 + Math.random() * 300000); // 50K ile 350K arası rastgele
+                playerBalance += randomCash;
+                
+                prizeTitle = "💰 RASTGELE NAKİT ÖDÜLÜ!";
+                prizeDesc = `Küresel havuzun gizli kasasından şansına <strong style="color:#10b981;">$${randomCash.toLocaleString()}</strong> nakit para çıktı!`;
+            } 
+            else if (roll < 0.95) {
+                // %15 İhtimal: %5 Şirket Payı (50.000 Adet)
+                const allCards = document.querySelectorAll('#market-container .stock-card');
+                if (allCards.length > 0) {
+                    let randomCard = allCards[Math.floor(Math.random() * allCards.length)];
+                    let companyDisplayName = randomCard.querySelector('.stock-name').textContent;
+                    
+                    let currentOwned = parseInt(randomCard.querySelector('.stock-owned').textContent.replace(/[^0-9]/g, "")) || 0;
+                    let newOwned = currentOwned + 50000; 
+                    if (newOwned > 1000000) newOwned = 1000000;
+                    randomCard.querySelector('.stock-owned').textContent = "Portföy: " + newOwned + " Adet";
+                    
+                    prizeTitle = "👑 ŞİRKET PAYI ÖDÜLÜ!";
+                    prizeDesc = `Şansına havuzdan <strong>${companyDisplayName}</strong> şirketinin <strong>%5 hissesi (50.000 Adet)</strong> çıktı!`;
+                } else {
+                    let fallbackCash = 150000;
+                    playerBalance += fallbackCash;
+                    prizeTitle = "💰 NAKİT ÖDÜLÜ!";
+                    prizeDesc = `Gizli kasadan <strong style="color:#10b981;">$${fallbackCash.toLocaleString()}</strong> nakit kazandın!`;
+                }
+            } 
+            else {
+                // %5 İhtimal: 1 Aylık Ücretsiz Premium Abonelik
                 isPremium = true;
                 document.body.classList.add('premium-theme');
                 localStorage.setItem('cts_theme_active', 'true');
                 localStorage.setItem('cts_premium', 'true');
                 categoryRequirements['vip'] = 0;
-                isGrantedVIP = true;
                 
                 const premiumBtn = document.getElementById('btn-buy-premium');
                 if (premiumBtn) {
@@ -4948,21 +4948,17 @@ piggyRef.on('value', (snapshot) => {
                     premiumBtn.style.color = "#fff";
                     premiumBtn.style.boxShadow = "none";
                 }
+                
+                prizeTitle = "🌟 1 AYLLIK PREMIUM KAZANDIN!";
+                prizeDesc = `İnanılmaz nadir şans! Küresel kumbara sana <strong>1 Aylık Ücretsiz VIP Abonelik</strong> hediye etti!`;
             }
 
             updateBalanceUI();
             saveGame();
             if (typeof syncLeaderboardData === 'function') syncLeaderboardData();
             
-            let vipText = isGrantedVIP ? `<br>🌟 <span style="color:#fbbf24;">Tebrikler! Havuz katkı eşiğini aştığın için <strong>1 Aylık Ücretsiz Premium Abonelik</strong> hesabına tanımlandı!</span>` : "";
-
             if (typeof showStoreModal === 'function') {
-                showStoreModal("🐷 KUMBARA DAĞITIMI TAMAMLANDI", 
-                    `Havuza yaptığın ₺${myContribution} katkı karşılığı hak ettiğin garantili ödüller:<br><br>` +
-                    `<strong style="color:#10b981;">💰 Nakit Payı: $${myCashPrize.toLocaleString()}</strong>` +
-                    grantedShareText +
-                    vipText, 
-                    true);
+                showStoreModal(prizeTitle, prizeDesc, true);
                 playSound('milestone');
             }
         } else {
@@ -4989,7 +4985,7 @@ if (btnFeedPiggy) {
 
         playSound('buy'); 
         if (typeof showStoreModal === 'function') {
-            showStoreModal("ÖDEME BAŞARILI", "₺50 ödemeniz alındı. Garantili ödül havuzundaki yerinizi aldınız!", true);
+            showStoreModal("ÖDEME BAŞARILI", "₺50 ödemeniz alındı. Havuzdaki yerinizi aldınız!", true);
         }
         
         piggyRef.child('currentAmount').transaction((currentVal) => {
