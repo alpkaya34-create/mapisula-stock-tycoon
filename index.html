@@ -35,6 +35,87 @@
 </style>
 </head>
 <body>
+    <!-- ========================================== -->
+    <!-- SİNEMATİK YOĞUN TOZ/DUMAN PARÇACIKLI AÇILIŞ -->
+    <!-- ========================================== -->
+    <div id="intro-splash-screen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #050814; z-index: 999999; display: flex; justify-content: center; align-items: center; transition: opacity 1.2s ease; overflow: hidden;">
+        
+        <!-- Yoğun Parçacık Alanı -->
+        <div id="particle-container" style="position: absolute; width: 100%; height: 100%; pointer-events: none;"></div>
+
+        <!-- CTS Logosu -->
+        <h1 id="intro-logo" style="font-size: 75px; font-weight: 900; color: #fff; font-family: sans-serif; letter-spacing: 6px; opacity: 0; transform: scale(0.6); transition: all 1.8s cubic-bezier(0.19, 1, 0.22, 1); z-index: 2;">
+            CTS
+        </h1>
+    </div>
+
+    <style>
+        @keyframes dustFloat {
+            0% { transform: translate(0, 0) scale(0.1); opacity: 0; }
+            20% { opacity: 0.9; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(var(--s)); opacity: 0; }
+        }
+    </style>
+
+    <script>
+        window.addEventListener('load', () => {
+            const splash = document.getElementById('intro-splash-screen');
+            const logo = document.getElementById('intro-logo');
+            const container = document.getElementById('particle-container');
+
+            let isUserVIP = typeof isPremium !== 'undefined' ? isPremium : (localStorage.getItem('cts_premium') === 'true');
+            let dustColor = isUserVIP ? '#fbbf24' : '#00f2fe';
+
+            // Parçacık sayısını 150'ye çıkararak yoğun bir toz bulutu efekti yaratıyoruz
+            for (let i = 0; i < 150; i++) {
+                let particle = document.createElement('div');
+                
+                // İrili ufaklı boyutlar (Kimi minik toz, kimi büyük parça: 1px ile 10px arası)
+                let size = Math.random() * 9 + 1;
+                let scaleEnd = Math.random() * 2 + 0.8;
+                
+                // Etrafa dağılış mesafeleri
+                let tx = (Math.random() - 0.5) * window.innerWidth * 1.2;
+                let ty = (Math.random() - 0.5) * window.innerHeight * 1.2;
+                
+                particle.style.cssText = `
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: ${size}px;
+                    height: ${size}px;
+                    background: ${dustColor};
+                    border-radius: 50%;
+                    box-shadow: 0 0 ${size * 2.5}px ${dustColor};
+                    --tx: ${tx}px;
+                    --ty: ${ty}px;
+                    --s: ${scaleEnd};
+                    animation: dustFloat ${Math.random() * 1.8 + 0.8}s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+                    animation-delay: ${Math.random() * 0.25}s;
+                `;
+                container.appendChild(particle);
+            }
+
+            setTimeout(() => {
+                if (logo) {
+                    logo.style.opacity = '1';
+                    logo.style.transform = 'scale(1)';
+                    logo.style.textShadow = isUserVIP 
+                        ? '0 0 35px rgba(251,191,36,0.8), 0 0 70px rgba(251,191,36,0.4)' 
+                        : '0 0 35px rgba(0,242,254,0.8), 0 0 70px rgba(0,242,254,0.4)';
+                }
+            }, 200);
+
+            setTimeout(() => {
+                if (splash) {
+                    splash.style.opacity = '0';
+                    setTimeout(() => {
+                        splash.style.display = 'none';
+                    }, 1200);
+                }
+            }, 2500);
+        });
+    </script>
     <style>
         /* Küresel Kumbara Pembe Neon Çerçeve Animasyonu */
     @keyframes neonPulsePink {
@@ -57,6 +138,18 @@
 
     .premium-neon-box {
         animation: neonPulseGold 2.5s infinite ease-in-out;
+    }
+    /* Mega Küresel Kumbara Holografik (RGB) Neon Animasyonu */
+    @keyframes neonPulseMega {
+        0% { box-shadow: 0 0 15px rgba(0,242,254,0.4), inset 0 0 10px rgba(0,242,254,0.2); border-color: #00f2fe; }
+        33% { box-shadow: 0 0 40px rgba(236,72,153,0.9), inset 0 0 20px rgba(236,72,153,0.5); border-color: #ec4899; }
+        66% { box-shadow: 0 0 40px rgba(251,191,36,0.9), inset 0 0 20px rgba(251,191,36,0.5); border-color: #fbbf24; }
+        100% { box-shadow: 0 0 15px rgba(0,242,254,0.4), inset 0 0 10px rgba(0,242,254,0.2); border-color: #00f2fe; }
+    }
+
+    .mega-neon-box {
+        animation: neonPulseMega 1.5s infinite linear;
+        transition: animation-duration 0.3s ease;
     }
         /* ======================================================== */
         /* 1. ORİJİNAL OYUN KODLARI (POP-UP VE ANİMASYONLAR)        */
@@ -976,6 +1069,24 @@
         <div id="store-container" class="market-container" style="display: none;">
             <h3 class="section-title text-gold" style="margin-bottom: 20px;">CTS MAĞAZA (TRY)</h3>
             <!-- ========================================== -->
+            <!-- MEGA KÜRESEL KUMBARA ARAYÜZÜ               -->
+            <!-- ========================================== -->
+            <div class="stock-card mega-neon-box" id="mega-piggy-card-container" style="flex-direction: column; align-items: stretch; gap: 15px; padding: 20px; border: 2px solid #00f2fe; background: linear-gradient(145deg, rgba(0,242,254,0.1), rgba(15,23,42,0.8)); margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="flex: 1;">
+                        <h4 style="color:#00f2fe; font-size: 18px; font-weight:900; margin-bottom: 6px; text-shadow: 0 0 10px rgba(0,242,254,0.6);">🌌 MEGA KÜRESEL KUMBARA</h4>
+                        <p style="font-size:11px; color:#94a3b8; font-weight: 700; line-height: 1.4;">Büyük oynayanların havuzu! Bar dolduğunda devasa ödülü paylaş!<br><span style="color: #fbbf24; font-size: 10px;">(Ödüller: $1.000.000'a Varan Nakit, %5 Rastgele Şirket Payı, 2 Aylık Premium)</span></p>
+                    </div>
+                </div>
+                
+                <div style="background: #0f172a; border-radius: 12px; height: 26px; width: 100%; position: relative; overflow: hidden; border: 1px solid #334155;">
+                    <div id="mega-piggy-progress-bar" style="background: linear-gradient(90deg, #00f2fe, #ec4899, #fbbf24); background-size: 200% 200%; animation: gradientMove 2s ease infinite; height: 100%; width: 0%; transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);"></div>
+                    <div id="mega-piggy-progress-text" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; color: #fff; text-shadow: 0 0 4px rgba(0,0,0,0.9); letter-spacing: 1px;">BAĞLANIYOR...</div>
+                </div>
+
+                <button class="trade-btn" id="btn-feed-mega-piggy" style="background: linear-gradient(135deg, #00f2fe 0%, #3b82f6 100%); color: #fff; box-shadow: 0 5px 15px rgba(0, 242, 254, 0.4); padding: 14px; font-size: 14px; font-weight: 900; letter-spacing: 1px;">HAVUZA ₺100 EKLE</button>
+            </div>
+            <!-- ========================================== -->
             <!-- KÜRESEL KUMBARA (PIGGY BANK) ARAYÜZÜ       -->
             <!-- ========================================== -->
             <div class="stock-card piggy-neon-box" id="piggy-card-container" style="flex-direction: column; align-items: stretch; gap: 15px; padding: 20px; border: 2px solid #ec4899; background: linear-gradient(145deg, rgba(236,72,153,0.1), rgba(15,23,42,0.8)); box-shadow: 0 0 25px rgba(236,72,153,0.15); margin-bottom: 20px;">
@@ -993,7 +1104,7 @@
                     <div id="piggy-progress-text" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; color: #fff; text-shadow: 0 0 4px rgba(0,0,0,0.8); letter-spacing: 1px;">BAĞLANIYOR...</div>
                 </div>
 
-                <button class="trade-btn" id="btn-feed-piggy" style="background: linear-gradient(135deg, #ec4899 0%, #be185d 100%); color: #fff; box-shadow: 0 5px 15px rgba(236, 72, 153, 0.3); padding: 14px; font-size: 13px; font-weight: 900;">HAVUZA ₺50 YATIR</button>
+                <button class="trade-btn" id="btn-feed-piggy" style="background: linear-gradient(135deg, #ec4899 0%, #be185d 100%); color: #fff; box-shadow: 0 5px 15px rgba(236, 72, 153, 0.3); padding: 14px; font-size: 13px; font-weight: 900;">HAVUZA ₺50 EKLE</button>
             </div>
             <!-- ========================================== -->
             
@@ -1031,12 +1142,15 @@
             </div>
 
             <div class="stock-card" style="flex-direction: column; align-items: stretch; gap: 15px; padding: 20px; margin-top: 10px;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div><h4 style="color:#fff; font-size: 15px; font-weight:900;">💵 Kasa Destek Paketi</h4><p id="support-package-desc" style="font-size:11px; color:#94a3b8; margin-top:4px;">Anında $10,000 Oyun Parası</p></div>
-                    <span style="font-size: 20px;">💰</span>
-                </div>
-                <button class="trade-btn btn-buy" id="btn-buy-money" style="width: 100%;">₺49.99 SATIN AL</button>
-            </div>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h4 style="color:#fff; font-size: 15px; font-weight:900;">💵 Kasa Destek Paketi</h4>
+            <p id="support-package-desc" style="font-size:11px; color:#94a3b8; margin-top:4px;">Anında $10,000 Oyun Parası</p>
+        </div>
+        <span style="font-size: 20px;">💰</span>
+    </div>
+    <button class="trade-btn btn-buy" id="btn-buy-money" style="width: 100%;">₺49.99 SATIN AL</button>
+</div>
 
             <div class="stock-card" style="flex-direction: column; align-items: stretch; gap: 15px; padding: 20px; margin-top: 10px;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -1484,18 +1598,21 @@ function handleBGM() {
             // --- ÇIKIŞ (GÜVENLİ HESAP ÇIKIŞI) BUTONU İŞLEVİ ---
             const btnExit = document.getElementById('btn-exit');
             if (btnExit) {
-                // Eski kodu tamamen ezip yeni halini (Log Out) ekliyoruz
                 btnExit.addEventListener('click', () => {
-                    // 1. Çıkmadan önce oyuncunun son ilerlemesini yerel olarak kaydet
+                    // 1. Çıkmadan önce oyuncunun son ilerlemesini kaydet
                     saveGame();
                     if (typeof syncLeaderboardData === 'function') syncLeaderboardData();
 
                     // 2. Firebase'den güvenli çıkış yap
                     auth.signOut().then(() => {
                         console.log("Güvenli çıkış yapıldı.");
-                        playSound('tick');
+                        if (typeof playSound === 'function') playSound('tick');
                         
-                        // 3. Sayfayı yenileyerek belleği temizle ve giriş ekranını (Auth Modal) geri getir
+                        // 3. İŞTE KRİTİK NOKTA: BÜTÜN TARAYICI HAFIZASINI SİL!
+                        // Önceki hesaba ait para, hisse ve UID gibi tüm hayalet verileri yok eder.
+                        localStorage.clear();
+                        
+                        // 4. Sayfayı tertemiz bir şekilde yenile
                         location.reload(); 
                     }).catch((error) => {
                         console.error("Çıkış yapılırken hata oluştu:", error);
@@ -2001,27 +2118,30 @@ if (typeof catBtns !== 'undefined') {
     updateStoreUI();
     checkMilestones();
                 
-                // YENİ EKLENEN: Terminal ücreti yazısını Premium durumuna göre değiştirme
-const feeDisplay = document.getElementById('terminal-fee-display');
-if (feeDisplay) {
-    if (isPremium) {
-        feeDisplay.innerText = "👑 Terminal: Ücretsiz";
-        feeDisplay.style.color = "#10b981";
-    } else {
-        // Ekrandaki yazıyı ezen kısmı da dinamik hale getiriyoruz
-        let currentFee = 1;
-        if (playerBalance < 50000) currentFee = 1;
-        else if (playerBalance < 250000) currentFee = 5;
-        else if (playerBalance < 1000000) currentFee = 10;
-        else if (playerBalance < 5000000) currentFee = 20;
-        else if (playerBalance < 20000000) currentFee = 40;
-        else currentFee = 80;
+    // YENİ EKLENEN: Terminal ücreti yazısını Premium durumuna göre değiştirme
+    const feeDisplay = document.getElementById('terminal-fee-display');
+    if (feeDisplay) {
+        if (isPremium) {
+            feeDisplay.innerText = "👑 Terminal: Ücretsiz";
+            feeDisplay.style.color = "#10b981";
+        } else {
+            let currentFee = 1;
+            if (playerBalance < 50000) currentFee = 1;
+            else if (playerBalance < 250000) currentFee = 5;
+            else if (playerBalance < 1000000) currentFee = 10;
+            else if (playerBalance < 5000000) currentFee = 20;
+            else if (currentFee = 80); // (mevcut kodun)
 
-        feeDisplay.innerText = "⚡ Terminal: -$" + currentFee;
-        feeDisplay.style.color = "#ef4444";
+            feeDisplay.innerText = "⚡ Terminal: -$" + currentFee;
+            feeDisplay.style.color = "#ef4444";
+        }
+    }
+
+    // --- İŞTE BURAYA, FONKSİYONUN EN SONUNA EKLEDİĞİMİZ KISIM ---
+    if (typeof updateCashPackageUI === 'function') {
+        updateCashPackageUI();
     }
 }
-            }
 
             // --- HAYALET TIKLAMA (GHOST CLICK) KORUMASI SİSTEMİ ---
 let isTradePanelLocked = false;
@@ -3037,49 +3157,48 @@ setInterval(() => {
 
                 // Terminal Kesintisi ve Parlama Efekti
 if (!isPremium) {
-    // 1. Adım: Toplam Servete (Kasa Performansına) göre dinamik ücreti belirle
-    // (Eğer totalWealth tanımlı değilse doğrudan playerBalance baz alınır)
-    let currentWealth = typeof totalWealth !== 'undefined' ? totalWealth : playerBalance;
+    let currentWealth = typeof totalWealth !== 'undefined' ? totalWealth : (typeof gameStats !== 'undefined' ? gameStats.maxWealth : playerBalance);
     let terminalFee = 1;
 
+    // İstediğin net kademelendirme sıralaması:
     if (currentWealth >= 20000000) {
-        terminalFee = 160;
+        terminalFee = 160; // 20 Milyon$ ve üzeri
     } else if (currentWealth >= 15000000) {
-        terminalFee = 80;
+        terminalFee = 80;  // 15 Milyon$ ile 20 Milyon$ arası
     } else if (currentWealth >= 5000000) {
-        terminalFee = 40;
+        terminalFee = 40;  // 5 Milyon$ ile 15 Milyon$ arası
     } else if (currentWealth >= 1000000) {
-        terminalFee = 20;
+        terminalFee = 20;  // 1 Milyon$ ile 5 Milyon$ arası
     } else if (currentWealth >= 250000) {
-        terminalFee = 10;
+        terminalFee = 10;  // 250 Bin$ ile 1 Milyon$ arası
     } else if (currentWealth >= 50000) {
-        terminalFee = 5;
+        terminalFee = 5;   // 50 Bin$ ile 250 Bin$ arası
     } else {
-        terminalFee = 1;
+        terminalFee = 1;   // 50 Bin$'ın altı
     }
 
-    // Ücreti kasadan düşme ve arayüze yansıtma işlemleri buradan devam eder...
+    // Arayüze yansıtma ve parlama efekti
+    const feeDisplay = document.getElementById('terminal-fee-display');
+    if (feeDisplay) {
+        feeDisplay.innerText = "⚡ Terminal: -$" + terminalFee;
+        
+        feeDisplay.style.color = '#ffffff';
+        feeDisplay.style.transform = 'scale(1.05)';
+        setTimeout(() => {
+            feeDisplay.style.color = '#ef4444';
+            feeDisplay.style.transform = 'scale(1)';
+        }, 300);
+    }
 
-                    // 2. Adım: Kasada yeterli para varsa kesintiyi yap
-                    if (playerBalance >= terminalFee) {
-                        playerBalance = Math.round((playerBalance - terminalFee) * 100) / 100; // Kuruş hatasını çözer
-                        
-                        const feeDisplay = document.getElementById('terminal-fee-display');
-                        if (feeDisplay) {
-                            // Ekrandaki yazıyı da o anki kesintiye göre güncelle
-                            feeDisplay.innerText = "⚡ Terminal: -$" + terminalFee;
-                            
-                            // Parlama efekti
-                            feeDisplay.style.color = '#ffffff';
-                            feeDisplay.style.transform = 'scale(1.05)';
-                            setTimeout(() => {
-                                feeDisplay.style.color = '#ef4444';
-                                feeDisplay.style.transform = 'scale(1)';
-                            }, 300);
-                        }
-                        updateBalanceUI();
-                    }
-                }
+    // Kasadan düşme işlemi
+    if (playerBalance >= terminalFee) {
+        playerBalance = Math.round((playerBalance - terminalFee) * 100) / 100;
+    } else {
+        playerBalance = 0;
+    }
+    
+    updateBalanceUI();
+}
 
                 stockCards.forEach(card => {
                     // Tek bir kartta DOM elemanı eksik olsa bile tüm oyun döngüsünü
@@ -3533,107 +3652,141 @@ if (btnCloseWalletStats) {
     });
 }
             function saveGame() {
-                if (typeof syncLeaderboardData === 'function') syncLeaderboardData();
-                localStorage.setItem('cts_balance', playerBalance);
-                localStorage.setItem('cts_debt', playerDebt);
-                localStorage.setItem('cts_principal_debt', playerPrincipalDebt);
-                localStorage.setItem('cts_stats', JSON.stringify(gameStats));
-                // YENİ EKLENEN: Yaşam Alanı Eşyalarını Kaydet
-                if (typeof luxuryItems !== 'undefined') {
-                    let lifestyleSave = {};
-                    luxuryItems.forEach(item => {
-                        lifestyleSave[item.id] = item.owned;
-                    });
-                    localStorage.setItem('cts_lifestyle', JSON.stringify(lifestyleSave));
-                }
-                localStorage.setItem('cts_averages', JSON.stringify(stockAverages));
-                localStorage.setItem('cts_tick_count', tickCount);
-                localStorage.setItem('cts_daily_trades', dailyTrades);
-                localStorage.setItem('cts_start_wealth', startOfDayWealth);
-                localStorage.setItem('cts_milestones', JSON.stringify(reachedMilestones));
-                
-                localStorage.setItem('cts_premium', isPremium);
-                localStorage.setItem('cts_noads', hasAdsRemoved);
-                localStorage.setItem('cts_ai_rights', aiRights);
-                localStorage.setItem('cts_ai_reset_day', lastAiResetDay);
-                
-                let portfolio = {};
-                stockCards.forEach(card => {
-                    portfolio[card.dataset.name] = parseInt(card.querySelector('.stock-owned').textContent.replace(/[^0-9]/g, "")) || 0;
-                });
-                localStorage.setItem('cts_portfolio', JSON.stringify(portfolio));
-                localStorage.setItem('cts_futures', JSON.stringify(activePositions));
+    if (typeof syncLeaderboardData === 'function') syncLeaderboardData();
+    
+    // 1. Senin mevcut localStorage kayıtların (Aynen kalıyor)
+    localStorage.setItem('cts_balance', playerBalance);
+    localStorage.setItem('cts_debt', playerDebt);
+    localStorage.setItem('cts_principal_debt', playerPrincipalDebt);
+    localStorage.setItem('cts_stats', JSON.stringify(gameStats));
+    
+    if (typeof luxuryItems !== 'undefined') {
+        let lifestyleSave = {};
+        luxuryItems.forEach(item => {
+            lifestyleSave[item.id] = item.owned;
+        });
+        localStorage.setItem('cts_lifestyle', JSON.stringify(lifestyleSave));
+    }
+    localStorage.setItem('cts_averages', JSON.stringify(stockAverages));
+    localStorage.setItem('cts_tick_count', tickCount);
+    localStorage.setItem('cts_daily_trades', dailyTrades);
+    localStorage.setItem('cts_start_wealth', startOfDayWealth);
+    localStorage.setItem('cts_milestones', JSON.stringify(reachedMilestones));
+    
+    localStorage.setItem('cts_premium', isPremium);
+    localStorage.setItem('cts_noads', hasAdsRemoved);
+    localStorage.setItem('cts_ai_rights', aiRights);
+    localStorage.setItem('cts_ai_reset_day', lastAiResetDay);
+    
+    let portfolio = {};
+    stockCards.forEach(card => {
+        portfolio[card.dataset.name] = parseInt(card.querySelector('.stock-owned').textContent.replace(/[^0-9]/g, "")) || 0;
+    });
+    localStorage.setItem('cts_portfolio', JSON.stringify(portfolio));
+    localStorage.setItem('cts_futures', JSON.stringify(activePositions));
 
-                // --- YENİ EKLENEN: TÜM HİSSE VE KRİPTO FİYATLARINI KAYDET ---
-                let stockPrices = {};
-                stockCards.forEach(card => {
-                    const name = card.dataset.name;
-                    const priceText = card.querySelector('.stock-price').innerText;
-                    stockPrices[name] = priceText;
-                });
-                localStorage.setItem('cts_stock_prices', JSON.stringify(stockPrices));
-                // -------------------------------------------------------------
-            }
+    let stockPrices = {};
+    stockCards.forEach(card => {
+        const name = card.dataset.name;
+        const priceText = card.querySelector('.stock-price').innerText;
+        stockPrices[name] = priceText;
+    });
+    localStorage.setItem('cts_stock_prices', JSON.stringify(stockPrices));
+
+    // ==========================================================================
+    // ☁️ 2. YENİ EKLENEN: LOKALE KAYDEDİLEN HER ŞEYİ ANINDA BULUTA (FIREBASE) GÖNDER
+    // ==========================================================================
+    let uid = localStorage.getItem('cts_player_uid');
+    if (uid) {
+        let pName = localStorage.getItem('cts_player_name') || "CTS TRADER";
+        
+        database.ref('users/' + uid).set({
+            name: pName,
+            balance: playerBalance,
+            debt: playerDebt,
+            principalDebt: playerPrincipalDebt,
+            stats: gameStats,
+            lifestyle: localStorage.getItem('cts_lifestyle'),
+            averages: stockAverages,
+            portfolio: portfolio,
+            isPremium: isPremium,
+            milestones: reachedMilestones,
+            lastUpdated: Date.now()
+        }).then(() => {
+            console.log("☁️ İlerleme hem localde hem bulutta güvenceye alındı!");
+        }).catch((error) => {
+            console.error("Buluta kayıt hatası:", error);
+        });
+    }
+}
             function checkMilestones() {
-                let triggered = false;
-                let mTitle = "";
-                let mDesc = "";
+    let mTitle = "";
+    let mDesc = "";
+    let triggered = false;
 
-                if (playerBalance >= 20000000 && !reachedMilestones.m20) {
-                    reachedMilestones.m20 = true;
-                    mTitle = "🪙 $20 MİLYON BARAJI!";
-                    mDesc = "Efsanevi bir servet! Yeraltı ekonomisinin kapıları sana sonuna kadar açıldı.<br><br><span style='color:#f59e0b;'>🔓 GİZLİ KRİPTO BORSASI AÇILDI!</span><br><span style='color:#94a3b8; font-size:11px;'>Aşağıdan Borsa sekmesine tıklayarak kriptoya geçiş yapabilirsin.</span><br><br><span style='color:#ef4444;'>⚡ Yeni Terminal Ücreti: -$160</span> <span style='color:#10b981; font-weight: bold;'>(👑 Premium ile Ücretsiz!)</span>";
-                    triggered = true;
+    // Kontrolleri sırayla yapıyoruz. En son ulaşılan (en büyük) baraj en altta olduğu için 
+    // mTitle ve mDesc değişkenine en son o yazılacak ve ekrana o gelecektir.
+    
+    if (playerBalance >= 50000 && !reachedMilestones.k50) {
+        reachedMilestones.k50 = true;
+        mTitle = "💸 $50 BİN BARAJI!";
+        mDesc = "İlk büyük hedefe ulaştın! Banka sana artık çok daha fazla güveniyor.<br><br><span style='color:#00f2fe;'>📉 Kredi Faizi %2.00 ➔ %1.75'e Düştü!</span><br><br><span style='color:#ef4444;'>⚡ Terminal Ücreti: -$5</span>";
+        triggered = true;
+    }
+    if (playerBalance >= 250000 && !reachedMilestones.k250) {
+        reachedMilestones.k250 = true;
+        mTitle = "📈 $250 BİN BARAJI!";
+        mDesc = "İşler büyüyor! Yeni yatırım fırsatları seni bekliyor.<br><br><span style='color:#10b981;'>🔓 Biyoteknoloji Hisseleri Açıldı!</span><br><span style='color:#00f2fe;'>📉 Kredi Faizi %1.75 ➔ %1.50'ye Düştü!</span><br><br><span style='color:#ef4444;'>⚡ Terminal Ücreti: -$10</span>";
+        triggered = true;
+    }
+    if (playerBalance >= 1000000 && !reachedMilestones.m1) {
+        reachedMilestones.m1 = true;
+        mTitle = "💼 $1 MİLYON BARAJI!";
+        mDesc = "Resmen bir milyonersin! Portföyün hızla genişliyor.<br><br><span style='color:#10b981;'>🔓 Enerji Hisseleri Açıldı!</span><br><span style='color:#00f2fe;'>📉 Kredi Faizi %1.50 ➔ %1.25'e Düştü!</span><br><br><span style='color:#ef4444;'>⚡ Terminal Ücreti: -$20</span>";
+        triggered = true;
+    }
+    if (playerBalance >= 5000000 && !reachedMilestones.m5) {
+        reachedMilestones.m5 = true;
+        mTitle = "🚀 $5 MİLYON BARAJI!";
+        mDesc = "Harika gidiyorsun! Sermayen durdurulamaz şekilde katlanıyor.<br><br><span style='color:#10b981;'>🔓 E-Ticaret Hisseleri Açıldı!</span><br><span style='color:#00f2fe;'>📉 Kredi Faizi %1.25 ➔ %1.00'a Düştü!</span><br><br><span style='color:#ef4444;'>⚡ Terminal Ücreti: -$40</span>";
+        triggered = true;
+    }
+    if (playerBalance >= 15000000 && !reachedMilestones.m15) {
+        reachedMilestones.m15 = true;
+        mTitle = "💎 $15 MİLYON BARAJI!";
+        mDesc = "İnanılmaz! Artık piyasayı yönlendiren bir devsiniz.<br><br><span style='color:#10b981;'>🔓 Siber Güvenlik Hisseleri Açıldı!</span><br><span style='color:#00f2fe;'>📉 Kredi Faizi %1.00 ➔ %0.75'e Düştü!</span><br><br><span style='color:#ef4444;'>⚡ Terminal Ücreti: -$80</span>";
+        triggered = true;
+    }
+    if (playerBalance >= 20000000 && !reachedMilestones.m20) {
+        reachedMilestones.m20 = true;
+        mTitle = "🪙 $20 MİLYON BARAJI!";
+        mDesc = "Efsanevi bir servet! Yeraltı ekonomisinin kapıları sana sonuna kadar açıldı.<br><br><span style='color:#f59e0b;'>🔓 GİZLİ KRİPTO BORSASI AÇILDI!</span><br><br><span style='color:#ef4444;'>⚡ Terminal Ücreti: -$160</span>";
+        triggered = true;
 
-                    // --- YENİ: BORSA BUTONUNU DİKKAT ÇEKİCİ HALE GETİR ---
-                    const borsaNavBtn = document.getElementById('btn-nav-borsa'); // ALT MENÜDEKİ BORSA BUTONUNUN ID'Sİ
-                    if (borsaNavBtn) {
-                        borsaNavBtn.innerHTML = 'Borsa <span style="color:#00f2fe; font-size:10px;">/ Kripto</span>';
-                        borsaNavBtn.style.boxShadow = "0px -5px 15px rgba(0, 242, 254, 0.4)";
-                        borsaNavBtn.style.borderTop = "2px solid #00f2fe";
-                        borsaNavBtn.style.color = "#00f2fe";
-                    }
-                } else if (playerBalance >= 15000000 && !reachedMilestones.m15) {
-                    reachedMilestones.m15 = true;
-                    mTitle = "💎 $15 MİLYON BARAJI!";
-                    mDesc = "İnanılmaz! Artık piyasayı yönlendiren bir devsiniz.<br><br><span style='color:#10b981;'>🔓 Siber Güvenlik Hisseleri Açıldı!</span><br><span style='color:#00f2fe;'>📉 Kredi Faizi %1.00 ➔ %0.75'e Düştü!</span><br><br><span style='color:#ef4444;'>⚡ Terminal Ücreti: -$80</span> <span style='color:#10b981; font-weight: bold;'>(👑 Premium ile Ücretsiz!)</span>";
-                    triggered = true;
-                } else if (playerBalance >= 5000000 && !reachedMilestones.m5) {
-                    reachedMilestones.m5 = true;
-                    mTitle = "🚀 $5 MİLYON BARAJI!";
-                    mDesc = "Harika gidiyorsun! Sermayen durdurulamaz şekilde katlanıyor.<br><br><span style='color:#10b981;'>🔓 E-Ticaret Hisseleri Açıldı!</span><br><span style='color:#00f2fe;'>📉 Kredi Faizi %1.25 ➔ %1.00'a Düştü!</span><br><br><span style='color:#ef4444;'>⚡ Yeni Terminal Ücreti: -$40</span> <span style='color:#10b981; font-weight: bold;'>(👑 Premium ile Ücretsiz!)</span>";
-                    triggered = true;
-                } else if (playerBalance >= 1000000 && !reachedMilestones.m1) {
-                    reachedMilestones.m1 = true;
-                    mTitle = "💼 $1 MİLYON BARAJI!";
-                    mDesc = "Resmen bir milyonersin! Portföyün hızla genişliyor.<br><br><span style='color:#10b981;'>🔓 Enerji Hisseleri Açıldı!</span><br><span style='color:#00f2fe;'>📉 Kredi Faizi %1.50 ➔ %1.25'e Düştü!</span><br><br><span style='color:#ef4444;'>⚡ Yeni Terminal Ücreti: -$20</span> <span style='color:#10b981; font-weight: bold;'>(👑 Premium ile Ücretsiz!)</span>";
-                    triggered = true;
-                } else if (playerBalance >= 250000 && !reachedMilestones.k250) {
-                    reachedMilestones.k250 = true;
-                    mTitle = "📈 $250 BİN BARAJI!";
-                    mDesc = "İşler büyüyor! Yeni yatırım fırsatları seni bekliyor.<br><br><span style='color:#10b981;'>🔓 Biyoteknoloji Hisseleri Açıldı!</span><br><span style='color:#00f2fe;'>📉 Kredi Faizi %1.75 ➔ %1.50'ye Düştü!</span><br><br><span style='color:#ef4444;'>⚡ Yeni Terminal Ücreti: -$10</span> <span style='color:#10b981; font-weight: bold;'>(👑 Premium ile Ücretsiz!)</span>";
-                    triggered = true;
-                } else if (playerBalance >= 50000 && !reachedMilestones.k50) {
-                    reachedMilestones.k50 = true;
-                    mTitle = "💸 $50 BİN BARAJI!";
-                    mDesc = "İlk büyük hedefe ulaştın! Banka sana artık çok daha fazla güveniyor.<br><br><span style='color:#00f2fe;'>📉 Kredi Faizi %2.00 ➔ %1.75'e Düştü!</span><br><br><span style='color:#ef4444;'>⚡ Terminal Ücreti: -$5</span> <span style='color:#10b981; font-weight: bold;'>(👑 Premium ile Ücretsiz!)</span>";
-                    triggered = true;
-                }
+        const borsaNavBtn = document.getElementById('btn-nav-borsa');
+        if (borsaNavBtn) {
+            borsaNavBtn.innerHTML = 'Borsa <span style="color:#00f2fe; font-size:10px;">/ Kripto</span>';
+            borsaNavBtn.style.boxShadow = "0px -5px 15px rgba(0, 242, 254, 0.4)";
+            borsaNavBtn.style.borderTop = "2px solid #00f2fe";
+            borsaNavBtn.style.color = "#00f2fe";
+        }
+    }
 
-                if (triggered) {
-                    document.getElementById('milestone-title').innerText = mTitle;
-                    document.getElementById('milestone-desc').innerHTML = mDesc;
-                    document.getElementById('summary-overlay').classList.add('active');
-                    document.getElementById('milestone-modal').classList.add('show');
-                    saveGame();
-                    playSound('milestone');
-                }
-            }
+    // Eğer birden fazla atlandıysa, en alttaki (en büyük) baraj mTitle ve mDesc olarak kalacağı için ekrana o yansır.
+    if (triggered) {
+        document.getElementById('milestone-title').innerText = mTitle;
+        document.getElementById('milestone-desc').innerHTML = mDesc;
+        document.getElementById('summary-overlay').classList.add('active');
+        document.getElementById('milestone-modal').classList.add('show');
+        saveGame();
+        playSound('milestone');
+    }
+}
 
-            document.getElementById('btn-close-milestone').addEventListener('click', () => {
-                document.getElementById('summary-overlay').classList.remove('active');
-                document.getElementById('milestone-modal').classList.remove('show');
-            });
+document.getElementById('btn-close-milestone').addEventListener('click', () => {
+    document.getElementById('summary-overlay').classList.remove('active');
+    document.getElementById('milestone-modal').classList.remove('show');
+});
 
             function loadGame() {
                 if (localStorage.getItem('cts_sound') !== null) { isSoundEnabled = localStorage.getItem('cts_sound') === 'true'; toggleSound.checked = isSoundEnabled; }
@@ -4692,6 +4845,85 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
+// ==========================================================================
+// 🎬 SİNEMATİK CTS AÇILIŞ EKRANI YÖNETİCİSİ
+// ==========================================================================
+window.addEventListener('load', () => {
+    const splash = document.getElementById('intro-splash-screen');
+    const logo = document.getElementById('intro-logo');
+
+    // Sayfa yüklendikten yarım saniye sonra logonun belirme animasyonunu tetikle
+    setTimeout(() => {
+        if (logo) {
+            logo.style.opacity = '1';
+            logo.style.transform = 'scale(1)';
+        }
+    }, 300);
+
+    // Toplam 2.2 saniye sonra açılış ekranını yavaşça karartıp tamamen kaldır
+    setTimeout(() => {
+        if (splash) {
+            splash.style.opacity = '0';
+            setTimeout(() => {
+                splash.style.display = 'none';
+            }, 1000); // 1 saniye kararma süresi bittikten sonra DOM'dan tamamen gizle
+        }
+    }, 2200);
+});
+// ==========================================================================
+// 💵 DİNAMİK KASA DESTEK PAKETİ (Kademeli Fiyatlandırma)
+// ==========================================================================
+function updateCashPackageUI() {
+    let supportAmount = Math.floor(playerBalance * 0.5);
+    if (supportAmount < 10000) supportAmount = 10000; // Minimum 10k destek
+
+    let price = 49.99;
+    
+    // Kademeli Fiyatlandırma Mantığı
+    if (supportAmount >= 10000000) {
+        price = 999.99; // 10 Milyon$ üzeri
+    } else if (supportAmount >= 1000000) {
+        price = 499.99; // 1 Milyon$ - 10 Milyon$ arası
+    } else if (supportAmount >= 100000) {
+        price = 249.99; // 100 Bin$ - 1 Milyon$ arası
+    }
+
+    const supportDesc = document.getElementById('support-package-desc');
+    const btnBuyCash = document.getElementById('btn-buy-money');
+
+    if (supportDesc) supportDesc.innerText = `Anında $${supportAmount.toLocaleString()} Oyun Parası`;
+    if (btnBuyCash) btnBuyCash.innerText = `₺${price} SATIN AL`;
+}
+
+// Buton Tıklanma ve Satın Alma İşlemi
+const btnBuyCash = document.getElementById('btn-buy-money');
+if (btnBuyCash) {
+    btnBuyCash.addEventListener('click', () => {
+        let supportAmount = Math.floor(playerBalance * 0.5);
+        if (supportAmount < 10000) supportAmount = 10000;
+        
+        let price = 49.99;
+        if (supportAmount >= 10000000) price = 999.99;
+        else if (supportAmount >= 1000000) price = 499.99;
+        else if (supportAmount >= 100000) price = 249.99;
+
+        playerBalance += supportAmount;
+        
+        if (typeof playSound === 'function') playSound('buy');
+        
+        if (typeof showStoreModal === 'function') {
+            showStoreModal(
+                "KASA DESTEĞİ BAŞARILI", 
+                `₺${price} ödemeniz başarıyla alındı.<br><br>Kasaya <strong style="color:#10b981;">$${supportAmount.toLocaleString()}</strong> anında eklendi!`, 
+                true
+            );
+        }
+
+        updateBalanceUI();
+        saveGame();
+        if (typeof syncLeaderboardData === 'function') syncLeaderboardData();
+    });
+}
     </script>
     <!-- TAM EKRAN YAŞAM ALANI SAYFASI (LIFESTYLE 2.0) -->
 <div id="lifestyle-page" class="game-page" style="display: none;">
@@ -4887,38 +5119,51 @@ window.confirmNameChange = function() {
     setupButton(newShort, 'SHORT');
 })();
 // ==========================================================================
-// 🐷 KÜRESEL KUMBARA - TEKİL ÖDÜL VE RASTGELE NAKİT SİSTEMİ
+// 🐷 KÜRESEL KUMBARA - SENKRONİZE VE ORANTILI ÖDÜL SİSTEMİ
 // ==========================================================================
 const piggyRef = database.ref('global/piggyBank');
 let isPiggyExploding = false; 
 
+// Her yeni tur için sunucuda tek bir rastgele ödül kaderi oluşturur
+function generateNextReward() {
+    let roll = Math.random();
+    if (roll < 0.80) {
+        return { type: 'cash', pool: Math.floor(50000 + Math.random() * 300000) };
+    } else if (roll < 0.95) {
+        return { type: 'stock', stockIndex: Math.floor(Math.random() * 20) }; 
+    } else {
+        return { type: 'premium' };
+    }
+}
+
 piggyRef.on('value', (snapshot) => {
     let data = snapshot.val();
     
+    // Eğer veritabanı boşsa ilk turu başlat ve ilk kaderi belirle
     if (!data) {
-        piggyRef.set({ currentAmount: 0, target: 5000, contributors: {} });
+        piggyRef.set({ currentAmount: 0, target: 5000, contributors: {}, rewardDestiny: generateNextReward() });
         return;
     }
 
     let current = data.currentAmount || 0;
     let target = data.target || 5000;
     let contributors = data.contributors || {}; 
+    let rewardDestiny = data.rewardDestiny || { type: 'cash', pool: 150000 }; // Sunucudaki ortak kader
     
     let percent = (current / target) * 100;
     if (percent > 100) percent = 100;
 
-    // --- BURAYA YAPIŞTIRACAKSIN (HIZLANDIRMA KODU) ---
+    // --- NEON HIZLANDIRMA EFEKTİ ---
     const piggyCard = document.getElementById('piggy-card-container');
     if (piggyCard) {
         if (percent > 80) {
-            piggyCard.style.animationDuration = '0.5s'; // Çok hızlı (Heyecan dorukta!)
+            piggyCard.style.animationDuration = '0.5s'; 
         } else if (percent > 50) {
-            piggyCard.style.animationDuration = '1s';   // Orta hız
+            piggyCard.style.animationDuration = '1s';   
         } else {
-            piggyCard.style.animationDuration = '2s';   // Normal sakin tempo
+            piggyCard.style.animationDuration = '2s';   
         }
     }
-    // ------------------------------------------------
 
     const progressBar = document.getElementById('piggy-progress-bar');
     const progressText = document.getElementById('piggy-progress-text');
@@ -4926,7 +5171,7 @@ piggyRef.on('value', (snapshot) => {
     if (progressBar) progressBar.style.width = percent + '%';
     if (progressText) progressText.innerText = `₺${current.toLocaleString()} / ₺${target.toLocaleString()}`;
 
-    // KUMBARA PATLAMA ANI VE TEKİL ÖDÜL SEÇİMİ
+    // KUMBARA PATLAMA ANI VE SENKRONİZE ÖDÜL DAĞITIMI
     if (current >= target && !isPiggyExploding) {
         isPiggyExploding = true;
         
@@ -4934,58 +5179,70 @@ piggyRef.on('value', (snapshot) => {
         let myContribution = contributors[myUid] || 0; 
         
         if (myContribution > 0) {
-            
-            // --- TEKİL ZAR ATMA (%80 Nakit, %15 Şirket Payı, %5 Premium) ---
-            let roll = Math.random(); 
+            let myShareRatio = myContribution / target;
             let prizeTitle = "";
             let prizeDesc = "";
 
-            if (roll < 0.80) {
-                // %80 İhtimal: Tamamen Rastgele Nakit Ödül
-                let randomCash = Math.floor(50000 + Math.random() * 300000); // 50K ile 350K arası rastgele
-                playerBalance += randomCash;
-                
-                prizeTitle = "💰 RASTGELE NAKİT ÖDÜLÜ!";
-                prizeDesc = `Küresel havuzun gizli kasasından şansına <strong style="color:#10b981;">$${randomCash.toLocaleString()}</strong> nakit para çıktı!`;
+            // 1. HERKES AYNI NAKİT HAVUZUNU PAYLAŞIR
+            if (rewardDestiny.type === 'cash') {
+                let myCashPrize = Math.floor(rewardDestiny.pool * myShareRatio);
+                playerBalance += myCashPrize;
+                prizeTitle = "💰 NAKİT HAVUZU PAYLAŞILDI!";
+                prizeDesc = `Bu turun ödülü Nakitti! Yaptığın katkı oranında <strong style="color:#10b981;">$${myCashPrize.toLocaleString()}</strong> payını aldın!`;
             } 
-            else if (roll < 0.95) {
-                // %15 İhtimal: %5 Şirket Payı (50.000 Adet)
+            // 2. HERKES AYNI ŞİRKETTEN SABİT %2 PAY ALIR (Taşma/Kompanze Sistemi Eklendi)
+            else if (rewardDestiny.type === 'stock') {
                 const allCards = document.querySelectorAll('#market-container .stock-card');
                 if (allCards.length > 0) {
-                    let randomCard = allCards[Math.floor(Math.random() * allCards.length)];
-                    let companyDisplayName = randomCard.querySelector('.stock-name').textContent;
+                    let safeIndex = rewardDestiny.stockIndex % allCards.length;
+                    let targetCard = allCards[safeIndex];
+                    let companyDisplayName = targetCard.querySelector('.stock-name').textContent;
                     
-                    let currentOwned = parseInt(randomCard.querySelector('.stock-owned').textContent.replace(/[^0-9]/g, "")) || 0;
-                    let newOwned = currentOwned + 50000; 
-                    if (newOwned > 1000000) newOwned = 1000000;
-                    randomCard.querySelector('.stock-owned').textContent = "Portföy: " + newOwned + " Adet";
+                    let myShareCount = 20000; // %2 Hisse
+                    let currentOwned = parseInt(targetCard.querySelector('.stock-owned').textContent.replace(/[^0-9]/g, "")) || 0;
                     
-                    prizeTitle = "👑 ŞİRKET PAYI ÖDÜLÜ!";
-                    prizeDesc = `Şansına havuzdan <strong>${companyDisplayName}</strong> şirketinin <strong>%5 hissesi (50.000 Adet)</strong> çıktı!`;
-                } else {
-                    let fallbackCash = 150000;
-                    playerBalance += fallbackCash;
-                    prizeTitle = "💰 NAKİT ÖDÜLÜ!";
-                    prizeDesc = `Gizli kasadan <strong style="color:#10b981;">$${fallbackCash.toLocaleString()}</strong> nakit kazandın!`;
+                    // Şirketin o anki güncel fiyatını ekrandan okuyoruz
+                    let priceText = targetCard.querySelector('.stock-price').textContent;
+                    let currentPrice = parseFloat(priceText.replace(/[^0-9.]/g, "")) || 0; 
+                    
+                    let newOwned = currentOwned + myShareCount;
+                    let cashCompensation = 0;
+                    
+                    // Eğer 1.000.000 (Tamamı) sınırını aşıyorsa, taşan hisseleri nakite çevir!
+                    if (newOwned > 1000000) {
+                        let overflowShares = newOwned - 1000000;
+                        cashCompensation = Math.floor(overflowShares * currentPrice);
+                        newOwned = 1000000; // Portföyü %100'e sabitle
+                    }
+                    
+                    targetCard.querySelector('.stock-owned').textContent = "Portföy: " + newOwned + " Adet";
+                    
+                    if (cashCompensation > 0) {
+                        playerBalance += cashCompensation;
+                        prizeTitle = "👑 ŞİRKET PAYI VE NAKİT TELAFİSİ!";
+                        
+                        if (currentOwned === 1000000) {
+                            prizeDesc = `Ödül havuzundan <strong>${companyDisplayName}</strong> şirketinin %2'si çıktı! Ancak bu şirketin tamamına zaten sahip olduğun için, hisselerin ederi olan <strong style="color:#10b981;">$${cashCompensation.toLocaleString()}</strong> nakit olarak kasana eklendi!`;
+                        } else {
+                            prizeDesc = `Ödül havuzundan <strong>${companyDisplayName}</strong> şirketinden 20.000 adet hisse çıktı! Portföyün %100'e ulaştığı için, artan hisselerin ederi olan <strong style="color:#10b981;">$${cashCompensation.toLocaleString()}</strong> nakit olarak kasana eklendi!`;
+                        }
+                    } else {
+                        prizeTitle = "👑 DEV ŞİRKET PAYI DAĞITILDI!";
+                        prizeDesc = `Bu turun ödülü Şirket Hissesiydi! Havuza katıldığın için <strong>${companyDisplayName}</strong> şirketinden tam <strong>%2 (20.000 Adet)</strong> hisseyi garantili olarak kazandın!`;
+                    }
                 }
-            } 
-            else {
-                // %5 İhtimal: 1 Aylık Ücretsiz Premium Abonelik
-                // KONTROL: Oyuncunun zaten halihazırda Premium'u var mı?
+            }
+            // 3. HERKES (VEYA ZATEN PREMİUM OLANLAR) PAYINI ALIR
+            else if (rewardDestiny.type === 'premium') {
                 let alreadyPremium = typeof isPremium !== 'undefined' ? isPremium : (localStorage.getItem('cts_premium') === 'true');
 
                 if (alreadyPremium) {
-                    // EĞER ZATEN PRENS/VIP İSE: Mevcut nakit parasının %25'i kadar devasa ikramiye ver!
                     let bonusCash = Math.floor(playerBalance * 0.25);
-                    // Eğer kasası bomboşsa veya çok azsa en az 100.000 garanti nakit verelim
                     if (bonusCash < 100000) bonusCash = 100000; 
-
                     playerBalance += bonusCash;
-                    
                     prizeTitle = "🌟 VIP NAKİT İKRAMİYESİ (%25)";
-                    prizeDesc = `Zaten aktif bir <strong>Premium</strong> üyeliğin olduğu için şansına havuzdan nakit ikramiye vurdu! Mevcut varlıklarının %25'i olan <strong style="color:#10b981;">$${bonusCash.toLocaleString()}</strong> nakit kasana eklendi!`;
+                    prizeDesc = `Havuzdan Premium çıktı! Zaten VIP olduğun için nakit varlıklarının %25'i olan <strong style="color:#10b981;">$${bonusCash.toLocaleString()}</strong> hesabına eklendi!`;
                 } else {
-                    // NORMAL DURUM: Premium'u yoksa 1 aylık VIP üyeliği başlat
                     isPremium = true;
                     document.body.classList.add('premium-theme');
                     localStorage.setItem('cts_theme_active', 'true');
@@ -5000,8 +5257,8 @@ piggyRef.on('value', (snapshot) => {
                         premiumBtn.style.boxShadow = "none";
                     }
                     
-                    prizeTitle = "🌟 1 AYLIK PREMIUM KAZANDIN!";
-                    prizeDesc = `İnanılmaz nadir şans! Küresel kumbara sana <strong>1 Aylık Ücretsiz VIP Abonelik</strong> hediye etti!`;
+                    prizeTitle = "🌟 1 AYLIK PREMIUM PAYLAŞILDI!";
+                    prizeDesc = `Havuzdan Premium çıktı! Katkı sağlayan herkese (sana da) <strong>1 Aylık Ücretsiz VIP Abonelik</strong> tanımlandı!`;
                 }
             }
 
@@ -5025,7 +5282,7 @@ piggyRef.on('value', (snapshot) => {
     }
 });
 
-// Katkı butonu
+// GÖNDERİCİ: Kumbaraya Katkı Sağlama İşlemi
 const btnFeedPiggy = document.getElementById('btn-feed-piggy');
 if (btnFeedPiggy) {
     btnFeedPiggy.addEventListener('click', () => {
@@ -5042,9 +5299,17 @@ if (btnFeedPiggy) {
         
         piggyRef.child('currentAmount').transaction((currentVal) => {
             let newVal = (currentVal || 0) + 50;
+            
+            // Eğer son vuruşu yapan kişi barı doldurduysa; 
+            // sunucuya bir sonraki turun "Kaderini (Destiny)" hesaplayıp yükler!
             if (newVal >= 5000) {
                 setTimeout(() => {
-                    piggyRef.set({ currentAmount: 0, target: 5000, contributors: {} });
+                    piggyRef.set({ 
+                        currentAmount: 0, 
+                        target: 5000, 
+                        contributors: {}, 
+                        rewardDestiny: generateNextReward() 
+                    });
                 }, 2500);
             }
             return newVal;
@@ -5059,18 +5324,252 @@ if (btnFeedPiggy) {
     });
 }
 // ==========================================================================
-// 🏆 KÜRESEL LİDERLİK TABLOSU (FIREBASE) SİSTEMİ
+// 🌌 MEGA KÜRESEL KUMBARA SİSTEMİ (Hedef: ₺10,000 / Katkı: ₺100)
+// ==========================================================================
+const megaPiggyRef = database.ref('global/megaPiggyBank');
+let isMegaPiggyExploding = false; 
+
+function generateNextMegaReward() {
+    let roll = Math.random();
+    if (roll < 0.80) {
+        // Mega Nakit: $200.000 ile $1.000.000 arası rastgele dev havuz
+        return { type: 'cash', pool: Math.floor(200000 + Math.random() * 800000) };
+    } else if (roll < 0.95) {
+        return { type: 'stock', stockIndex: Math.floor(Math.random() * 20) }; 
+    } else {
+        return { type: 'premium' };
+    }
+}
+
+megaPiggyRef.on('value', (snapshot) => {
+    let data = snapshot.val();
+    if (!data) {
+        megaPiggyRef.set({ currentAmount: 0, target: 10000, contributors: {}, rewardDestiny: generateNextMegaReward() });
+        return;
+    }
+
+    let current = data.currentAmount || 0;
+    let target = data.target || 10000;
+    let contributors = data.contributors || {}; 
+    let rewardDestiny = data.rewardDestiny || { type: 'cash', pool: 500000 }; 
+    
+    let percent = (current / target) * 100;
+    if (percent > 100) percent = 100;
+
+    const megaCard = document.getElementById('mega-piggy-card-container');
+    if (megaCard) {
+        if (percent > 85) megaCard.style.animationDuration = '0.3s'; 
+        else if (percent > 50) megaCard.style.animationDuration = '0.8s';   
+        else megaCard.style.animationDuration = '1.5s';   
+    }
+
+    const progressBar = document.getElementById('mega-piggy-progress-bar');
+    const progressText = document.getElementById('mega-piggy-progress-text');
+    if (progressBar) progressBar.style.width = percent + '%';
+    if (progressText) progressText.innerText = `₺${current.toLocaleString()} / ₺${target.toLocaleString()}`;
+
+    // MEGA PATLAMA!
+    if (current >= target && !isMegaPiggyExploding) {
+        isMegaPiggyExploding = true;
+        let myUid = localStorage.getItem('cts_player_uid');
+        let myContribution = contributors[myUid] || 0; 
+        
+        if (myContribution > 0) {
+            let myShareRatio = myContribution / target;
+            let prizeTitle = "";
+            let prizeDesc = "";
+
+            if (rewardDestiny.type === 'cash') {
+                let myCashPrize = Math.floor(rewardDestiny.pool * myShareRatio);
+                playerBalance += myCashPrize;
+                prizeTitle = "🌌 MEGA NAKİT HAVUZU!";
+                prizeDesc = `Mega turun ödülü Nakitti! Yaptığın ₺${myContribution} katkı oranında <strong style="color:#00f2fe;">$${myCashPrize.toLocaleString()}</strong> kazandın!`;
+            } 
+            else if (rewardDestiny.type === 'stock') {
+                const allCards = document.querySelectorAll('#market-container .stock-card');
+                if (allCards.length > 0) {
+                    let safeIndex = rewardDestiny.stockIndex % allCards.length;
+                    let targetCard = allCards[safeIndex];
+                    let companyDisplayName = targetCard.querySelector('.stock-name').textContent;
+                    
+                    let myShareCount = 50000; // %5 Mega Hisse
+                    let currentOwned = parseInt(targetCard.querySelector('.stock-owned').textContent.replace(/[^0-9]/g, "")) || 0;
+                    let priceText = targetCard.querySelector('.stock-price').textContent;
+                    let currentPrice = parseFloat(priceText.replace(/[^0-9.]/g, "")) || 0; 
+                    
+                    let newOwned = currentOwned + myShareCount;
+                    let cashCompensation = 0;
+                    
+                    // Taşma / Şirket Kapatma Telafisi
+                    if (newOwned > 1000000) {
+                        let overflowShares = newOwned - 1000000;
+                        cashCompensation = Math.floor(overflowShares * currentPrice);
+                        newOwned = 1000000; 
+                    }
+                    targetCard.querySelector('.stock-owned').textContent = "Portföy: " + newOwned + " Adet";
+                    
+                    if (cashCompensation > 0) {
+                        playerBalance += cashCompensation;
+                        prizeTitle = "🌌 MEGA PAY VE TELAFİ!";
+                        prizeDesc = `Ödül havuzundan <strong>${companyDisplayName}</strong> şirketinin 50.000 adet (%5) hissesi çıktı! Şirket sınırını aştığın için, artan hisselerin bedeli olan <strong style="color:#00f2fe;">$${cashCompensation.toLocaleString()}</strong> nakit olarak ödendi!`;
+                    } else {
+                        prizeTitle = "🌌 MEGA ŞİRKET PAYI!";
+                        prizeDesc = `Mega havuzdan <strong>${companyDisplayName}</strong> şirketinden garantili tam <strong>%5 (50.000 Adet)</strong> hisse kazandın!`;
+                    }
+                }
+            } 
+            else if (rewardDestiny.type === 'premium') {
+                let alreadyPremium = typeof isPremium !== 'undefined' ? isPremium : (localStorage.getItem('cts_premium') === 'true');
+                if (alreadyPremium) {
+                    // Mega Kutu VIP İkramiyesi (%50)
+                    let bonusCash = Math.floor(playerBalance * 0.50);
+                    if (bonusCash < 250000) bonusCash = 250000; 
+                    playerBalance += bonusCash;
+                    prizeTitle = "🌌 DEVASA VIP İKRAMİYESİ (%50)";
+                    prizeDesc = `Mega havuzdan Premium çıktı! Zaten VIP olduğun için nakit varlıklarının %50'si olan inanılmaz bir meblağ: <strong style="color:#00f2fe;">$${bonusCash.toLocaleString()}</strong> hesabına eklendi!`;
+                } else {
+                    isPremium = true;
+                    document.body.classList.add('premium-theme');
+                    localStorage.setItem('cts_theme_active', 'true');
+                    localStorage.setItem('cts_premium', 'true');
+                    categoryRequirements['vip'] = 0;
+                    prizeTitle = "🌌 2 AYLIK MEGA PREMIUM!";
+                    prizeDesc = `Mega havuzdan Premium çıktı! Katkı sağlayanlara <strong>2 Aylık Ücretsiz VIP Abonelik</strong> tanımlandı!`;
+                }
+            }
+
+            updateBalanceUI();
+            saveGame();
+            if (typeof syncLeaderboardData === 'function') syncLeaderboardData();
+            if (typeof showStoreModal === 'function') showStoreModal(prizeTitle, prizeDesc, true);
+        }
+        
+        setTimeout(() => { isMegaPiggyExploding = false; }, 3000);
+    }
+});
+
+const btnFeedMegaPiggy = document.getElementById('btn-feed-mega-piggy');
+if (btnFeedMegaPiggy) {
+    btnFeedMegaPiggy.addEventListener('click', () => {
+        let myUid = localStorage.getItem('cts_player_uid');
+        if (!myUid) {
+            if (typeof showCustomAlert === 'function') showCustomAlert("Havuza katılmak için önce giriş yapmalısınız.");
+            return;
+        }
+
+        // --- ⛔ YENİ EKLENEN KURAL: 3 MİLYON DOLAR KASA BARAJI ---
+        if (playerBalance < 3000000) {
+            playSound('error'); // Varsa hata sesi çalsın
+            if (typeof showStoreModal === 'function') {
+                showStoreModal("⛔ YETERSİZ KASA PERFORMANSI", "Mega Küresel Kumbara sadece <strong>High Roller</strong> (Büyük Oynayan) yatırımcılara özel VIP bir havuzdur.<br><br>Giriş yapabilmek için kasanızda minimum <strong style='color:#00f2fe;'>$3,000,000</strong> nakit bulunması gerekmektedir.", false);
+            } else if (typeof showCustomAlert === 'function') {
+                showCustomAlert("Mega havuza katılabilmek için kasanda minimum $3.000.000 olmalıdır!");
+            }
+            return; // İşlemi iptal et ve aşağıya inmesine izin verme
+        }
+        // ---------------------------------------------------------
+
+        playSound('buy'); 
+        if (typeof showStoreModal === 'function') showStoreModal("MEGA ÖDEME BAŞARILI", "₺100 ödemeniz alındı. Mega havuzdaki yerinizi aldınız!", true);
+        
+        megaPiggyRef.child('currentAmount').transaction((currentVal) => {
+            let newVal = (currentVal || 0) + 100;
+            if (newVal >= 10000) {
+                setTimeout(() => {
+                    megaPiggyRef.set({ currentAmount: 0, target: 10000, contributors: {}, rewardDestiny: generateNextMegaReward() });
+                }, 2500);
+            }
+            return newVal;
+        });
+        
+        megaPiggyRef.child('contributors').child(myUid).transaction((myTotal) => {
+            return (myTotal || 0) + 100;
+        });
+        
+        btnFeedMegaPiggy.style.transform = 'scale(0.95)';
+        setTimeout(() => { btnFeedMegaPiggy.style.transform = 'scale(1)'; }, 100);
+    });
+}
+// ==========================================================================
+// 🏆 KÜRESEL LİDERLİK TABLOSU VE AYLIK SEZON SİSTEMİ
 // ==========================================================================
 const lbWealthRef = database.ref('global/leaderboard/wealth');
 const lbBankruptRef = database.ref('global/leaderboard/bankruptcies');
+const seasonRef = database.ref('global/seasonInfo'); // Sezon sayacı
 
 let currentLbTab = 'wealth'; // Varsayılan sekme
+const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000; // 30 Günlük Süre
+
+// --- AYLIK SEZON KONTROLÜ VE OTOMATİK ÖDÜL DAĞITIMI ---
+function checkAndResetSeason() {
+    seasonRef.once('value').then((snapshot) => {
+        let now = Date.now();
+        let data = snapshot.val();
+
+        // 1. Sistemde hiç sezon yoksa (Oyun ilk defa açılıyorsa) 1. Sezonu başlat
+        if (!data) {
+            seasonRef.set({ seasonNumber: 1, endTime: now + THIRTY_DAYS_MS });
+            return;
+        }
+
+        // 2. Süre dolmuşsa (30 gün bittiyse) ödülleri dağıt ve tabloyu sıfırla
+        if (now >= data.endTime) {
+            console.log(`🏆 ${data.seasonNumber}. Sezon Bitti! Ödüller dağıtılıyor...`);
+            
+            // Zenginler tablosunu çek
+            lbWealthRef.orderByChild('orderScore').once('value').then((lbSnapshot) => {
+                let players = [];
+                lbSnapshot.forEach((child) => {
+                    players.push({ uid: child.key, score: child.val().score || 0 });
+                });
+
+                // Kazananlara (İlk 10'a) ödüllerini ver
+                players.forEach((player, index) => {
+                    let rank = index + 1;
+                    let targetUserRef = database.ref('users/' + player.uid);
+
+                    targetUserRef.once('value').then((userSnap) => {
+                        let userData = userSnap.val() || {};
+                        let currentBal = userData.balance || 0;
+                        let isUserVip = userData.isPremium || false;
+
+                        if (rank >= 1 && rank <= 3) {
+                            // İLK 3'E GİRENLER: VIP ise Kasanın %5'i nakit, değilse 1 Ay Premium
+                            if (isUserVip) {
+                                let bonus = Math.floor(currentBal * 0.05);
+                                targetUserRef.update({ balance: currentBal + bonus });
+                            } else {
+                                targetUserRef.update({ isPremium: true });
+                            }
+                        } 
+                        else if (rank >= 4 && rank <= 10) {
+                            // 4-10 ARASI: Rastgele bir şirketten %1 pay (10.000 Adet)
+                            let randomCompanyIndex = Math.floor(Math.random() * 20); 
+                            let currentShares = userData.portfolio ? (userData.portfolio[randomCompanyIndex] || 0) : 0;
+                            let newShares = currentShares + 10000;
+                            if (newShares > 1000000) newShares = 1000000; // %100 sınır koruması
+                            
+                            targetUserRef.child('portfolio/' + randomCompanyIndex).set(newShares);
+                        }
+                    });
+                });
+
+                // 3. Dağıtım bittikten sonra Tabloları temizle ve Yeni Sezonu başlat
+                lbWealthRef.set({});
+                lbBankruptRef.set({});
+                seasonRef.set({
+                    seasonNumber: data.seasonNumber + 1,
+                    endTime: now + THIRTY_DAYS_MS
+                });
+            });
+        }
+    });
+}
 
 // Oyuncunun skorunu ve VIP durumunu Firebase'e gönderen fonksiyon
 function syncLeaderboardData() {
     let uid = localStorage.getItem('cts_player_uid');
     let pName = localStorage.getItem('cts_player_name') || "CTS TRADER";
-    // Oyuncunun Premium olup olmadığını kontrol ediyoruz
     let premiumStatus = typeof isPremium !== 'undefined' ? isPremium : (localStorage.getItem('cts_premium') === 'true');
     
     if (!uid) return;
@@ -5079,7 +5578,7 @@ function syncLeaderboardData() {
         name: pName,
         score: gameStats.maxWealth,
         orderScore: -gameStats.maxWealth,
-        isVIP: premiumStatus // YENİ: VIP durumunu veritabanına ekledik
+        isVIP: premiumStatus 
     });
 
     if (gameStats.bankruptcies > 0) {
@@ -5087,7 +5586,7 @@ function syncLeaderboardData() {
             name: pName,
             score: gameStats.bankruptcies,
             orderScore: -gameStats.bankruptcies,
-            isVIP: premiumStatus // YENİ: VIP durumunu veritabanına ekledik
+            isVIP: premiumStatus 
         });
     }
 }
@@ -5100,7 +5599,10 @@ const lbList = document.getElementById('leaderboard-list');
 
 if(btnOpenLb) {
     btnOpenLb.addEventListener('click', () => {
-        syncLeaderboardData(); // Açmadan önce oyuncunun son durumunu sunucuya gönder
+        // Tablo açılmadan önce sezon kontrolü yapılır
+        checkAndResetSeason(); 
+        syncLeaderboardData(); 
+        
         document.getElementById('mobile-main-menu').style.display = 'none';
         lbScreen.style.display = 'flex';
         fetchLeaderboard(currentLbTab);
@@ -5133,7 +5635,7 @@ document.getElementById('tab-lb-bankrupt').addEventListener('click', (e) => {
     playSound('tick');
 });
 
-// Firebase'den Verileri Çekip Ekrana Çizme (VIP Rozetli)
+// Firebase'den Verileri Çekip Ekrana Çizme (VIP Rozetli & Sezon Sayaçlı)
 function fetchLeaderboard(type) {
     lbList.innerHTML = `<div class="empty-state"><span>📡</span><p>Sunucuya bağlanılıyor...</p></div>`;
     
@@ -5142,8 +5644,26 @@ function fetchLeaderboard(type) {
     ref.orderByChild('orderScore').limitToFirst(50).once('value', (snapshot) => {
         lbList.innerHTML = ''; 
         
+        // --- SEZON BİLGİSİ EKRANA EKLENİYOR ---
+        seasonRef.once('value').then((seasonSnap) => {
+            let seasonData = seasonSnap.val();
+            if (seasonData) {
+                let timeLeft = seasonData.endTime - Date.now();
+                let daysLeft = Math.ceil(timeLeft / (1000 * 60 * 60 * 24));
+                if (daysLeft < 0) daysLeft = 0;
+                
+                let banner = document.createElement('div');
+                banner.style.cssText = "text-align: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid rgba(236, 72, 153, 0.2);";
+                banner.innerHTML = `<span style="background: rgba(236, 72, 153, 0.1); border: 1px solid rgba(236, 72, 153, 0.4); color: #ec4899; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 900; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(236,72,153,0.1);">🏆 ${seasonData.seasonNumber}. SEZON BİTİMİNE: ${daysLeft} GÜN KALDI</span>`;
+                lbList.insertBefore(banner, lbList.firstChild);
+            }
+        });
+
         if (!snapshot.exists()) {
-            lbList.innerHTML = `<div class="empty-state"><span>🕸️</span><p>Henüz kimse listeye giremedi.</p></div>`;
+            // Liste boşsa hata fırlatmak yerine afişin altına uyarıyı ekle
+            setTimeout(() => {
+                lbList.innerHTML += `<div class="empty-state"><span>🕸️</span><p>Yeni sezonda henüz kimse listeye giremedi.</p></div>`;
+            }, 500);
             return;
         }
 
@@ -5165,11 +5685,10 @@ function fetchLeaderboard(type) {
             let nameColor = isMe ? "#10b981" : "#f8fafc";
             let meTag = isMe ? '<span style="font-size: 10px; background: #10b981; color: #fff; padding: 2px 6px; border-radius: 4px; margin-left: 6px;">SEN</span>' : '';
             
-            // İŞTE YENİ ROZETİMİZ! Eğer veritabanında isVIP true ise isminin yanına parlayan bir taç koyar.
             let vipBadge = data.isVIP ? '<span style="font-size: 13px; margin-left: 4px; filter: drop-shadow(0 0 5px rgba(251, 191, 36, 0.8));" title="VIP Üye">👑</span>' : '';
 
             const card = document.createElement('div');
-            card.style.cssText = `display: flex; justify-content: space-between; align-items: center; padding: 14px 15px; border-radius: 12px; background: ${cardColor}; border: ${borderColor};`;
+            card.style.cssText = `display: flex; justify-content: space-between; align-items: center; padding: 14px 15px; border-radius: 12px; background: ${cardColor}; border: ${borderColor}; margin-bottom: 8px;`;
             
             card.innerHTML = `
                 <div style="display: flex; align-items: center; gap: 12px;">
@@ -5185,7 +5704,7 @@ function fetchLeaderboard(type) {
     });
 }
 // ==========================================================================
-// 🔐 HESAP VE KİMLİK DOĞRULAMA (AUTH) SİSTEMİ
+// 🔐 HESAP VE KİMLİK DOĞRULAMA (AUTH) & BULUT SENKRONİZASYON SİSTEMİ
 // ==========================================================================
 
 const authModal = document.getElementById('auth-modal');
@@ -5202,15 +5721,53 @@ auth.onAuthStateChanged((user) => {
         authModal.style.display = 'none'; // Ekranı gizle
         
         // Sahte UID yerine Firebase'in verdiği KESİN VE GERÇEK UID'yi kullan
-        localStorage.setItem('cts_player_uid', user.uid);
+        let myUid = user.uid;
+        localStorage.setItem('cts_player_uid', myUid);
         
         const uidDisplay = document.getElementById('player-uid-display');
-        if (uidDisplay) uidDisplay.innerText = "#" + user.uid.substring(0, 8).toUpperCase();
+        if (uidDisplay) uidDisplay.innerText = "#" + myUid.substring(0, 8).toUpperCase();
         
-        console.log("Giriş yapıldı! Hoş geldin:", user.email);
-        
-        // Eğer liderlik tablosu fonksiyonumuz varsa yeni UID ile senkronize et
-        if (typeof syncLeaderboardData === 'function') syncLeaderboardData();
+        console.log("Giriş yapıldı! Hoş geldin:", user.email, "Buluttan veri çekiliyor...");
+
+        // --- BULUTTAN (FIREBASE) ESKİ VERİYİ YÜKLEME İŞLEMİ ---
+        // Not: Eğer saveGame() fonksiyonun veriyi 'users/' içine değil de farklı bir yola kaydediyorsa buradaki 'users/' kısmını ona göre değiştir.
+        database.ref('users/' + myUid).once('value').then((snapshot) => {
+            if (snapshot.exists()) {
+                let data = snapshot.val();
+                
+                // 1. Bakiyeyi buluttan alıp kasaya koy
+                playerBalance = data.balance || 0; 
+                
+                // 2. Premium (VIP) durumunu buluttan al
+                if (data.isPremium) {
+                    isPremium = true;
+                    document.body.classList.add('premium-theme');
+                    localStorage.setItem('cts_theme_active', 'true');
+                    localStorage.setItem('cts_premium', 'true');
+                    if (typeof categoryRequirements !== 'undefined') categoryRequirements['vip'] = 0;
+                }
+
+                // (Opsiyonel) Eğer portföy/hisse verisini de buluta kaydediyorsan, burada onları da local değişkenlerine eşitlemelisin.
+                
+                console.log("Eski hesap buluttan başarıyla yüklendi! Kasa: $" + playerBalance);
+                
+                // Arayüzü ve Liderlik tablosunu yeni verilere göre güncelle
+                if (typeof updateBalanceUI === 'function') updateBalanceUI();
+                if (typeof syncLeaderboardData === 'function') syncLeaderboardData();
+
+            } else {
+                // YENİ HESAP: Eğer bu UID ile daha önce hiç veri kaydedilmemişse
+                console.log("Bulutta eski veri bulunamadı. Sıfırdan hesap oluşturuluyor...");
+                // Yeni oyuncuya verilecek başlangıç parası (kendi oyununa göre değiştir)
+                playerBalance = 50000; 
+                
+                if (typeof updateBalanceUI === 'function') updateBalanceUI();
+                if (typeof saveGame === 'function') saveGame(); // İlk kaydı atarak bulutta oluştur
+                if (typeof syncLeaderboardData === 'function') syncLeaderboardData();
+            }
+        }).catch((error) => {
+            console.error("Buluttan veri çekilirken hata oluştu:", error);
+        });
 
     } else {
         // OYUNCU ÇIKIŞ YAPMIŞ VEYA HİÇ GİRMEMİŞ
