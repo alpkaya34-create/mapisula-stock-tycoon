@@ -74,8 +74,9 @@
                 let size = Math.random() * 9 + 1;
                 let scaleEnd = Math.random() * 2 + 0.8;
                 
-                // Etrafa dağılış mesafeleri
-                let tx = (Math.random() - 0.5) * window.innerWidth * 1.2;
+                // Etrafa dağılış mesafeleri (Sadece mobil çerçeve içine kilitlendi)
+                let mobileWidth = Math.min(window.innerWidth, 450); // Ekran ne kadar geniş olursa olsun max 450px baz alınır
+                let tx = (Math.random() - 0.5) * mobileWidth * 1.2;
                 let ty = (Math.random() - 0.5) * window.innerHeight * 1.2;
                 
                 particle.style.cssText = `
@@ -1094,7 +1095,7 @@
                     <div style="flex: 1;">
                         <h4 style="color:#ec4899; font-size: 16px; font-weight:900; margin-bottom: 6px; text-shadow: 0 0 10px rgba(236,72,153,0.4);">🐷 KÜRESEL KUMBARA</h4>
                         <!-- İŞTE GÜNCELLENEN AÇIKLAMA METNİ -->
-                        <p style="font-size:11px; color:#94a3b8; font-weight: 700; line-height: 1.4;">Bar dolduğunda katkı sağlayanlar büyük ödülü paylaşır! <br><span style="color: #fbbf24; font-size: 10px;">(Ödüller: $350.000'a Varan Nakit, %5 Rastgele Şirket Payı, 1 Aylık Premium)</span></p>
+                        <p style="font-size:11px; color:#94a3b8; font-weight: 700; line-height: 1.4;">Bar dolduğunda katkı sağlayanlar büyük ödülü paylaşır! <br><span style="color: #fbbf24; font-size: 10px;">(Ödüller: $350.000'a Varan Nakit, %2 Rastgele Şirket Payı, 1 Aylık Premium)</span></p>
                     </div>
                 </div>
                 
@@ -1554,72 +1555,150 @@ function handleBGM() {
                 document.getElementById('summary-overlay').classList.remove('active');
                 resetModal.classList.remove('show');
             });
-
-            btnConfirmReset.addEventListener('click', () => {
-                // ÖNEMLİ BİLGİLERİ KORU
-                let savedPremium = localStorage.getItem('cts_premium');
-                let savedTheme = localStorage.getItem('cts_theme_active');
-                let savedNoads = localStorage.getItem('cts_noads');
+            // ==========================================================================
+            // 🔄 KORUMALI NİHAİ SIFIRLAMA SİSTEMİ (Çift İflas Hatası Giderildi)
+            // ==========================================================================
+            function performHardReset(isBankruptcy) {
+                // 1. Ekrandaki tüm pop-up'ları güvenli bir şekilde kapat
+                let mModal = document.getElementById('milestone-modal');
+                let rModal = document.getElementById('reset-confirm-modal');
+                let bModal = document.getElementById('bankruptcy-modal');
+                let sOverlay = document.getElementById('summary-overlay');
                 
-                let currentStats = { trades: 0, maxWealth: 15000.00, bankruptcies: 0, days: 1 };
-                if (localStorage.getItem('cts_stats')) {
-                    let parsed = JSON.parse(localStorage.getItem('cts_stats'));
-                    currentStats.maxWealth = parsed.maxWealth;
-                    currentStats.bankruptcies = parsed.bankruptcies;
+                if (mModal) mModal.classList.remove('show');
+                if (rModal) rModal.classList.remove('show');
+                if (bModal) bModal.classList.remove('show');
+                if (sOverlay) sOverlay.classList.remove('active');
+
+                // 2. Oyunun eski verileri tekrar kaydetmesini engelle
+                if (typeof isGamePaused !== 'undefined') isGamePaused = true;
+                window.__ctsResetInProgress = true; 
+                window.saveGame = function() { console.log("Otomatik kayıt engellendi!"); };
+
+                // 3. KORUNACAK VERİLERİ HAFIZADAN ÇEK
+                let currentMaxWealth = 15000;
+                let currentBankruptcies = 0;
+                
+                // İstatistikleri güvenli şekilde oku
+                if (typeof gameStats !== 'undefined' && gameStats) {
+                    currentMaxWealth = gameStats.maxWealth || 15000;
+                    currentBankruptcies = gameStats.bankruptcies || 0;
+                } else if (localStorage.getItem('cts_stats')) {
+                    let parsedStats = JSON.parse(localStorage.getItem('cts_stats'));
+                    currentMaxWealth = parsedStats.maxWealth || 15000;
+                    currentBankruptcies = parsedStats.bankruptcies || 0;
                 }
 
-                localStorage.clear();
+                // DÜZELTME: Oyun iflas anında (500$ altına düşünce) zaten +1 ekliyor. 
+                // Biz burada tekrar +1 EKLEMİYORUZ, sadece oyunun kaydettiği güncel değeri Firebase'e iletiyoruz.
+                let finalBankruptcies = currentBankruptcies;
 
-                // KORUNAN BİLGİLERİ GERİ YÜKLE
-                if(savedPremium) localStorage.setItem('cts_premium', savedPremium);
-                if(savedTheme) localStorage.setItem('cts_theme_active', savedTheme);
-                if(savedNoads) localStorage.setItem('cts_noads', savedNoads);
-                localStorage.setItem('cts_stats', JSON.stringify(currentStats));
+                // Premium ve VIP durumunu koru
+                let userIsPremium = (typeof isPremium !== 'undefined') ? isPremium : (localStorage.getItem('cts_premium') === 'true');
+                let resetMilestones = { k50: false, k250: false, m1: false, m5: false, m15: false, m20: false };
 
-                location.reload();
-            });
+                // 4. LOCALSTORAGE GÜNCELLEMESİ (Sadece oyun içi ilerleme sıfırlanır)
+                localStorage.setItem('cts_balance', '15000');
+                localStorage.setItem('cts_debt', '0');
+                localStorage.setItem('cts_principal_debt', '0');
+                localStorage.setItem('cts_start_wealth', '15000');
+                localStorage.setItem('cts_tick_count', '0');
+                localStorage.setItem('cts_daily_trades', '0');
+                localStorage.setItem('cts_milestones', JSON.stringify(resetMilestones));
+                
+                // Zirve Varlık ve İflas Sayısı KORUNARAK kaydedilir:
+                localStorage.setItem('cts_stats', JSON.stringify({ 
+                    trades: 0, 
+                    maxWealth: currentMaxWealth, 
+                    bankruptcies: finalBankruptcies, 
+                    days: 1 
+                }));
+                
+                localStorage.setItem('cts_portfolio', JSON.stringify({}));
+                localStorage.setItem('cts_futures', JSON.stringify([]));
+                localStorage.setItem('cts_averages', JSON.stringify({}));
+                
+                let uid = localStorage.getItem('cts_player_uid');
+                
+                // 5. BULUT (FIREBASE) GÜNCELLEMESİ
+                if (uid && typeof database !== 'undefined') {
+                    let updates = {
+                        balance: 15000,
+                        debt: 0,
+                        principalDebt: 0,
+                        portfolio: {},
+                        futures: [],   
+                        averages: {},
+                        milestones: resetMilestones,
+                        isPremium: userIsPremium, // VIP abonelik durumu korunur
+                        'stats/maxWealth': currentMaxWealth, // Zirve Varlık korunur
+                        'stats/trades': 0,
+                        'stats/days': 1,
+                        'stats/bankruptcies': finalBankruptcies // Çift iflas engellendi
+                    };
 
-            btnStart.addEventListener('click', () => {
-                menuScreen.style.display = 'none';
-                gameScreen.style.display = 'flex';
-                handleBGM();
-            });
+                    database.ref('users/' + uid).update(updates).then(() => {
+                        window.location.reload();
+                    }).catch((err) => {
+                        console.error("Firebase Güncelleme Hatası:", err);
+                        window.location.reload();
+                    });
+                } else {
+                    window.location.reload();
+                }
+            }
 
-            btnInGameMenu.addEventListener('click', () => {
-                gameScreen.style.display = 'none';
-                menuScreen.style.display = 'flex';
-            });
+            // GÜVENLİ BUTON BAĞLAMALARI (Çift tıklamaları önler)
+            const hResetBtn = document.getElementById('btn-confirm-reset');
+            if (hResetBtn) hResetBtn.onclick = () => { performHardReset(false); };
+
+            const hBankBtn = document.getElementById('btn-bankruptcy-ok');
+            if (hBankBtn) hBankBtn.onclick = () => { performHardReset(true); };
+
+            // DİĞER OYUN TUŞLARI (Çökmeyi engellemek için if kontrolü eklendi)
+            if (typeof btnStart !== 'undefined' && btnStart) {
+                btnStart.addEventListener('click', () => {
+                    menuScreen.style.display = 'none';
+                    gameScreen.style.display = 'flex';
+                    if (typeof handleBGM === 'function') handleBGM();
+                });
+            }
+
+            if (typeof btnInGameMenu !== 'undefined' && btnInGameMenu) {
+                btnInGameMenu.addEventListener('click', () => {
+                    gameScreen.style.display = 'none';
+                    menuScreen.style.display = 'flex';
+                });
+            }
             
-            btnSettings.addEventListener('click', () => {
-                menuScreen.style.display = 'none';
-                settingsScreen.style.display = 'flex';
-            });
+            if (typeof btnSettings !== 'undefined' && btnSettings) {
+                btnSettings.addEventListener('click', () => {
+                    menuScreen.style.display = 'none';
+                    settingsScreen.style.display = 'flex';
+                });
+            }
 
             // --- ÇIKIŞ (GÜVENLİ HESAP ÇIKIŞI) BUTONU İŞLEVİ ---
             const btnExit = document.getElementById('btn-exit');
             if (btnExit) {
                 btnExit.addEventListener('click', () => {
-                    // 1. Çıkmadan önce oyuncunun son ilerlemesini kaydet
-                    saveGame();
+                    if (typeof saveGame === 'function') saveGame();
                     if (typeof syncLeaderboardData === 'function') syncLeaderboardData();
 
-                    // 2. Firebase'den güvenli çıkış yap
-                    auth.signOut().then(() => {
-                        console.log("Güvenli çıkış yapıldı.");
-                        if (typeof playSound === 'function') playSound('tick');
-                        
-                        // 3. İŞTE KRİTİK NOKTA: BÜTÜN TARAYICI HAFIZASINI SİL!
-                        // Önceki hesaba ait para, hisse ve UID gibi tüm hayalet verileri yok eder.
-                        localStorage.clear();
-                        
-                        // 4. Sayfayı tertemiz bir şekilde yenile
-                        location.reload(); 
-                    }).catch((error) => {
-                        console.error("Çıkış yapılırken hata oluştu:", error);
-                        if (typeof showCustomAlert === 'function') {
-                            showCustomAlert("Çıkış yapılamadı: " + error.message);
-                        }
-                    });
+                    if (typeof auth !== 'undefined') {
+                        auth.signOut().then(() => {
+                            console.log("Güvenli çıkış yapıldı.");
+                            if (typeof playSound === 'function') playSound('tick');
+                            
+                            localStorage.clear();
+                            location.reload(); 
+                        }).catch((error) => {
+                            console.error("Çıkış yapılırken hata oluştu:", error);
+                            if (typeof showCustomAlert === 'function') {
+                                showCustomAlert("Çıkış yapılamadı: " + error.message);
+                            }
+                        });
+                    }
                 });
             }
             // --- BÜYÜK SAYILARI KISALTMA FONKSİYONU ---
@@ -2034,14 +2113,14 @@ if (typeof catBtns !== 'undefined') {
         if (!cat || cat === 'all') return;
         const req = categoryRequirements[cat];
         
-        if (req) {
-            // 1. Butonun içinde rozet var mı kontrol et, yoksa tam senin görsellerindeki tasarımla oluştur
+        // DÜZELTME: req === 0 olsa bile çalışması için koşul güncellendi!
+        if (req !== undefined) {
+            // 1. Butonun içinde rozet var mı kontrol et, yoksa oluştur
             let badge = btn.querySelector('.btn-lock-badge');
             if (!badge) {
                 badge = document.createElement('span');
                 badge.className = 'btn-lock-badge';
                 
-                // Tasarım: Görsellerindeki o koyu kırmızı arkaplan ve kırmızı/turuncu metin uyarlaması
                 badge.style.background = 'rgba(239, 68, 68, 0.15)'; 
                 badge.style.color = '#ef4444'; 
                 badge.style.padding = '3px 8px';
@@ -2050,8 +2129,8 @@ if (typeof catBtns !== 'undefined') {
                 badge.style.fontSize = '10px';
                 badge.style.fontWeight = '900';
                 
-                // Miktara göre otomatik yazı ataması (Tüm kategoriler için çalışır)
-                if (req === Infinity) {
+                // VIP için her zaman PREMIUM yazsın, diğerleri için rakam yazsın
+                if (cat === 'vip') {
                     badge.innerHTML = `🔒 PREMİUM`;
                 } else if (req >= 1000000) {
                     badge.innerHTML = `🔒 ${(req/1000000).toFixed(0)}M`;
@@ -2126,11 +2205,22 @@ if (typeof catBtns !== 'undefined') {
             feeDisplay.style.color = "#10b981";
         } else {
             let currentFee = 1;
-            if (playerBalance < 50000) currentFee = 1;
-            else if (playerBalance < 250000) currentFee = 5;
-            else if (playerBalance < 1000000) currentFee = 10;
-            else if (playerBalance < 5000000) currentFee = 20;
-            else if (currentFee = 80); // (mevcut kodun)
+            
+            if (playerBalance < 50000) {
+                currentFee = 1;
+            } else if (playerBalance < 250000) {
+                currentFee = 5;
+            } else if (playerBalance < 1000000) {
+                currentFee = 10;
+            } else if (playerBalance < 5000000) {
+                currentFee = 20;
+            } else if (playerBalance < 15000000) {
+                currentFee = 40;
+            } else if (playerBalance < 20000000) {
+                currentFee = 80;
+            } else {
+                currentFee = 160; // 20 Milyon ve üzeri için 160$ keser
+            }
 
             feeDisplay.innerText = "⚡ Terminal: -$" + currentFee;
             feeDisplay.style.color = "#ef4444";
@@ -2481,6 +2571,44 @@ try {
                         if (newOwned < 510000) {
                             const takeoverBtn = document.getElementById('btn-open-takeover');
                             if(takeoverBtn) takeoverBtn.style.display = 'none';
+
+                            // YENİ: YÖNETİM KURULU DÜŞERSE ŞİRKETİ YENİ YATIRIMCILAR DEVRALIR!
+                            const sName = currentStockCard.dataset.name;
+                            if (customBrands[sName]) {
+                                // Genişletilmiş profesyonel holding ve yatırım şirketi isimleri
+                                const lostNames = [
+                                    "Apex Finans", "Global Yatırım", "Atlas Sermaye", "Zirve Holding", 
+                                    "Kuzey Endüstri", "Nova Ortaklık", "Bosphorus Teknoloji", "Orion Madencilik", 
+                                    "Zenith Girişim", "Vega Lojistik", "Merkez Bank", "Eko Dağıtım", 
+                                    "Prime Ticaret", "Omega Sanayi", "Vesta Gelişim", "Kuantum Portföy", 
+                                    "Alfa Sistemleri", "Ege Konsorsiyum", "Truva Enerji", "Sirius Gayrimenkul", 
+                                    "Magna Telekom", "İnovasyon A.Ş.", "Meridyen Danışmanlık", "Kapital Varlık", 
+                                    "Sentetik Ağlar", "Avrasya Çözümleri", "Dinamik Yapı", "Prestij İnşaat", 
+                                    "Vizyon Medya", "Okyanus Denizcilik", "Pusula Havacılık", "Spektrum Kimya", 
+                                    "Sinerji Yazılım", "Momentum Otomotiv", "Vertex Bilişim"
+                                ];
+                                
+                                // Şirketlerin yeni sektörlerine uygun genişletilmiş emoji havuzu
+                                const lostEmojis = ["🏛️", "💼", "🌐", "🏢", "📊", "💎", "📈", "🚢", "✈️", "🏗️", "🏭", "💻", "📱", "🔋", "🛡️", "⚙️", "🚄", "📦", "💡", "💰", "💳", "🔬", "📡"];
+                                
+                                let rName = lostNames[Math.floor(Math.random() * lostNames.length)];
+                                let rEmoji = lostEmojis[Math.floor(Math.random() * lostEmojis.length)];
+                                
+                                // Şirketin ismini ve emojisini yeni kurumsal isme çevir
+                                customBrands[sName] = { name: rName, emoji: rEmoji };
+                                localStorage.setItem('cts_custom_brands', JSON.stringify(customBrands));
+                                
+                                // Paneldeki ve borsadaki isimleri anında güncelle
+                                document.getElementById('trade-stock-name').innerText = rName;
+                                applyCustomBrands();
+                                if (typeof updatePortfolioView === 'function') updatePortfolioView();
+                                
+                                // Oyuncuya el değiştirme uyarısı göster
+                                if(typeof showStoreModal === 'function'){
+                                    showStoreModal("YÖNETİM EL DEĞİŞTİRDİ! ⚠️", `Hisse payın %51'in altına düştüğü için şirketteki kontrolünü kaybettin.<br><br>Şirket yeni bir yatırım grubuna devredildi ve marka adı <strong>${rEmoji} ${rName}</strong> olarak güncellendi.`, false);
+                                    if(typeof playSound === 'function') playSound('error');
+                                }
+                            }
                         }
                     }
 
@@ -2732,11 +2860,23 @@ try {
                     const pPrice = portCard.querySelector('.stock-price');
                     const pChange = portCard.querySelector('.stock-change');
                     const pOwned = portCard.querySelector('.stock-owned');
+                    const pName = portCard.querySelector('.stock-name');
+                    const pIcon = portCard.querySelector('.stock-icon');
+
                     if (pPrice) pPrice.textContent = priceText;
                     if (pChange) {
                         pChange.textContent = changeText;
                         pChange.style.color = isDown ? '#ef4444' : '#10b981';
                     }
+                    
+                    // --- YENİ: İSİM VE EMOJİ SENKRONİZASYONU ---
+                    // Eğer oyuncu bu şirketin adını değiştirdiyse, portföydeki kopyasına da yansıt!
+                    if (customBrands[name]) {
+                        if (pName) pName.textContent = customBrands[name].name;
+                        if (pIcon) pIcon.textContent = customBrands[name].emoji;
+                    }
+                    // -------------------------------------------
+
                     portCard.classList.remove('trend-up', 'trend-down');
                     portCard.classList.add(isDown ? 'trend-down' : 'trend-up');
                     if (pOwned) {
@@ -3005,8 +3145,6 @@ try {
                 document.getElementById('summary-overlay').classList.add('active');
                 bankruptcyModal.classList.add('show');
             }
-
-            btnBankruptcyOk.addEventListener('click', () => { location.reload(); });
 
             const storeModal = document.getElementById('store-modal');
             const storeModalTitle = document.getElementById('store-modal-title');
@@ -3652,6 +3790,8 @@ if (btnCloseWalletStats) {
     });
 }
             function saveGame() {
+    // Sıfırlama Firebase'e yazılırken eski async kayıtların yeni state'i ezmesini engelle.
+    if (window.__ctsResetInProgress) return;
     if (typeof syncLeaderboardData === 'function') syncLeaderboardData();
     
     // 1. Senin mevcut localStorage kayıtların (Aynen kalıyor)
@@ -5826,6 +5966,77 @@ if (btnLogin) {
             });
     });
 }
+</script>
+<!-- ========================================================================== -->
+<!-- 🚀 NİHAİ KUSURSUZ SIFIRLAMA MOTORU -->
+<!-- ========================================================================== -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Oyun açıldıktan yarım saniye sonra eski bozuk butonları imha edip yenilerini takıyoruz
+        setTimeout(() => {
+            const bindForceReset = (btnId, isBankrupt) => {
+                let oldBtn = document.getElementById(btnId);
+                if (oldBtn) {
+                    let newBtn = oldBtn.cloneNode(true);
+                    oldBtn.parentNode.replaceChild(newBtn, oldBtn);
+                    newBtn.addEventListener('click', () => executeFlawlessReset(isBankrupt));
+                }
+            };
+            // Ayarlardaki Sıfırlama ve İflas butonlarını kusursuz koda bağlıyoruz
+            bindForceReset('btn-confirm-reset', false);
+            bindForceReset('btn-bankruptcy-ok', true);
+        }, 500); 
+    });
+
+    function executeFlawlessReset(isBankruptcy) {
+        // 1. Oyunun kendi kaydetme mekanizmasını felç ediyoruz (Eski 38 Milyon sızamasın diye)
+        window.saveGame = function() { console.log("Eski kayıt engellendi!"); };
+        if (typeof isGamePaused !== 'undefined') isGamePaused = true;
+        
+        // Açık olan tüm pop-up'ları zorla kapat
+        document.querySelectorAll('.show').forEach(el => el.classList.remove('show'));
+        document.querySelectorAll('.active').forEach(el => el.classList.remove('active'));
+
+        let uid = localStorage.getItem('cts_player_uid');
+        let stats = (typeof gameStats !== 'undefined' && gameStats) ? gameStats : { bankruptcies: 0 };
+        let newBankruptcies = isBankruptcy ? (stats.bankruptcies || 0) + 1 : (stats.bankruptcies || 0);
+
+        // 2. Tarayıcı hafızasını sıfırla ve 15 BİN dolar formatına çek
+        localStorage.setItem('cts_balance', '15000');
+        localStorage.setItem('cts_debt', '0');
+        localStorage.setItem('cts_principal_debt', '0');
+        localStorage.setItem('cts_start_wealth', '15000');
+        localStorage.setItem('cts_tick_count', '0');
+        localStorage.setItem('cts_daily_trades', '0');
+        localStorage.setItem('cts_milestones', JSON.stringify({ k50: false, k250: false, m1: false, m5: false, m15: false, m20: false }));
+        localStorage.setItem('cts_stats', JSON.stringify({ trades: 0, maxWealth: 15000, bankruptcies: newBankruptcies, days: 1 }));
+        localStorage.setItem('cts_portfolio', JSON.stringify({}));
+        localStorage.setItem('cts_futures', JSON.stringify([]));
+        localStorage.removeItem('cts_averages');
+
+        // 3. FİREBASE'İ KUSURSUZ (null kullanmadan) SIFIRLA VE SAYFAYI YENİLE
+        if (uid && typeof database !== 'undefined') {
+            database.ref('users/' + uid).update({
+                balance: 15000,
+                debt: 0,
+                principalDebt: 0,
+                portfolio: {}, 
+                futures: [],   
+                averages: {},
+                milestones: { k50: false, k250: false, m1: false, m5: false, m15: false, m20: false },
+                'stats/maxWealth': 15000,
+                'stats/trades': 0,
+                'stats/days': 1,
+                'stats/bankruptcies': newBankruptcies
+            }).then(() => {
+                window.location.reload();
+            }).catch(() => {
+                window.location.reload(); 
+            });
+        } else {
+            window.location.reload();
+        }
+    }
 </script>
 </body>
 </html>
