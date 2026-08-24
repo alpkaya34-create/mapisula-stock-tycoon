@@ -1077,7 +1077,7 @@
                 <!-- GERÇEK ÇEVRİMİÇİ OYUNCU SAYAÇ ROZETİ -->
                 <div class="live-badge-container">
                     <div class="live-indicator"></div>
-                    <span id="online-viewer-count">...</span> &nbsp;Kişi Kumbarayı İzliyor
+                    <span id="online-viewer-count">1</span> &nbsp;Kişi Kumbarayı İzliyor
                 </div>
             </div>
             <!-- ========================================== -->
@@ -6155,13 +6155,24 @@ if (btnLogin) {
             window.location.reload();
         }
     }
-    // ==========================================================================
+// ==========================================================================
 // 🟢 GERÇEK ZAMANLI ÇEVRİMİÇİ OYUNCU TAKİBİ (PRESENCE SİSTEMİ)
 // ==========================================================================
-let presenceUid = localStorage.getItem('cts_player_uid');
 
+// 1. ADIM: SAYAÇ OKUYUCU (Herkes için anında çalışır)
+const onlineUsersRef = database.ref('status/onlineUsers');
+onlineUsersRef.on('value', (snapshot) => {
+    let onlineCount = snapshot.numChildren();
+    
+    const viewerEl = document.getElementById('online-viewer-count');
+    if (viewerEl) {
+        viewerEl.innerText = onlineCount > 0 ? onlineCount : 1; 
+    }
+});
+
+// 2. ADIM: KENDİNİ LİSTEYE EKLEME (Sadece UID varsa çalışır)
+let presenceUid = localStorage.getItem('cts_player_uid');
 if (presenceUid) {
-    // Firebase'in kendi bağlantı durumunu dinle
     const connectedRef = database.ref('.info/connected');
     const myPresenceRef = database.ref('status/onlineUsers/' + presenceUid);
 
@@ -6172,17 +6183,6 @@ if (presenceUid) {
             
             // Oyuncu interneti kestiğinde veya sekmeyi kapattığında sil
             myPresenceRef.onDisconnect().remove();
-        }
-    });
-
-    // Online olan herkesi say ve ekrana yazdır
-    const onlineUsersRef = database.ref('status/onlineUsers');
-    onlineUsersRef.on('value', (snapshot) => {
-        let onlineCount = snapshot.numChildren();
-        
-        const viewerEl = document.getElementById('online-viewer-count');
-        if (viewerEl) {
-            viewerEl.innerText = onlineCount > 0 ? onlineCount : 1; 
         }
     });
 }
