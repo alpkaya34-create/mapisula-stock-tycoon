@@ -1557,3 +1557,31 @@ body.premium-theme .section-title { color: #fbbf24 !important; }
     0% { box-shadow: 0 0 10px rgba(245, 158, 11, 0.4); }
     100% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.8), 0 0 5px rgba(255, 255, 255, 0.8); }
 }
+/* CANLI İZLEYİCİ BADGE TASARIMI */
+.live-badge-container {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: #10b981;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.1);
+}
+
+.live-indicator {
+    width: 8px;
+    height: 8px;
+    background-color: #10b981;
+    border-radius: 50%;
+    margin-right: 6px;
+    animation: pulse-green 2s infinite;
+}
+
+@keyframes pulse-green {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
