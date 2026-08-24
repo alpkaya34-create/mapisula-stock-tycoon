@@ -1069,7 +1069,17 @@
         </div>
 
         <div id="store-container" class="market-container" style="display: none;">
-            <h3 class="section-title text-gold" style="margin-bottom: 20px;">CTS MAĞAZA (TRY)</h3>
+            
+            <!-- DÜZELTİLMİŞ BAŞLIK VE CANLI ROZETİ KAPSAYICISI -->
+            <div class="store-header-container" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 class="section-title text-gold" style="margin: 0;">CTS MAĞAZA (TRY)</h3>
+                
+                <!-- GERÇEK ÇEVRİMİÇİ OYUNCU SAYAÇ ROZETİ -->
+                <div class="live-badge-container">
+                    <div class="live-indicator"></div>
+                    <span id="online-viewer-count">...</span> &nbsp;Kişi Kumbarayı İzliyor
+                </div>
+            </div>
             <!-- ========================================== -->
             <!-- MEGA KÜRESEL KUMBARA ARAYÜZÜ               -->
             <!-- ========================================== -->
@@ -1230,7 +1240,7 @@
 
            <!-- TEK SATIR MİNİ KOMİSYON BİLGİSİ -->
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background: rgba(15, 23, 42, 0.75); border: 1px solid #334155; padding: 8px 12px; border-radius: 10px;">
-                <span style="font-size: 11.5px; font-weight: 800; color: #cbd5e1;">Komisyon (<span id="commission-rate-text">%0.2</span>): <strong id="commission-fee-text" style="font-size: 13.5px; font-weight: 900; color: #ef4444;">$0.00</strong></span>
+                <span style="font-size: 11.5px; font-weight: 800; color: #cbd5e1;">Komisyon (<span id="commission-rate-text">%0.4</span>): <strong id="commission-fee-text" style="font-size: 13.5px; font-weight: 900; color: #ef4444;">$0.00</strong></span>
                 <span id="commission-badge-text" style="font-size: 10px; font-weight: 800; color: #fbbf24;">👑 Premium ile %50 İndirim</span>
             </div>
 
@@ -2394,69 +2404,83 @@ try {
             });
 
             function updateTotalCost() {
-                const qty = parseInt(inputQty.value) || 0; 
-                const margin = qty * currentStockPrice; 
-                
-                // Komisyon Oranı (Normal %0.2, Premium %0.1)
-                let commissionRateVal = isPremium ? 0.001 : 0.002;
-                let commissionRatePercent = isPremium ? "%0.1" : "%0.2";
-                let commissionFee = 0;
+    const qty = parseInt(inputQty.value) || 0; 
+    const margin = qty * currentStockPrice; 
+    
+    let commissionRateVal = 0;
+    let commissionRatePercent = "";
+    let commissionFee = 0;
 
-                if (tradeMode === 'FUTURES') {
-                    const lev = parseInt(levSlider.value) || 1;
-                    const positionSize = margin * lev; 
-                    
-                    // Vadeli tarafta komisyon Pozisyon Büyüklüğü üzerinden alınır
-                    commissionFee = positionSize * commissionRateVal;
+    if (tradeMode === 'FUTURES') {
+        // --- VADELİ İŞLEMLER İÇİN YENİ ORANLAR ---
+        // Vadeli Premium %0.4 | Vadeli Standart %0.8
+        commissionRateVal = isPremium ? 0.004 : 0.008;
+        commissionRatePercent = isPremium ? "%0.4" : "%0.8";
 
-                    if (marginDisplay) {
-                        marginDisplay.innerText = "$" + margin.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                        marginDisplay.style.color = (playerBalance < margin) ? '#ef4444' : '#ffffff'; 
-                    }
-                    
-                    if (displayTotalCost) {
-                        displayTotalCost.innerText = "$" + positionSize.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                        displayTotalCost.style.color = '#00f2fe';
-                    }
-                    
-                    if (summaryText) {
-                        summaryText.innerText = "Pozisyon Büyüklüğü (" + lev + "x):";
-                    }
-                } else {
-                    // Spot tarafta komisyon net tutar üzerinden alınır
-                    commissionFee = margin * commissionRateVal;
-                    let totalWithFee = margin + commissionFee;
-                    
-                    if (displayTotalCost) {
-                        displayTotalCost.innerText = "$" + totalWithFee.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                        displayTotalCost.style.color = '#ffd700'; 
-                    }
-                    
-                    if (summaryText) {
-                        summaryText.innerText = "Toplam Tutar (Komisyon Dahil):";
-                    }
-                }
+        const lev = parseInt(levSlider.value) || 1;
+        const positionSize = margin * lev; 
+        
+        // Vadeli tarafta komisyon Pozisyon Büyüklüğü üzerinden alınır
+        commissionFee = positionSize * commissionRateVal;
 
-                // Komisyon Arayüz Yazılarını Güncelle
-                const badgeText = document.getElementById('commission-badge-text');
-                if (badgeText) {
-                    if (isPremium) {
-                        badgeText.innerText = "👑 Premium Aktif";
-                        badgeText.style.color = "#10b981"; // Aktif olunca yeşil renk olsun
-                    } else {
-                        badgeText.innerText = "👑 Premium ile %50 İndirim";
-                        badgeText.style.color = "#fbbf24"; // Normalde altın sarısı olsun
-                    }
-                }
+        if (marginDisplay) {
+            marginDisplay.innerText = "$" + margin.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            marginDisplay.style.color = (playerBalance < margin) ? '#ef4444' : '#ffffff'; 
+        }
+        
+        if (displayTotalCost) {
+            displayTotalCost.innerText = "$" + positionSize.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            displayTotalCost.style.color = '#00f2fe';
+        }
+        
+        if (summaryText) {
+            summaryText.innerText = "Pozisyon Büyüklüğü (" + lev + "x):";
+        }
+    } else {
+        // --- SPOT İŞLEMLER İÇİN YENİ ORANLAR ---
+        // Spot Premium %0.2 | Spot Standart %0.4
+        commissionRateVal = isPremium ? 0.002 : 0.004;
+        commissionRatePercent = isPremium ? "%0.2" : "%0.4";
 
-                const commRateElem = document.getElementById('commission-rate-text');
-                if (commRateElem) commRateElem.innerText = commissionRatePercent;
+        // Spot tarafta komisyon net tutar üzerinden alınır
+        commissionFee = margin * commissionRateVal;
+        let totalWithFee = margin + commissionFee;
+        
+        if (displayTotalCost) {
+            displayTotalCost.innerText = "$" + totalWithFee.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            displayTotalCost.style.color = '#ffd700'; 
+        }
+        
+        if (summaryText) {
+            summaryText.innerText = "Toplam Tutar (Komisyon Dahil):";
+        }
+    }
 
-                const commFeeElem = document.getElementById('commission-fee-text');
-                if (commFeeElem) {
-                    commFeeElem.innerText = "$" + commissionFee.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                }
-            }
+    // -------------------------------------------------------------
+    // EKRANDAKİ METİNLERİ GÜNCELLE
+    // -------------------------------------------------------------
+    const commissionRateTextEl = document.getElementById('commission-rate-text');
+    const commissionFeeTextEl = document.getElementById('commission-fee-text');
+    const commissionBadgeTextEl = document.getElementById('commission-badge-text');
+
+    if (commissionRateTextEl) {
+        commissionRateTextEl.innerText = commissionRatePercent;
+    }
+    
+    if (commissionFeeTextEl) {
+        commissionFeeTextEl.innerText = "$" + commissionFee.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    if (commissionBadgeTextEl) {
+        if (isPremium) {
+            commissionBadgeTextEl.innerText = "👑 Premium Aktif";
+            commissionBadgeTextEl.style.color = "#10b981"; // Yeşil renk
+        } else {
+            commissionBadgeTextEl.innerText = "👑 Premium ile %50 İndirim";
+            commissionBadgeTextEl.style.color = "#fbbf24"; // Sarı renk
+        }
+    }
+}
 
             let stockAverages = {}; // YENİ: Hisse maliyet ortalamalarını tutan obje
 
@@ -2480,7 +2504,10 @@ try {
                 // -------------------------------------------------------------
 
                 const totalCost = qty * currentStockPrice;
-                let commissionRate = isPremium ? 0.001 : 0.002;
+                
+                // YENİ ORANLAR: Premium %0.2 (0.002) | Standart %0.4 (0.004)
+                let commissionRate = isPremium ? 0.002 : 0.004;
+                
                 let commissionFee = totalCost * commissionRate;
                 let totalCostWithFee = totalCost + commissionFee;
 
@@ -2547,7 +2574,7 @@ try {
                 let isCryptoCheck = currentStockCard && currentStockCard.dataset.isCrypto === "true";
                 // ---------------------------------------------------
                 
-                let commissionRate = isPremium ? 0.001 : 0.002;
+                let commissionRate = isPremium ? 0.002 : 0.004;
                 let commissionFee = totalRevenue * commissionRate;
                 let netRevenue = totalRevenue - commissionFee;
                 let currentOwned = parseInt(displayTradeOwned.innerText);
@@ -2657,7 +2684,10 @@ try {
                 try {
                     const margin = qty * price;
                     const effectiveAmount = qty * lev;
-                    const commissionRate = isPremium ? 0.001 : 0.002;
+                    
+                    // YENİ ORANLAR: Vadeli Premium %0.4 (0.004) | Vadeli Standart %0.8 (0.008)
+                    const commissionRate = isPremium ? 0.004 : 0.008;
+                    
                     const commissionFee = effectiveAmount * commissionRate;
                     const totalRequiredMoney = margin + commissionFee;
 
@@ -3155,6 +3185,55 @@ try {
                 document.getElementById('summary-overlay').classList.remove('active');
                 storeModal.classList.remove('show');
             });
+// ==========================================================================
+// 🎉 ÖZEL KONFETİ MOTORU (MOBİL & ÇERÇEVE UYUMLU)
+// ==========================================================================
+function shootConfetti(colors) {
+    const confettiContainer = document.createElement('div');
+    confettiContainer.style.position = 'fixed';
+    confettiContainer.style.top = '0';
+    // Konteyneri tam ortaya alıp oyunun mobil sınırına (450px) hapsediyoruz:
+    confettiContainer.style.left = '50%'; 
+    confettiContainer.style.transform = 'translateX(-50%)';
+    confettiContainer.style.width = '100%';
+    confettiContainer.style.maxWidth = '450px'; 
+    confettiContainer.style.height = '100%'; 
+    confettiContainer.style.pointerEvents = 'none';
+    confettiContainer.style.zIndex = '99999';
+    confettiContainer.style.overflow = 'hidden'; // Dışarı sızmaları kesinlikle engeller
+    document.body.appendChild(confettiContainer);
+
+    for (let i = 0; i < 120; i++) {
+        const confetto = document.createElement('div');
+        confetto.style.position = 'absolute';
+        confetto.style.width = Math.random() * 8 + 6 + 'px';
+        confetto.style.height = Math.random() * 12 + 8 + 'px';
+        confetto.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetto.style.top = '-20px';
+        
+        // vw (ekran genişliği) yerine % (konteyner genişliği) kullanıyoruz:
+        confetto.style.left = Math.random() * 100 + '%'; 
+        confetto.style.opacity = Math.random() + 0.5;
+        
+        let randomRot = Math.random() * 360;
+        confetto.style.transform = `rotate(${randomRot}deg)`;
+        confetto.style.transition = `top ${Math.random() * 2 + 2}s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 3s linear, opacity 3s ease-in`;
+        
+        confettiContainer.appendChild(confetto);
+
+        // Hareketi tetikle
+        setTimeout(() => {
+            confetto.style.top = '120%'; // vh yerine % kullanarak mobil ekranda pürüzsüz akmasını sağlıyoruz
+            confetto.style.transform = `rotate(${randomRot + 720}deg)`;
+            confetto.style.opacity = '0';
+        }, 50);
+    }
+
+    // Ekranı temizle
+    setTimeout(() => {
+        confettiContainer.remove();
+    }, 4000);
+}
 
             function showStoreModal(title, desc, isSuccess) {
                 storeModalTitle.innerText = title;
@@ -5268,11 +5347,17 @@ let isPiggyExploding = false;
 // Her yeni tur için sunucuda tek bir rastgele ödül kaderi oluşturur
 function generateNextReward() {
     let roll = Math.random();
-    if (roll < 0.80) {
+    
+    if (roll < 0.85) {
+        // 0.00 - 0.85 arası: %85 İHTİMALLE NAKİT PARA
         return { type: 'cash', pool: Math.floor(50000 + Math.random() * 300000) };
+        
     } else if (roll < 0.95) {
+        // 0.85 - 0.95 arası: %10 İHTİMALLE ŞİRKET PAYI
         return { type: 'stock', stockIndex: Math.floor(Math.random() * 20) }; 
+        
     } else {
+        // 0.95 - 1.00 arası: %5 İHTİMALLE PREMİUM
         return { type: 'premium' };
     }
 }
@@ -5408,12 +5493,21 @@ piggyRef.on('value', (snapshot) => {
             if (typeof syncLeaderboardData === 'function') syncLeaderboardData();
             
             if (typeof showStoreModal === 'function') {
+                // KATKI YAPANLARA PEMBE KONFETİLER 🎉
+                if (typeof shootConfetti === 'function') {
+                    shootConfetti(['#ff69b4', '#ff1493', '#ffc0cb', '#f472b6', '#ec4899']);
+                }
                 showStoreModal(prizeTitle, prizeDesc, true);
                 playSound('milestone');
             }
         } else {
+            // HİÇ KATKI YAPMAYANLARA KIRMIZI UYARI EKRANI ❌
             if (typeof showStoreModal === 'function') {
-                showStoreModal("🐷 KUMBARA PATLADI!", "Küresel havuz doldu ve ödüller dağıtıldı!<br><br><span style='color:#ef4444;'>Havuza katkıda bulunmadığın için bu turdan ödül alamadın.</span>", false);
+                let errorTitle = "❌ FIRSATI KAÇIRDIN!";
+                let errorDesc = `<div style="background: rgba(239, 68, 68, 0.1); border: 2px solid #ef4444; padding: 15px; border-radius: 8px; color: #fca5a5;">
+                    Küresel havuz doldu ve ödüller dağıtıldı!<br><br>Kumbaraya hiç yatırım yapmadığın için maalesef bu turun ödüllerinden yararlanamadın. Bir dahaki sefere elini çabuk tut!
+                </div>`;
+                showStoreModal(errorTitle, errorDesc, false); // false kalsın ki normal pop-up gibi görünsün, içini kırmızı tasarladık zaten
             }
         }
         
@@ -5472,12 +5566,18 @@ let isMegaPiggyExploding = false;
 
 function generateNextMegaReward() {
     let roll = Math.random();
-    if (roll < 0.80) {
+    
+    if (roll < 0.85) {
+        // 0.00 - 0.85 arası: %85 İHTİMALLE MEGA NAKİT
         // Mega Nakit: $200.000 ile $1.000.000 arası rastgele dev havuz
         return { type: 'cash', pool: Math.floor(200000 + Math.random() * 800000) };
+        
     } else if (roll < 0.95) {
+        // 0.85 - 0.95 arası: %10 İHTİMALLE ŞİRKET PAYI
         return { type: 'stock', stockIndex: Math.floor(Math.random() * 20) }; 
+        
     } else {
+        // 0.95 - 1.00 arası: %5 İHTİMALLE PREMİUM
         return { type: 'premium' };
     }
 }
@@ -5524,8 +5624,8 @@ megaPiggyRef.on('value', (snapshot) => {
                 let myCashPrize = Math.floor(rewardDestiny.pool * myShareRatio);
                 playerBalance += myCashPrize;
                 prizeTitle = "🌌 MEGA NAKİT HAVUZU!";
-                prizeDesc = `Mega turun ödülü Nakitti! Yaptığın ₺${myContribution} katkı oranında <strong style="color:#00f2fe;">$${myCashPrize.toLocaleString()}</strong> kazandın!`;
-            } 
+                prizeDesc = `Mega turun ödülü Nakitti! Yaptığın katkı oranında <strong style="color:#00f2fe;">$${myCashPrize.toLocaleString()}</strong> payını aldın!`;
+            }
             else if (rewardDestiny.type === 'stock') {
                 const allCards = document.querySelectorAll('#market-container .stock-card');
                 if (allCards.length > 0) {
@@ -5582,7 +5682,24 @@ megaPiggyRef.on('value', (snapshot) => {
             updateBalanceUI();
             saveGame();
             if (typeof syncLeaderboardData === 'function') syncLeaderboardData();
-            if (typeof showStoreModal === 'function') showStoreModal(prizeTitle, prizeDesc, true);
+            
+            if (typeof showStoreModal === 'function') {
+                // MEGA KATKI YAPANLARA RGB NEON KONFETİLER 🎉
+                if (typeof shootConfetti === 'function') {
+                    shootConfetti(['#00f2fe', '#4facfe', '#10b981', '#fbbf24', '#f43f5e', '#8b5cf6', '#eab308']);
+                }
+                showStoreModal(prizeTitle, prizeDesc, true);
+                playSound('milestone');
+            }
+        } else {
+            // HİÇ KATKI YAPMAYANLARA MEGA KIRMIZI UYARI EKRANI 🚨
+            if (typeof showStoreModal === 'function') {
+                let errorTitle = "🚨 MEGA FIRSAT KAÇTI!";
+                let errorDesc = `<div style="background: rgba(220, 38, 38, 0.15); border: 2px solid #dc2626; padding: 15px; border-radius: 8px; color: #fca5a5; box-shadow: 0 0 15px rgba(220, 38, 38, 0.4);">
+                    <strong>Dehşet verici bir kayıp!</strong><br><br>Mega kumbaraya tek bir kuruş bile atmadığın için devasa havuzu başkaları paylaştı.
+                </div>`;
+                showStoreModal(errorTitle, errorDesc, false); 
+            }
         }
         
         setTimeout(() => { isMegaPiggyExploding = false; }, 3000);
@@ -6038,6 +6155,37 @@ if (btnLogin) {
             window.location.reload();
         }
     }
+    // ==========================================================================
+// 🟢 GERÇEK ZAMANLI ÇEVRİMİÇİ OYUNCU TAKİBİ (PRESENCE SİSTEMİ)
+// ==========================================================================
+let presenceUid = localStorage.getItem('cts_player_uid');
+
+if (presenceUid) {
+    // Firebase'in kendi bağlantı durumunu dinle
+    const connectedRef = database.ref('.info/connected');
+    const myPresenceRef = database.ref('status/onlineUsers/' + presenceUid);
+
+    connectedRef.on('value', (snap) => {
+        if (snap.val() === true) {
+            // Oyuncu bağlandığında online listesine ekle
+            myPresenceRef.set(true);
+            
+            // Oyuncu interneti kestiğinde veya sekmeyi kapattığında sil
+            myPresenceRef.onDisconnect().remove();
+        }
+    });
+
+    // Online olan herkesi say ve ekrana yazdır
+    const onlineUsersRef = database.ref('status/onlineUsers');
+    onlineUsersRef.on('value', (snapshot) => {
+        let onlineCount = snapshot.numChildren();
+        
+        const viewerEl = document.getElementById('online-viewer-count');
+        if (viewerEl) {
+            viewerEl.innerText = onlineCount > 0 ? onlineCount : 1; 
+        }
+    });
+}
 </script>
 </body>
 </html>
