@@ -5137,8 +5137,8 @@ if (tradePanel) {
 
         // Sadece aşağı doğru çekilirse paneli parmakla beraber indir
         if (deltaY > 0) {
-            // DÜZELTME 1: Panel merkezlemesini (-50%) bozmadan üstüne kaydırma payını ekledik (Zıplamayı önler)
-            tradePanel.style.transform = `translate(-50%, calc(-50% + ${deltaY}px))`;
+            // ZIPLAMAYI ÖNLEYEN DÜZELTME: Y eksenine ekstra -50% eklemiyoruz!
+            tradePanel.style.transform = `translate(-50%, ${deltaY}px)`;
         }
     }, { passive: true });
 
@@ -5149,10 +5149,7 @@ if (tradePanel) {
 
         // Eğer 90 pikselden fazla aşağı çekildiyse paneli tamamen kapat
         if (deltaY > 90) {
-            // DÜZELTME 2: Stili 300ms bekletmek yerine ANINDA sıfırlıyoruz.
             tradePanel.style.transform = ''; 
-            
-            // Paneli kapatırken halihazırda var olan güvenli ve pürüzsüz kapanış fonksiyonunu kullanıyoruz
             closeTradePanelSafely();
         } else {
             // Yeterince çekilmediyse orijinal konumuna yumuşakça geri oturt
