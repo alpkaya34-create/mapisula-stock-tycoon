@@ -1176,7 +1176,7 @@
                     </div>
                 </div>
                 
-                <button class="trade-btn" id="btn-buy-premium" style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color:#000; box-shadow: 0 5px 15px rgba(251, 191, 36, 0.4); font-weight: 900; font-size: 14px; padding: 14px; margin-top: 5px; letter-spacing: 0.5px;">₺149.99 / AY (ABONE OL)</button>
+                <button class="trade-btn" id="btn-buy-premium" style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color:#000; box-shadow: 0 5px 15px rgba(251, 191, 36, 0.4); font-weight: 900; font-size: 14px; padding: 14px; margin-top: 5px; letter-spacing: 0.5px;">₺99.99 / AY (ABONE OL)</button>
             </div>
 
             <div class="stock-card" style="flex-direction: column; align-items: stretch; gap: 15px; padding: 20px; margin-top: 10px;">
@@ -1195,7 +1195,7 @@
                     <div><h4 style="color:#a855f7; font-size: 15px; font-weight:900;">📈 Borsa Manipülasyonu</h4><p style="font-size:11px; color:#94a3b8; margin-top:4px;">Sahip olduğun hisseleri anında %3 ile %15 arasında uçurur.</p></div>
                     <span style="font-size: 20px;">🚀</span>
                 </div>
-                <button class="trade-btn" id="btn-buy-manipulation" style="background:#a855f7; color:#fff; box-shadow: 0 5px 15px rgba(168, 85, 247, 0.3);">₺49.99 SATIN AL</button>
+                <button class="trade-btn" id="btn-buy-manipulation" style="background:#a855f7; color:#fff; box-shadow: 0 5px 15px rgba(168, 85, 247, 0.3);">₺99.99 SATIN AL</button>
             </div>
 
 <!-- AI Analist Hakkı Kartı (Orijinal Standart Görünüm) -->
@@ -1207,7 +1207,7 @@
                     </div>
                     <span style="font-size: 20px;">⚡</span>
                 </div>
-                <button class="trade-btn" id="btn-buy-ai-rights" style="background:#3b82f6; color:#fff; box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);">₺24.99 SATIN AL</button>
+                <button class="trade-btn" id="btn-buy-ai-rights" style="background:#3b82f6; color:#fff; box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);">₺29.99 SATIN AL</button>
             </div>
 
             <div class="stock-card" style="flex-direction: column; align-items: stretch; gap: 15px; padding: 20px; margin-top: 10px; opacity: 0.8;">
@@ -2267,7 +2267,7 @@ if (typeof catBtns !== 'undefined') {
             feeDisplay.innerText = "👑 Terminal: Ücretsiz";
             feeDisplay.style.color = "#10b981";
         } else {
-            // --- GERÇEK ZAMANLI TOPLAM VARLIK HESAPLAMASI (DÜZELTİLDİ) ---
+            // --- GERÇEK ZAMANLI TOPLAM VARLIK HESAPLAMASI ---
             let realTotalWealth = getNetWorth(); 
             // ------------------------------------------------
             
@@ -2292,12 +2292,33 @@ if (typeof catBtns !== 'undefined') {
             feeDisplay.innerText = "⚡ Terminal: -$" + currentFee;
             feeDisplay.style.color = "#ef4444";
         }
-    } // feeDisplay if bloğu kapanışı veya uygun kapanış süslü parantezi
+    } 
 
-    // --- İŞTE BURAYA, FONKSİYONUN EN SONUNA EKLEDİĞİMİZ KISIM ---
-    if (typeof updateCashPackageUI === 'function') {
-        updateCashPackageUI();
+    // --- KASA DESTEK PAKETİ DİNAMİK GÜNCELLEMESİ ---
+    if (typeof updateCashSupportUI === 'function') {
+        updateCashSupportUI();
     }
+}
+
+// Kasa Destek paketinin butonunu ve fiyatını her para değişiminde güncelleyen ana fonksiyon
+function updateCashSupportUI() {
+    const btnBuyCash = document.getElementById('btn-buy-money');
+    if (!btnBuyCash) return;
+
+    let supportAmount = Math.floor(playerBalance * 0.5);
+    if (supportAmount < 10000) supportAmount = 10000;
+    
+    let price = 49.99;
+    
+    if (supportAmount >= 10000000) {
+        price = 999.99;
+    } else if (supportAmount >= 1000000) {
+        price = 499.99;
+    } else if (supportAmount >= 100000) {
+        price = 249.99;
+    }
+
+    btnBuyCash.innerText = `₺${price} SATIN AL`;
 }
 
             // --- HAYALET TIKLAMA (GHOST CLICK) KORUMASI SİSTEMİ ---
@@ -4090,7 +4111,9 @@ if (btnCloseWalletStats) {
             startOfDayWealth: startOfDayWealth, // YENİ: Gün başı serveti kaydet
             dailyTrades: dailyTrades, // YENİ: Günlük işlem sayısını kaydet
             tickCount: tickCount, // YENİ: Zamanlayıcıyı kaydet
-            lastUpdated: Date.now()
+            // Eski hali: lastUpdated: Date.now()
+            // YENİ HALİ (Sunucu saatini mühürler):
+            lastUpdated: firebase.database.ServerValue.TIMESTAMP
         }).then(() => {
             console.log("☁️ İlerleme hem localde hem bulutta güvenceye alındı!");
         }).catch((error) => {
@@ -4166,7 +4189,77 @@ document.getElementById('btn-close-milestone').addEventListener('click', () => {
     document.getElementById('summary-overlay').classList.remove('active');
     document.getElementById('milestone-modal').classList.remove('show');
 });
+// ==========================================================================
+// ⏳ ÇEVRİMDIŞI (OFFLINE) TERMİNAL KESİNTİSİ HESAPLAMA (HİLE KORUMALI)
+// ==========================================================================
+function calculateOfflineProgress() {
+    let lastPlayed = localStorage.getItem('cts_last_played_server');
+    if (!lastPlayed) return;
 
+    // Firebase'in sunucu saati ile cihaz saati arasındaki sapmayı (offset) alıyoruz
+    database.ref('.info/serverTimeOffset').once('value').then((snap) => {
+        let offset = snap.val() || 0;
+        
+        // Cihaz saati ne olursa olsun, offset ile toplayarak GERÇEK SUNUCU SAATİNİ buluyoruz!
+        let trueNow = Date.now() + offset; 
+        
+        let diffMs = trueNow - parseInt(lastPlayed);
+        
+        // Eğer oyuncu saati geriye almışsa (eksi değer çıkarsa) hile yapmaya çalışıyordur, işlemi iptal et
+        if (diffMs < 0) return;
+
+        let missedTicks = Math.floor(diffMs / 4000);
+
+        // Eğer Premium değilse ve en az 15 tick (1 dakika) çevrimdışı kalmışsa hesapla
+        if (missedTicks > 15 && !isPremium) {
+            let currentWealth = getNetWorth(); 
+            let terminalFee = 1;
+            
+            if (currentWealth >= 20000000) terminalFee = 160;
+            else if (currentWealth >= 15000000) terminalFee = 80;
+            else if (currentWealth >= 5000000) terminalFee = 40;
+            else if (currentWealth >= 1000000) terminalFee = 20;
+            else if (currentWealth >= 250000) terminalFee = 10;
+            else if (currentWealth >= 50000) terminalFee = 5;
+            else terminalFee = 1;
+
+            let totalOfflineFee = missedTicks * terminalFee;
+
+            if (totalOfflineFee > 0) {
+                if (playerBalance >= totalOfflineFee) {
+                    playerBalance = Math.round((playerBalance - totalOfflineFee) * 100) / 100;
+                } else {
+                    totalOfflineFee = playerBalance; // Eksiye düşmemesi için
+                    playerBalance = 0;
+                }
+
+                // Oyun yüklendikten 1.5 saniye sonra oyuncuya şok edici haberi ver
+                setTimeout(() => {
+                    if (typeof showCustomAlert === 'function') {
+                        let timeStr = "";
+                        let minutes = Math.floor(diffMs / 60000);
+                        let hours = Math.floor(minutes / 60);
+                        
+                        if (hours > 0) {
+                            timeStr = hours + " saat " + (minutes % 60) + " dakika";
+                        } else {
+                            timeStr = minutes + " dakika";
+                        }
+                        
+                        // Yenilenmiş ve düzeltilmiş Terminal Pop-up'ı
+                    showCustomAlert(
+                        `Çevrimdışı olduğun <b>${timeStr}</b> boyunca piyasa verilerin güncellenmeye devam etti.<br><br>Geçen süre zarfında kasandan <b>-$${totalOfflineFee.toLocaleString('en-US', { minimumFractionDigits: 2 })}</b> terminal kullanım ücreti kesildi!`, 
+                        "📱 TERMİNAL KESİNTİSİ", 
+                        "#ef4444" // İstersen bu rengi "#f59e0b" (Turuncu) yaparak daha az agresif yapabilirsin
+                    );
+                    }
+                    updateBalanceUI();
+                    saveGame();
+                }, 1500);
+            }
+        }
+    });
+}
             function loadGame() {
                 if (localStorage.getItem('cts_sound') !== null) { isSoundEnabled = localStorage.getItem('cts_sound') === 'true'; toggleSound.checked = isSoundEnabled; }
                 if (localStorage.getItem('cts_music') !== null) { isMusicEnabled = localStorage.getItem('cts_music') === 'true'; toggleMusic.checked = isMusicEnabled; }
@@ -4252,6 +4345,9 @@ document.getElementById('btn-close-milestone').addEventListener('click', () => {
                 // -------------------------------------------------------
 
                 renderMarketList(); 
+                
+                // YENİ EKLENEN: Çevrimdışı kesintileri hesapla
+                calculateOfflineProgress();
             }
             const chartModal = document.getElementById('chart-modal');
             const btnOpenChart = document.getElementById('btn-open-chart');
@@ -4581,11 +4677,46 @@ if (btnBuyAiRights) {
         const btnReplayTutorial = document.getElementById('btn-replay-tutorial');
 
         const tutorialSteps = [
-            { icon: '🎓', title: 'HOŞ GELDİN!', text: 'CTS Stock Market Tycoon\'a hoş geldin!<br><br>Amacın <b>$15,000</b> sermaye ile başlayıp, doğru yatırımlarla <b>$20 Milyon</b> barajını aşarak <b>Gizli Borsa\'ya</b> ulaşmak.' },
-            { icon: '⏱️', title: 'ZAMAN VE HABERLER', text: 'Her <b>4 saniyede</b> piyasa verileri güncellenir.<br><br><b>30 piyasa güncellemesi</b> (yani 120 saniye) 1 günü ifade eder.<br><br>Ekranın üstünden inen <b>Flaş Haberler</b> hisselerin yönünü anında etkiler. Haberleri iyi takip et!' },
-            { icon: '⚖️', title: 'SPOT vs VADELİ', text: '<b>SPOT:</b> Aldığın hisse senindir, düşse de elinde kalır.<br><br><span style="color:#ef4444;">VADELİ (Kaldıraç):</span> Paranı hızlı katlayabilirsin ama yön tersine giderse kasan tamamen sıfırlanıp <b>LİKİDE</b> olabilirsin!' },
-            { icon: '🤖', title: 'YAPAY ZEKA (AI)', text: 'Hangi hisseyi alacağına karar veremiyor musun?<br><br>Üstteki <b>AI ANALİST</b> butonuna tıklayarak CTS Yapay Zekasından trend yönü hakkında sağlam ipuçları alabilirsin.' },
-            { icon: '💎', title: 'YAŞAM ALANI', text: 'Sadece borsa yetmez! Ana menüdeki <b>Milyarder Kulübü\'ne</b> girip Rezidans, Yat veya Jet satın al.<br><br>Bu varlıklar sana her gün otomatik olarak <b>Pasif Gelir</b> kazandırır.' }
+            { 
+                icon: '🎓', 
+                title: '1. HOŞ GELDİN!', 
+                text: 'CTS Stock Market Tycoon\'a hoş geldin!<br><br>Sermayen <b>$15,000</b>. Amacın doğru yatırımlarla kasayı büyütüp <b>$20 Milyon</b> barajını aşarak <b>Gizli Kripto Borsası\'nı</b> açmak!' 
+            },
+            { 
+                icon: '⏱️', 
+                title: '2. PİYASA VE HABERLER', 
+                text: 'Piyasa her <b>4 saniyede bir</b> güncellenir (30 güncelleme = 1 Gün).<br><br>Ekranın üstünden inen <b>Flaş Haberler</b> hisseleri anında etkiler. Sektörel krizleri ve fırsatları kaçırmamak için gözün haberlerde olsun.' 
+            },
+            { 
+                icon: '⚖️', 
+                title: '3. SPOT vs VADELİ', 
+                text: '<b>SPOT:</b> Güvenlidir. Aldığın hisse senindir, fiyatı düşse de elinde kalır.<br><br><span style="color:#ef4444;">VADELİ (Kaldıraç):</span> Yükselişe (LONG) veya Düşüşe (SHORT) oynayabilirsin. Ancak yön tersine giderse paran sıfırlanıp <b>LİKİDE</b> olabilirsin!' 
+            },
+            { 
+                icon: '⚡', 
+                title: '4. HIZLI İŞLEM VE YAPAY ZEKA', 
+                text: 'Kasandaki paranın tamamıyla (%100) anında işlem yapmak için <b>AL veya SAT butonlarına basılı tut!</b><br><br>Hangi hisseyi alacağını bilemiyorsan, yukarıdaki <b>🤖 AI ANALİST</b> butonuna tıklayarak yapay zekadan tüyo alabilirsin.' 
+            },
+            { 
+                icon: '🏢', 
+                title: '5. ŞİRKETİ ELE GEÇİR', 
+                text: 'Bir şirketin hisselerinin <b>%51\'ine (510.000 adet)</b> ulaştığında Yönetim Kurulu sana geçer!<br><br>Şirketi ele geçirdiğinde ona <b>kendi özel ismini ve emojini</b> verebilirsin. Ancak payın %51\'in altına düşerse şirketi kaybedersin.' 
+            },
+            { 
+                icon: '🐷', 
+                title: '6. BANKA VE KUMBARALAR', 
+                text: 'Paran biterse bankadan faizli <b>Kredi</b> çekebilirsin.<br><br>Mağaza bölümündeki <b>Küresel Kumbaralara</b> katkı yapmayı unutma! Bar dolduğunda, katkı yapan herkes devasa nakit ve şirket payları kazanır.' 
+            },
+            { 
+                icon: '💎', 
+                title: '7. MİLYARDER KULÜBÜ', 
+                text: 'Borsada kazandığın paraları <b>Yaşam Alanı\'nda</b> (Menüde) Rezidans, Yat veya Jet alarak değerlendir.<br><br>Bu lüks varlıklar sana her gün oyunda olmasan bile <b>Pasif Gelir</b> kazandıracaktır.' 
+            },
+            { 
+                icon: '💸', 
+                title: '8. TERMİNAL ÜCRETİ', 
+                text: 'Unutma! Servetin büyüdükçe borsa ekranında kesilen <b>Terminal (Veri) Ücreti</b> artar. Paran çok diye boş durma, yatırım yapmaya devam et!<br><br>Öğreticiyi ayarlardan tekrar okuyabilirsin. Bol kazançlar!' 
+            }
         ];
 
         let currentTutorialStep = 0;
@@ -4768,21 +4899,30 @@ const allMilestonesData = [
                 document.getElementById('achievements-screen').style.display = 'none';
                 document.getElementById('mobile-main-menu').style.display = 'flex'; // Not: Ana menünün id'si start-screen değilse burayı ona göre değiştir.
             });
-            // OYUN İÇİ UYARI (Güvenli)
-function showCustomAlert(message) {
+            // OYUN İÇİ UYARI (Yumuşak Tasarımlı ve Dinamik)
+function showCustomAlert(message, title = "BİLGİLENDİRME", titleColor = "#00f2fe") {
     if (document.getElementById('custom-game-alert')) return;
+    
     const alertOverlay = document.createElement('div');
     alertOverlay.id = 'custom-game-alert';
+    // Arka planı koyulaştıran ve bulanıklaştıran dış çerçeve
     alertOverlay.style.cssText = "position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px);";
+    
+    // Kutunun içeriği (Dinamik başlık, renk ve mesaj buraya işleniyor)
     alertOverlay.innerHTML = `
-        <div style="background: #0f172a; border: 2px solid #ef4444; border-radius: 12px; padding: 25px; text-align: center; max-width: 400px; width: 85%;">
-            <h3 style="color: #ef4444; margin-top: 0; margin-bottom: 15px;">🔒 ERİŞİM REDDEDİLDİ</h3>
-            <p style="color: #cbd5e1; margin-bottom: 20px;">${message}</p>
-            <button id="close-custom-alert" style="background: #ef4444; color: white; border: none; padding: 10px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer;">TAMAM</button>
+        <div class="custom-alert-box">
+            <h3 id="custom-alert-title" style="color: ${titleColor};">${title}</h3>
+            <p id="custom-alert-message">${message}</p>
+            <button id="custom-alert-close-btn" class="custom-alert-btn">TAMAM</button>
         </div>
     `;
+    
     document.body.appendChild(alertOverlay);
-    document.getElementById('close-custom-alert').addEventListener('click', () => alertOverlay.remove());
+    
+    // Kapatma butonuna doğru ID ile tıklama olayı ekliyoruz
+    document.getElementById('custom-alert-close-btn').addEventListener('click', () => {
+        alertOverlay.remove();
+    });
 }
 
 // --- LÜKS EŞYALAR VE PASİF GELİR DEĞERLERİ ---
@@ -5351,6 +5491,39 @@ if (btnBuyCash) {
             price = 249.99;
             productId = 'kasa_destek_250';  // 2. Kademe Ürün ID'si
         }
+        // ==========================================================================
+// 💵 KASA DESTEK PAKETİ ARAYÜZÜNÜ (BUTON VE YAZIYI) CANLI GÜNCELLEME
+// ==========================================================================
+function updateCashSupportUI() {
+    const btnBuyCash = document.getElementById('btn-buy-money');
+    
+    // HTML'deki "Anında $... Oyun Parası" yazısını anlık güncellemek istersen bu ID'yi kullanacağız
+    const supportDesc = document.getElementById('cash-support-desc'); id="cash-support-desc"
+
+    if (!btnBuyCash) return;
+
+    // Arka plandaki aynı hesaplama mantığı
+    let supportAmount = Math.floor(playerBalance * 0.5);
+    if (supportAmount < 10000) supportAmount = 10000;
+    
+    let price = 49.99;
+    
+    if (supportAmount >= 10000000) {
+        price = 999.99;
+    } else if (supportAmount >= 1000000) {
+        price = 499.99;
+    } else if (supportAmount >= 100000) {
+        price = 249.99;
+    }
+
+    // Butondaki yazıyı anında güncelle
+    btnBuyCash.innerText = `₺${price} SATIN AL`;
+
+    // (İsteğe Bağlı) Paketin açıklamasındaki verilecek para miktarını da canlı güncellemek için
+    if (supportDesc) {
+        supportDesc.innerText = `Anında $${supportAmount.toLocaleString('en-US')} Oyun Parası`;
+    }
+}
 
         // --- GOOGLE PLAY ÖDEME EKRANI ---
         if (window.Capacitor && Capacitor.isNativePlatform()) {
@@ -6367,6 +6540,11 @@ auth.onAuthStateChanged((user) => {
                 if (data.startOfDayWealth !== undefined) localStorage.setItem('cts_start_wealth', data.startOfDayWealth);
                 if (data.dailyTrades !== undefined) localStorage.setItem('cts_daily_trades', data.dailyTrades);
                 if (data.tickCount !== undefined) localStorage.setItem('cts_tick_count', data.tickCount);
+
+                // --- YENİ EKLENEN: Hile korumalı son oynanma zamanını al ---
+                if (data.lastUpdated) {
+                    localStorage.setItem('cts_last_played_server', data.lastUpdated);
+                }
 
                 console.log("Eski hesap buluttan tüm detaylarıyla başarıyla yüklendi!");
                 
