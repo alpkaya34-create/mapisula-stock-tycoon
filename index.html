@@ -1089,7 +1089,7 @@
             
             <!-- DÜZELTİLMİŞ BAŞLIK VE CANLI ROZETİ KAPSAYICISI -->
             <div class="store-header-container" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3 class="section-title text-gold" style="margin: 0;">CTS MAĞAZA (TRY)</h3>
+                <h3 class="section-title text-gold" style="margin: 0;">CTS MAĞAZA</h3>
                 
                 <!-- GERÇEK ÇEVRİMİÇİ OYUNCU SAYAÇ ROZETİ -->
                 <div class="live-badge-container">
@@ -3022,139 +3022,141 @@ stockCards.forEach(card => {
             }
 
             function renderFuturesPositions() {
-                const positionsList = document.getElementById('positions-list');
-                if (!positionsList) return; 
+    const positionsList = document.getElementById('positions-list');
+    if (!positionsList) return; 
 
-                // Eğer işlem yoksa ve ekran zaten boş durumdaysa hiç dokunma (Scroll koruması)
-                if (activePositions.length === 0) {
-                    if (!positionsList.querySelector('.empty-state')) {
-                        positionsList.innerHTML = `<div class="empty-state"><span>⚡</span><p>Aktif vadeli işlemin bulunmuyor.</p></div>`;
-                    }
-                    return;
-                }
+    // Eğer işlem yoksa ve ekran zaten boş durumdaysa hiç dokunma (Scroll koruması)
+    if (activePositions.length === 0) {
+        if (!positionsList.querySelector('.empty-state')) {
+            positionsList.innerHTML = `<div class="empty-state"><span>⚡</span><p>Aktif vadeli işlemin bulunmuyor.</p></div>`;
+        }
+        return;
+    }
 
-                const emptyState = positionsList.querySelector('.empty-state');
-                if (emptyState) emptyState.remove();
+    const emptyState = positionsList.querySelector('.empty-state');
+    if (emptyState) emptyState.remove();
 
-                // YENİ EKLENEN: Akıllı Güncelleme Kontrolü (DOM Re-render Koruması)
-                const existingCards = positionsList.querySelectorAll('.position-card');
-                const needsFullRender = existingCards.length !== activePositions.length;
+    // YENİ EKLENEN: Akıllı Güncelleme Kontrolü (DOM Re-render Koruması)
+    const existingCards = positionsList.querySelectorAll('.position-card');
+    const needsFullRender = existingCards.length !== activePositions.length;
 
-                if (needsFullRender) {
-                    positionsList.innerHTML = ''; // Sadece işlem sayısı değiştiyse (işlem açıldı/kapandıysa) tam temizlik yap
-                }
+    if (needsFullRender) {
+        positionsList.innerHTML = ''; // Sadece işlem sayısı değiştiyse tam temizlik yap
+    }
 
-                activePositions.forEach((pos, index) => {
-                    // --- Orijinal isme karşılık gelen özel ismi bul ---
-                    let displayName = pos.name;
-                    const matchedCard = document.querySelector(`.stock-card[data-name="${pos.name}"]`);
-                    if (matchedCard) {
-                        const nameEl = matchedCard.querySelector('.stock-name');
-                        if (nameEl) displayName = nameEl.innerText;
-                    }
+    activePositions.forEach((pos, index) => {
+        // --- Orijinal isme karşılık gelen özel ismi bul ---
+        let displayName = pos.name;
+        const matchedCard = document.querySelector(`.stock-card[data-name="${pos.name}"]`);
+        if (matchedCard) {
+            const nameEl = matchedCard.querySelector('.stock-name');
+            if (nameEl) displayName = nameEl.innerText;
+        }
+        
+        let currentMarketPrice = pos.entryPrice;
+        let companyName = pos.name;
+
+        stockCards.forEach(card => {
+            if (card.dataset.name === pos.name) {
+                currentMarketPrice = parseFloat(card.querySelector('.stock-price').textContent.replace(/[^0-9.-]+/g,""));
+            }
+        });
+
+        let pnl = 0;
+        if (pos.type === 'LONG') { pnl = (currentMarketPrice - pos.entryPrice) * pos.amount; } 
+        else if (pos.type === 'SHORT') { pnl = (pos.entryPrice - currentMarketPrice) * pos.amount; }
+
+        // --- LİKİDASYON FİYATI HESAPLAMA ---
+        let liqPrice = pos.type === 'LONG' 
+            ? pos.entryPrice - (pos.margin / pos.amount) 
+            : pos.entryPrice + (pos.margin / pos.amount);
+        
+        if (liqPrice < 0) liqPrice = 0; // Fiyat eksiye düşemez
+
+        const pnlClass = pnl >= 0 ? 'pnl-green' : 'pnl-red';
+        const pnlSign = pnl >= 0 ? '+' : '';
+        const typeClass = pos.type === 'LONG' ? 'long' : 'short';
+        const typeText = pos.type === 'LONG' ? 'LONG ' + pos.leverage + 'x' : 'SHORT ' + pos.leverage + 'x';
+        const positionSizeDisplay = pos.margin * pos.leverage;
+
+        let existingCard = positionsList.querySelector(`.position-card[data-index="${index}"]`);
+
+        if (!needsFullRender && existingCard) {
+            existingCard.querySelector('.val-current-price').innerText = formatMoney(currentMarketPrice);
+            
+            const pnlSpan = existingCard.querySelector('.pos-pnl');
+            pnlSpan.className = `pos-pnl ${pnlClass}`;
+            // Kâr/Zarar için artı/eksi işaretini koruyarak formatMoney kullanıyoruz
+            let formattedPnl = formatMoney(Math.abs(pnl)).replace('$', '');
+            pnlSpan.innerText = `${pnlSign}$${formattedPnl}`;
+        } else {
+            const card = document.createElement('div');
+            card.className = `position-card ${typeClass}`;
+            card.dataset.index = index; 
+            
+            // --- formatMoney İLE DÜZENLENMİŞ OKUNABİLİR KART TASARIMI ---
+            let formattedPnl = formatMoney(Math.abs(pnl)).replace('$', '');
+
+            card.innerHTML = `
+                <div class="pos-header">
+                    <span class="pos-name">${displayName}</span>
+                    <span class="pos-type ${typeClass}">${typeText}</span>
+                </div>
+                <div class="pos-details">
+                    <div class="pos-stat"><span class="pos-label">Giriş Fiyatı</span><span class="pos-val">${formatMoney(pos.entryPrice)}</span></div>
+                    <div class="pos-stat"><span class="pos-label">Güncel Fiyat</span><span class="pos-val val-current-price">${formatMoney(currentMarketPrice)}</span></div>
+                    <div class="pos-stat"><span class="pos-label">Marjin (Harcanan)</span><span class="pos-val">${formatMoney(pos.margin)}</span></div>
+                    <div class="pos-stat" style="align-items:flex-end;"><span class="pos-label">Kâr / Zarar</span><span class="pos-pnl ${pnlClass}">${pnlSign}$${formattedPnl}</span></div>
                     
-                    let currentMarketPrice = pos.entryPrice;
-                    let companyName = pos.name;
-
-                    stockCards.forEach(card => {
-                        if (card.dataset.name === pos.name) {
-                            currentMarketPrice = parseFloat(card.querySelector('.stock-price').textContent.replace(/[^0-9.-]+/g,""));
-                        }
-                    });
-
-                    let pnl = 0;
-                    if (pos.type === 'LONG') { pnl = (currentMarketPrice - pos.entryPrice) * pos.amount; } 
-                    else if (pos.type === 'SHORT') { pnl = (pos.entryPrice - currentMarketPrice) * pos.amount; }
-
-                    // --- YENİ: LİKİDASYON FİYATI HESAPLAMA MANTIĞI ---
-                    let liqPrice = pos.type === 'LONG' 
-                        ? pos.entryPrice - (pos.margin / pos.amount) 
-                        : pos.entryPrice + (pos.margin / pos.amount);
-                    
-                    if (liqPrice < 0) liqPrice = 0; // Fiyat eksiye düşemez
-                    // ------------------------------------------------
-
-                    const pnlClass = pnl >= 0 ? 'pnl-green' : 'pnl-red';
-                    const pnlSign = pnl >= 0 ? '+' : '';
-                    const typeClass = pos.type === 'LONG' ? 'long' : 'short';
-                    const typeText = pos.type === 'LONG' ? 'LONG ' + pos.leverage + 'x' : 'SHORT ' + pos.leverage + 'x';
-                    const positionSizeDisplay = pos.margin * pos.leverage;
-
-                    let existingCard = positionsList.querySelector(`.position-card[data-index="${index}"]`);
-
-                    if (!needsFullRender && existingCard) {
-                        existingCard.querySelector('.val-current-price').innerText = `$${currentMarketPrice.toFixed(2)}`;
-                        
-                        const pnlSpan = existingCard.querySelector('.pos-pnl');
-                        pnlSpan.className = `pos-pnl ${pnlClass}`;
-                        pnlSpan.innerText = `${pnlSign}$${pnl.toFixed(2)}`;
-                    } else {
-                        const card = document.createElement('div');
-                        card.className = `position-card ${typeClass}`;
-                        card.dataset.index = index; 
-                        
-                        // --- DÜZELTİLEN HTML TASARIMI: Likidasyon fiyatı eklendi ---
-                        card.innerHTML = `
-                            <div class="pos-header">
-                                <span class="pos-name">${displayName}</span>
-                                <span class="pos-type ${typeClass}">${typeText}</span>
-                            </div>
-                            <div class="pos-details">
-                                <div class="pos-stat"><span class="pos-label">Giriş Fiyatı</span><span class="pos-val">$${pos.entryPrice.toFixed(2)}</span></div>
-                                <div class="pos-stat"><span class="pos-label">Güncel Fiyat</span><span class="pos-val val-current-price">$${currentMarketPrice.toFixed(2)}</span></div>
-                                <div class="pos-stat"><span class="pos-label">Marjin (Harcanan)</span><span class="pos-val">$${pos.margin.toFixed(2)}</span></div>
-                                <div class="pos-stat" style="align-items:flex-end;"><span class="pos-label">Kâr / Zarar</span><span class="pos-pnl ${pnlClass}">${pnlSign}$${pnl.toFixed(2)}</span></div>
-                                
-                                <div class="pos-stat" style="margin-top: 5px; padding-top: 8px; border-top: 1px dashed #1e293b;">
-                                    <span class="pos-label">Pozisyon Büyüklüğü</span>
-                                    <span class="pos-val" style="color:#00f2fe;">$${positionSizeDisplay.toFixed(2)}</span>
-                                </div>
-                                <div class="pos-stat" style="align-items:flex-end; margin-top: 5px; padding-top: 8px; border-top: 1px dashed #1e293b;">
-                                    <span class="pos-label">Likidasyon Fiyatı</span>
-                                    <span class="pos-val" style="color:#ef4444; font-weight: 900;">$${liqPrice.toFixed(2)}</span>
-                                </div>
-                            </div>
-                            <button class="btn-close-pos" style="margin-top: 10px;">POZİSYONU KAPAT</button>
-                        `;
-                        // -----------------------------------------------------------
-                        
-                        card.querySelector('.btn-close-pos').addEventListener('click', () => {
-                            let liveMarketPrice = pos.entryPrice;
-                            stockCards.forEach(c => {
-                                if (c.dataset.name === pos.name) {
-                                    liveMarketPrice = parseFloat(c.querySelector('.stock-price').textContent.replace(/[^0-9.-]+/g,""));
-                                }
-                            });
-
-                            let livePnl = 0;
-                            if (pos.type === 'LONG') { livePnl = (liveMarketPrice - pos.entryPrice) * pos.amount; } 
-                            else if (pos.type === 'SHORT') { livePnl = (pos.entryPrice - liveMarketPrice) * pos.amount; }
-
-                            let currentMargin = parseFloat(pos.margin) || 0;
-                            let currentBalance = parseFloat(playerBalance) || 0;
-
-                            recordFuturesResult(livePnl >= 0);
-
-                            playerBalance = currentBalance + currentMargin + livePnl; 
-                            updateBalanceUI();
-                                                
-                            const posIndex = activePositions.indexOf(pos);
-                            if (posIndex > -1) activePositions.splice(posIndex, 1);
-                                                
-                            gameStats.trades++;
-                            dailyTrades++;
-                                                
-                            positionsList.innerHTML = '';
-                            renderFuturesPositions();
-                            saveGame();
-                            refreshLiveUI(true);
-                            playSound('sell');
-                        });
-
-                        positionsList.appendChild(card);
+                    <div class="pos-stat" style="margin-top: 5px; padding-top: 8px; border-top: 1px dashed #1e293b;">
+                        <span class="pos-label">Pozisyon Büyüklüğü</span>
+                        <span class="pos-val" style="color:#00f2fe;">${formatMoney(positionSizeDisplay)}</span>
+                    </div>
+                    <div class="pos-stat" style="align-items:flex-end; margin-top: 5px; padding-top: 8px; border-top: 1px dashed #1e293b;">
+                        <span class="pos-label">Likidasyon Fiyatı</span>
+                        <span class="pos-val" style="color:#ef4444; font-weight: 900;">${formatMoney(liqPrice)}</span>
+                    </div>
+                </div>
+                <button class="btn-close-pos" style="margin-top: 10px;">POZİSYONU KAPAT</button>
+            `;
+            
+            card.querySelector('.btn-close-pos').addEventListener('click', () => {
+                let liveMarketPrice = pos.entryPrice;
+                stockCards.forEach(c => {
+                    if (c.dataset.name === pos.name) {
+                        liveMarketPrice = parseFloat(c.querySelector('.stock-price').textContent.replace(/[^0-9.-]+/g,""));
                     }
                 });
-            }
+
+                let livePnl = 0;
+                if (pos.type === 'LONG') { livePnl = (liveMarketPrice - pos.entryPrice) * pos.amount; } 
+                else if (pos.type === 'SHORT') { livePnl = (pos.entryPrice - liveMarketPrice) * pos.amount; }
+
+                let currentMargin = parseFloat(pos.margin) || 0;
+                let currentBalance = parseFloat(playerBalance) || 0;
+
+                recordFuturesResult(livePnl >= 0);
+
+                playerBalance = currentBalance + currentMargin + livePnl; 
+                updateBalanceUI();
+                                    
+                const posIndex = activePositions.indexOf(pos);
+                if (posIndex > -1) activePositions.splice(posIndex, 1);
+                                    
+                gameStats.trades++;
+                dailyTrades++;
+                                    
+                positionsList.innerHTML = '';
+                renderFuturesPositions();
+                saveGame();
+                refreshLiveUI(true);
+                playSound('sell');
+            });
+
+            positionsList.appendChild(card);
+        }
+    });
+}
 
             function renderNewsArchive() {
                 const newsArchiveList = document.getElementById('persistent-news-list');
@@ -5800,6 +5802,39 @@ function updateLeverageLimitsUI() {
 
     setupButton(newLong, 'LONG');
     setupButton(newShort, 'SHORT');
+    // ==========================================================================
+// 🚀 VADELİ İŞLEM KALDIRACINI KASAYA GÖRE BAŞLANGIÇTA LİMİTLEME
+// ==========================================================================
+function initFuturesLeverage() {
+    // Gerçek slider ID'si (Eğer HTML'de farklıysa buraya yazabilirsin, genelde leverage-slider'dır)
+    let slider = document.getElementById('leverage-slider') || document.getElementById('leverage-input');
+    
+    // İnceleme ekranından yakaladığımız GERÇEK ID!
+    let leverageText = document.getElementById('leverage-display'); 
+    
+    let maxAllowed = getMaxLeverage(); // $14.962 bakiye için izin verilen maksimum (5x)
+
+    if (slider) {
+        slider.value = maxAllowed;
+        slider.max = maxAllowed; // Slider'ın sonunu da tavan değere sabitle
+    }
+
+    if (leverageText) {
+        leverageText.innerText = maxAllowed + "x";
+    }
+
+    // Pozisyon büyüklüğü ve maliyet hesaplamasını tetikle
+    if (typeof updateTotalCost === 'function') {
+        updateTotalCost();
+    } else if (typeof updateLeverageLimitsUI === 'function') {
+        updateLeverageLimitsUI();
+    }
+}
+
+// Oyunu ilk açtığında çalıştır
+window.addEventListener('DOMContentLoaded', () => {
+    initFuturesLeverage();
+});
 })();
 // ==========================================================================
 // 🐷 KÜRESEL KUMBARA - SENKRONİZE VE ORANTILI ÖDÜL SİSTEMİ
@@ -6189,7 +6224,7 @@ megaPiggyRef.on('value', (snapshot) => {
             if (typeof showStoreModal === 'function') {
                 let errorTitle = "🚨 MEGA FIRSAT KAÇTI!";
                 let errorDesc = `<div style="background: rgba(220, 38, 38, 0.15); border: 2px solid #dc2626; padding: 15px; border-radius: 8px; color: #fca5a5; box-shadow: 0 0 15px rgba(220, 38, 38, 0.4);">
-                    <strong>Dehşet verici bir kayıp!</strong><br><br>Mega kumbaraya tek bir kuruş bile atmadığın için devasa havuzu başkaları paylaştı.
+                    Küresel havuz doldu ve ödüller dağıtıldı!<br><br>Kumbaraya hiç yatırım yapmadığın için maalesef bu turun ödüllerinden yararlanamadın. Bir dahaki sefere elini çabuk tut!
                 </div>`;
                 showStoreModal(errorTitle, errorDesc, false); 
             }
