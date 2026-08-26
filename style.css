@@ -978,6 +978,10 @@ body.premium-theme .section-title { color: #fbbf24 !important; }
         .chart-badge { font-size: 11px; font-weight: 900; padding: 4px 10px; border-radius: 8px; display: flex; align-items: center; gap: 4px; }
         .chart-badge.up { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
         .chart-badge.down { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+        /* GRAFİK SEÇİM BUTONLARI */
+.chart-toggle-container { display: flex; gap: 8px; margin-top: 8px; }
+.btn-chart-tab { background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; color: #94a3b8; padding: 4px 12px; font-size: 11px; font-weight: 800; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+.btn-chart-tab.active { background: rgba(0, 242, 254, 0.15); border-color: #00f2fe; color: #00f2fe; box-shadow: 0 0 10px rgba(0,242,254,0.2); }
 
         .chart-canvas-box {
             background: #050814; border: 1px solid #1e293b; border-radius: 14px;
