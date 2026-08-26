@@ -466,20 +466,19 @@
     <div id="patch-notes-modal">
         <div style="text-align: center; border-bottom: 1px solid #1e293b; padding-bottom: 15px; margin-bottom: 15px;">
             <span style="font-size: 28px; display: block; margin-bottom: 8px;">🚀</span>
-            <h2 style="color: #00f2fe; font-size: 18px; font-weight: 900; margin: 0;">YENİ SÜRÜM NOTLARI v1.5</h2>
+            <h2 style="color: #00f2fe; font-size: 18px; font-weight: 900; margin: 0;">YENİ SÜRÜM NOTLARI v1.6</h2>
         </div>
         <div style="color: #cbd5e1; font-size: 12px; text-align: left; margin-bottom: 20px; line-height: 1.6; max-height: 220px; overflow-y: auto; padding-right: 5px;">
-            <p><strong style="color: #10b981;">✨ Önemli Yenilikler:</strong></p>
+            <p><strong style="color: #10b981;">✨ Önemli Yenilikler & İyileştirmeler:</strong></p>
             <ul style="margin: 5px 0 15px 15px; padding: 0;">
-                <li><strong>Genişletilmiş Kurumsal Devir Sistemi:</strong> Kontrolü kaybedilen şirketler için 35 farklı profesyonel holding ve yatırım grubundan oluşan yeni bir devir havuzu eklendi.</li>
-                <li><strong>Mobil Görsel Optimizasyonu:</strong> Açılış ekranındaki parçacık efektleri mobil ekran ölçüleriyle (maksimum 450px) sınırlandırıldı.</li>
+                <li><strong>Arayüz Senkronizasyonu:</strong> Hisselerin anlık değişim yüzdeleri ile teknik analiz grafikleri ve rozetleri tam uyumlu hale getirildi.</li>
+                <li><strong>Mobil Görsel Akış:</strong> Dar mobil ekranlarda terminal kesinti tutarlarının alt alta bölünerek bozulması engellendi.</li>
             </ul>
             <p><strong style="color: #fbbf24;">🛠️ Hata Düzeltmeleri:</strong></p>
             <ul style="margin: 5px 0 0 15px; padding: 0;">
-                <li>Sıfırlama ve iflas işlemlerinde bulut tabanlı senkronizasyon hataları giderilerek rekorların ve Premium aboneliğin güvenle korunması sağlandı.</li>
-                <li>İflas sayacının bazı durumlarda mükerrer artmasına yol açan çifte tetikleme sorunu çözüldü.</li>
-                <li>Şirket adı güncellemelerinin portföy ekranına anlık olarak yansımaması hatası giderildi.</li>
-                <li>Premium satın alımlarında VIP kategorisi kilit rozetinin ekrandan kalkmama sorunu düzeltildi.</li>
+                <li>Profil düzenleme penceresindeki isim değiştirme (kalem ikonu) butonunun çalışmasını engelleyen fonksiyon çakışmaları giderildi.</li>
+                <li>Liderlik tablosunda test aşamalarından kalan mükerrer hesap yığılmaları temizlendi ve tekil UID yapısı kararlaştırıldı.</li>
+                <li>Başlangıç yükleme ekranında takılmalara yol açan eksik fonksiyon referansları (`checkBankruptcy`) düzeltildi.</li>
             </ul>
         </div>
         <button class="trade-btn" id="btn-close-patch-notes" style="width: 100%; padding: 12px; font-size: 13px; background: #00f2fe; color: #000; box-shadow: 0 5px 15px rgba(0, 242, 254, 0.4); font-weight: 900;">HARİKA, BAŞLAYALIM!</button>
@@ -4072,6 +4071,15 @@ if (btnCloseWalletStats) {
     localStorage.setItem('cts_ai_rights', aiRights);
     localStorage.setItem('cts_ai_reset_day', lastAiResetDay);
     
+    // 📌 YENİ EKLENENLER: Oyuncu İsmi ve Özel Şirket İsimlerini Lokale Kaydet
+    if (typeof playerName !== 'undefined') {
+        localStorage.setItem('cts_player_name', playerName);
+    }
+    if (typeof customBrands !== 'undefined') {
+        localStorage.setItem('cts_custom_brands', JSON.stringify(customBrands));
+    }
+    // -------------------------------------------------------------
+
     let portfolio = {};
     stockCards.forEach(card => {
         portfolio[card.dataset.name] = parseInt(card.querySelector('.stock-owned').textContent.replace(/[^0-9]/g, "")) || 0;
@@ -4092,7 +4100,8 @@ if (btnCloseWalletStats) {
     // ==========================================================================
     let uid = localStorage.getItem('cts_player_uid');
     if (uid) {
-        let pName = localStorage.getItem('cts_player_name') || "CTS TRADER";
+        // İsmi artık değişkenden veya güncel local'den güvenle alıyoruz
+        let pName = (typeof playerName !== 'undefined' ? playerName : localStorage.getItem('cts_player_name')) || "CTS TRADER";
         
         database.ref('users/' + uid).set({
             name: pName,
@@ -4103,18 +4112,16 @@ if (btnCloseWalletStats) {
             lifestyle: localStorage.getItem('cts_lifestyle') || "{}",
             averages: stockAverages,
             portfolio: portfolio,
-            futures: activePositions, // YENİ: Vadeli işlemleri buluta kaydet
-            customBrands: customBrands, // YENİ: Değişen şirket adlarını kaydet
+            futures: activePositions, 
+            customBrands: customBrands, 
             isPremium: isPremium,
-            hasAdsRemoved: hasAdsRemoved, // YENİ: Reklam kaldırma durumunu kaydet
-            aiRights: aiRights, // YENİ: Yapay zeka haklarını kaydet
-            lastAiResetDay: lastAiResetDay, // YENİ: Yapay zeka gününü kaydet
+            hasAdsRemoved: hasAdsRemoved, 
+            aiRights: aiRights, 
+            lastAiResetDay: lastAiResetDay, 
             milestones: reachedMilestones,
-            startOfDayWealth: startOfDayWealth, // YENİ: Gün başı serveti kaydet
-            dailyTrades: dailyTrades, // YENİ: Günlük işlem sayısını kaydet
-            tickCount: tickCount, // YENİ: Zamanlayıcıyı kaydet
-            // Eski hali: lastUpdated: Date.now()
-            // YENİ HALİ (Sunucu saatini mühürler):
+            startOfDayWealth: startOfDayWealth, 
+            dailyTrades: dailyTrades, 
+            tickCount: tickCount, 
             lastUpdated: firebase.database.ServerValue.TIMESTAMP
         }).then(() => {
             console.log("☁️ İlerleme hem localde hem bulutta güvenceye alındı!");
@@ -4249,11 +4256,11 @@ function calculateOfflineProgress() {
                         }
                         
                         // Yenilenmiş ve düzeltilmiş Terminal Pop-up'ı
-                    showCustomAlert(
-                        `Çevrimdışı olduğun <b>${timeStr}</b> boyunca piyasa verilerin güncellenmeye devam etti.<br><br>Geçen süre zarfında kasandan <b>-$${totalOfflineFee.toLocaleString('en-US', { minimumFractionDigits: 2 })}</b> terminal kullanım ücreti kesildi!`, 
-                        "📱 TERMİNAL KESİNTİSİ", 
-                        "#ef4444" // İstersen bu rengi "#f59e0b" (Turuncu) yaparak daha az agresif yapabilirsin
-                    );
+showCustomAlert(
+    `Çevrimdışı olduğun <b>${timeStr}</b> boyunca piyasa verilerin güncellenmeye devam etti.<br><br>Geçen süre zarfında kasandan <b style="white-space: nowrap;">-$${totalOfflineFee.toLocaleString('en-US', { minimumFractionDigits: 2 })}</b> terminal kullanım ücreti kesildi!`, // <--- İŞTE BURAYA VİRGÜL EKLENDİ
+    "📱 TERMİNAL KESİNTİSİ",
+    "#ef4444" // İstersen bu rengi "#f59e0b" (Turuncu) yaparak daha az agresif yapabilirsin
+);
                     }
                     updateBalanceUI();
                     saveGame();
@@ -4350,6 +4357,8 @@ function calculateOfflineProgress() {
                 
                 // YENİ EKLENEN: Çevrimdışı kesintileri hesapla
                 calculateOfflineProgress();
+                // Çevrimdışı işlemler bittikten sonra iflası kontrol et
+// checkBankruptcy(true);
             }
             const chartModal = document.getElementById('chart-modal');
             const btnOpenChart = document.getElementById('btn-open-chart');
@@ -4379,61 +4388,78 @@ function calculateOfflineProgress() {
             });
 
             // Grafikleri çizen ortak fonksiyon
-            function drawCharts(history, minPrice, maxPrice, spread) {
-                // 1. ÇİZGİ GRAFİĞİ (LINE)
-                let isUp = history[history.length - 1] >= history[0];
-                let themeColor = isUp ? '#10b981' : '#ef4444';
-                
-                chartStatusBadge.className = isUp ? 'chart-badge up' : 'chart-badge down';
-                chartStatusBadge.innerHTML = isUp ? '📈 YÜKSELİŞTE' : '📉 DÜŞÜŞTE';
-                chartLinePath.setAttribute('stroke', themeColor);
+function drawCharts(history, minPrice, maxPrice, spread) {
+    // 1. ÇİZGİ GRAFİĞİ (LINE)
+    
+    // Eski Hesap (Uyumsuzluk yaratan satır):
+    // let isUp = history[history.length - 1] >= history[0]; 
+    
+    // YENİ HESAP: Grafiğin rengini doğrudan penceredeki (▲ veya ▼) oklarına kilitliyoruz.
+    let isUp = history[history.length - 1] >= history[0]; // Bulamazsa diye yedek kural
+    
+    // chartStatusBadge elementinin bulunduğu pencereyi tarayıp oku arıyoruz
+    if (typeof chartStatusBadge !== 'undefined' && chartStatusBadge.parentElement) {
+        // En yakın üst kapsayıcıdaki metni al (İçinde '▲ +2.0%' yazan yer)
+        let modalText = chartStatusBadge.parentElement.parentElement.innerText; 
+        
+        if (modalText.includes('▲')) {
+            isUp = true;  // Yükseliş oku varsa KESİNLİKLE yeşil yap
+        } else if (modalText.includes('▼')) {
+            isUp = false; // Düşüş oku varsa KESİNLİKLE kırmızı yap
+        }
+    }
 
-                let points = history.map((val, idx) => {
-                    let x = (idx / (history.length - 1)) * 300;
-                    let y = 110 - ((val - minPrice) / spread) * 90;
-                    return `${x},${y}`;
-                });
+    let themeColor = isUp ? '#10b981' : '#ef4444';
+    
+    chartStatusBadge.className = isUp ? 'chart-badge up' : 'chart-badge down';
+    chartStatusBadge.innerHTML = isUp ? '📈 YÜKSELİŞTE' : '📉 DÜŞÜŞTE';
+    chartLinePath.setAttribute('stroke', themeColor);
 
-                chartLinePath.setAttribute('d', `M ${points.join(' L ')}`);
-                chartAreaPath.setAttribute('d', `M ${points.join(' L ')} L 300,130 L 0,130 Z`);
+    let points = history.map((val, idx) => {
+        let x = (idx / (history.length - 1)) * 300;
+        let y = 110 - ((val - minPrice) / spread) * 90;
+        return `${x},${y}`;
+    });
 
-                // 2. MUM GRAFİĞİ (CANDLESTICK)
-                let candleHTML = '';
-                
-                // Her bir veri noktası arasındaki tam mesafeyi hesapla
-                let step = 300 / Math.max(1, history.length - 1);
-                
-                // Mum genişliğini mesafeye eşitle (Boşlukları tamamen kapatır)
-                // +0.5 piksel, SVG render motorunun aralarda bırakabileceği kılcal pikselleri yapıştırır
-                let cWidth = step + 0.5; 
+    chartLinePath.setAttribute('d', `M ${points.join(' L ')}`);
+    chartAreaPath.setAttribute('d', `M ${points.join(' L ')} L 300,130 L 0,130 Z`);
 
-                for (let i = 1; i < history.length; i++) {
-                    let openP = history[i - 1];
-                    let closeP = history[i];
-                    let isGreen = closeP >= openP;
-                    let cColor = isGreen ? '#10b981' : '#ef4444';
+    // 2. MUM GRAFİĞİ (CANDLESTICK)
+    let candleHTML = '';
+    
+    // Her bir veri noktası arasındaki tam mesafeyi hesapla
+    let step = 300 / Math.max(1, history.length - 1);
+    
+    // Mum genişliğini mesafeye eşitle (Boşlukları tamamen kapatır)
+    let cWidth = step + 0.5; 
 
-                    // Fitil (Wick) efekti
-                    let wickSize = spread * 0.05;
-                    let highP = Math.max(openP, closeP) + (wickSize * ((i % 3) + 1) / 3);
-                    let lowP = Math.min(openP, closeP) - (wickSize * ((i % 2) + 1) / 2);
+    for (let i = 1; i < history.length; i++) {
+        let openP = history[i - 1];
+        let closeP = history[i];
+        let isGreen = closeP >= openP;
+        let cColor = isGreen ? '#10b981' : '#ef4444';
 
-                    let xCenter = i * step;
-                    let xRect = xCenter - (step / 2); // Gövdeyi tam önceki mumun bittiği yere hizala
+        // Fitil (Wick) efekti
+        let wickSize = spread * 0.05;
+        let highP = Math.max(openP, closeP) + (wickSize * ((i % 3) + 1) / 3);
+        let lowP = Math.min(openP, closeP) - (wickSize * ((i % 2) + 1) / 2);
 
-                    let yO = 110 - ((openP - minPrice) / spread) * 90;
-                    let yC = 110 - ((closeP - minPrice) / spread) * 90;
-                    let yH = 110 - ((highP - minPrice) / spread) * 90;
-                    let yL = 110 - ((lowP - minPrice) / spread) * 90;
+        let xCenter = i * step;
+        let xRect = xCenter - (step / 2); // Gövdeyi tam önceki mumun bittiği yere hizala
 
-                    let rectY = Math.min(yO, yC);
-                    let rectH = Math.max(Math.abs(yO - yC), 1.5); // Fiyat sabit kalsa bile min 1.5px gövde çiz
+        let yO = 110 - ((openP - minPrice) / spread) * 90;
+        let yC = 110 - ((closeP - minPrice) / spread) * 90;
+        let yH = 110 - ((highP - minPrice) / spread) * 90;
+        let yL = 110 - ((lowP - minPrice) / spread) * 90;
 
-                    candleHTML += `<line x1="${xCenter}" y1="${yH}" x2="${xCenter}" y2="${yL}" stroke="${cColor}" stroke-width="1.2"></line>`;
-                    candleHTML += `<rect x="${xRect}" y="${rectY}" width="${cWidth}" height="${rectH}" fill="${cColor}"></rect>`;
-                }
-                candleGroup.innerHTML = candleHTML;
-            }
+        let rectY = Math.min(yO, yC);
+        let rectH = Math.max(Math.abs(yO - yC), 1.5); // Fiyat sabit kalsa bile min 1.5px gövde çiz
+
+        candleHTML += `<line x1="${xCenter}" y1="${yH}" x2="${xCenter}" y2="${yL}" stroke="${cColor}" stroke-width="1.2"></line>`;
+        candleHTML += `<rect x="${xRect}" y="${rectY}" width="${cWidth}" height="${rectH}" fill="${cColor}"></rect>`;
+    }
+    candleGroup.innerHTML = candleHTML;
+}
 
             btnOpenChart.addEventListener('click', () => {
                 const originalName = currentStockCard.dataset.name;
@@ -5279,7 +5305,6 @@ if (tradePanel) {
 
         // Sadece aşağı doğru çekilirse paneli parmakla beraber indir
         if (deltaY > 0) {
-            // ZIPLAMAYI ÖNLEYEN DÜZELTME: Y eksenine ekstra -50% eklemiyoruz!
             tradePanel.style.transform = `translate(-50%, ${deltaY}px)`;
         }
     }, { passive: true });
@@ -5287,14 +5312,21 @@ if (tradePanel) {
     tradePanel.addEventListener('touchend', (e) => {
         if (!touchStartY) return;
         let deltaY = touchCurrentY - touchStartY;
-        tradePanel.style.transition = 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
 
-        // Eğer 90 pikselden fazla aşağı çekildiyse paneli tamamen kapat
-        if (deltaY > 90) {
-            tradePanel.style.transform = ''; 
-            closeTradePanelSafely();
+        // Eşik değeri 120'ye çıkarıldı: Daha tok ve bilinçli bir kaydırma hissiyatı için
+        if (deltaY > 120) {
+            // Kapanırken zıplama olmadan, ekranın altına doğru akıcı bir şekilde kaybolsun
+            tradePanel.style.transition = 'transform 0.25s ease-in';
+            tradePanel.style.transform = `translate(-50%, 100vh)`; // Ekranın en altına fırlat
+            
+            // Animasyonun (0.25s) bitmesini bekle, sonra sistemi arka planda kapat
+            setTimeout(() => {
+                tradePanel.style.transform = ''; // Bir sonraki açılış için eski haline getir
+                closeTradePanelSafely();
+            }, 250); 
         } else {
-            // Yeterince çekilmediyse orijinal konumuna yumuşakça geri oturt
+            // Yeterince çekilmediyse (kapatmaktan vazgeçildiyse) tatlı bir yaylanmayla geri yerine otursun
+            tradePanel.style.transition = 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
             tradePanel.style.transform = ''; 
         }
         
@@ -5341,110 +5373,123 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveBtn = document.getElementById('save-name-btn'); 
     const uidDisplay = document.getElementById('player-uid-display');
 
-    if (nameDisplay && uidDisplay) {
-        // 1. Kullanıcı ID'sini Kontrol Et
-        let playerUID = localStorage.getItem('cts_player_uid');
-        if (!playerUID) {
-            const randomChars = Math.random().toString(36).substring(2, 8).toUpperCase();
-            playerUID = "CTS-" + randomChars;
-            localStorage.setItem('cts_player_uid', playerUID);
+    // Ayrı ayrı kontrol ediyoruz ki biri yüklenmezse diğeri bozulmasın!
+
+// 1. Kullanıcı ID'sini Kontrol Et (BAĞIMSIZ)
+if (uidDisplay) {
+    let playerUID = localStorage.getItem('cts_player_uid');
+    if (!playerUID) {
+        const randomChars = Math.random().toString(36).substring(2, 8).toUpperCase();
+        playerUID = "CTS-" + randomChars;
+        localStorage.setItem('cts_player_uid', playerUID);
+    }
+    uidDisplay.innerText = "#" + playerUID;
+}
+
+// 2. Kayıtlı İsmi Getir ve Düzenleme İşlemleri (BAĞIMSIZ)
+if (nameDisplay) {
+    let savedName = localStorage.getItem('cts_player_name') || "Cyber Stock Trader";
+    nameDisplay.innerText = savedName.toUpperCase();
+
+    // 3. Premium ve İsim Değiştirme Hakkı Kontrolü
+    const checkNameChangeEligibility = () => {
+        let isPremiumActive = typeof isPremium !== 'undefined' ? isPremium : (localStorage.getItem('cts_premium') === 'true');
+        let hasChangedBefore = localStorage.getItem('cts_name_changed_once') === 'true';
+
+        if (isPremiumActive) {
+            return true; // Premium ise her türlü değiştirir
+        } else if (!hasChangedBefore) {
+            return true; // Premium değil ama hakkı var
+        } else {
+            return false; // Premium değil ve hakkı bitmiş
         }
-        uidDisplay.innerText = "#" + playerUID;
+    };
 
-        // 2. Kayıtlı İsmi Getir
-        let savedName = localStorage.getItem('cts_player_name') || "Cyber Stock Trader";
-        nameDisplay.innerText = savedName.toUpperCase();
-
-        // 3. Premium ve İsim Değiştirme Hakkı Kontrolü
-        const checkNameChangeEligibility = () => {
-            let isPremiumActive = typeof isPremium !== 'undefined' ? isPremium : (localStorage.getItem('cts_premium') === 'true');
-            let hasChangedBefore = localStorage.getItem('cts_name_changed_once') === 'true';
-
-            if (isPremiumActive) {
-                return true; // Premium ise her türlü değiştirir
-            } else if (!hasChangedBefore) {
-                return true; // Premium değil ama hakkı var
-            } else {
-                return false; // Premium değil ve hakkı bitmiş
+    // 4. İsim Düzenleme İşlemleri
+    if (editBtn && nameInput) {
+        
+        // Kalem ikonuna tıklanınca
+        editBtn.addEventListener('click', () => {
+            if (!checkNameChangeEligibility()) {
+                // --- YENİ DÜZGÜN POP-UP ÇAĞRISI ---
+                if (typeof showCustomAlert === 'function') {
+                    showCustomAlert("İsim değiştirme hakkınızı kullandınız!<br><br><span style='color: #10b981; font-size: 0.95rem;'>Sınırsız isim değiştirme için <b>👑 Premium</b> satın alın.</span>");
+                } else {
+                    // Eğer fonksiyon bulunamazsa güvenlik önlemi
+                    alert("⚠️ İsim değiştirme hakkınızı kullandınız!\nSınırsız isim değiştirme için Premium satın alın.");
+                }
+                return;
             }
+
+            // Normal yazıyı gizle
+            if (nameDisplayContainer) nameDisplayContainer.style.display = 'none';
+            nameDisplay.style.display = 'none';
+            editBtn.style.display = 'none';
+
+            // Giriş kutusunu ve tik butonunu göster
+            if (nameInputContainer) nameInputContainer.style.display = 'flex';
+            nameInput.style.display = 'block';
+            if (saveBtn) saveBtn.style.display = 'block';
+
+            nameInput.value = savedName;
+            nameInput.focus();
+        });
+
+        // Kaydetme Fonksiyonu
+        const saveName = () => {
+            let newName = nameInput.value.trim();
+            
+            // İsim boş girilirse işlemi iptal et, eski isme dön
+            if (newName.length === 0) {
+                newName = savedName;
+            }
+            
+            // Eğer oyuncu ismi gerçekten değiştirdiyse hakkını düş
+            if (newName.toUpperCase() !== savedName.toUpperCase()) {
+                let isPremiumActive = typeof isPremium !== 'undefined' ? isPremium : (localStorage.getItem('cts_premium') === 'true');
+                if (!isPremiumActive) {
+                    localStorage.setItem('cts_name_changed_once', 'true'); // Hakkını kullandı olarak işaretle
+                }
+            }
+
+            savedName = newName.toUpperCase();
+            localStorage.setItem('cts_player_name', savedName);
+            nameDisplay.innerText = savedName;
+
+            // 👇 BİZİM EKLEDİĞİMİZ HAYAT KURTARAN KISIM 👇
+            if (typeof playerName !== 'undefined') {
+                playerName = savedName; // Global değişkeni de güncelliyoruz
+            }
+            if (typeof saveGame === 'function') {
+                saveGame(); // Arayüz değiştiği an tüm veriyi (Firebase dahil) anında kaydet!
+            }
+            // ------------------------------------------------
+            
+            // Ekranı eski haline getir (Kutuyu kapat, yazıyı aç)
+            if (nameInputContainer) nameInputContainer.style.display = 'none';
+            nameInput.style.display = 'none';
+            if (saveBtn) saveBtn.style.display = 'none';
+
+            if (nameDisplayContainer) nameDisplayContainer.style.display = 'flex';
+            nameDisplay.style.display = 'block';
+            editBtn.style.display = 'block';
         };
 
-        // 4. İsim Düzenleme İşlemleri
-        if (editBtn && nameInput) {
-            
-            // Kalem ikonuna tıklanınca
-            editBtn.addEventListener('click', () => {
-                if (!checkNameChangeEligibility()) {
-                    // --- YENİ DÜZGÜN POP-UP ÇAĞRISI ---
-                    if (typeof showCustomAlert === 'function') {
-                        showCustomAlert("İsim değiştirme hakkınızı kullandınız!<br><br><span style='color: #10b981; font-size: 0.95rem;'>Sınırsız isim değiştirme için <b>👑 Premium</b> satın alın.</span>");
-                    } else {
-                        // Eğer fonksiyon bulunamazsa güvenlik önlemi
-                        alert("⚠️ İsim değiştirme hakkınızı kullandınız!\nSınırsız isim değiştirme için Premium satın alın.");
-                    }
-                    return;
-                }
-
-                // Normal yazıyı gizle
-                if (nameDisplayContainer) nameDisplayContainer.style.display = 'none';
-                nameDisplay.style.display = 'none';
-                editBtn.style.display = 'none';
-
-                // Giriş kutusunu ve tik butonunu göster
-                if (nameInputContainer) nameInputContainer.style.display = 'flex';
-                nameInput.style.display = 'block';
-                if (saveBtn) saveBtn.style.display = 'block';
-
-                nameInput.value = savedName;
-                nameInput.focus();
-            });
-
-            // Kaydetme Fonksiyonu
-            const saveName = () => {
-                let newName = nameInput.value.trim();
-                
-                // İsim boş girilirse işlemi iptal et, eski isme dön
-                if (newName.length === 0) {
-                    newName = savedName;
-                }
-                
-                // Eğer oyuncu ismi gerçekten değiştirdiyse hakkını düş
-                if (newName.toUpperCase() !== savedName.toUpperCase()) {
-                    let isPremiumActive = typeof isPremium !== 'undefined' ? isPremium : (localStorage.getItem('cts_premium') === 'true');
-                    if (!isPremiumActive) {
-                        localStorage.setItem('cts_name_changed_once', 'true'); // Hakkını kullandı olarak işaretle
-                    }
-                }
-
-                savedName = newName.toUpperCase();
-                localStorage.setItem('cts_player_name', savedName);
-                nameDisplay.innerText = savedName;
-                
-                // Ekranı eski haline getir (Kutuyu kapat, yazıyı aç)
-                if (nameInputContainer) nameInputContainer.style.display = 'none';
-                nameInput.style.display = 'none';
-                if (saveBtn) saveBtn.style.display = 'none';
-
-                if (nameDisplayContainer) nameDisplayContainer.style.display = 'flex';
-                nameDisplay.style.display = 'block';
-                editBtn.style.display = 'block';
-            };
-
-            // Tik (✅) Butonuna tıklayınca kaydet
-            if (saveBtn) {
-                saveBtn.addEventListener('click', saveName);
-            }
-
-            // Klavyeden Enter'a basınca kaydet
-            nameInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault(); 
-                    saveName();
-                }
-            });
+        // Tik (✅) Butonuna tıklayınca kaydet
+        if (saveBtn) {
+            saveBtn.addEventListener('click', saveName);
         }
-    }
-});
+
+        // Klavyeden Enter'a basınca kaydet
+        nameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault(); 
+                saveName();
+            }
+        });
+    } // 1. Bu süslü parantez: if (editBtn && nameInput) bloğunu kapatır
+} // 2. Bu süslü parantez: if (nameDisplay) bloğunu kapatır
+}); // 3. VE EKSİK OLAN KISIM: Bu da en üstteki document.addEventListener bloğunu kapatır!
 // ==========================================================================
 // 🎬 SİNEMATİK CTS AÇILIŞ EKRANI YÖNETİCİSİ
 // ==========================================================================
@@ -5697,7 +5742,26 @@ function updateLeverageLimitsUI() {
         updateTotalCost();
     }
 }
+// ==========================================================================
+// 💀 İFLAS KONTROL MOTORU VE SIFIRLAMA
+// ==========================================================================
+function checkBankruptcy(isOffline = false) {
+    let currentNetWorth = getNetWorth(); 
 
+    // Toplam varlık $500'ın altına düşerse iflas bayrağını çek
+    if (currentNetWorth < 500) {
+        let message = isOffline 
+            ? "Çevrimdışı olduğun süre boyunca terminal kesintileri ve piyasa dalgalanmaları nedeniyle toplam varlığın $500'ın altına düştü.\n\nMaalesef İFLAS ETTİN!" 
+            : "Toplam varlığın $500'ın altına düştü.\n\nMaalesef İFLAS ETTİN!";
+
+        // Tarayıcının varsayılan uyarısını kullanıyoruz ki, oyuncu "Tamam" diyene kadar oyun arkada akmaya devam etmesin
+        alert(message);
+
+        // Kullanıcı "Tamam" butonuna bastığı an kayıtları sil ve oyunu yeniden başlat
+        localStorage.clear(); // Eğer sadece belirli kayıtları siliyorsan buraya localStorage.removeItem('oyunKaydi') yazabilirsin.
+        window.location.reload(); // Sayfayı yenileyerek oyunu baştan başlatır
+    }
+}
 // ==========================================================================
 // 🚀 VADELİ İŞLEM BUTONLARI VE KALDIRAÇ KONTROLÜ
 // ==========================================================================
@@ -6735,33 +6799,45 @@ if (btnLogin) {
 // 🟢 GERÇEK ZAMANLI ÇEVRİMİÇİ OYUNCU TAKİBİ (PRESENCE SİSTEMİ)
 // ==========================================================================
 
-// 1. ADIM: SAYAÇ OKUYUCU (Herkes için anında çalışır)
-const onlineUsersRef = database.ref('status/onlineUsers');
-onlineUsersRef.on('value', (snapshot) => {
-    let onlineCount = snapshot.numChildren();
-    
-    const viewerEl = document.getElementById('online-viewer-count');
-    if (viewerEl) {
-        viewerEl.innerText = onlineCount > 0 ? onlineCount : 1; 
-    }
-});
-
-// 2. ADIM: KENDİNİ LİSTEYE EKLEME (Sadece UID varsa çalışır)
-let presenceUid = localStorage.getItem('cts_player_uid');
-if (presenceUid) {
-    const connectedRef = database.ref('.info/connected');
-    const myPresenceRef = database.ref('status/onlineUsers/' + presenceUid);
-
-    connectedRef.on('value', (snap) => {
-        if (snap.val() === true) {
-            // Oyuncu bağlandığında online listesine ekle
-            myPresenceRef.set(true);
-            
-            // Oyuncu interneti kestiğinde veya sekmeyi kapattığında sil
-            myPresenceRef.onDisconnect().remove();
+function initPresenceSystem() {
+    // 1. ADIM: SAYAÇ OKUYUCU (Herkes için anında çalışır)
+    const onlineUsersRef = database.ref('status/onlineUsers');
+    onlineUsersRef.on('value', (snapshot) => {
+        let onlineCount = snapshot.numChildren();
+        
+        const viewerEl = document.getElementById('online-viewer-count');
+        if (viewerEl) {
+            // Eğer kimse yoksa bile en az 1 (kendisi) göstersin
+            viewerEl.innerText = onlineCount > 0 ? onlineCount : 1; 
         }
     });
+
+    // 2. ADIM: KENDİNİ LİSTEYE EKLEME
+    // UID'yi fonksiyon çalıştığı an (gecikmeli olarak) alıyoruz ki boş dönmesin
+    let presenceUid = localStorage.getItem('cts_player_uid');
+    
+    if (presenceUid && typeof database !== 'undefined') {
+        const connectedRef = database.ref('.info/connected');
+        const myPresenceRef = database.ref('status/onlineUsers/' + presenceUid);
+
+        connectedRef.on('value', (snap) => {
+            if (snap.val() === true) {
+                // Oyuncu bağlandığında online listesine ekle
+                myPresenceRef.set(true);
+                
+                // Oyuncu interneti kestiğinde veya sekmeyi kapattığında Firebase'den sil
+                myPresenceRef.onDisconnect().remove();
+            }
+        });
+    }
 }
+
+// OYUN YÜKLENDİKTEN SONRA SİSTEMİ BAŞLAT
+document.addEventListener('DOMContentLoaded', () => {
+    // UID'nin oluşturulması için sisteme yarım saniye (500ms) avans veriyoruz
+    // Böylece kimse sayaçtan kaçamayacak!
+    setTimeout(initPresenceSystem, 500); 
+});
 // ==========================================================================
 // 🔔 PUSH NOTIFICATION (BİLDİRİM) KURULUMU & İZİN İSTEME
 // ==========================================================================
