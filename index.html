@@ -6143,30 +6143,31 @@ if (btnFeedPiggy) {
             showStoreModal("ÖDEME BAŞARILI", "₺50 ödemeniz alındı. Havuzdaki yerinizi aldınız!", true);
         }
         
-        piggyRef.child('currentAmount').transaction((currentVal) => {
-    let newVal = (currentVal || 0) + 50;
-    if (newVal >= 5000) {
-        setTimeout(() => {
-            // SIFIRLANIRKEN TURU 1 ARTIRMA MANTIĞI
-            piggyRef.once('value').then((snap) => {
-                let data = snap.val() || {};
-                let nextRound = (data.round || 1) + 1; 
-                
-                piggyRef.set({ 
-                    currentAmount: 0, 
-                    target: 5000, 
-                    contributors: {}, 
-                    rewardDestiny: generateNextReward(),
-                    round: nextRound // Tur bilgisini güncelleyerek veritabanına yaz
-                });
-            });
-        }, 2500);
-    }
-    return newVal;
-});
-        
+        // 1. Önce oyuncunun kendi katkısını Firebase'e yazmasını bekle
         piggyRef.child('contributors').child(myUid).transaction((myTotal) => {
             return (myTotal || 0) + 50;
+        }).then(() => {
+            // 2. Katkı başarıyla yazıldıktan SONRA toplam havuzu artır
+            piggyRef.child('currentAmount').transaction((currentVal) => {
+                let newVal = (currentVal || 0) + 50;
+                if (newVal >= 5000) {
+                    setTimeout(() => {
+                        piggyRef.once('value').then((snap) => {
+                            let data = snap.val() || {};
+                            let nextRound = (data.round || 1) + 1; 
+                            
+                            piggyRef.set({ 
+                                currentAmount: 0, 
+                                target: 5000, 
+                                contributors: {}, 
+                                rewardDestiny: generateNextReward(),
+                                round: nextRound
+                            });
+                        });
+                    }, 2500);
+                }
+                return newVal;
+            });
         });
         
         btnFeedPiggy.style.transform = 'scale(0.95)';
@@ -6380,30 +6381,31 @@ if (btnFeedMegaPiggy) {
         playSound('buy'); 
         if (typeof showStoreModal === 'function') showStoreModal("MEGA ÖDEME BAŞARILI", "₺100 ödemeniz alındı. Mega havuzdaki yerinizi aldınız!", true);
         
-        megaPiggyRef.child('currentAmount').transaction((currentVal) => {
-    let newVal = (currentVal || 0) + 100;
-    if (newVal >= 10000) {
-        setTimeout(() => {
-            // SIFIRLANIRKEN TURU 1 ARTIRMA MANTIĞI
-            megaPiggyRef.once('value').then((snap) => {
-                let data = snap.val() || {};
-                let nextRound = (data.round || 1) + 1; 
-                
-                megaPiggyRef.set({ 
-                    currentAmount: 0, 
-                    target: 10000, 
-                    contributors: {}, 
-                    rewardDestiny: generateNextMegaReward(),
-                    round: nextRound // Tur bilgisini güncelleyerek veritabanına yaz
-                });
-            });
-        }, 2500);
-    }
-    return newVal;
-});
-        
+        // 1. Önce oyuncunun kendi katkısını Firebase'e yazmasını bekle
         megaPiggyRef.child('contributors').child(myUid).transaction((myTotal) => {
             return (myTotal || 0) + 100;
+        }).then(() => {
+            // 2. Katkı başarıyla yazıldıktan SONRA toplam havuzu artır
+            megaPiggyRef.child('currentAmount').transaction((currentVal) => {
+                let newVal = (currentVal || 0) + 100;
+                if (newVal >= 10000) {
+                    setTimeout(() => {
+                        megaPiggyRef.once('value').then((snap) => {
+                            let data = snap.val() || {};
+                            let nextRound = (data.round || 1) + 1; 
+                            
+                            megaPiggyRef.set({ 
+                                currentAmount: 0, 
+                                target: 10000, 
+                                contributors: {}, 
+                                rewardDestiny: generateNextMegaReward(),
+                                round: nextRound
+                            });
+                        });
+                    }, 2500);
+                }
+                return newVal;
+            });
         });
         
         btnFeedMegaPiggy.style.transform = 'scale(0.95)';
