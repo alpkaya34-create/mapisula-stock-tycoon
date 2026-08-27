@@ -5970,9 +5970,25 @@ piggyRef.on('value', (snapshot) => {
 
     const progressBar = document.getElementById('piggy-progress-bar');
     const progressText = document.getElementById('piggy-progress-text');
+    const btnFeedPiggy = document.getElementById('btn-feed-piggy');
     
     if (progressBar) progressBar.style.width = percent + '%';
     if (progressText) progressText.innerText = `₺${current.toLocaleString()} / ₺${target.toLocaleString()}`;
+
+    // HEDEF DOLDUYSA BUTONU ANINDA KİLİTLE
+    if (btnFeedPiggy) {
+        if (current >= target) {
+            btnFeedPiggy.disabled = true;
+            btnFeedPiggy.innerText = "ÖDÜLLER DAĞITILIYOR...";
+            btnFeedPiggy.style.opacity = "0.5";
+            btnFeedPiggy.style.cursor = "not-allowed";
+        } else {
+            btnFeedPiggy.disabled = false;
+            btnFeedPiggy.innerText = "HAVUZA ₺50 EKLE";
+            btnFeedPiggy.style.opacity = "1";
+            btnFeedPiggy.style.cursor = "pointer";
+        }
+    }
 
     // KUMBARA PATLAMA ANI VE SENKRONİZE ÖDÜL DAĞITIMI
     if (current >= target && !isPiggyExploding) {
@@ -6209,8 +6225,25 @@ megaPiggyRef.on('value', (snapshot) => {
 
     const progressBar = document.getElementById('mega-piggy-progress-bar');
     const progressText = document.getElementById('mega-piggy-progress-text');
+    const btnFeedMegaPiggy = document.getElementById('btn-feed-mega-piggy');
+
     if (progressBar) progressBar.style.width = percent + '%';
     if (progressText) progressText.innerText = `₺${current.toLocaleString()} / ₺${target.toLocaleString()}`;
+
+    // HEDEF DOLDUYSA BUTONU ANINDA KİLİTLE
+    if (btnFeedMegaPiggy) {
+        if (current >= target) {
+            btnFeedMegaPiggy.disabled = true;
+            btnFeedMegaPiggy.innerText = "ÖDÜLLER DAĞITILIYOR...";
+            btnFeedMegaPiggy.style.opacity = "0.5";
+            btnFeedMegaPiggy.style.cursor = "not-allowed";
+        } else {
+            btnFeedMegaPiggy.disabled = false;
+            btnFeedMegaPiggy.innerText = "HAVUZA ₺100 EKLE";
+            btnFeedMegaPiggy.style.opacity = "1";
+            btnFeedMegaPiggy.style.cursor = "pointer";
+        }
+    }
 
     // MEGA PATLAMA!
     if (current >= target && !isMegaPiggyExploding) {
