@@ -4927,7 +4927,7 @@ const allMilestonesData = [
                 document.getElementById('achievements-screen').style.display = 'none';
                 document.getElementById('mobile-main-menu').style.display = 'flex'; // Not: Ana menünün id'si start-screen değilse burayı ona göre değiştir.
             });
-            // OYUN İÇİ UYARI (Yumuşak Tasarımlı ve Dinamik)
+// OYUN İÇİ UYARI (Yumuşak Tasarımlı ve Dinamik)
 function showCustomAlert(message, title = "BİLGİLENDİRME", titleColor = "#00f2fe") {
     if (document.getElementById('custom-game-alert')) return;
     
@@ -4937,17 +4937,19 @@ function showCustomAlert(message, title = "BİLGİLENDİRME", titleColor = "#00f
     alertOverlay.style.cssText = "position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px);";
     
     // Kutunun içeriği (Dinamik başlık, renk ve mesaj buraya işleniyor)
+    // NOT: Butonun rengini ve gölgesini doğrudan başlık rengine (titleColor) bağladım.
+    // Böylece hata ise kırmızı, başarılı işlemse yeşil, standart uyarı ise mavi buton çıkacak!
     alertOverlay.innerHTML = `
         <div class="custom-alert-box">
             <h3 id="custom-alert-title" style="color: ${titleColor};">${title}</h3>
             <p id="custom-alert-message">${message}</p>
-            <button id="custom-alert-close-btn" class="custom-alert-btn">TAMAM</button>
+            <button id="custom-alert-close-btn" style="width: 100%; padding: 14px; margin-top: 15px; background: ${titleColor}; color: #000; border: none; border-radius: 8px; font-size: 15px; font-weight: 900; letter-spacing: 1px; cursor: pointer; box-shadow: 0 4px 15px ${titleColor}66; transition: 0.2s;">TAMAM</button>
         </div>
     `;
     
     document.body.appendChild(alertOverlay);
     
-    // Kapatma butonuna doğru ID ile tıklama olayı ekliyoruz
+    // Kapatma işlemi (Sende bu kısımlar vardır, ama yoksa eklemiş olalım)
     document.getElementById('custom-alert-close-btn').addEventListener('click', () => {
         alertOverlay.remove();
     });
