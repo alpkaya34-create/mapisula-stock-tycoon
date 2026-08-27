@@ -14,6 +14,7 @@
     <meta name="apple-mobile-web-app-title" content="Tycoon">
     
     <title>Stock Market Tycoon - CTS</title>
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
     
@@ -4109,11 +4110,13 @@ if (btnCloseWalletStats) {
     // ==========================================================================
     let uid = localStorage.getItem('cts_player_uid');
     if (uid) {
-        // İsmi artık değişkenden veya güncel local'den güvenle alıyoruz
-        let pName = (typeof playerName !== 'undefined' ? playerName : localStorage.getItem('cts_player_name')) || "CTS TRADER";
+        // İsmi ve değiştirme hakkını güncel local'den güvenle alıyoruz
+        let pName = localStorage.getItem('cts_player_name') || "CTS TRADER";
+        let hasChangedName = localStorage.getItem('cts_name_changed_once') === 'true';
         
         database.ref('users/' + uid).set({
             name: pName,
+            nameChanged: hasChangedName, // İsim değiştirme hakkı durumu buluta işleniyor
             balance: playerBalance,
             debt: playerDebt,
             principalDebt: playerPrincipalDebt,
@@ -6714,7 +6717,18 @@ auth.onAuthStateChanged((user) => {
                 let data = snapshot.val();
                 
                 // BULUTTAKİ TÜM VERİLERİ YENİ CİHAZIN HAFIZASINA (LOCALSTORAGE) YAZ:
-                if (data.name) localStorage.setItem('cts_player_name', data.name);
+                if (data.name) {
+                    localStorage.setItem('cts_player_name', data.name);
+                    // Arayüzdeki ismi anında güncelle (CYBER STOCK TRADER bug'ı çözümü)
+                    const profileNameDisp = document.getElementById('player-name-display');
+                    if (profileNameDisp) profileNameDisp.innerText = data.name.toUpperCase();
+                }
+                
+                // İsim değiştirme hakkını (1/1) buluttan geri yükle
+                if (data.nameChanged) {
+                    localStorage.setItem('cts_name_changed_once', 'true');
+                }
+
                 localStorage.setItem('cts_balance', data.balance || 0);
                 localStorage.setItem('cts_debt', data.debt || 0);
                 localStorage.setItem('cts_principal_debt', data.principalDebt || 0);
@@ -6838,12 +6852,14 @@ if (btnLogin) {
 }
 </script>
 <!-- ========================================================================== -->
-<!-- 🚀 NİHAİ KUSURSUZ SIFIRLAMA MOTORU -->
+<!-- 🚀 NİHAİ KUSURSUZ SİSTEM BAŞLATICISI (SIFIRLAMA, KISAYOLLAR, BİLDİRİM VE PRESENCE) -->
 <!-- ========================================================================== -->
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // Oyun açıldıktan yarım saniye sonra eski bozuk butonları imha edip yenilerini takıyoruz
+    document.addEventListener('DOMContentLoaded', async () => {
+        
+        // 1. OYUN BUTONLARI VE PRESENCE (Yarım Saniye Gecikmeli Başlatma)
         setTimeout(() => {
+            // Sıfırlama Butonlarını Bağla
             const bindForceReset = (btnId, isBankrupt) => {
                 let oldBtn = document.getElementById(btnId);
                 if (oldBtn) {
@@ -6852,11 +6868,38 @@ if (btnLogin) {
                     newBtn.addEventListener('click', () => executeFlawlessReset(isBankrupt));
                 }
             };
-            // Ayarlardaki Sıfırlama ve İflas butonlarını kusursuz koda bağlıyoruz
             bindForceReset('btn-confirm-reset', false);
             bindForceReset('btn-bankruptcy-ok', true);
+
+            // Çevrimiçi (Presence) Sistemini Başlat
+            initPresenceSystem();
         }, 500); 
-    });
+
+        // 2. BİLDİRİM SİSTEMİNİ BAŞLAT
+        setupPushNotifications();
+
+        // 3. WEB / PWA İÇİN URL YÖNLENDİRİCİSİ (KISAYOLLAR)
+        const urlParams = new URLSearchParams(window.location.search);
+        const shortcutTab = urlParams.get('tab');
+
+        if (shortcutTab) {
+            const mainMenu = document.getElementById('mobile-main-menu');
+            const gameScreen = document.getElementById('game-screen');
+            if (mainMenu) mainMenu.style.display = 'none';
+            if (gameScreen) gameScreen.style.display = 'block';
+
+            setTimeout(() => {
+                if (shortcutTab === 'market') document.getElementById('tab-market')?.click();
+                if (shortcutTab === 'portfolio') document.getElementById('tab-portfolio')?.click();
+                if (shortcutTab === 'news') document.getElementById('tab-news')?.click();
+                if (shortcutTab === 'bank') document.getElementById('tab-bank')?.click();
+            }, 500);
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+    // ==========================================================================
+    // FONKSİYON TANIMLAMALARI (DOKUNULMADI)
+    // ==========================================================================
 
     function executeFlawlessReset(isBankruptcy) {
         // 1. Oyunun kendi kaydetme mekanizmasını felç ediyoruz (Eski 38 Milyon sızamasın diye)
@@ -6907,143 +6950,102 @@ if (btnLogin) {
             window.location.reload();
         }
     }
-// ==========================================================================
-// 🟢 GERÇEK ZAMANLI ÇEVRİMİÇİ OYUNCU TAKİBİ (PRESENCE SİSTEMİ)
-// ==========================================================================
 
-function initPresenceSystem() {
-    // 1. ADIM: SAYAÇ OKUYUCU (Herkes için anında çalışır)
-    const onlineUsersRef = database.ref('status/onlineUsers');
-    onlineUsersRef.on('value', (snapshot) => {
-        let onlineCount = snapshot.numChildren();
-        
-        const viewerEl = document.getElementById('online-viewer-count');
-        if (viewerEl) {
-            // Eğer kimse yoksa bile en az 1 (kendisi) göstersin
-            viewerEl.innerText = onlineCount > 0 ? onlineCount : 1; 
+    function initPresenceSystem() {
+        const onlineUsersRef = database.ref('status/onlineUsers');
+        onlineUsersRef.on('value', (snapshot) => {
+            let onlineCount = snapshot.numChildren();
+            const viewerEl = document.getElementById('online-viewer-count');
+            if (viewerEl) {
+                viewerEl.innerText = onlineCount > 0 ? onlineCount : 1; 
+            }
+        });
+
+        let presenceUid = localStorage.getItem('cts_player_uid');
+        if (presenceUid && typeof database !== 'undefined') {
+            const connectedRef = database.ref('.info/connected');
+            const myPresenceRef = database.ref('status/onlineUsers/' + presenceUid);
+
+            connectedRef.on('value', (snap) => {
+                if (snap.val() === true) {
+                    myPresenceRef.set(true);
+                    myPresenceRef.onDisconnect().remove();
+                }
+            });
         }
-    });
+    }
 
-    // 2. ADIM: KENDİNİ LİSTEYE EKLEME
-    // UID'yi fonksiyon çalıştığı an (gecikmeli olarak) alıyoruz ki boş dönmesin
-    let presenceUid = localStorage.getItem('cts_player_uid');
-    
-    if (presenceUid && typeof database !== 'undefined') {
-        const connectedRef = database.ref('.info/connected');
-        const myPresenceRef = database.ref('status/onlineUsers/' + presenceUid);
-
-        connectedRef.on('value', (snap) => {
-            if (snap.val() === true) {
-                // Oyuncu bağlandığında online listesine ekle
-                myPresenceRef.set(true);
+    async function setupPushNotifications() {
+        if (window.Capacitor && Capacitor.isNativePlatform()) {
+            try {
+                const { PushNotifications } = Capacitor.Plugins;
+                let permStatus = await PushNotifications.checkPermissions();
                 
-                // Oyuncu interneti kestiğinde veya sekmeyi kapattığında Firebase'den sil
-                myPresenceRef.onDisconnect().remove();
+                if (permStatus.receive === 'prompt') {
+                    permStatus = await PushNotifications.requestPermissions();
+                }
+
+                if (permStatus.receive !== 'granted') {
+                    console.log('⚠️ Kullanıcı bildirim iznini reddetti.');
+                    return;
+                }
+
+                await PushNotifications.register();
+
+                PushNotifications.addListener('registration', (token) => {
+                    console.log('🟢 Cihaz Bildirim Tokenı Alındı:', token.value);
+                    let myUid = localStorage.getItem('cts_player_uid');
+                    if (myUid && typeof database !== 'undefined') {
+                        database.ref('users/' + myUid + '/pushToken').set(token.value);
+                    }
+                });
+
+                PushNotifications.addListener('registrationError', (err) => {
+                    console.error('🔴 Bildirim Kayıt Hatası:', err);
+                });
+
+                PushNotifications.addListener('pushNotificationReceived', (notification) => {
+                    console.log('📩 Yeni Bildirim Geldi:', notification);
+                    if (typeof showCustomAlert === 'function') {
+                        showCustomAlert(`${notification.title}: ${notification.body}`);
+                    }
+                });
+
+                PushNotifications.addListener('pushNotificationActionPerformed', (action) => {
+                    console.log('🎯 Bildirime tıklandı:', action.notification);
+                });
+            } catch (error) {
+                console.error('🔴 Bildirim sistemi başlatılamadı:', error);
+            }
+        }
+    }
+
+    // ==========================================
+    // 📱 ANDROID GERİ TUŞU KONTROLÜ (CAPACITOR)
+    // ==========================================
+    if (window.Capacitor) {
+        const { App } = Capacitor.Plugins;
+
+        App.addListener('backButton', (data) => {
+            const customAlert = document.getElementById('custom-game-alert');
+            if (customAlert) {
+                customAlert.remove();
+                return; 
+            }
+
+            const patchNotesModal = document.getElementById('patch-notes-modal');
+            if (patchNotesModal && patchNotesModal.style.display !== 'none') {
+                patchNotesModal.style.display = 'none';
+                return; 
+            }
+
+            if (!data.canGoBack) {
+                App.exitApp();
+            } else {
+                window.history.back();
             }
         });
     }
-}
-
-// OYUN YÜKLENDİKTEN SONRA SİSTEMİ BAŞLAT
-document.addEventListener('DOMContentLoaded', () => {
-    // UID'nin oluşturulması için sisteme yarım saniye (500ms) avans veriyoruz
-    // Böylece kimse sayaçtan kaçamayacak!
-    setTimeout(initPresenceSystem, 500); 
-});
-// ==========================================================================
-// 🔔 PUSH NOTIFICATION (BİLDİRİM) KURULUMU & İZİN İSTEME
-// ==========================================================================
-async function setupPushNotifications() {
-    // Yalnızca mobil ortamda (Android/iOS) çalışır, web'de hata vermez
-    if (window.Capacitor && Capacitor.isNativePlatform()) {
-        try {
-            const { PushNotifications } = Capacitor.Plugins;
-
-            // 1. Bildirim izin durumunu kontrol et
-            let permStatus = await PushNotifications.checkPermissions();
-            
-            // Eğer henüz sorulmadıysa izin popup'ını aç
-            if (permStatus.receive === 'prompt') {
-                permStatus = await PushNotifications.requestPermissions();
-            }
-
-            // İzin verilmediyse işlemi durdur
-            if (permStatus.receive !== 'granted') {
-                console.log('⚠️ Kullanıcı bildirim iznini reddetti.');
-                return;
-            }
-
-            // 2. Cihazı Firebase bildirim sunucusuna kaydet
-            await PushNotifications.register();
-
-            // 3. Başarıyla kaydedildiğinde cihaza özel Token üretilir
-            PushNotifications.addListener('registration', (token) => {
-                console.log('🟢 Cihaz Bildirim Tokenı Alındı:', token.value);
-                
-                // Oyuncu UID'si varsa Token'ı Firebase Realtime DB'ye kaydedelim
-                let myUid = localStorage.getItem('cts_player_uid');
-                if (myUid && typeof database !== 'undefined') {
-                    database.ref('users/' + myUid + '/pushToken').set(token.value);
-                }
-            });
-
-            // Kayıt sırasında bir hata olursa yakala
-            PushNotifications.addListener('registrationError', (err) => {
-                console.error('🔴 Bildirim Kayıt Hatası:', err);
-            });
-
-            // 4. Oyun açıkken (ön plandayken) bildirim gelirse
-            PushNotifications.addListener('pushNotificationReceived', (notification) => {
-                console.log('📩 Yeni Bildirim Geldi:', notification);
-                if (typeof showCustomAlert === 'function') {
-                    showCustomAlert(`${notification.title}: ${notification.body}`);
-                }
-            });
-
-            // 5. Kullanıcı kilit ekranındaki bildirime tıklayıp oyunu açarsa
-            PushNotifications.addListener('pushNotificationActionPerformed', (action) => {
-                console.log('🎯 Bildirime tıklandı:', action.notification);
-            });
-
-        } catch (error) {
-            console.error('🔴 Bildirim sistemi başlatılamadı:', error);
-        }
-    }
-}
-
-// Oyun açıldığında bildirim sistemini otomatik başlat
-document.addEventListener('DOMContentLoaded', setupPushNotifications);
-// ==========================================
-// 📱 ANDROID GERİ TUŞU KONTROLÜ (CAPACITOR)
-// ==========================================
-if (window.Capacitor) {
-    const { App } = Capacitor.Plugins;
-
-    App.addListener('backButton', (data) => {
-        // 1. Ekranda oyun içi özel uyarı (alert) açık mı?
-        const customAlert = document.getElementById('custom-game-alert');
-        if (customAlert) {
-            customAlert.remove();
-            return; // İşlemi durdur, uygulamadan çıkma!
-        }
-
-        // 2. Ekranda sürüm notları (patch notes) veya başka bir modal açık mı?
-        const patchNotesModal = document.getElementById('patch-notes-modal');
-        if (patchNotesModal && patchNotesModal.style.display !== 'none') {
-            patchNotesModal.style.display = 'none';
-            return; // İşlemi durdur, uygulamadan çıkma!
-        }
-
-        // Ekstra: Kapatılmasını istediğin başka paneller varsa buraya aynı mantıkla ekleyebilirsin.
-
-        // 3. Ekranda kapanacak hiçbir şey yoksa, uygulamadan güvenlice çık.
-        if (!data.canGoBack) {
-            App.exitApp();
-        } else {
-            window.history.back();
-        }
-    });
-}
 </script>
 </body>
 </html>
