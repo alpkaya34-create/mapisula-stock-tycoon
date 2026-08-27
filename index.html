@@ -350,6 +350,8 @@
                 <!-- ID Rozeti -->
                 <div id="player-uid-display" style="background: rgba(139, 92, 246, 0.15); color: #c4b5fd; padding: 4px 12px; border-radius: 12px; font-size: 10px; font-family: monospace; letter-spacing: 1px; border: 1px solid rgba(139, 92, 246, 0.3);">#CTS-XXXXXX</div>
             
+                <!-- YENİ: E-POSTA DOĞRULAMA DURUMU BURAYA GELDİ -->
+                <div id="verification-status" style="margin-top: 10px; font-size: 11px; text-align: center;"></div>
             </div>
             <!-- YENİ ALAN BİTİŞİ -->
 
@@ -727,7 +729,14 @@
             <p style="color: #94a3b8; font-size: 12px; margin-bottom: 25px;">Milyarderler kulübüne katılmak için giriş yap veya kayıt ol.</p>
             
             <input type="email" id="auth-email" placeholder="E-Posta Adresi" style="width: 100%; padding: 14px; background: #050814; border: 1px solid #334155; color: #fff; border-radius: 10px; font-size: 14px; outline: none; margin-bottom: 15px; box-sizing: border-box;">
-            <input type="password" id="auth-password" placeholder="Şifre (En az 6 hane)" style="width: 100%; padding: 14px; background: #050814; border: 1px solid #334155; color: #fff; border-radius: 10px; font-size: 14px; outline: none; margin-bottom: 25px; box-sizing: border-box;">
+            
+            <!-- ŞİFRE INPUTU (Margin-bottom azaltıldı) -->
+            <input type="password" id="auth-password" placeholder="Şifre (En az 6 hane)" style="width: 100%; padding: 14px; background: #050814; border: 1px solid #334155; color: #fff; border-radius: 10px; font-size: 14px; outline: none; margin-bottom: 8px; box-sizing: border-box;">
+            
+            <!-- YENİ: ŞİFREMİ UNUTTUM LİNKİ -->
+            <div style="text-align: right; margin-bottom: 20px;">
+                <a href="#" onclick="window.handleResetPassword(); return false;" style="color: #00f2fe; font-size: 12px; text-decoration: none; font-weight: 700; opacity: 0.8; transition: 0.3s;">Şifremi Unuttum?</a>
+            </div>
             
             <div style="display: flex; flex-direction: column; gap: 10px;">
                 <button id="btn-login" style="width: 100%; padding: 14px; background: #00f2fe; color: #000; border: none; border-radius: 8px; font-weight: 900; cursor: pointer; font-size: 14px; box-shadow: 0 5px 15px rgba(0, 242, 254, 0.3);">GİRİŞ YAP</button>
@@ -6592,12 +6601,69 @@ const btnLogin = document.getElementById('btn-login');
 const btnRegister = document.getElementById('btn-register');
 const errorMsg = document.getElementById('auth-error-msg');
 
+window.handleResetPassword = function() {
+    let email = document.getElementById('auth-email').value.trim();
+    let errorMsg = document.getElementById('auth-error-msg');
+    
+    if(!email) {
+        errorMsg.style.color = "#ef4444";
+        errorMsg.innerText = "Şifre sıfırlamak için lütfen yukarıya e-posta adresinizi girin!";
+        if(typeof playSound === 'function') playSound('error');
+        return;
+    }
+
+    errorMsg.style.color = "#00f2fe";
+    errorMsg.innerText = "Sıfırlama maili gönderiliyor...";
+
+    auth.sendPasswordResetEmail(email)
+        .then(() => {
+            errorMsg.style.color = "#10b981";
+            errorMsg.innerText = "Şifre sıfırlama bağlantısı e-postanıza gönderildi.";
+            if(typeof playSound === 'function') playSound('buy');
+        })
+        .catch((error) => {
+            errorMsg.style.color = "#ef4444";
+            errorMsg.innerText = "Hata: " + error.message;
+            if(typeof playSound === 'function') playSound('error');
+        });
+};
+
+window.sendVerificationEmail = function() {
+    const user = auth.currentUser;
+    if(user && !user.emailVerified) {
+        user.sendEmailVerification()
+            .then(() => {
+                if (typeof showCustomAlert === 'function') {
+                    showCustomAlert('Doğrulama e-postası gönderildi. Lütfen spam klasörünü de kontrol edin.', 'E-POSTA GÖNDERİLDİ', '#10b981');
+                }
+                if(typeof playSound === 'function') playSound('buy');
+            })
+            .catch((error) => {
+                if (typeof showCustomAlert === 'function') {
+                    showCustomAlert('Hata: ' + error.message, 'GÖNDERİM HATASI', '#ef4444');
+                }
+                if(typeof playSound === 'function') playSound('error');
+            });
+    }
+};
+
 // Firebase, oyuncunun giriş yapıp yapmadığını otomatik dinler
 auth.onAuthStateChanged((user) => {
     if (user) {
         // OYUNCU GİRİŞ YAPMIŞ
-        authModal.style.display = 'none'; // Ekranı gizle
+        document.getElementById('auth-modal').style.display = 'none'; // Ekranı gizle
         
+        // Doğrulama Durumunu Profil Ekranına Yansıt
+        const verificationStatusEl = document.getElementById('verification-status');
+        if (verificationStatusEl) {
+            if (user.emailVerified) {
+                verificationStatusEl.innerHTML = `<span style="color:#10b981; font-weight:900;">✓ E-Posta Doğrulandı</span>`;
+            } else {
+                verificationStatusEl.innerHTML = `<span style="color:#ef4444; font-weight:900;">⚠️ E-Posta Doğrulanmadı</span> 
+                <br><a href="#" onclick="window.sendVerificationEmail(); return false;" style="color:#00f2fe; text-decoration:none; font-size:10px; margin-top:5px; display:inline-block;">(Doğrulamayı Tekrar Gönder)</a>`;
+            }
+        }
+
         // Sahte UID yerine Firebase'in verdiği KESİN VE GERÇEK UID'yi kullan
         let myUid = user.uid;
         localStorage.setItem('cts_player_uid', myUid);
@@ -6682,17 +6748,26 @@ if (btnRegister) {
         let pass = passwordInput.value.trim();
         
         if (email === "" || pass.length < 6) {
+            errorMsg.style.color = "#ef4444";
             errorMsg.innerText = "Lütfen geçerli bir e-posta ve en az 6 haneli şifre girin.";
             if(typeof playSound === 'function') playSound('error');
             return;
         }
 
+        errorMsg.style.color = "#00f2fe";
+        errorMsg.innerText = "Hesap oluşturuluyor...";
+
         auth.createUserWithEmailAndPassword(email, pass)
             .then((userCredential) => {
-                // Kayıt başarılı! (onAuthStateChanged otomatik tetiklenip ekranı kapatacak)
-                if(typeof playSound === 'function') playSound('milestone');
+                // Kayıt başarılı! Hemen doğrulama mailini ateşle
+                userCredential.user.sendEmailVerification().then(() => {
+                    errorMsg.style.color = "#10b981";
+                    errorMsg.innerText = "Hesap oluşturuldu! Lütfen e-postanızı doğrulayın.";
+                    if(typeof playSound === 'function') playSound('milestone');
+                });
             })
             .catch((error) => {
+                errorMsg.style.color = "#ef4444";
                 if (error.code === 'auth/email-already-in-use') {
                     errorMsg.innerText = "Bu e-posta zaten kayıtlı. Lütfen giriş yapın.";
                 } else {
@@ -6903,6 +6978,37 @@ async function setupPushNotifications() {
 
 // Oyun açıldığında bildirim sistemini otomatik başlat
 document.addEventListener('DOMContentLoaded', setupPushNotifications);
+// ==========================================
+// 📱 ANDROID GERİ TUŞU KONTROLÜ (CAPACITOR)
+// ==========================================
+if (window.Capacitor) {
+    const { App } = Capacitor.Plugins;
+
+    App.addListener('backButton', (data) => {
+        // 1. Ekranda oyun içi özel uyarı (alert) açık mı?
+        const customAlert = document.getElementById('custom-game-alert');
+        if (customAlert) {
+            customAlert.remove();
+            return; // İşlemi durdur, uygulamadan çıkma!
+        }
+
+        // 2. Ekranda sürüm notları (patch notes) veya başka bir modal açık mı?
+        const patchNotesModal = document.getElementById('patch-notes-modal');
+        if (patchNotesModal && patchNotesModal.style.display !== 'none') {
+            patchNotesModal.style.display = 'none';
+            return; // İşlemi durdur, uygulamadan çıkma!
+        }
+
+        // Ekstra: Kapatılmasını istediğin başka paneller varsa buraya aynı mantıkla ekleyebilirsin.
+
+        // 3. Ekranda kapanacak hiçbir şey yoksa, uygulamadan güvenlice çık.
+        if (!data.canGoBack) {
+            App.exitApp();
+        } else {
+            window.history.back();
+        }
+    });
+}
 </script>
 </body>
 </html>
