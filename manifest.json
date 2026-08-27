@@ -1,7 +1,7 @@
 {
   "name": "CTS Tycoon",
   "short_name": "Tycoon",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#0b1126",
   "theme_color": "#0b1126",
@@ -9,25 +9,25 @@
     {
       "name": "Borsayı Kontrol Et",
       "short_name": "Borsa",
-      "url": "/?tab=market",
+      "url": "./?tab=market",
       "icons": [{ "src": "icon.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
       "name": "Portföye Bak",
       "short_name": "Portföy",
-      "url": "/?tab=portfolio",
+      "url": "./?tab=portfolio",
       "icons": [{ "src": "icon.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
       "name": "Haberleri Takip Et",
       "short_name": "Haberler",
-      "url": "/?tab=news",
+      "url": "./?tab=news",
       "icons": [{ "src": "icon.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
       "name": "Kredi Çek",
       "short_name": "Banka",
-      "url": "/?tab=bank",
+      "url": "./?tab=bank",
       "icons": [{ "src": "icon.png", "sizes": "192x192", "type": "image/png" }]
     }
   ]
