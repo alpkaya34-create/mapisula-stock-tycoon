@@ -167,6 +167,9 @@
         #summary-modal.show, #reset-confirm-modal.show, #bankruptcy-modal.show, #store-modal.show, #ai-modal.show, #chart-modal.show, #beta-warning-modal.show, #milestone-modal.show, #achievements-modal.show, #patch-notes-modal.show { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
         #summary-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         #summary-overlay.active { opacity: 1; pointer-events: auto; }
+        #summary-modal {
+    z-index: 99999 !important;
+}
 
         .toggle-switch { position: relative; display: inline-block; width: 50px; height: 26px; }
         .toggle-switch input { opacity: 0; width: 0; height: 0; }
@@ -1986,22 +1989,31 @@ function checkLiquidations() {
     const cryptoUnlocked = (playerBalance >= 20000000 || reachedMilestones.m20);
     
     if (!card.classList.contains('locked-card') && !(isCrypto && !cryptoUnlocked)) {
-        const name = card.dataset.name;
-                        const price = card.querySelector('.stock-price').innerText;
-                        const change = card.querySelector('.stock-change').innerText;
-                        const isUp = card.classList.contains('trend-up');
+                    const originalName = card.dataset.name;
+                    
+                    // YENİ: Şirketin adı ele geçirilip değiştirilmişse (customBrands) yeni adını al
+                    const displayName = customBrands[originalName] ? customBrands[originalName].name : originalName;
+                    
+                    const price = card.querySelector('.stock-price').innerText;
+                    const change = card.querySelector('.stock-change').innerText;
+                    const isUp = card.classList.contains('trend-up');
 
-                        const btn = document.createElement('button');
-                        btn.className = 'ai-stock-select-btn';
-                        btn.dataset.name = name; // Hisseleri bulabilmek için eklendi
-                        btn.innerHTML = `<span><strong>${name}</strong> (<span class="ai-price-text">${price}</span>)</span> <span class="ai-change-text" style="color: ${isUp ? '#10b981' : '#ef4444'}; font-weight:900;">${change}</span>`;
-                        
-                        btn.addEventListener('click', () => {
-                            askAiForStock(name, isUp, change);
-                        });
+                    const btn = document.createElement('button');
+                    btn.className = 'ai-stock-select-btn';
+                    
+                    // Canlı fiyat güncellemelerinin bozulmaması için data-name orijinal kalmalı
+                    btn.dataset.name = originalName; 
+                    
+                    // Ekranda görünen isme (innerHTML) displayName değişkenini yazdırıyoruz
+                    btn.innerHTML = `<span><strong>${displayName}</strong> (<span class="ai-price-text">${price}</span>)</span> <span class="ai-change-text" style="color: ${isUp ? '#10b981' : '#ef4444'}; font-weight:900;">${change}</span>`;
+                    
+                    btn.addEventListener('click', () => {
+                        // Yapay zeka diyaloglarında orijinal ad yerine şirketin yeni adı kullanılsın
+                        askAiForStock(displayName, isUp, change); 
+                    });
 
-                        aiStockList.appendChild(btn);
-                    }
+                    aiStockList.appendChild(btn);
+                }
                 });
 
                 document.getElementById('summary-overlay').classList.add('active');
@@ -2119,113 +2131,86 @@ function checkLiquidations() {
             }
 
             function checkCategoryUnlocks() {
-                catBtns.forEach(btn => {
-                    const cat = btn.dataset.cat;
-                    if(cat === 'all') return;
-                    
+                // GERÇEK KASA PERFORMANSINI (Net Worth) AL
+                let totalWealth = getNetWorth();
+
+                stockCards.forEach(card => {
+                    const cat = card.dataset.cat;
                     const req = categoryRequirements[cat];
-                    const lockIcon = btn.querySelector('.lock-icon'); 
                     
-                    if (playerBalance >= req || (cat === 'vip' && isPremium)) {
-                        btn.classList.remove('locked');
-                        if (lockIcon) lockIcon.style.display = 'none'; 
-                    } else {
-                        btn.classList.add('locked');
-                        if (lockIcon) lockIcon.style.display = 'inline-block'; 
-                        
-                        if (currentCategoryFilter === cat) {
-                            document.querySelector('.cat-btn[data-cat="all"]').click();
+                    let overlay = card.querySelector('.locked-overlay-text');
+                    if (!overlay) {
+                        overlay = document.createElement('div');
+                        overlay.className = 'locked-overlay-text';
+                        if (req === Infinity) {
+                            overlay.innerHTML = `🔒 PREMİUM`;
+                        } else if (req >= 1000000) {
+                            overlay.innerHTML = `🔒 $${(req/1000000).toFixed(0)}M GEREKLİ`;
+                        } else {
+                            overlay.innerHTML = `🔒 $${(req/1000).toFixed(0)}K GEREKLİ`;
                         }
+                        card.appendChild(overlay);
+                    }
+
+                    // SADECE anlık toplam servete (totalWealth) bakar. Yeterliyse açar, düşerse anında kilitler.
+                    if (totalWealth >= req || (cat === 'vip' && isPremium)) {
+                        card.classList.remove('locked-card');
+                    } else {
+                        card.classList.add('locked-card');
                     }
                 });
 
-                // Anlık Portföy Değerini Hesapla
-let activePortfolioValue = 0;
-stockCards.forEach(c => {
-    // DİKKAT: innerText yerine textContent kullanıldı! 
-    // Böylece menü değiştirsen veya pop-up açsan bile portföy değerini "0" olarak okumayacak.
-    let owned = parseInt(c.querySelector('.stock-owned').textContent.replace(/[^0-9]/g, "")) || 0;
-    let price = parseFloat(c.querySelector('.stock-price').textContent.replace(/[^0-9.-]+/g, "")) || 0;
-    activePortfolioValue += (owned * price);
-});
+                // Üst menüdeki kategori butonlarının kilitlerini de toplam servete göre senkronize et
+                if (typeof catBtns !== 'undefined') {
+                    catBtns.forEach(btn => {
+                        const cat = btn.dataset.cat;
+                        if (!cat || cat === 'all') return;
+                        const req = categoryRequirements[cat];
+                        
+                        if (req !== undefined) {
+                            // 1. Butonun içinde rozet var mı kontrol et, yoksa oluştur
+                            let badge = btn.querySelector('.btn-lock-badge');
+                            if (!badge) {
+                                badge = document.createElement('span');
+                                badge.className = 'btn-lock-badge';
+                                
+                                badge.style.background = 'rgba(239, 68, 68, 0.15)'; 
+                                badge.style.color = '#ef4444'; 
+                                badge.style.padding = '3px 8px';
+                                badge.style.borderRadius = '6px';
+                                badge.style.marginLeft = '8px';
+                                badge.style.fontSize = '10px';
+                                badge.style.fontWeight = '900';
+                                
+                                if (cat === 'vip') {
+                                    badge.innerHTML = `🔒 PREMİUM`;
+                                } else if (req >= 1000000) {
+                                    badge.innerHTML = `🔒 ${(req/1000000).toFixed(0)}M`;
+                                } else {
+                                    badge.innerHTML = `🔒 ${(req/1000).toFixed(0)}K`;
+                                }
+                                btn.appendChild(badge);
+                            }
 
-// Toplam Servet (Kasa Performansı) = Güncel Nakit + Portföydeki Hisselerin O Anki Değeri
-let totalWealth = playerBalance + activePortfolioValue;
-
-stockCards.forEach(card => {
-    const cat = card.dataset.cat;
-    const req = categoryRequirements[cat];
-    
-    let overlay = card.querySelector('.locked-overlay-text');
-    if (!overlay) {
-        overlay = document.createElement('div');
-        overlay.className = 'locked-overlay-text';
-        if (req === Infinity) {
-            overlay.innerHTML = `🔒 PREMİUM`;
-        } else if (req >= 1000000) {
-            overlay.innerHTML = `🔒 $${(req/1000000).toFixed(0)}M GEREKLİ`;
-        } else {
-            overlay.innerHTML = `🔒 $${(req/1000).toFixed(0)}K GEREKLİ`;
-        }
-        card.appendChild(overlay);
-    }
-
-    // SADECE anlık toplam servete (totalWealth) bakar. Yeterliyse açar, düşerse anında kilitler.
-    if (totalWealth >= req || (cat === 'vip' && isPremium)) {
-        card.classList.remove('locked-card');
-    } else {
-        card.classList.add('locked-card');
-    }
-});
-
-// YENİ: Üst menüdeki kategori butonlarının kilitlerini de toplam servete göre senkronize et
-if (typeof catBtns !== 'undefined') {
-    catBtns.forEach(btn => {
-        const cat = btn.dataset.cat;
-        if (!cat || cat === 'all') return;
-        const req = categoryRequirements[cat];
-        
-        // DÜZELTME: req === 0 olsa bile çalışması için koşul güncellendi!
-        if (req !== undefined) {
-            // 1. Butonun içinde rozet var mı kontrol et, yoksa oluştur
-            let badge = btn.querySelector('.btn-lock-badge');
-            if (!badge) {
-                badge = document.createElement('span');
-                badge.className = 'btn-lock-badge';
-                
-                badge.style.background = 'rgba(239, 68, 68, 0.15)'; 
-                badge.style.color = '#ef4444'; 
-                badge.style.padding = '3px 8px';
-                badge.style.borderRadius = '6px';
-                badge.style.marginLeft = '8px';
-                badge.style.fontSize = '10px';
-                badge.style.fontWeight = '900';
-                
-                // VIP için her zaman PREMIUM yazsın, diğerleri için rakam yazsın
-                if (cat === 'vip') {
-                    badge.innerHTML = `🔒 PREMİUM`;
-                } else if (req >= 1000000) {
-                    badge.innerHTML = `🔒 ${(req/1000000).toFixed(0)}M`;
-                } else {
-                    badge.innerHTML = `🔒 ${(req/1000).toFixed(0)}K`;
+                            // 2. Kasa performansı yetiyorsa kilidi AÇ ve rozeti GİZLE
+                            if (totalWealth >= req || (cat === 'vip' && isPremium)) {
+                                btn.classList.remove('locked');
+                                badge.style.display = 'none'; // Kilit yazısı kaybolur
+                            } 
+                            // 3. Kasa performansı yetmiyorsa KİLİTLE ve rozeti GÖSTER
+                            else {
+                                btn.classList.add('locked');
+                                badge.style.display = 'inline-block'; // Kilit yazısı geri gelir
+                                
+                                // Eğer kilitli bir kategorideyse "TÜMÜ" sekmesine at
+                                if (currentCategoryFilter === cat) {
+                                    document.querySelector('.cat-btn[data-cat="all"]').click();
+                                }
+                            }
+                        }
+                    });
                 }
-                btn.appendChild(badge);
             }
-
-            // 2. Kasa performansı yetiyorsa kilidi AÇ ve rozeti GİZLE
-            if (totalWealth >= req || (cat === 'vip' && isPremium)) {
-                btn.classList.remove('locked');
-                badge.style.display = 'none'; // Kilit yazısı kaybolur
-            } 
-            // 3. Kasa performansı yetmiyorsa KİLİTLE ve rozeti GÖSTER
-            else {
-                btn.classList.add('locked');
-                badge.style.display = 'inline-block'; // Kilit yazısı geri gelir
-            }
-        }
-    });
-}
-            } // <-- Fonksiyonu kapatan orijinal süslü parantez (hatayı önler)
 
             catBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -3558,7 +3543,8 @@ setInterval(() => {
 
                 // Terminal Kesintisi ve Parlama Efekti
 if (!isPremium) {
-    let currentWealth = typeof totalWealth !== 'undefined' ? totalWealth : (typeof gameStats !== 'undefined' ? gameStats.maxWealth : playerBalance);
+    // Zirve varlık hatası giderildi, artık arayüzle birebir aynı şekilde anlık net varlığı baz alacak
+    let currentWealth = getNetWorth(); 
     let terminalFee = 1;
 
     // İstediğin net kademelendirme sıralaması:
@@ -6719,9 +6705,16 @@ auth.onAuthStateChanged((user) => {
                 // BULUTTAKİ TÜM VERİLERİ YENİ CİHAZIN HAFIZASINA (LOCALSTORAGE) YAZ:
                 if (data.name) {
                     localStorage.setItem('cts_player_name', data.name);
-                    // Arayüzdeki ismi anında güncelle (CYBER STOCK TRADER bug'ı çözümü)
+                    // Arayüzdeki ismi anında güncelle
                     const profileNameDisp = document.getElementById('player-name-display');
                     if (profileNameDisp) profileNameDisp.innerText = data.name.toUpperCase();
+                    
+                    // GÜVENLİK YAMASI: Eski oyuncularda Firebase "nameChanged" verisi boş olsa bile, 
+                    // eğer isim varsayılan "CYBER STOCK TRADER" veya "CTS TRADER" değilse hakkını kullanmış say!
+                    let n = data.name.toUpperCase();
+                    if (n !== "CYBER STOCK TRADER" && n !== "CTS TRADER") {
+                        localStorage.setItem('cts_name_changed_once', 'true');
+                    }
                 }
                 
                 // İsim değiştirme hakkını (1/1) buluttan geri yükle
