@@ -766,34 +766,47 @@
         </p>
         <button class="trade-btn" id="btn-close-store-modal" style="width: 100%; padding: 12px; font-size: 13px; background: #1e293b; color: #fff;">TAMAM</button>
     </div>
-    <!-- YENİ ŞİRKET YÖNETİMİ MODALI -->
-    <div id="takeover-modal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 90%; max-width: 350px; background: #0b1126; border: 1px solid #fbbf24; border-radius: 20px; padding: 24px; z-index: 10000; opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);">
-        <div style="text-align: center; border-bottom: 1px solid #1e293b; padding-bottom: 15px; margin-bottom: 15px;">
-            <h2 style="color: #fbbf24; font-size: 18px; font-weight: 900; margin: 0;">👑 ŞİRKET SİZİN!</h2>
-        </div>
-        <p style="font-size: 12px; color: #cbd5e1; margin-bottom: 20px; text-align: center;">Yönetim kuruluna sahipsiniz. Şirketin yeni adını ve logosunu belirleyin:</p>
-        
-        <div style="display: flex; gap: 10px; margin-bottom: 8px;">
-            <input type="text" id="new-company-emoji" placeholder="🚀" readonly style="width: 50px; text-align: center; background: #050814; border: 1px solid #334155; color: #fff; border-radius: 8px; font-size: 16px; cursor: pointer; caret-color: transparent;" title="Lütfen alttaki emojilerden birini seçin">
-            <input type="text" id="new-company-name" placeholder="Yeni Şirket Adı" maxlength="20" style="flex: 1; padding: 10px; background: #050814; border: 1px solid #334155; color: #fff; border-radius: 8px; font-size: 14px;">
-        </div>
-        
-        <!-- YENİ EKLENEN: HIZLI EMOJİ SEÇİCİ -->
-        <div id="quick-emoji-picker" style="display: flex; justify-content: space-between; margin-bottom: 20px; padding: 0 5px; user-select: none;">
-            <span class="quick-emoji" style="cursor:pointer; font-size: 20px; transition: transform 0.2s;">🚀</span>
-            <span class="quick-emoji" style="cursor:pointer; font-size: 20px; transition: transform 0.2s;">💎</span>
-            <span class="quick-emoji" style="cursor:pointer; font-size: 20px; transition: transform 0.2s;">👑</span>
-            <span class="quick-emoji" style="cursor:pointer; font-size: 20px; transition: transform 0.2s;">⚡</span>
-            <span class="quick-emoji" style="cursor:pointer; font-size: 20px; transition: transform 0.2s;">🧠</span>
-            <span class="quick-emoji" style="cursor:pointer; font-size: 20px; transition: transform 0.2s;">🌐</span>
-            <span class="quick-emoji" style="cursor:pointer; font-size: 20px; transition: transform 0.2s;">🎯</span>
-        </div>
-        
-        <div style="display: flex; gap: 10px;">
-            <button class="trade-btn" id="btn-close-takeover" style="flex: 1; background: #1e293b; color: #fff; padding: 12px; font-size: 13px;">İPTAL</button>
-            <button class="trade-btn" id="btn-rebrand-company" style="flex: 1; background: #fbbf24; color: #000; padding: 12px; font-size: 13px; font-weight: 900;">KAYDET</button>
-        </div>
+    <!-- YENİ ŞİRKET YÖNETİMİ MODALI (SVG GÜNCELLEMELİ) -->
+<div id="takeover-modal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 90%; max-width: 350px; background: #0b1126; border: 1px solid #fbbf24; border-radius: 20px; padding: 24px; z-index: 10000; opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);">
+    
+    <div style="text-align: center; border-bottom: 1px solid #1e293b; padding-bottom: 15px; margin-bottom: 15px; display: flex; justify-content: center; align-items: center; gap: 8px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px; filter: drop-shadow(0 0 5px rgba(251, 191, 36, 0.8));">
+            <path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7z"></path>
+            <path d="M2 20h20"></path>
+        </svg>
+        <h2 style="color: #fbbf24; font-size: 18px; font-weight: 900; margin: 0;">ŞİRKET SİZİN!</h2>
     </div>
+    
+    <p style="font-size: 12px; color: #cbd5e1; margin-bottom: 20px; text-align: center;">Yönetim kuruluna sahipsiniz. Şirketin yeni adını ve logosunu belirleyin:</p>
+    
+    <div style="display: flex; gap: 10px; margin-bottom: 8px;">
+        <!-- Oyunun veriyi okuyacağı görünmez arka plan inputu -->
+        <input type="hidden" id="new-company-emoji" value="🚀">
+        
+        <!-- Oyuncunun göreceği görsel SVG kutusu -->
+        <div id="visual-emoji-box" style="width: 50px; display: flex; justify-content: center; align-items: center; background: #050814; border: 1px solid #334155; border-radius: 8px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.6));"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path></svg>
+        </div>
+        
+        <input type="text" id="new-company-name" placeholder="Yeni Şirket Adı" maxlength="20" style="flex: 1; padding: 10px; background: #050814; border: 1px solid #334155; color: #fff; border-radius: 8px; font-size: 14px; outline: none;">
+    </div>
+    
+    <!-- SVG HIZLI SEÇİCİLER -->
+    <div id="quick-emoji-picker" style="display: flex; justify-content: space-between; margin-bottom: 20px; padding: 0 5px; user-select: none;">
+        <span class="quick-emoji" data-emoji="🚀" style="cursor:pointer; display: flex; align-items: center; transition: transform 0.2s;"><svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.6));"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path></svg></span>
+        <span class="quick-emoji" data-emoji="💎" style="cursor:pointer; display: flex; align-items: center; transition: transform 0.2s;"><svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px rgba(0, 242, 254, 0.6));"><path d="M6 3h12l4 6-10 13L2 9z"></path><path d="M11 3L8 9l4 13 4-13-3-6"></path><line x1="2" y1="9" x2="22" y2="9"></line></svg></span>
+        <span class="quick-emoji" data-emoji="👑" style="cursor:pointer; display: flex; align-items: center; transition: transform 0.2s;"><svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.6));"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7z"></path><path d="M2 20h20"></path></svg></span>
+        <span class="quick-emoji" data-emoji="⚡" style="cursor:pointer; display: flex; align-items: center; transition: transform 0.2s;"><svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.6));"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></span>
+        <span class="quick-emoji" data-emoji="🧠" style="cursor:pointer; display: flex; align-items: center; transition: transform 0.2s;"><svg viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px rgba(236, 72, 153, 0.6));"><path d="M12 2a10 10 0 0 1 7.54 16.6 8 8 0 0 0-15.08 0A10 10 0 0 1 12 2z"></path><circle cx="12" cy="13" r="3"></circle></svg></span>
+        <span class="quick-emoji" data-emoji="🌐" style="cursor:pointer; display: flex; align-items: center; transition: transform 0.2s;"><svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.6));"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg></span>
+        <span class="quick-emoji" data-emoji="🎯" style="cursor:pointer; display: flex; align-items: center; transition: transform 0.2s;"><svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px rgba(59, 130, 246, 0.6));"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg></span>
+    </div>
+    
+    <div style="display: flex; gap: 10px;">
+        <button class="trade-btn" id="btn-close-takeover" style="flex: 1; background: #1e293b; color: #fff; padding: 12px; font-size: 13px;">İPTAL</button>
+        <button class="trade-btn" id="btn-rebrand-company" style="flex: 1; background: #fbbf24; color: #000; padding: 12px; font-size: 13px; font-weight: 900;">KAYDET</button>
+    </div>
+</div>
     <!-- ========================================== -->
     <!-- OYUNCU GİRİŞ / KAYIT EKRANI                -->
     <!-- ========================================== -->
@@ -1370,7 +1383,7 @@ CTS KRİPTO BORSASI</h3>
                     <div><h4 style="color:#a855f7; font-size: 15px; font-weight:900;"><svg viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px; vertical-align: middle; margin-right: 8px; filter: drop-shadow(0 0 5px rgba(192, 132, 252, 0.6));">
     <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
     <polyline points="17 6 23 6 23 12"></polyline>
-</svg> Borsa Manipülasyonu</h4><p style="font-size:11px; color:#94a3b8; margin-top:4px;">Sahip olduğun hisseleri anında %3 ile %15 arasında uçurur.</p></div>
+</svg> Borsa Manipülasyonu</h4><p style="font-size:11px; color:#94a3b8; margin-top:4px;">Sahip olduğun hisseleri anında %3 ile %10 arasında uçurur.</p></div>
                     <span style="font-size: 20px;"><svg viewBox="0 0 24 24" fill="none" stroke="#d946ef" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px; filter: drop-shadow(0 0 5px rgba(217, 70, 239, 0.6));">
     <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path>
     <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path>
@@ -1454,7 +1467,12 @@ CTS KRİPTO BORSASI</h3>
                     <span id="trade-ownership-percent" style="font-size: 10px; color: #fbbf24; font-weight: 900; letter-spacing: 0.5px; text-shadow: 0 0 5px rgba(251, 191, 36, 0.4);">Şirket Payı: %0.0000</span>
                     
                     <!-- YENİ EKLENEN: SADECE %51 OLUNCA ÇIKACAK KÜÇÜK BUTON -->
-                    <button id="btn-open-takeover" style="display: none; background: #fbbf24; border: none; color: #000; padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 900; cursor: pointer; margin-top: 5px; width: 100%; box-shadow: 0 0 10px rgba(251,191,36,0.3);">👑 YÖNETİM KURULU</button>
+                    <button id="btn-open-takeover" style="display: none; background: #fbbf24; border: none; color: #000; padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 900; cursor: pointer; margin-top: 5px; width: 100%; box-shadow: 0 0 10px rgba(251,191,36,0.3);">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px; vertical-align: middle; margin-right: 4px;">
+        <path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7z"></path>
+        <path d="M2 20h20"></path>
+    </svg> YÖNETİM KURULU
+</button>
                 </div>
             </div>
             <div class="trade-controls">
@@ -2384,86 +2402,90 @@ function checkLiquidations() {
             }
 
             function checkCategoryUnlocks() {
-                // GERÇEK KASA PERFORMANSINI (Net Worth) AL
-                let totalWealth = getNetWorth();
+    // GERÇEK KASA PERFORMANSINI (Net Worth) AL
+    let totalWealth = getNetWorth();
 
-                stockCards.forEach(card => {
-                    const cat = card.dataset.cat;
-                    const req = categoryRequirements[cat];
+    // SİBERPUNK KİLİT SVG VEKTÖRÜ
+    const lockIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; vertical-align: middle; margin-right: 4px; filter: drop-shadow(0 0 4px currentColor);"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`;
+
+    stockCards.forEach(card => {
+        const cat = card.dataset.cat;
+        const req = categoryRequirements[cat];
+        
+        let overlay = card.querySelector('.locked-overlay-text');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.className = 'locked-overlay-text';
+            
+            if (req === Infinity) {
+                overlay.innerHTML = `${lockIcon} PREMİUM`;
+            } else if (req >= 1000000) {
+                overlay.innerHTML = `${lockIcon} $${(req/1000000).toFixed(0)}M GEREKLİ`;
+            } else {
+                overlay.innerHTML = `${lockIcon} $${(req/1000).toFixed(0)}K GEREKLİ`;
+            }
+            card.appendChild(overlay);
+        }
+
+        // SADECE anlık toplam servete (totalWealth) bakar. Yeterliyse açar, düşerse anında kilitler.
+        if (totalWealth >= req || (cat === 'vip' && isPremium)) {
+            card.classList.remove('locked-card');
+        } else {
+            card.classList.add('locked-card');
+        }
+    });
+
+    // Üst menüdeki kategori butonlarının kilitlerini de toplam servete göre senkronize et
+    if (typeof catBtns !== 'undefined') {
+        catBtns.forEach(btn => {
+            const cat = btn.dataset.cat;
+            if (!cat || cat === 'all') return;
+            const req = categoryRequirements[cat];
+            
+            if (req !== undefined) {
+                // 1. Butonun içinde rozet var mı kontrol et, yoksa oluştur
+                let badge = btn.querySelector('.btn-lock-badge');
+                if (!badge) {
+                    badge = document.createElement('span');
+                    badge.className = 'btn-lock-badge';
                     
-                    let overlay = card.querySelector('.locked-overlay-text');
-                    if (!overlay) {
-                        overlay = document.createElement('div');
-                        overlay.className = 'locked-overlay-text';
-                        if (req === Infinity) {
-                            overlay.innerHTML = `🔒 PREMİUM`;
-                        } else if (req >= 1000000) {
-                            overlay.innerHTML = `🔒 $${(req/1000000).toFixed(0)}M GEREKLİ`;
-                        } else {
-                            overlay.innerHTML = `🔒 $${(req/1000).toFixed(0)}K GEREKLİ`;
-                        }
-                        card.appendChild(overlay);
-                    }
-
-                    // SADECE anlık toplam servete (totalWealth) bakar. Yeterliyse açar, düşerse anında kilitler.
-                    if (totalWealth >= req || (cat === 'vip' && isPremium)) {
-                        card.classList.remove('locked-card');
+                    badge.style.background = 'rgba(239, 68, 68, 0.15)'; 
+                    badge.style.color = '#ef4444'; 
+                    badge.style.padding = '3px 8px';
+                    badge.style.borderRadius = '6px';
+                    badge.style.marginLeft = '8px';
+                    badge.style.fontSize = '10px';
+                    badge.style.fontWeight = '900';
+                    
+                    if (cat === 'vip') {
+                        badge.innerHTML = `${lockIcon} PREMİUM`;
+                    } else if (req >= 1000000) {
+                        badge.innerHTML = `${lockIcon} ${(req/1000000).toFixed(0)}M`;
                     } else {
-                        card.classList.add('locked-card');
+                        badge.innerHTML = `${lockIcon} ${(req/1000).toFixed(0)}K`;
                     }
-                });
+                    btn.appendChild(badge);
+                }
 
-                // Üst menüdeki kategori butonlarının kilitlerini de toplam servete göre senkronize et
-                if (typeof catBtns !== 'undefined') {
-                    catBtns.forEach(btn => {
-                        const cat = btn.dataset.cat;
-                        if (!cat || cat === 'all') return;
-                        const req = categoryRequirements[cat];
-                        
-                        if (req !== undefined) {
-                            // 1. Butonun içinde rozet var mı kontrol et, yoksa oluştur
-                            let badge = btn.querySelector('.btn-lock-badge');
-                            if (!badge) {
-                                badge = document.createElement('span');
-                                badge.className = 'btn-lock-badge';
-                                
-                                badge.style.background = 'rgba(239, 68, 68, 0.15)'; 
-                                badge.style.color = '#ef4444'; 
-                                badge.style.padding = '3px 8px';
-                                badge.style.borderRadius = '6px';
-                                badge.style.marginLeft = '8px';
-                                badge.style.fontSize = '10px';
-                                badge.style.fontWeight = '900';
-                                
-                                if (cat === 'vip') {
-                                    badge.innerHTML = `🔒 PREMİUM`;
-                                } else if (req >= 1000000) {
-                                    badge.innerHTML = `🔒 ${(req/1000000).toFixed(0)}M`;
-                                } else {
-                                    badge.innerHTML = `🔒 ${(req/1000).toFixed(0)}K`;
-                                }
-                                btn.appendChild(badge);
-                            }
-
-                            // 2. Kasa performansı yetiyorsa kilidi AÇ ve rozeti GİZLE
-                            if (totalWealth >= req || (cat === 'vip' && isPremium)) {
-                                btn.classList.remove('locked');
-                                badge.style.display = 'none'; // Kilit yazısı kaybolur
-                            } 
-                            // 3. Kasa performansı yetmiyorsa KİLİTLE ve rozeti GÖSTER
-                            else {
-                                btn.classList.add('locked');
-                                badge.style.display = 'inline-block'; // Kilit yazısı geri gelir
-                                
-                                // Eğer kilitli bir kategorideyse "TÜMÜ" sekmesine at
-                                if (currentCategoryFilter === cat) {
-                                    document.querySelector('.cat-btn[data-cat="all"]').click();
-                                }
-                            }
-                        }
-                    });
+                // 2. Kasa performansı yetiyorsa kilidi AÇ ve rozeti GİZLE
+                if (totalWealth >= req || (cat === 'vip' && isPremium)) {
+                    btn.classList.remove('locked');
+                    badge.style.display = 'none'; // Kilit yazısı kaybolur
+                } 
+                // 3. Kasa performansı yetmiyorsa KİLİTLE ve rozeti GÖSTER
+                else {
+                    btn.classList.add('locked');
+                    badge.style.display = 'inline-block'; // Kilit yazısı geri gelir
+                    
+                    // Eğer kilitli bir kategorideyse "TÜMÜ" sekmesine at
+                    if (currentCategoryFilter === cat) {
+                        document.querySelector('.cat-btn[data-cat="all"]').click();
+                    }
                 }
             }
+        });
+    }
+}
 
             catBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -2617,7 +2639,7 @@ stockCards.forEach(card => {
                     }
                     // ---------------------------------------------
                     displayTradeStockPrice.innerText = priceText;
-                    displayTradeOwned.innerText = ownedCount;
+                    displayTradeOwned.innerText = ownedCount.toLocaleString('tr-TR');
                     // --- YENİ: ŞİRKET PAYI YÜZDESİ HESAPLAMA ---
                     let ownershipPercent = (ownedCount / 1000000) * 100;
                     document.getElementById('trade-ownership-percent').innerText = "Şirket Payı: %" + ownershipPercent.toFixed(4);
@@ -2671,12 +2693,12 @@ stockCards.forEach(card => {
                             // Normal hisse ise Şirket Payını göster
                             if (ownershipEl) {
                                 ownershipEl.style.display = 'block'; 
-                                let currentOwnedAmount = parseInt(displayTradeOwned.innerText) || 0;
+                                let currentOwnedAmount = parseInt(displayTradeOwned.innerText.replace(/[^0-9]/g, "")) || 0;
                                 let ownershipPercent = (currentOwnedAmount / 1000000) * 100;
                                 ownershipEl.innerText = "Şirket Payı: %" + ownershipPercent.toFixed(4);
                             }
                             if (takeoverBtn) {
-                                let currentOwnedAmount = parseInt(displayTradeOwned.innerText) || 0;
+                                let currentOwnedAmount = parseInt(displayTradeOwned.innerText.replace(/[^0-9]/g, "")) || 0;
                                 takeoverBtn.style.display = (currentOwnedAmount >= 510000) ? 'block' : 'none';
                             }
                         }
@@ -2809,7 +2831,7 @@ stockCards.forEach(card => {
 
             const executeBuyAction = () => {
                 const qty = parseInt(inputQty.value);
-                let currentOwned = parseInt(displayTradeOwned.innerText) || 0;
+                let currentOwned = parseInt(displayTradeOwned.innerText.replace(/[^0-9]/g, "")) || 0;
                 
                 // --- KRİPTO KONTROLÜ (KARTA KAZINAN BİLGİYİ OKU) ---
                 let isCryptoCheck = currentStockCard && currentStockCard.dataset.isCrypto === "true";
@@ -2845,7 +2867,7 @@ stockCards.forEach(card => {
                     playerBalance -= totalCostWithFee;
                     playSound('buy');
                     updateBalanceUI();
-                    displayTradeOwned.innerText = newOwned;
+                    displayTradeOwned.innerText = newOwned.toLocaleString('tr-TR');
                     
                     // KRİPTO DEĞİLSE ŞİRKET PAYINI GÜNCELLE VE YÖNETİM KURULUNU AÇ
                     if (!isCryptoCheck) {
@@ -2862,7 +2884,7 @@ stockCards.forEach(card => {
                         }
                     }
 
-                    currentStockCard.querySelector('.stock-owned').innerText = "Portföy: " + newOwned + " Adet";
+                    currentStockCard.querySelector('.stock-owned').innerText = "Portföy: " + newOwned.toLocaleString('tr-TR') + " Adet";
 
                     gameStats.trades++;
                     dailyTrades++;
@@ -2900,7 +2922,7 @@ stockCards.forEach(card => {
                 let commissionRate = isPremium ? 0.002 : 0.004;
                 let commissionFee = totalRevenue * commissionRate;
                 let netRevenue = totalRevenue - commissionFee;
-                let currentOwned = parseInt(displayTradeOwned.innerText);
+                let currentOwned = parseInt(displayTradeOwned.innerText.replace(/[^0-9]/g, "")) || 0;
 
                 if (currentOwned >= qty) {
                     playerBalance += netRevenue;
@@ -2908,7 +2930,7 @@ stockCards.forEach(card => {
                     updateBalanceUI();
 
                     let newOwned = currentOwned - qty;
-                    displayTradeOwned.innerText = newOwned;
+                    displayTradeOwned.innerText = newOwned.toLocaleString('tr-TR');
                     
                     // KRİPTO DEĞİLSE ŞİRKET PAYINI GÜNCELLE VE YÖNETİM KURULUNU KAPAT
                     if (!isCryptoCheck) {
@@ -2956,14 +2978,14 @@ stockCards.forEach(card => {
                                 
                                 // Oyuncuya el değiştirme uyarısı göster
                                 if(typeof showStoreModal === 'function'){
-                                    showStoreModal("YÖNETİM EL DEĞİŞTİRDİ! ⚠️", `Hisse payın %51'in altına düştüğü için şirketteki kontrolünü kaybettin.<br><br>Şirket yeni bir yatırım grubuna devredildi ve marka adı <strong>${rEmoji} ${rName}</strong> olarak güncellendi.`, false);
+                                    showStoreModal("YÖNETİM EL DEĞİŞTİRDİ! ⚠️", `Hisse payın %51'in altına düştüğü için şirketteki kontrolünü kaybettin.<br><br>Şirket yeni bir yatırım grubuna devredildi ve marka adı <strong style="color: #00f2fe; display: inline-flex; align-items: center;">${window.getNeonIcon(rEmoji)} ${rName}</strong> olarak güncellendi.`, false);
                                     if(typeof playSound === 'function') playSound('error');
                                 }
                             }
                         }
                     }
 
-                    currentStockCard.querySelector('.stock-owned').innerText = "Portföy: " + newOwned + " Adet";
+                    currentStockCard.querySelector('.stock-owned').innerText = "Portföy: " + newOwned.toLocaleString('tr-TR') + " Adet";
 
                     gameStats.trades++;
                     dailyTrades++;
@@ -3255,15 +3277,19 @@ stockCards.forEach(card => {
                     // --- YENİ: İSİM VE EMOJİ SENKRONİZASYONU ---
                     // Eğer oyuncu bu şirketin adını değiştirdiyse, portföydeki kopyasına da yansıt!
                     if (customBrands[name]) {
-                        if (pName) pName.textContent = customBrands[name].name;
-                        if (pIcon) pIcon.textContent = customBrands[name].emoji;
-                    }
+    if (pName) pName.textContent = customBrands[name].name;
+    
+    // textContent (Düz Metin) yerine innerHTML (Vektör) kullanıyoruz
+    let safePortEmoji = customBrands[name].emoji;
+    if (!safePortEmoji || safePortEmoji === "undefined") safePortEmoji = "🚀";
+    if (pIcon) pIcon.innerHTML = window.getNeonIcon(safePortEmoji);
+}
                     // -------------------------------------------
 
                     portCard.classList.remove('trend-up', 'trend-down');
                     portCard.classList.add(isDown ? 'trend-down' : 'trend-up');
                     if (pOwned) {
-                        pOwned.innerHTML = `Portföy: ${ownedCount} Adet <br><span style="color: #38bdf8; font-size: 10px;">Maliyet: $${avgPrice.toFixed(2)}</span>`;
+                        pOwned.innerHTML = `Portföy: ${ownedCount.toLocaleString('tr-TR')} Adet <br><span style="color: #38bdf8; font-size: 10px;">Maliyet: $${avgPrice.toFixed(2)}</span>`;
                     }
                 });
 
@@ -3278,7 +3304,7 @@ stockCards.forEach(card => {
 
                 const empty = portfolioList.querySelector('.empty-state');
                 if (!hasStocks) {
-                    if (!empty) portfolioList.innerHTML = '<div class="empty-state"><span>🕸️</span><p>Henüz hiçbir ürün almadın.</p></div>';
+                    if (!empty) portfolioList.innerHTML = '<div class="empty-state"><span><svg viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 40px; height: 40px; display: block; margin: 0 auto 12px auto; filter: drop-shadow(0 0 8px rgba(192, 132, 252, 0.6));"><rect x="2" y="5" width="20" height="14" rx="2" ry="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg></span><p>Henüz hiçbir ürün almadın.</p></div>';
                 } else if (empty) {
                     empty.remove();
                 }
@@ -3716,14 +3742,14 @@ if (btnBuyPremium) {
     let increasePercent = 0;
 
     if (roll < 0.65) {
-        // %65 İhtimal (Yaygın): %3 ile %7 arası rastgele artış
-        increasePercent = (Math.random() * 4) + 3; 
+        // %65 İhtimal (Yaygın): %3 ile %5.5 arası rastgele artış
+        increasePercent = (Math.random() * 2.5) + 3; 
     } else if (roll < 0.92) {
-        // %27 İhtimal (Nadir): %7 ile %11 arası rastgele artış
-        increasePercent = (Math.random() * 4) + 7;
+        // %27 İhtimal (Nadir): %5.5 ile %8 arası rastgele artış
+        increasePercent = (Math.random() * 2.5) + 5.5;
     } else {
-        // %8 İhtimal (Efsanevi): %11 ile %15 arası rastgele artış
-        increasePercent = (Math.random() * 4) + 11;
+        // %8 İhtimal (Efsanevi): %8 ile %10 arası rastgele artış
+        increasePercent = (Math.random() * 2) + 8;
     }
 
     // Çıkan yüzdeyi matematiksel çarpana çevir (Örn: %8.5 -> 1.085)
@@ -4145,6 +4171,20 @@ priceElement.innerText = "$" + newPrice.toLocaleString('en-US', { minimumFractio
                     
                     setTimeout(() => { nt.classList.remove('show'); }, 5000);
                 }
+
+                // --- HABERİ ÇIKAN HİSSEYİ SARI YANIP SÖNDÜRME EFEKTİ ---
+                if (card) {
+                    card.animate([
+                        { boxShadow: 'none', borderColor: 'rgba(30, 41, 59, 1)' }, 
+                        { boxShadow: '0 0 30px rgba(251, 191, 36, 0.8)', borderColor: '#fbbf24' },
+                        { boxShadow: 'none', borderColor: 'rgba(30, 41, 59, 1)' }
+                    ], {
+                        duration: 800, // 0.8 saniyede bir nefes alma
+                        iterations: 6, // Toplam 6 kez tekrarla (Yaklaşık 5 saniye sürer)
+                        easing: 'ease-in-out'
+                    });
+                }
+                // -------------------------------------------------------
 
                 // --- Haberi Arşive (Haberler Sekmesine) Ekle ---
                 const archiveBox = document.getElementById('persistent-news-list');
@@ -4623,7 +4663,7 @@ showCustomAlert(
                     const portfolio = JSON.parse(localStorage.getItem('cts_portfolio'));
                     stockCards.forEach(card => {
                         const name = card.dataset.name;
-                        if (portfolio[name] !== undefined) { card.querySelector('.stock-owned').innerText = "Portföy: " + portfolio[name] + " Adet"; }
+                        if (portfolio[name] !== undefined) { card.querySelector('.stock-owned').innerText = "Portföy: " + portfolio[name].toLocaleString('tr-TR') + " Adet"; }
                     });
                 }
                 if (localStorage.getItem('cts_futures') !== null) { activePositions = JSON.parse(localStorage.getItem('cts_futures')); }
@@ -4903,7 +4943,7 @@ chartAreaPath.setAttribute('d', `M ${points.join(' L ')} L 300,130 L 0,130 Z`);
                 
             } else if (type === 'SELL') {
                 // --- SPOT SATIŞ MATEMATİĞİ ---
-                let ownedCount = parseInt(displayTradeOwned.innerText) || 0;
+                let ownedCount = parseInt(displayTradeOwned.innerText.replace(/[^0-9]/g, "")) || 0;
                 if (ownedCount > 0) {
                     inputQty.value = ownedCount;
                     updateTotalCost();
@@ -5434,7 +5474,7 @@ function stopChangingQuantity() {
             if (!qtyInput) return;
             
             let currentVal = parseInt(qtyInput.value) || 1;
-            let currentOwned = parseInt(document.getElementById('trade-owned-count').innerText) || 0;
+            let currentOwned = parseInt(document.getElementById('trade-owned-count').innerText.replace(/[^0-9]/g, "")) || 0;
             let remainingShares = 1000000 - currentOwned;
 
             currentVal += amount;
@@ -5479,59 +5519,59 @@ if (btnPlus && btnMinus) {
 
 let customBrands = JSON.parse(localStorage.getItem('cts_custom_brands')) || {};
 
+// EVRENSEL SVG İKON MOTORU
+window.getNeonIcon = function(emojiChar) {
+    const svgBase = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 1.2em; height: 1.2em; vertical-align: text-bottom; margin-right: 4px; filter: drop-shadow(0 0 4px currentColor);">`;
+    
+    const map = {
+        "🚀": `${svgBase}<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path></svg>`,
+        "💎": `${svgBase}<path d="M6 3h12l4 6-10 13L2 9z"></path><path d="M11 3L8 9l4 13 4-13-3-6"></path><line x1="2" y1="9" x2="22" y2="9"></line></svg>`,
+        "👑": `${svgBase}<path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7z"></path><path d="M2 20h20"></path></svg>`,
+        "⚡": `${svgBase}<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>`,
+        "🧠": `${svgBase}<path d="M12 2a10 10 0 0 1 7.54 16.6 8 8 0 0 0-15.08 0A10 10 0 0 1 12 2z"></path><circle cx="12" cy="13" r="3"></circle></svg>`,
+        "🌐": `${svgBase}<circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>`,
+        "🎯": `${svgBase}<circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>`,
+        "🏛️": `${svgBase}<line x1="3" y1="21" x2="21" y2="21"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="M5 6l7-3 7 3"></path><line x1="6" y1="10" x2="6" y2="21"></line><line x1="10" y1="10" x2="10" y2="21"></line><line x1="14" y1="10" x2="14" y2="21"></line><line x1="18" y1="10" x2="18" y2="21"></line></svg>`,
+        "💼": `${svgBase}<rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>`,
+        "🏢": `${svgBase}<rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path><path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M12 6h.01"></path><path d="M12 10h.01"></path><path d="M12 14h.01"></path><path d="M16 10h.01"></path><path d="M16 14h.01"></path><path d="M8 10h.01"></path><path d="M8 14h.01"></path></svg>`,
+        "📊": `${svgBase}<line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>`,
+        "📈": `${svgBase}<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>`,
+        "🚢": `${svgBase}<path d="M2 21c4 0 7-2 9-2s5 2 9 2c4 0 7-2 9-2s5 2 9 2"></path><path d="M3 19l1-9h16l1 9"></path><path d="M8 10V6h8v4"></path></svg>`,
+        "✈️": `${svgBase}<path d="M22 1L2 6l5 3 9-4-6 7 3 5 7-17z"></path></svg>`,
+        "🏗️": `${svgBase}<path d="M14 2h-4v20h4V2z"></path><path d="M6 10l8-8"></path><path d="M6 14l8-8"></path></svg>`,
+        "🏭": `${svgBase}<path d="M2 20h20"></path><path d="M4 20V8l6 4v-4l6 4v-4l4 4v8"></path></svg>`,
+        "💻": `${svgBase}<rect x="2" y="3" width="20" height="14" rx="2"></rect><line x1="2" y1="20" x2="22" y2="20"></line></svg>`,
+        "📱": `${svgBase}<rect x="5" y="2" width="14" height="20" rx="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>`,
+        "🔋": `${svgBase}<rect x="6" y="4" width="12" height="16" rx="2"></rect><line x1="10" y1="2" x2="14" y2="2"></line><line x1="10" y1="10" x2="14" y2="10"></line><line x1="12" y1="8" x2="12" y2="12"></line></svg>`,
+        "🛡️": `${svgBase}<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>`,
+        "⚙️": `${svgBase}<circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>`,
+        "📦": `${svgBase}<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>`,
+        "💡": `${svgBase}<path d="M9 18h6 M10 22h4 M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"></path></svg>`,
+        "💰": `${svgBase}<circle cx="12" cy="12" r="10"></circle><path d="M12 6v12 M15 9.5C15 8.12 13.66 7 12 7s-3 1.12-3 2.5 1.38 2.5 3 2.5 3 1.12 3 2.5-1.38 2.5-3 2.5-3-1.12-3-2.5"></path></svg>`,
+        "💳": `${svgBase}<rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>`,
+        "🔬": `${svgBase}<path d="M4 22h16 M14 2h-4v3 M14 20v-5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v5 M12 5v10"></path></svg>`,
+        "📡": `${svgBase}<path d="M2 12h2 M20 12h2 M12 2v2 M12 20v2 M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"></path></svg>`,
+        "💧": `${svgBase}<path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>`
+    };
+    
+    // Geçersiz veya "undefined" gelirse rokete dönüştür
+    let safeEmoji = (emojiChar && emojiChar !== "undefined") ? emojiChar : "🚀";
+    return map[safeEmoji] || `${svgBase}<path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>`;
+};
+
 function applyCustomBrands() {
     stockCards.forEach(card => {
         const originalName = card.dataset.name;
         if (customBrands[originalName]) {
             const brand = customBrands[originalName];
             card.querySelector('.stock-name').innerText = brand.name;
-            card.querySelector('.stock-icon').innerText = brand.emoji;
+            
+            // Eğer kaydedilmiş emoji "undefined" ise roket olarak düzelt
+            let e = brand.emoji;
+            if (!e || e === "undefined") e = "🚀";
+            
+            card.querySelector('.stock-icon').innerHTML = window.getNeonIcon(e);
         }
-    });
-    // --- EMOJİ KUTUSU FİLTRESİ VE HIZLI SEÇİM SİSTEMİ ---
-const emojiInput = document.getElementById('new-company-emoji');
-if (emojiInput) {
-    emojiInput.addEventListener('input', function() {
-        // SADECE EMOJİYE İZİN VER: Harf, rakam, boşluk ve noktalamaları anında siler
-        this.value = this.value.replace(/[\p{L}\p{N}\p{P}\p{Z}]/gu, '');
-        
-        // Emoji 1 adetten fazlaysa fazlasını sil (Emojiler sistemde birden fazla karakter sayılabildiği için Array.from kullanıyoruz)
-        const chars = Array.from(this.value);
-        if (chars.length > 1) {
-            this.value = chars[0];
-        }
-    });
-}
-
-// Hızlı emoji ikonlarına tıklandığında kutuya yaz ve zıplama efekti ver
-document.querySelectorAll('.quick-emoji').forEach(el => {
-    el.addEventListener('click', (e) => {
-        if (emojiInput) {
-            emojiInput.value = e.target.innerText;
-        }
-        
-        // Tıklanan emojiye şık bir büyüme (tıklama) efekti
-        e.target.style.transform = 'scale(1.4)';
-        setTimeout(() => { e.target.style.transform = 'scale(1)'; }, 150);
-    });
-});
-// -----------------------------------------------------
-}
-applyCustomBrands();
-
-// 1. Yeni Butona Tıklayınca Modalı Aç
-const btnOpenTakeover = document.getElementById('btn-open-takeover');
-if(btnOpenTakeover) {
-    btnOpenTakeover.addEventListener('click', () => {
-        const name = currentStockCard.dataset.name;
-        document.getElementById('new-company-emoji').value = customBrands[name] ? customBrands[name].emoji : "";
-        document.getElementById('new-company-name').value = customBrands[name] ? customBrands[name].name : "";
-        
-        document.getElementById('summary-overlay').classList.add('active');
-        const modal = document.getElementById('takeover-modal');
-        modal.style.opacity = '1';
-        modal.style.pointerEvents = 'auto';
-        modal.style.transform = 'translate(-50%, -50%) scale(1)';
     });
 }
 
@@ -6202,16 +6242,16 @@ let isPiggyExploding = false;
 function generateNextReward() {
     let roll = Math.random();
     
-    if (roll < 0.85) {
-        // 0.00 - 0.85 arası: %85 İHTİMALLE NAKİT PARA
+    if (roll < 0.88) {
+        // 0.00 - 0.88 arası: %88 İHTİMALLE NAKİT PARA
         return { type: 'cash', pool: Math.floor(50000 + Math.random() * 300000) };
         
-    } else if (roll < 0.95) {
-        // 0.85 - 0.95 arası: %10 İHTİMALLE ŞİRKET PAYI
+    } else if (roll < 0.96) {
+        // 0.88 - 0.96 arası: %8 İHTİMALLE ŞİRKET PAYI
         return { type: 'stock', stockIndex: Math.floor(Math.random() * 20) }; 
         
     } else {
-        // 0.95 - 1.00 arası: %5 İHTİMALLE PREMİUM
+        // 0.96 - 1.00 arası: %4 İHTİMALLE PREMİUM
         return { type: 'premium' };
     }
 }
@@ -6315,7 +6355,7 @@ piggyRef.on('value', (snapshot) => {
                         newOwned = 1000000; // Portföyü %100'e sabitle
                     }
                     
-                    targetCard.querySelector('.stock-owned').textContent = "Portföy: " + newOwned + " Adet";
+                    targetCard.querySelector('.stock-owned').textContent = "Portföy: " + newOwned.toLocaleString('tr-TR') + " Adet";
                     
                     if (cashCompensation > 0) {
                         playerBalance += cashCompensation;
@@ -6464,17 +6504,17 @@ let isMegaPiggyExploding = false;
 function generateNextMegaReward() {
     let roll = Math.random();
     
-    if (roll < 0.85) {
-        // 0.00 - 0.85 arası: %85 İHTİMALLE MEGA NAKİT
+    if (roll < 0.88) {
+        // 0.00 - 0.88 arası: %88 İHTİMALLE MEGA NAKİT
         // Mega Nakit: $200.000 ile $1.000.000 arası rastgele dev havuz
         return { type: 'cash', pool: Math.floor(200000 + Math.random() * 800000) };
         
-    } else if (roll < 0.95) {
-        // 0.85 - 0.95 arası: %10 İHTİMALLE ŞİRKET PAYI
+    } else if (roll < 0.96) {
+        // 0.88 - 0.96 arası: %8 İHTİMALLE ŞİRKET PAYI
         return { type: 'stock', stockIndex: Math.floor(Math.random() * 20) }; 
         
     } else {
-        // 0.95 - 1.00 arası: %5 İHTİMALLE PREMİUM
+        // 0.96 - 1.00 arası: %4 İHTİMALLE PREMİUM
         return { type: 'premium' };
     }
 }
@@ -6565,7 +6605,7 @@ megaPiggyRef.on('value', (snapshot) => {
                         cashCompensation = Math.floor(overflowShares * currentPrice);
                         newOwned = 1000000; 
                     }
-                    targetCard.querySelector('.stock-owned').textContent = "Portföy: " + newOwned + " Adet";
+                    targetCard.querySelector('.stock-owned').textContent = "Portföy: " + newOwned.toLocaleString('tr-TR') + " Adet";
                     
                     if (cashCompensation > 0) {
                         playerBalance += cashCompensation;
@@ -7352,6 +7392,221 @@ if (btnLogin) {
         });
     }
    }); 
+   // ==========================================================================
+// 🚀 TÜM HİSSE İKONLARINI NEON SVG İLE DEĞİŞTİREN DİNAMİK MOTOR (Kriptolar Hariç)
+// ==========================================================================
+document.addEventListener('DOMContentLoaded', () => {
+    const neonIconsMap = {
+        // YAPAY ZEKA
+        "CyberNet Corp": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px currentColor);"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>`,
+        "AeroRobotics": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px currentColor);"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path></svg>`,
+        "OmniMind AI": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px currentColor);"><path d="M12 2a10 10 0 0 1 7.54 16.6 8 8 0 0 0-15.08 0A10 10 0 0 1 12 2z"></path><circle cx="12" cy="13" r="3"></circle></svg>`,
+        "Synapse Dynamics": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px currentColor);"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>`,
+        
+        // BİYOTEKNOLOJİ
+        "NeoPharma": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px currentColor);"><path d="M10.5 20.5L3.5 13.5a5 5 0 0 1 7-7l8 8a5 5 0 0 1-7 7z"></path><line x1="8.5" y1="8.5" x2="15.5" y2="15.5"></line></svg>`,
+        "GeneTech Labs": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px currentColor);"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>`,
+        "BioLife Inc": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px currentColor);"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"></path><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.5 12 13 13 12"></path></svg>`,
+        "GenoSys Health": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px currentColor);"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>`,
+        
+        // ENERJİ
+        "Titan Fusion": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px currentColor);"><rect x="6" y="4" width="12" height="16" rx="2"></rect><line x1="10" y1="2" x2="14" y2="2"></line><line x1="10" y1="10" x2="14" y2="10"></line><line x1="12" y1="8" x2="12" y2="12"></line></svg>`,
+        "Nova Aerospace": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px currentColor);"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path></svg>`,
+        "Solaris Core": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px currentColor);"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line></svg>`,
+        "EcoVolt Power": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px currentColor);"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>`,
+        
+        // E-TİCARET
+        "GlobalCart": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px currentColor);"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>`,
+        "PrimeRetail": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px currentColor);"><polyline points="21 8 21 16 3 16 3 8"></polyline><path d="M21 8L12 14L3 8"></path><line x1="12" y1="14" x2="12" y2="22"></line></svg>`,
+        "OmniShop": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px currentColor);"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>`,
+        "TradeNexus": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px currentColor);"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>`,
+        
+        // SİBER GÜVENLİK
+        "IronWall Sec": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px currentColor);"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`,
+        "CryptoShield": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px currentColor);"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`,
+        "Nexus Net": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px currentColor);"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>`,
+        "StealthGuard": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px currentColor);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>`,
+        
+        // VIP
+        "CTS Capital": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px currentColor);"><line x1="3" y1="21" x2="21" y2="21"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="M5 6l7-3 7 3"></path><line x1="6" y1="10" x2="6" y2="21"></line><line x1="10" y1="10" x2="10" y2="21"></line><line x1="14" y1="10" x2="14" y2="21"></line><line x1="18" y1="10" x2="18" y2="21"></line></svg>`,
+        "Royal Resources": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px currentColor);"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7z"></path><path d="M2 20h20"></path></svg>`,
+        "Apex Dynamics": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px currentColor);"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path></svg>`,
+        "Quantum Holdings": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px currentColor);"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`
+    };
+
+    // Borsadaki ana kartları tarayıp SVG'leri gömüyoruz
+    document.querySelectorAll('#market-container .stock-card').forEach(card => {
+        const name = card.dataset.name;
+        if (neonIconsMap[name]) {
+            const iconEl = card.querySelector('.stock-icon');
+            
+            // Eğer oyuncu şirketi ele geçirip kendi emojisini koymamışsa SVG uygula
+            let customBrands = JSON.parse(localStorage.getItem('cts_custom_brands')) || {};
+            if (iconEl && !customBrands[name]) {
+                iconEl.innerHTML = neonIconsMap[name];
+            }
+        }
+    });
+});
+// ==========================================================================
+// 🔄 ÖZEL EMOJİLERİ (ŞİRKET ELE GEÇİRME) NEON SVG'YE ÇEVİREN GÖZLEMCİ
+// ==========================================================================
+document.addEventListener('DOMContentLoaded', () => {
+    // Standart SVG çerçevemiz (currentColor sayesinde yeşil/kırmızı trendine uyum sağlar)
+    const svgBase = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px currentColor);">`;
+
+    // Oyun içindeki değiştirilebilir şirket emojilerinin neon vektör haritası
+    const emojiToNeonMap = {
+        "🚀": `${svgBase}<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path></svg>`,
+        "💎": `${svgBase}<path d="M6 3h12l4 6-10 13L2 9z"></path><path d="M11 3L8 9l4 13 4-13-3-6"></path><line x1="2" y1="9" x2="22" y2="9"></line></svg>`,
+        "👑": `${svgBase}<path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7z"></path><path d="M2 20h20"></path></svg>`,
+        "⚡": `${svgBase}<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>`,
+        "🧠": `${svgBase}<path d="M12 2a10 10 0 0 1 7.54 16.6 8 8 0 0 0-15.08 0A10 10 0 0 1 12 2z"></path><circle cx="12" cy="13" r="3"></circle></svg>`,
+        "🌐": `${svgBase}<circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>`,
+        "🎯": `${svgBase}<circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>`,
+        "🏛️": `${svgBase}<line x1="3" y1="21" x2="21" y2="21"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="M5 6l7-3 7 3"></path><line x1="6" y1="10" x2="6" y2="21"></line><line x1="10" y1="10" x2="10" y2="21"></line><line x1="14" y1="10" x2="14" y2="21"></line><line x1="18" y1="10" x2="18" y2="21"></line></svg>`,
+        "💼": `${svgBase}<rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>`,
+        "🏢": `${svgBase}<rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path><path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M12 6h.01"></path><path d="M12 10h.01"></path><path d="M12 14h.01"></path><path d="M16 10h.01"></path><path d="M16 14h.01"></path><path d="M8 10h.01"></path><path d="M8 14h.01"></path></svg>`,
+        "📊": `${svgBase}<line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>`,
+        "📈": `${svgBase}<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>`,
+        "🚢": `${svgBase}<path d="M2 21c4 0 7-2 9-2s5 2 9 2c4 0 7-2 9-2s5 2 9 2"></path><path d="M3 19l1-9h16l1 9"></path><path d="M8 10V6h8v4"></path></svg>`,
+        "✈️": `${svgBase}<path d="M22 1L2 6l5 3 9-4-6 7 3 5 7-17z"></path></svg>`,
+        "🏗️": `${svgBase}<path d="M14 2h-4v20h4V2z"></path><path d="M6 10l8-8"></path><path d="M6 14l8-8"></path></svg>`,
+        "🏭": `${svgBase}<path d="M2 20h20"></path><path d="M4 20V8l6 4v-4l6 4v-4l4 4v8"></path></svg>`,
+        "💻": `${svgBase}<rect x="2" y="3" width="20" height="14" rx="2"></rect><line x1="2" y1="20" x2="22" y2="20"></line></svg>`,
+        "📱": `${svgBase}<rect x="5" y="2" width="14" height="20" rx="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>`,
+        "🔋": `${svgBase}<rect x="6" y="4" width="12" height="16" rx="2"></rect><line x1="10" y1="2" x2="14" y2="2"></line><line x1="10" y1="10" x2="14" y2="10"></line><line x1="12" y1="8" x2="12" y2="12"></line></svg>`,
+        "🛡️": `${svgBase}<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>`,
+        "⚙️": `${svgBase}<circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>`,
+        "📦": `${svgBase}<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>`,
+        "💡": `${svgBase}<path d="M9 18h6 M10 22h4 M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"></path></svg>`,
+        "💰": `${svgBase}<circle cx="12" cy="12" r="10"></circle><path d="M12 6v12 M15 9.5C15 8.12 13.66 7 12 7s-3 1.12-3 2.5 1.38 2.5 3 2.5 3 1.12 3 2.5-1.38 2.5-3 2.5-3-1.12-3-2.5"></path></svg>`,
+        "💳": `${svgBase}<rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>`,
+        "🔬": `${svgBase}<path d="M4 22h16 M14 2h-4v3 M14 20v-5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v5 M12 5v10"></path></svg>`,
+        "📡": `${svgBase}<path d="M2 12h2 M20 12h2 M12 2v2 M12 20v2 M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"></path></svg>`,
+        "💧": `${svgBase}<path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>`
+    };
+
+    // Eğer oyuncu sistemde olmayan rastgele bir emoji kullanırsa yedek fütüristik logo (Altıgen Prizma)
+    const genericFallback = `${svgBase}<path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>`;
+
+    function applyNeonToCustomIcons(targetElement) {
+        const content = targetElement.innerText.trim();
+        if (content.length === 0 || content.includes('<svg')) return; // Zaten SVG ise veya boşsa müdahale etme
+
+        // Eğer yazılan emoji haritamızda varsa SVG'sini al, yoksa havalı bir default geometri ata
+        if (emojiToNeonMap[content]) {
+            targetElement.innerHTML = emojiToNeonMap[content];
+        } else if (content.match(/[\p{Emoji}]/u)) { 
+            targetElement.innerHTML = genericFallback;
+        }
+    }
+
+    // 1. Ekran açıldığında Custom Brand listesini tarayıp değiştir
+    document.querySelectorAll('.stock-icon').forEach(applyNeonToCustomIcons);
+
+    // 2. Bir hisse ele geçirilip logosu anlık değiştiğinde onu yakalayan Gözlemci (Observer)
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach(mutation => {
+            // Eğer .stock-icon div'i içindeki düz yazı değiştirilmişse
+            if (mutation.type === 'childList' || mutation.type === 'characterData') {
+                let target = mutation.target.nodeType === 3 ? mutation.target.parentNode : mutation.target;
+                if (target && target.classList && target.classList.contains('stock-icon')) {
+                    applyNeonToCustomIcons(target);
+                }
+            }
+        });
+    });
+
+    // Oyundaki tüm logo kutularını izlemeye başla
+    document.querySelectorAll('.stock-icon').forEach(iconEl => {
+        observer.observe(iconEl, { childList: true, characterData: true, subtree: true });
+    });
+});
+// ==========================================================================
+// 👑 YENİ SVG'Lİ ŞİRKET ELE GEÇİRME MENÜSÜ KONTROLCÜSÜ
+// ==========================================================================
+document.addEventListener('DOMContentLoaded', () => {
+    const hiddenEmojiInput = document.getElementById('new-company-emoji');
+    const visualEmojiBox = document.getElementById('visual-emoji-box');
+
+    // 1. Yeni tıklanabilir SVG logoları için dinleyici
+    document.querySelectorAll('.quick-emoji').forEach(el => {
+        el.addEventListener('click', function(e) {
+            // Arka plandaki görünmez inputa eski emoji kodunu kaydet (Sistem çökmesin diye)
+            if (hiddenEmojiInput) hiddenEmojiInput.value = this.getAttribute('data-emoji');
+            
+            // Kullanıcının gördüğü ekrana tıklanan havalı SVG'yi bas
+            if (visualEmojiBox) visualEmojiBox.innerHTML = this.innerHTML;
+
+            // Zıplama efekti
+            this.style.transform = 'scale(1.4)';
+            setTimeout(() => { this.style.transform = 'scale(1)'; }, 150);
+        });
+    });
+
+    // 2. Menü açıldığında şirketin mevcut SVG'sini kutuya otomatik getir
+    const btnOpenTakeover = document.getElementById('btn-open-takeover');
+    if (btnOpenTakeover) {
+        btnOpenTakeover.addEventListener('click', () => {
+            setTimeout(() => {
+                if (hiddenEmojiInput && visualEmojiBox) {
+                    const currentEmoji = hiddenEmojiInput.value;
+                    const matchedPicker = document.querySelector(`.quick-emoji[data-emoji="${currentEmoji}"]`);
+                    if (matchedPicker) {
+                        visualEmojiBox.innerHTML = matchedPicker.innerHTML;
+                    }
+                }
+            }, 50);
+        });
+    }
+});
+// ==========================================================================
+// 👑 YÖNETİM KURULU BUTONU İÇİN GÜVENLİ TETİKLEYİCİ (Tıklama Sorununu Çözer)
+// ==========================================================================
+document.addEventListener('click', function(e) {
+    const takeoverBtn = e.target.closest('#btn-open-takeover');
+    if (takeoverBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (typeof currentStockCard === 'undefined' || !currentStockCard) return;
+
+        const name = currentStockCard.dataset.name;
+        const emojiInput = document.getElementById('new-company-emoji');
+        const nameInput = document.getElementById('new-company-name');
+        const visualBox = document.getElementById('visual-emoji-box');
+        
+        // Verileri doldur
+        let eVal = "🚀";
+        let nVal = name;
+        
+        if (typeof customBrands !== 'undefined' && customBrands[name]) {
+            eVal = customBrands[name].emoji;
+            nVal = customBrands[name].name;
+            if (!eVal || eVal === "undefined") eVal = "🚀";
+        }
+        
+        if (emojiInput) emojiInput.value = eVal;
+        if (nameInput) nameInput.value = nVal;
+        
+        // SVG'yi ekrandaki görsel kutuya yansıt
+        if (visualBox && typeof window.getNeonIcon === 'function') {
+            visualBox.innerHTML = window.getNeonIcon(eVal);
+        }
+        
+        // Modalı Aç
+        const overlay = document.getElementById('summary-overlay');
+        const modal = document.getElementById('takeover-modal');
+        
+        if (overlay) overlay.classList.add('active');
+        if (modal) {
+            modal.style.opacity = '1';
+            modal.style.pointerEvents = 'auto';
+            modal.style.transform = 'translate(-50%, -50%) scale(1)';
+        }
+    }
+});
 </script>
 </body>
 </html>
