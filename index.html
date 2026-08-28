@@ -1325,6 +1325,9 @@
         const database = firebase.database();
         const auth = firebase.auth(); // YENİ: Hesap yönetim motoru eklendi
         console.log("Firebase Veritabanı ve Auth Başarılı! 🚀");
+        
+        // GÜVENLİK YAMASI: Bulut verisi inmeden kaydetmeyi engeller
+        let isCloudSyncComplete = false;
         // ==========================================================================
 // 🛒 GOOGLE PLAY ÖDEME SİSTEMİ (REVENUECAT) BAŞLATMA
 // ==========================================================================
@@ -4041,6 +4044,10 @@ if (btnCloseWalletStats) {
             function saveGame() {
     // Sıfırlama Firebase'e yazılırken eski async kayıtların yeni state'i ezmesini engelle.
     if (window.__ctsResetInProgress) return;
+    
+    // GÜVENLİK YAMASI: Firebase'den güncel veriler indirilmeden önce eski local verinin bulutu ezmesini engelle!
+    if (!isCloudSyncComplete) return; 
+    
     if (typeof syncLeaderboardData === 'function') syncLeaderboardData();
     
     // 1. Senin mevcut localStorage kayıtların (Aynen kalıyor)
@@ -4102,7 +4109,7 @@ if (btnCloseWalletStats) {
         
         database.ref('users/' + uid).set({
             name: pName,
-            nameChanged: hasChangedName, // İsim değiştirme hakkı durumu buluta işleniyor
+            nameChanged: hasChangedName,
             balance: playerBalance,
             debt: playerDebt,
             principalDebt: playerPrincipalDebt,
@@ -4112,6 +4119,7 @@ if (btnCloseWalletStats) {
             portfolio: portfolio,
             futures: activePositions, 
             customBrands: customBrands, 
+            stockPrices: stockPrices, // TÜM BORSANIN O ANKİ FİYATLARI BULUTA GİDER
             isPremium: isPremium,
             hasAdsRemoved: hasAdsRemoved, 
             aiRights: aiRights, 
@@ -6732,6 +6740,11 @@ auth.onAuthStateChanged((user) => {
                 if (data.portfolio) localStorage.setItem('cts_portfolio', JSON.stringify(data.portfolio));
                 if (data.futures) localStorage.setItem('cts_futures', JSON.stringify(data.futures));
                 
+                // YENİ: Buluttan inen TÜM PİYASA fiyatlarını yeni cihazın hafızasına yaz
+                if (data.stockPrices) {
+                    localStorage.setItem('cts_stock_prices', JSON.stringify(data.stockPrices));
+                }
+                
                 // Şirket İsimleri (Özel Markalar)
                 if (data.customBrands) {
                     localStorage.setItem('cts_custom_brands', JSON.stringify(data.customBrands));
@@ -6761,8 +6774,10 @@ auth.onAuthStateChanged((user) => {
                 loadGame();
                 if (typeof applyCustomBrands === 'function') applyCustomBrands(); 
                 if (typeof updateBalanceUI === 'function') updateBalanceUI();
-                if (typeof syncLeaderboardData === 'function') syncLeaderboardData();
                 if (typeof updateLifestyleUI === 'function') updateLifestyleUI(); 
+                
+                isCloudSyncComplete = true; // YAMA: Veriler indi, kaydetme kilidini aç!
+                if (typeof syncLeaderboardData === 'function') syncLeaderboardData();
 
             } else {
                 // YENİ HESAP: Eğer bu UID ile daha önce hiç veri kaydedilmemişse
@@ -6770,16 +6785,20 @@ auth.onAuthStateChanged((user) => {
                 playerBalance = 15000; 
                 
                 if (typeof updateBalanceUI === 'function') updateBalanceUI();
+                
+                isCloudSyncComplete = true; // YAMA: Yeni hesap açıldı, kilidi aç!
                 if (typeof saveGame === 'function') saveGame(); // İlk kaydı atarak bulutta oluştur
                 if (typeof syncLeaderboardData === 'function') syncLeaderboardData();
             }
         }).catch((error) => {
             console.error("Buluttan veri çekilirken hata oluştu:", error);
+            isCloudSyncComplete = true; // YAMA: Hata olsa da kilit açılsın
         });
 
     } else {
         // OYUNCU ÇIKIŞ YAPMIŞ VEYA HİÇ GİRMEMİŞ
         authModal.style.display = 'flex'; // Giriş ekranını zorla göster
+        isCloudSyncComplete = true; // YAMA: Çıkış yapıldıysa local kayıt çalışabilsin
     }
 });
 
