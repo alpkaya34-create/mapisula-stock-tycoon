@@ -2378,20 +2378,44 @@ function checkLiquidations() {
                 isGamePaused = false; 
             });
 
-            function updateInterestRate() {
-                if (playerBalance >= 15000000) currentInterestRate = 0.75;
-                else if (playerBalance >= 5000000) currentInterestRate = 1.00;
-                else if (playerBalance >= 1000000) currentInterestRate = 1.25;
-                else if (playerBalance >= 250000) currentInterestRate = 1.50;
-                else if (playerBalance >= 50000) currentInterestRate = 1.75;
-                else currentInterestRate = 2.00;
-                
-                const loanInfoText = document.getElementById('loan-info-text');
-                if(loanInfoText) {
-                    // toFixed(2) sayesinde sayılar %1.50, %1.00 gibi çok daha profesyonel görünecek
-                    loanInfoText.innerText = `Tutar: $5,000 | 4 Saniyede %${currentInterestRate.toFixed(2)} Faiz`;
-                }
-            }
+            // Kasa performansına göre çekilebilecek maksimum krediyi belirler
+function getDynamicLoanAmount() {
+    let nw = getNetWorth();
+    if (nw >= 20000000) return 2000000; // 2 Milyon Kredi
+    if (nw >= 5000000) return 500000;   // 500 Bin Kredi
+    if (nw >= 1000000) return 100000;   // 100 Bin Kredi
+    if (nw >= 250000) return 50000;     // 50 Bin Kredi
+    if (nw >= 50000) return 10000;      // 10 Bin Kredi
+    return 5000;                        // 5 Bin Kredi (Başlangıç)
+}
+
+function updateInterestRate() {
+    // Faiz oranları hesaplaması
+    if (playerBalance >= 15000000) currentInterestRate = 1.00;
+    else if (playerBalance >= 5000000) currentInterestRate = 1.25;
+    else if (playerBalance >= 1000000) currentInterestRate = 1.50;
+    else if (playerBalance >= 250000) currentInterestRate = 1.75;
+    else if (playerBalance >= 50000) currentInterestRate = 2.00;
+    else currentInterestRate = 2.25;
+    
+    let dynamicLoan = getDynamicLoanAmount();
+    
+    // Arayüzdeki kredi limitlerini ve yazıları güncelle
+    const loanInfoText = document.getElementById('loan-info-text');
+    if(loanInfoText) {
+        loanInfoText.innerText = `Tutar: $${dynamicLoan.toLocaleString('en-US')} | 4 Saniyede %${currentInterestRate.toFixed(2)} Faiz`;
+    }
+    
+    const btnTakeLoan = document.getElementById('btn-take-loan');
+    if(btnTakeLoan) {
+        btnTakeLoan.innerText = `$${dynamicLoan.toLocaleString('en-US')} KREDİ ÇEK`;
+    }
+    
+    const btnPayLoan = document.getElementById('btn-pay-loan');
+    if(btnPayLoan) {
+        btnPayLoan.innerText = `$${dynamicLoan.toLocaleString('en-US')} ÖDE`;
+    }
+}
 
             function updateStoreUI() {
                 let supportAmount = Math.max(10000, playerBalance * 0.5);
@@ -3496,29 +3520,31 @@ newsArchiveList.appendChild(archiveCard);
             const bankTotalDebt = document.getElementById('bank-total-debt');
             
             document.getElementById('btn-take-loan').addEventListener('click', () => {
-                playerBalance += 5000.00;
-                playerDebt += 5000.00; 
-                playerPrincipalDebt += 5000.00; 
-                updateBalanceUI(); updateBankUI(); saveGame();
-            });
+    let loanAmount = getDynamicLoanAmount();
+    playerBalance += loanAmount;
+    playerDebt += loanAmount; 
+    playerPrincipalDebt += loanAmount; 
+    updateBalanceUI(); updateBankUI(); saveGame();
+});
 
             document.getElementById('btn-pay-loan').addEventListener('click', () => {
-                if (playerDebt <= 0) return; 
-                let amountToPay = playerDebt < 5000.00 ? playerDebt : 5000.00;
-                
-                if (playerBalance >= amountToPay) {
-                    playerBalance -= amountToPay;
-                    playerDebt -= amountToPay;
-                    let remainingInterest = playerDebt - playerPrincipalDebt;
-                    if (remainingInterest < 0) playerPrincipalDebt = playerDebt;
-                    if (playerDebt <= 0.01) { playerDebt = 0; playerPrincipalDebt = 0; }
-                    
-                    updateBalanceUI(); updateBankUI(); saveGame();
-                } else {
-                    bankTotalDebt.style.color = '#ef4444';
-                    setTimeout(() => { bankTotalDebt.style.color = '#ef4444'; }, 600);
-                }
-            });
+    if (playerDebt <= 0) return; 
+    let loanAmount = getDynamicLoanAmount();
+    let amountToPay = playerDebt < loanAmount ? playerDebt : loanAmount;
+    
+    if (playerBalance >= amountToPay) {
+        playerBalance -= amountToPay;
+        playerDebt -= amountToPay;
+        let remainingInterest = playerDebt - playerPrincipalDebt;
+        if (remainingInterest < 0) playerPrincipalDebt = playerDebt;
+        if (playerDebt <= 0.01) { playerDebt = 0; playerPrincipalDebt = 0; }
+        
+        updateBalanceUI(); updateBankUI(); saveGame();
+    } else {
+        bankTotalDebt.style.color = '#ef4444';
+        setTimeout(() => { bankTotalDebt.style.color = '#ef4444'; }, 600);
+    }
+});
 
             document.getElementById('btn-pay-all').addEventListener('click', () => {
                 if (playerDebt <= 0) return; 
@@ -4469,31 +4495,31 @@ if (btnCloseWalletStats) {
     if (playerBalance >= 50000 && !reachedMilestones.k50) {
         reachedMilestones.k50 = true;
         mTitle = "💸 $50 BİN BARAJI!";
-        mDesc = "İlk büyük hedefe ulaştın! Banka sana artık çok daha fazla güveniyor.<br><br><span style='color:#00f2fe;'>📉 Kredi Faizi %2.00 ➔ %1.75'e Düştü!</span><br><br><span style='color:#ef4444;'>⚡ Terminal Ücreti: -$5</span>";
+        mDesc = "İlk büyük hedefe ulaştın! Banka sana artık çok daha fazla güveniyor.<br><br><span style='color:#00f2fe;'>📉 Kredi Faizi %2.25 ➔ %2.00'a Düştü!</span><br><br><span style='color:#ef4444;'>⚡ Terminal Ücreti: -$5</span>";
         triggered = true;
     }
     if (playerBalance >= 250000 && !reachedMilestones.k250) {
         reachedMilestones.k250 = true;
         mTitle = "📈 $250 BİN BARAJI!";
-        mDesc = "İşler büyüyor! Yeni yatırım fırsatları seni bekliyor.<br><br><span style='color:#10b981;'>🔓 Biyoteknoloji Hisseleri Açıldı!</span><br><span style='color:#00f2fe;'>📉 Kredi Faizi %1.75 ➔ %1.50'ye Düştü!</span><br><br><span style='color:#ef4444;'>⚡ Terminal Ücreti: -$10</span>";
+        mDesc = "İşler büyüyor! Yeni yatırım fırsatları seni bekliyor.<br><br><span style='color:#10b981;'>🔓 Biyoteknoloji Hisseleri Açıldı!</span><br><span style='color:#00f2fe;'>📉 Kredi Faizi %2.00 ➔ %1.75'e Düştü!</span><br><br><span style='color:#ef4444;'>⚡ Terminal Ücreti: -$10</span>";
         triggered = true;
     }
     if (playerBalance >= 1000000 && !reachedMilestones.m1) {
         reachedMilestones.m1 = true;
         mTitle = "💼 $1 MİLYON BARAJI!";
-        mDesc = "Resmen bir milyonersin! Portföyün hızla genişliyor.<br><br><span style='color:#10b981;'>🔓 Enerji Hisseleri Açıldı!</span><br><span style='color:#00f2fe;'>📉 Kredi Faizi %1.50 ➔ %1.25'e Düştü!</span><br><br><span style='color:#ef4444;'>⚡ Terminal Ücreti: -$20</span>";
+        mDesc = "Resmen bir milyonersin! Portföyün hızla genişliyor.<br><br><span style='color:#10b981;'>🔓 Enerji Hisseleri Açıldı!</span><br><span style='color:#00f2fe;'>📉 Kredi Faizi %1.75 ➔ %1.50'ye Düştü!</span><br><br><span style='color:#ef4444;'>⚡ Terminal Ücreti: -$20</span>";
         triggered = true;
     }
     if (playerBalance >= 5000000 && !reachedMilestones.m5) {
         reachedMilestones.m5 = true;
         mTitle = "🚀 $5 MİLYON BARAJI!";
-        mDesc = "Harika gidiyorsun! Sermayen durdurulamaz şekilde katlanıyor.<br><br><span style='color:#10b981;'>🔓 E-Ticaret Hisseleri Açıldı!</span><br><span style='color:#00f2fe;'>📉 Kredi Faizi %1.25 ➔ %1.00'a Düştü!</span><br><br><span style='color:#ef4444;'>⚡ Terminal Ücreti: -$40</span>";
+        mDesc = "Harika gidiyorsun! Sermayen durdurulamaz şekilde katlanıyor.<br><br><span style='color:#10b981;'>🔓 E-Ticaret Hisseleri Açıldı!</span><br><span style='color:#00f2fe;'>📉 Kredi Faizi %1.50 ➔ %1.25'e Düştü!</span><br><br><span style='color:#ef4444;'>⚡ Terminal Ücreti: -$40</span>";
         triggered = true;
     }
     if (playerBalance >= 15000000 && !reachedMilestones.m15) {
         reachedMilestones.m15 = true;
         mTitle = "💎 $15 MİLYON BARAJI!";
-        mDesc = "İnanılmaz! Artık piyasayı yönlendiren bir devsiniz.<br><br><span style='color:#10b981;'>🔓 Siber Güvenlik Hisseleri Açıldı!</span><br><span style='color:#00f2fe;'>📉 Kredi Faizi %1.00 ➔ %0.75'e Düştü!</span><br><br><span style='color:#ef4444;'>⚡ Terminal Ücreti: -$80</span>";
+        mDesc = "İnanılmaz! Artık piyasayı yönlendiren bir devsiniz.<br><br><span style='color:#10b981;'>🔓 Siber Güvenlik Hisseleri Açıldı!</span><br><span style='color:#00f2fe;'>📉 Kredi Faizi %1.25 ➔ %1.00'a Düştü!</span><br><br><span style='color:#ef4444;'>⚡ Terminal Ücreti: -$80</span>";
         triggered = true;
     }
     if (playerBalance >= 20000000 && !reachedMilestones.m20) {
@@ -5180,69 +5206,80 @@ if (btnBuyAiRights) {
         window.addEventListener('DOMContentLoaded', () => {
             showNextStartupPopup();
         });
-            // ==========================================================================
+// ==========================================================================
 // 🏆 BAŞARIMLAR VE HEDEFLER EKRANI (Dinamik Kaldıraç Güncellemeli)
 // ==========================================================================
+
+// Ortak kullanım için açıklama SVG'leri
+const svgFaiz = `<svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; vertical-align: middle; margin-right: 4px; filter: drop-shadow(0 0 4px rgba(59, 130, 246, 0.6));"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg>`;
+const svgKilit = `<svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; vertical-align: middle; margin-right: 4px; filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.6));"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>`;
+const svgKaldirac = `<svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; vertical-align: middle; margin-right: 4px; filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.6));"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>`;
+const svgTerminal = `<svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; vertical-align: middle; margin-right: 4px; filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.6));"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>`;
+
 const allMilestonesData = [
     { 
         id: 'k50', 
-        title: '💸 $50 BİN BARAJI', 
-        desc: 'Banka güveni arttı.<br>📈 Kredi Faizi %1.75\'e Düştü.<br>⚡ Maksimum Kaldıraç: <strong>10x</strong><br><span style="color:#ef4444;">⚡ Terminal Ücreti: -$5</span>' 
+        title: `<svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; vertical-align: text-bottom; margin-right: 6px; filter: drop-shadow(0 0 5px rgba(16, 185, 129, 0.6));"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></svg> $50 BİN BARAJI`, 
+        desc: `Banka güveni arttı.<br>${svgFaiz} Kredi Faizi %2.00'a Düştü.<br>${svgKaldirac} Maksimum Kaldıraç: <strong>10x</strong><br><span style="color:#ef4444;">${svgTerminal} Terminal Ücreti: -$5</span>` 
     },
     { 
         id: 'k250', 
-        title: '📈 $250 BİN BARAJI', 
-        desc: 'Yatırım fırsatları büyüyor.<br>🔓 Biyoteknoloji Hisseleri Açıldı.<br>📉 Kredi Faizi %1.50\'ye Düştü.<br>⚡ Maksimum Kaldıraç: <strong>20x</strong><br><span style="color:#ef4444;">⚡ Terminal Ücreti: -$10</span>' 
+        title: `<svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; vertical-align: text-bottom; margin-right: 6px; filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.6));"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg> $250 BİN BARAJI`, 
+        desc: `Yatırım fırsatları büyüyor.<br>${svgKilit} Biyoteknoloji Hisseleri Açıldı.<br>${svgFaiz} Kredi Faizi %1.75'e Düştü.<br>${svgKaldirac} Maksimum Kaldıraç: <strong>20x</strong><br><span style="color:#ef4444;">${svgTerminal} Terminal Ücreti: -$10</span>` 
     },
     { 
         id: 'm1', 
-        title: '💼 $1 MİLYON BARAJI', 
-        desc: 'Artık bir milyonersin!<br>🔓 Enerji Hisseleri Açıldı.<br>📉 Kredi Faizi %1.25\'e Düştü.<br>⚡ Maksimum Kaldıraç: <strong>30x</strong><br><span style="color:#ef4444;">⚡ Terminal Ücreti: -$20</span>' 
+        title: `<svg viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; vertical-align: text-bottom; margin-right: 6px; filter: drop-shadow(0 0 5px rgba(168, 85, 247, 0.6));"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg> $1 MİLYON BARAJI`, 
+        desc: `Artık bir milyonersin!<br>${svgKilit} Enerji Hisseleri Açıldı.<br>${svgFaiz} Kredi Faizi %1.50'ye Düştü.<br>${svgKaldirac} Maksimum Kaldıraç: <strong>30x</strong><br><span style="color:#ef4444;">${svgTerminal} Terminal Ücreti: -$20</span>` 
     },
     { 
         id: 'm5', 
-        title: '🚀 $5 MİLYON BARAJI', 
-        desc: 'Sermayen durdurulamaz durumda.<br>🔓 E-Ticaret Hisseleri Açıldı.<br>📉 Kredi Faizi %1.00\'a Düştü.<br>⚡ Maksimum Kaldıraç: <strong>40x</strong><br><span style="color:#ef4444;">⚡ Terminal Ücreti: -$40</span>' 
+        title: `<svg viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; vertical-align: text-bottom; margin-right: 6px; filter: drop-shadow(0 0 5px rgba(244, 63, 94, 0.6));"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path></svg> $5 MİLYON BARAJI`, 
+        desc: `Sermayen durdurulamaz durumda.<br>${svgKilit} E-Ticaret Hisseleri Açıldı.<br>${svgFaiz} Kredi Faizi %1.25'e Düştü.<br>${svgKaldirac} Maksimum Kaldıraç: <strong>40x</strong><br><span style="color:#ef4444;">${svgTerminal} Terminal Ücreti: -$40</span>` 
     },
     { 
         id: 'm15', 
-        title: '💎 $15 MİLYON BARAJI', 
-        desc: 'Piyasayı yönlendiren bir devsin.<br>🔓 Siber Güvenlik Hisseleri Açıldı.<br>📉 Kredi Faizi %0.75\'e Düştü.<br>⚡ Maksimum Kaldıraç: <strong>40x</strong><br><span style="color:#ef4444;">⚡ Terminal Ücreti: -$80</span>' 
+        title: `<svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; vertical-align: text-bottom; margin-right: 6px; filter: drop-shadow(0 0 5px rgba(0, 242, 254, 0.6));"><path d="M6 3h12l4 6-10 13L2 9z"></path><path d="M11 3L8 9l4 13 4-13-3-6"></path><line x1="2" y1="9" x2="22" y2="9"></line></svg> $15 MİLYON BARAJI`, 
+        desc: `Piyasayı yönlendiren bir devsin.<br>${svgKilit} Siber Güvenlik Hisseleri Açıldı.<br>${svgFaiz} Kredi Faizi %1.00'a Düştü.<br>${svgKaldirac} Maksimum Kaldıraç: <strong>40x</strong><br><span style="color:#ef4444;">${svgTerminal} Terminal Ücreti: -$80</span>` 
     },
     { 
         id: 'm20', 
-        title: '🪙 $20 MİLYON BARAJI', 
-        desc: 'Yeraltı ekonomisi kapılarını açtın.<br>🔓 GİZLİ KRİPTO BORSASI AÇILDI!<br>⚡ Maksimum Kaldıraç: <strong>50x (Zirve)</strong><br><span style="color:#ef4444;">⚡ Terminal Ücreti: -$160</span>' 
+        title: `<svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; vertical-align: text-bottom; margin-right: 6px; filter: drop-shadow(0 0 5px rgba(251, 191, 36, 0.6));"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v12 M15 9.5C15 8.12 13.66 7 12 7s-3 1.12-3 2.5 1.38 2.5 3 2.5 3 1.12 3 2.5-1.38 2.5-3 2.5-3-1.12-3-2.5"></path></svg> $20 MİLYON BARAJI`, 
+        desc: `Yeraltı ekonomisi kapılarını açtın.<br>${svgKilit} <span style="color:#f59e0b; font-weight:bold;">GİZLİ KRİPTO BORSASI AÇILDI!</span><br>${svgKaldirac} Maksimum Kaldıraç: <strong>50x (Zirve)</strong><br><span style="color:#ef4444;">${svgTerminal} Terminal Ücreti: -$160</span>` 
     }
 ];
 
-            function renderAchievementsScreen() {
-                const listContainer = document.getElementById('achievements-list');
-                listContainer.innerHTML = ''; // Önceki listeyi temizle
-                
-                allMilestonesData.forEach(milestone => {
-                    const isUnlocked = reachedMilestones[milestone.id]; // Başarım açılmış mı?
-                    
-                    const card = document.createElement('div');
-                    card.style.padding = '14px';
-                    card.style.borderRadius = '12px';
-                    card.style.border = isUnlocked ? '1px solid rgba(251, 191, 36, 0.4)' : '1px dashed #334155';
-                    card.style.background = isUnlocked ? 'rgba(251, 191, 36, 0.05)' : 'rgba(15, 23, 42, 0.4)';
-                    card.style.opacity = isUnlocked ? '1' : '0.6';
-                    card.style.transition = 'all 0.3s ease';
-                    
-                    card.innerHTML = `
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                            <span style="font-weight: 900; color: ${isUnlocked ? '#fbbf24' : '#64748b'}; font-size: 14px; letter-spacing: 0.5px;">${milestone.title}</span>
-                            <span style="font-size: 18px; filter: drop-shadow(0 0 5px ${isUnlocked ? 'rgba(251,191,36,0.5)' : 'transparent'});">${isUnlocked ? '✅' : '🔒'}</span>
-                        </div>
-                        <div style="font-size: 12px; color: ${isUnlocked ? '#cbd5e1' : '#475569'}; line-height: 1.5; font-weight: ${isUnlocked ? '500' : '400'};">
-                            ${isUnlocked ? milestone.desc : '<i>Bu gizemli hedefe ulaşmak için oynamaya devam et...</i>'}
-                        </div>
-                    `;
-                    listContainer.appendChild(card);
-                });
-            }
+function renderAchievementsScreen() {
+    const listContainer = document.getElementById('achievements-list');
+    listContainer.innerHTML = ''; 
+
+    // Sağ taraftaki Onay ve Kilit Durum SVG'leri
+    const svgCheck = `<svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 5px rgba(16, 185, 129, 0.6));"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+    const svgLock = `<svg viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`;
+    
+    allMilestonesData.forEach(milestone => {
+        const isUnlocked = reachedMilestones[milestone.id];
+        
+        const card = document.createElement('div');
+        card.style.padding = '14px';
+        card.style.borderRadius = '12px';
+        card.style.border = isUnlocked ? '1px solid rgba(251, 191, 36, 0.4)' : '1px dashed #334155';
+        card.style.background = isUnlocked ? 'rgba(251, 191, 36, 0.05)' : 'rgba(15, 23, 42, 0.4)';
+        card.style.opacity = isUnlocked ? '1' : '0.6';
+        card.style.transition = 'all 0.3s ease';
+        
+        card.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-weight: 900; color: ${isUnlocked ? '#fbbf24' : '#64748b'}; font-size: 14px; letter-spacing: 0.5px; display: flex; align-items: center;">${milestone.title}</span>
+                <span style="display: flex; align-items: center;">${isUnlocked ? svgCheck : svgLock}</span>
+            </div>
+            <div style="font-size: 12px; color: ${isUnlocked ? '#cbd5e1' : '#475569'}; line-height: 1.5; font-weight: ${isUnlocked ? '500' : '400'};">
+                ${isUnlocked ? milestone.desc : '<i>Bu gizemli hedefe ulaşmak için oynamaya devam et...</i>'}
+            </div>
+        `;
+        listContainer.appendChild(card);
+    });
+}
 
             // Ana Menüdeki Butona Tıklanınca Ekranı Aç
             document.getElementById('btn-open-achievements').addEventListener('click', () => {
@@ -5521,7 +5558,7 @@ let customBrands = JSON.parse(localStorage.getItem('cts_custom_brands')) || {};
 
 // EVRENSEL SVG İKON MOTORU
 window.getNeonIcon = function(emojiChar) {
-    const svgBase = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 1.2em; height: 1.2em; vertical-align: text-bottom; margin-right: 4px; filter: drop-shadow(0 0 4px currentColor);">`;
+    const svgBase = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 4px currentColor);">`;
     
     const map = {
         "🚀": `${svgBase}<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path></svg>`,
