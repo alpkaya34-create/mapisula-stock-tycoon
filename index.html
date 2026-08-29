@@ -36,6 +36,37 @@
 </style>
 </head>
 <body>
+    <div id="offline-screen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0f172a; z-index: 999999; flex-direction: column; justify-content: center; align-items: center; text-align: center; font-family: sans-serif;">
+    
+    <svg id="offline-spinner" viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 50px; height: 50px; margin-bottom: 20px; animation: spin 1s linear infinite; filter: drop-shadow(0 0 10px rgba(0, 242, 254, 0.8));">
+        <line x1="12" y1="2" x2="12" y2="6"></line>
+        <line x1="12" y1="18" x2="12" y2="22"></line>
+        <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line>
+        <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line>
+        <line x1="2" y1="12" x2="6" y2="12"></line>
+        <line x1="18" y1="12" x2="22" y2="12"></line>
+        <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line>
+        <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
+    </svg>
+
+    <svg id="offline-icon-error" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 60px; height: 60px; margin-bottom: 20px; display: none; filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.8));">
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+        <line x1="12" y1="9" x2="12" y2="13"></line>
+        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+    </svg>
+
+    <h2 id="offline-title" style="color: #00f2fe; font-size: 20px; font-weight: 900; margin: 0 0 10px 0; letter-spacing: 1px;">BAĞLANILIYOR...</h2>
+    <p id="offline-desc" style="color: #94a3b8; font-size: 13px; max-width: 80%; line-height: 1.5; margin-bottom: 30px;">Sunucu ile iletişim kuruluyor, lütfen bekleyin.</p>
+
+    <button id="btn-retry-connection" class="trade-btn" style="display: none; padding: 14px 30px; font-size: 14px; background: #ef4444; color: #fff; border: none; border-radius: 8px; font-weight: 900; box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4); cursor: pointer;">
+        YENİDEN DENE
+    </button>
+
+    <style>
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        body { background-color: #0f172a; } /* Beyaz ekranı kökten engellemek için */
+    </style>
+</div>
     <!-- ========================================== -->
     <!-- SİNEMATİK YOĞUN TOZ/DUMAN PARÇACIKLI AÇILIŞ -->
     <!-- ========================================== -->
@@ -458,39 +489,61 @@
         <p style="color: #94a3b8; font-size: 12px; font-weight: 900; margin-top: 5px; letter-spacing: 2px;">SİSTEM TERCİHLERİ</p>
     </div>
     
-    <!-- YENİ: Kaydırma çubuğunu kaldıran ve elemanları sayfaya yayan div yapısı -->
+    <!-- Kaydırma çubuğunu kaldıran ve elemanları sayfaya yayan div yapısı -->
     <div style="flex: 1; display: flex; flex-direction: column; width: 100%; padding-bottom: 20px;">
         <div class="profile-stat-box">
-            <span class="profile-stat-label" style="color: #e2e8f0;"><svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 8px; filter: drop-shadow(0 0 4px rgba(0, 242, 254, 0.6));">
-    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-    <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-</svg> Ses Efektleri</span>
+            <span class="profile-stat-label" style="color: #e2e8f0;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 8px; filter: drop-shadow(0 0 4px rgba(0, 242, 254, 0.6));">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                </svg> Ses Efektleri
+            </span>
             <label class="toggle-switch"><input type="checkbox" id="toggle-sound" checked><span class="slider"></span></label>
         </div>
         <div class="profile-stat-box">
-            <span class="profile-stat-label" style="color: #e2e8f0;"><svg viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 8px; filter: drop-shadow(0 0 4px rgba(192, 132, 252, 0.6));">
-    <path d="M9 18V5l12-2v13"></path>
-    <circle cx="6" cy="18" r="3"></circle>
-    <circle cx="18" cy="16" r="3"></circle>
-</svg> Arka Plan Müziği</span>
+            <span class="profile-stat-label" style="color: #e2e8f0;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 8px; filter: drop-shadow(0 0 4px rgba(192, 132, 252, 0.6));">
+                    <path d="M9 18V5l12-2v13"></path>
+                    <circle cx="6" cy="18" r="3"></circle>
+                    <circle cx="18" cy="16" r="3"></circle>
+                </svg> Arka Plan Müziği
+            </span>
             <label class="toggle-switch"><input type="checkbox" id="toggle-music" checked><span class="slider"></span></label>
         </div>
-        <!-- YENİ: ÖĞRETİCİ BUTONU -->
+
+        <!-- ÖĞRETİCİ VE SÜRÜM NOTLARI BUTONLARI -->
         <div style="margin-top: 20px;">
-            <button id="btn-replay-tutorial" class="trade-btn btn-buy" style="width: 100%; padding: 14px; font-size: 13px; background: #3b82f6; box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3); color: #fff;"><svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 8px; filter: drop-shadow(0 0 4px rgba(56, 189, 248, 0.6));">
-    <circle cx="12" cy="12" r="10"></circle>
-    <line x1="12" y1="16" x2="12" y2="12"></line>
-    <line x1="12" y1="8" x2="12.01" y2="8"></line>
-</svg> ÖĞRETİCİYİ TEKRAR İZLE</button>
+            <button id="btn-replay-tutorial" class="trade-btn btn-buy" style="width: 100%; padding: 14px; font-size: 13px; background: #3b82f6; box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3); color: #fff; margin-bottom: 15px; border: none; border-radius: 8px; display: flex; justify-content: center; align-items: center; cursor: pointer;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; margin-right: 8px; filter: drop-shadow(0 0 4px rgba(56, 189, 248, 0.6));">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg> 
+                ÖĞRETİCİYİ TEKRAR İZLE
+            </button>
+
+            <button class="trade-btn" id="btn-show-patch-notes" style="width: 100%; padding: 14px; font-size: 13px; background: #8b5cf6; color: #fff; box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4); font-weight: 900; border: none; border-radius: 8px; display: flex; justify-content: center; align-items: center; cursor: pointer;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; margin-right: 8px;">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                SÜRÜM NOTLARINI GÖSTER
+            </button>
         </div>
         
-        <!-- YENİ: Sıfırlama butonunu diğer elemanlardan iterek alta daha yakın konumlandıran yapı -->
+        <!-- Sıfırlama butonu -->
         <div style="margin-top: auto; padding-top: 40px;">
-            <button id="btn-reset-game" class="trade-btn btn-sell" style="width: 100%; padding: 16px; font-size: 14px; box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 8px; filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.6));">
-    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-    <line x1="12" y1="9" x2="12" y2="13"></line>
-    <line x1="12" y1="17" x2="12.01" y2="17"></line>
-</svg> TÜM İLERLEMEYİ SIFIRLA</button>
+            <button id="btn-reset-game" class="trade-btn btn-sell" style="width: 100%; padding: 16px; font-size: 14px; box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3); border: none; border-radius: 8px; display: flex; justify-content: center; align-items: center; cursor: pointer;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; margin-right: 8px; filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.6));">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg> 
+                TÜM İLERLEMEYİ SIFIRLA
+            </button>
             <p style="color: #64748b; font-size: 11px; text-align: center; margin-top: 10px;">Bu işlem mevcut ilerlemeyi siler ama satın alımlar ve rekorlar korunur.</p>
         </div>
     </div>
@@ -5193,6 +5246,21 @@ if (typeof btnReplayTutorial !== 'undefined' && btnReplayTutorial) {
         tutorialModal.classList.add('show');
     });
 }
+const btnShowPatchNotes = document.getElementById('btn-show-patch-notes');
+if (btnShowPatchNotes) {
+    btnShowPatchNotes.addEventListener('click', () => {
+        // Ayarlar ekranını gizle ve ana menüye dön
+        document.getElementById('settings-screen').style.display = 'none';
+        document.getElementById('mobile-main-menu').style.display = 'flex';
+        
+        // Karartma perdesini ve Sürüm Notları penceresini aç
+        const overlay = document.getElementById('summary-overlay');
+        const patchNotesModal = document.getElementById('patch-notes-modal');
+        
+        if (overlay) overlay.classList.add('active');
+        if (patchNotesModal) patchNotesModal.classList.add('show');
+    });
+}
 
         // AKILLI AÇILIŞ YÖNETİCİSİ (Sadece 1 Kere Gösterir)
         function showNextStartupPopup() {
@@ -5679,8 +5747,19 @@ if(btnRebrand) {
         modal.style.pointerEvents = 'none';
         modal.style.transform = 'translate(-50%, -50%) scale(0.9)';
         
+        // YENİ: Neon Taç ve Özel SVG Şirket İkonu Entegrasyonu
         if(typeof showStoreModal === 'function'){
-            showStoreModal("ŞİRKET SİZİN! 👑", `Tebrikler! Yönetim kurulu kararıyla şirketin yeni adı <strong>${newEmoji} ${newName}</strong> olarak tescillendi.`, true);
+            // Parlayan Altın Taç Vektörü
+            const crownSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 26px; height: 26px; filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.8)); vertical-align: text-bottom; margin-left: 6px;"><polygon points="2 20 22 20 19 6 15 12 12 4 9 12 5 6 2 20"></polygon></svg>`;
+            
+            // Girdiği emojiyi oyundaki Neon SVG motorundan geçiriyoruz
+            const dynamicIcon = typeof window.getNeonIcon === 'function' ? window.getNeonIcon(newEmoji) : newEmoji;
+            
+            showStoreModal(
+                `ŞİRKET SİZİN! ${crownSvg}`, 
+                `Tebrikler! Yönetim kurulu kararıyla şirketin yeni adı <br><br><span style="display: inline-flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.03); padding: 10px 18px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); margin: 10px 0;"><span style="transform: scale(1.4); margin-right: 12px; display: inline-block;">${dynamicIcon}</span> <strong style="color: #fff; font-size: 16px; letter-spacing: 0.5px;">${newName}</strong></span><br><br>olarak tescillendi.`, 
+                true
+            );
         }
     });
 }
@@ -7678,6 +7757,72 @@ document.addEventListener('click', function(e) {
             modal.style.pointerEvents = 'auto';
             modal.style.transform = 'translate(-50%, -50%) scale(1)';
         }
+    }
+});
+// ==========================================================================
+// 📡 AĞ BAĞLANTISI (BEYAZ EKRAN / KOPMA KORUMASI) YÖNETİMİ
+// ==========================================================================
+const offlineScreen = document.getElementById('offline-screen');
+const offlineTitle = document.getElementById('offline-title');
+const offlineDesc = document.getElementById('offline-desc');
+const offlineSpinner = document.getElementById('offline-spinner');
+const offlineErrorIcon = document.getElementById('offline-icon-error');
+const btnRetryConn = document.getElementById('btn-retry-connection');
+
+function setOfflineLoadingState() {
+    offlineSpinner.style.display = 'block';
+    offlineErrorIcon.style.display = 'none';
+    offlineTitle.innerText = "BAĞLANILIYOR...";
+    offlineTitle.style.color = "#00f2fe";
+    offlineDesc.innerText = "Sunucu ile iletişim kuruluyor, lütfen bekleyin.";
+    btnRetryConn.style.display = 'none';
+}
+
+function setOfflineErrorState() {
+    // Biraz bekletip başarısız olduğunu göster (gerçekçi bağlantı denemesi hissi)
+    setTimeout(() => {
+        if (!navigator.onLine) {
+            offlineSpinner.style.display = 'none';
+            offlineErrorIcon.style.display = 'block';
+            offlineTitle.innerText = "BAĞLANTI KOPTU";
+            offlineTitle.style.color = "#ef4444";
+            offlineDesc.innerText = "İnternet bağlantınız bulunmuyor. İşlemlere devam edebilmek için ağ bağlantınızı kontrol edin.";
+            btnRetryConn.style.display = 'block';
+        }
+    }, 1500); 
+}
+
+function checkNetworkConnection() {
+    if (!navigator.onLine) {
+        offlineScreen.style.display = 'flex';
+        setOfflineLoadingState();
+        setOfflineErrorState();
+    } else {
+        // İnternet geri geldiğinde ekranı gizle
+        offlineScreen.style.display = 'none';
+    }
+}
+
+// Yeniden Dene Butonu İşlemi
+if (btnRetryConn) {
+    btnRetryConn.addEventListener('click', () => {
+        setOfflineLoadingState(); // Tekrar dönen ikonu göster
+        setTimeout(() => {
+            checkNetworkConnection(); // 1 saniye sonra interneti tekrar test et
+        }, 1000);
+    });
+}
+
+// Cihazın Ağ Durumu Değiştiğinde Otomatik Tetikle
+window.addEventListener('online', checkNetworkConnection);
+window.addEventListener('offline', checkNetworkConnection);
+
+// Oyun ilk açıldığında kontrol et (Beyaz ekranı engeller)
+window.addEventListener('load', () => {
+    if (!navigator.onLine) {
+        offlineScreen.style.display = 'flex';
+        setOfflineLoadingState();
+        setOfflineErrorState();
     }
 });
 </script>
