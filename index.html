@@ -515,8 +515,12 @@
     <!-- BETA UYARI MODALI -->
     <div id="beta-warning-modal">
         <div style="text-align: center; border-bottom: 1px solid #1e293b; padding-bottom: 15px; margin-bottom: 15px;">
-            <span style="font-size: 28px; display: block; margin-bottom: 8px;">🧪</span>
-            <h2 style="color: #fbbf24; font-size: 18px; font-weight: 900; margin: 0;">BETA SÜRÜM</h2>
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 36px; height: 36px; display: block; margin: 0 auto 10px auto; filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.6));">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+            <h2 style="color: #fbbf24; font-size: 18px; font-weight: 900; margin: 0; letter-spacing: 0.5px;">BETA SÜRÜM</h2>
         </div>
         <p style="color: #94a3b8; font-size: 13px; text-align: center; margin-bottom: 20px; line-height: 1.5;">
             CTS Stock Market Tycoon şu anda <strong style="color: #fff;">geliştirme (Beta)</strong> aşamasındadır.<br><br>
@@ -525,25 +529,36 @@
         <button class="trade-btn" id="btn-close-beta-warning" style="width: 100%; padding: 12px; font-size: 13px; background: #fbbf24; color: #000; box-shadow: 0 5px 15px rgba(251, 191, 36, 0.3);">ANLADIM</button>
     </div>
     <!-- SÜRÜM NOTLARI (GÜNCELLEMELER) MODALI -->
-    <div id="patch-notes-modal">
+    <div id="patch-notes-modal" class="modal">
         <div style="text-align: center; border-bottom: 1px solid #1e293b; padding-bottom: 15px; margin-bottom: 15px;">
-            <span style="font-size: 28px; display: block; margin-bottom: 8px;">🚀</span>
-            <h2 style="color: #00f2fe; font-size: 18px; font-weight: 900; margin: 0;">YENİ SÜRÜM NOTLARI v1.6</h2>
+            <svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 36px; height: 36px; display: block; margin: 0 auto 10px auto; filter: drop-shadow(0 0 8px rgba(0, 242, 254, 0.6));">
+                <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path>
+                <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path>
+            </svg>
+            <h2 style="color: #00f2fe; font-size: 18px; font-weight: 900; margin: 0; letter-spacing: 0.5px;">YENİ SÜRÜM NOTLARI v1.6</h2>
         </div>
         <div style="color: #cbd5e1; font-size: 12px; text-align: left; margin-bottom: 20px; line-height: 1.6; max-height: 220px; overflow-y: auto; padding-right: 5px;">
-            <p><strong style="color: #10b981;">✨ Önemli Yenilikler & İyileştirmeler:</strong></p>
+            
+            <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px; filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.6));"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                <strong style="color: #10b981; font-size: 13px;">Önemli Yenilikler & İyileştirmeler:</strong>
+            </div>
             <ul style="margin: 5px 0 15px 15px; padding: 0;">
                 <li><strong>Arayüz Senkronizasyonu:</strong> Hisselerin anlık değişim yüzdeleri ile teknik analiz grafikleri ve rozetleri tam uyumlu hale getirildi.</li>
                 <li><strong>Mobil Görsel Akış:</strong> Dar mobil ekranlarda terminal kesinti tutarlarının alt alta bölünerek bozulması engellendi.</li>
             </ul>
-            <p><strong style="color: #fbbf24;">🛠️ Hata Düzeltmeleri:</strong></p>
+
+            <div style="display: flex; align-items: center; margin-bottom: 5px; margin-top: 10px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px; filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.6));"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+                <strong style="color: #fbbf24; font-size: 13px;">Hata Düzeltmeleri:</strong>
+            </div>
             <ul style="margin: 5px 0 0 15px; padding: 0;">
                 <li>Profil düzenleme penceresindeki isim değiştirme (kalem ikonu) butonunun çalışmasını engelleyen fonksiyon çakışmaları giderildi.</li>
                 <li>Liderlik tablosunda test aşamalarından kalan mükerrer hesap yığılmaları temizlendi ve tekil UID yapısı kararlaştırıldı.</li>
                 <li>Başlangıç yükleme ekranında takılmalara yol açan eksik fonksiyon referansları (`checkBankruptcy`) düzeltildi.</li>
             </ul>
         </div>
-        <button class="trade-btn" id="btn-close-patch-notes" style="width: 100%; padding: 12px; font-size: 13px; background: #00f2fe; color: #000; box-shadow: 0 5px 15px rgba(0, 242, 254, 0.4); font-weight: 900;">HARİKA, BAŞLAYALIM!</button>
+        <button class="trade-btn" id="btn-close-patch-notes" style="width: 100%; padding: 12px; font-size: 13px; background: #00f2fe; color: #000; box-shadow: 0 5px 15px rgba(0, 242, 254, 0.4); font-weight: 900; border: none; border-radius: 8px; cursor: pointer;">HARİKA, BAŞLAYALIM!</button>
     </div>
     <!-- ÖĞRETİCİ (TUTORIAL) MODALI -->
     <div id="tutorial-modal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 92%; max-width: 380px; background: #0b1126; border: 1px solid #1e293b; border-radius: 20px; padding: 24px; z-index: 1200; opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 15px 50px rgba(0,0,0,0.8);">
@@ -1180,13 +1195,19 @@ CTS KRİPTO BORSASI</h3>
             </div>
 
             <!-- VADELİ İŞLEMLER İÇERİK ALANI -->
-            <div id="portfolio-futures-container" style="display: none;">
-                <div id="positions-list"><div class="empty-state"><span><svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 40px; height: 40px; display: block; margin: 0 auto 12px auto; filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.6));">
-    <circle cx="12" cy="12" r="10"></circle>
-    <polyline points="12 6 12 12 16 14"></polyline>
-</svg></span><p>Aktif vadeli işlemin bulunmuyor.</p></div></div>
-            </div>
+<div id="portfolio-futures-container" style="display: none;">
+    <div id="positions-list">
+        <div class="empty-state">
+            <span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 40px; height: 40px; display: block; margin: 0 auto 12px auto; filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.6));">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                </svg>
+            </span>
+            <p>Aktif vadeli işlemin bulunmuyor.</p>
         </div>
+    </div>
+</div>
+</div>
 
         <div id="news-archive-container" class="market-container" style="display: none;">
             <h3 class="section-title">PİYASA HABERLERİ ARŞİVİ</h3>
@@ -3341,8 +3362,12 @@ stockCards.forEach(card => {
     // Eğer işlem yoksa ve ekran zaten boş durumdaysa hiç dokunma (Scroll koruması)
     if (activePositions.length === 0) {
         if (!positionsList.querySelector('.empty-state')) {
-            positionsList.innerHTML = `<div class="empty-state"><span>⚡</span><p>Aktif vadeli işlemin bulunmuyor.</p></div>`;
+            positionsList.innerHTML = `<div class="empty-state"><span><svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 40px; height: 40px; display: block; margin: 0 auto 12px auto; filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.6));"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></span><p>Aktif vadeli işlemin bulunmuyor.</p></div>`;
         }
+        
+        // İşlem bittiğinde logoların bozulmasını engelle (Boş ekran durumu için)
+        if (typeof applyCustomBrands === 'function') applyCustomBrands();
+        
         return;
     }
 
@@ -3356,7 +3381,8 @@ stockCards.forEach(card => {
     if (needsFullRender) {
         positionsList.innerHTML = ''; // Sadece işlem sayısı değiştiyse tam temizlik yap
     }
-
+// Liste güncellendikten sonra logoların bozulmasını engelle
+    if (typeof applyCustomBrands === 'function') applyCustomBrands();
     activePositions.forEach((pos, index) => {
         // --- Orijinal isme karşılık gelen özel ismi bul ---
         let displayName = pos.name;
@@ -3656,13 +3682,13 @@ function shootConfetti(colors) {
 }
 
             function showStoreModal(title, desc, isSuccess) {
-                storeModalTitle.innerText = title;
-                storeModalTitle.style.color = isSuccess ? '#10b981' : '#ef4444';
-                storeModalDesc.innerHTML = desc;
-                
-                document.getElementById('summary-overlay').classList.add('active');
-                storeModal.classList.add('show');
-            }
+    storeModalTitle.innerHTML = title; // innerText yerine innerHTML yapıldı
+    storeModalTitle.style.color = isSuccess ? '#10b981' : '#ef4444';
+    storeModalDesc.innerHTML = desc;
+    
+    document.getElementById('summary-overlay').classList.add('active');
+    storeModal.classList.add('show');
+}
 
             // ==========================================================================
 // 🛒 PREMİUM ABONELİK SATIN ALMA VEYA TEMA DEĞİŞTİRME
@@ -5061,108 +5087,112 @@ if (btnBuyAiRights) {
         const btnReplayTutorial = document.getElementById('btn-replay-tutorial');
 
         const tutorialSteps = [
-            { 
-                icon: '🎓', 
-                title: '1. HOŞ GELDİN!', 
-                text: 'CTS Stock Market Tycoon\'a hoş geldin!<br><br>Sermayen <b>$15,000</b>. Amacın doğru yatırımlarla kasayı büyütüp <b>$20 Milyon</b> barajını aşarak <b>Gizli Kripto Borsası\'nı</b> açmak!' 
-            },
-            { 
-                icon: '⏱️', 
-                title: '2. PİYASA VE HABERLER', 
-                text: 'Piyasa her <b>4 saniyede bir</b> güncellenir (30 güncelleme = 1 Gün).<br><br>Ekranın üstünden inen <b>Flaş Haberler</b> hisseleri anında etkiler. Sektörel krizleri ve fırsatları kaçırmamak için gözün haberlerde olsun.' 
-            },
-            { 
-                icon: '⚖️', 
-                title: '3. SPOT vs VADELİ', 
-                text: '<b>SPOT:</b> Güvenlidir. Aldığın hisse senindir, fiyatı düşse de elinde kalır.<br><br><span style="color:#ef4444;">VADELİ (Kaldıraç):</span> Yükselişe (LONG) veya Düşüşe (SHORT) oynayabilirsin. Ancak yön tersine giderse paran sıfırlanıp <b>LİKİDE</b> olabilirsin!' 
-            },
-            { 
-                icon: '⚡', 
-                title: '4. HIZLI İŞLEM VE YAPAY ZEKA', 
-                text: 'Kasandaki paranın tamamıyla (%100) anında işlem yapmak için <b>AL veya SAT butonlarına basılı tut!</b><br><br>Hangi hisseyi alacağını bilemiyorsan, yukarıdaki <b>🤖 AI ANALİST</b> butonuna tıklayarak yapay zekadan tüyo alabilirsin.' 
-            },
-            { 
-                icon: '🏢', 
-                title: '5. ŞİRKETİ ELE GEÇİR', 
-                text: 'Bir şirketin hisselerinin <b>%51\'ine (510.000 adet)</b> ulaştığında Yönetim Kurulu sana geçer!<br><br>Şirketi ele geçirdiğinde ona <b>kendi özel ismini ve emojini</b> verebilirsin. Ancak payın %51\'in altına düşerse şirketi kaybedersin.' 
-            },
-            { 
-                icon: '🐷', 
-                title: '6. BANKA VE KUMBARALAR', 
-                text: 'Paran biterse bankadan faizli <b>Kredi</b> çekebilirsin.<br><br>Mağaza bölümündeki <b>Küresel Kumbaralara</b> katkı yapmayı unutma! Bar dolduğunda, katkı yapan herkes devasa nakit ve şirket payları kazanır.' 
-            },
-            { 
-                icon: '💎', 
-                title: '7. MİLYARDER KULÜBÜ', 
-                text: 'Borsada kazandığın paraları <b>Yaşam Alanı\'nda</b> (Menüde) Rezidans, Yat veya Jet alarak değerlendir.<br><br>Bu lüks varlıklar sana her gün oyunda olmasan bile <b>Pasif Gelir</b> kazandıracaktır.' 
-            },
-            { 
-                icon: '💸', 
-                title: '8. TERMİNAL ÜCRETİ', 
-                text: 'Unutma! Servetin büyüdükçe borsa ekranında kesilen <b>Terminal (Veri) Ücreti</b> artar. Paran çok diye boş durma, yatırım yapmaya devam et!<br><br>Öğreticiyi ayarlardan tekrar okuyabilirsin. Bol kazançlar!' 
-            }
-        ];
+    { 
+        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 42px; height: 42px; display: block; margin: 0 auto; filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.6));"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>', 
+        title: '1. HOŞ GELDİN!', 
+        text: 'CTS Stock Market Tycoon\'a hoş geldin!<br><br>Sermayen <b>$15,000</b>. Amacın doğru yatırımlarla kasayı büyütüp <b>$20 Milyon</b> barajını aşarak <b>Gizli Kripto Borsası\'nı</b> açmak!' 
+    },
+    { 
+        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 42px; height: 42px; display: block; margin: 0 auto; filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.6));"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>', 
+        title: '2. PİYASA VE HABERLER', 
+        text: 'Piyasa her <b>4 saniyede bir</b> güncellenir (30 güncelleme = 1 Gün).<br><br>Ekranın üstünden inen <b>Flaş Haberler</b> hisseleri anında etkiler. Sektörel krizleri ve fırsatları kaçırmamak için gözün haberlerde olsun.' 
+    },
+    { 
+        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 42px; height: 42px; display: block; margin: 0 auto; filter: drop-shadow(0 0 8px rgba(244, 63, 94, 0.6));"><path d="M12 3v18M3 7h18M6 7l-3 7a4 4 0 0 0 6 0l-3-7zM18 7l-3 7a4 4 0 0 0 6 0l-3-7z"></path></svg>', 
+        title: '3. SPOT vs VADELİ', 
+        text: '<b>SPOT:</b> Güvenlidir. Aldığın hisse senindir, fiyatı düşse de elinde kalır.<br><br><span style="color:#ef4444;">VADELİ (Kaldıraç):</span> Yükselişe (LONG) veya Düşüşe (SHORT) oynayabilirsin. Ancak yön tersine giderse paran sıfırlanıp <b>LİKİDE</b> olabilirsin!' 
+    },
+    { 
+        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 42px; height: 42px; display: block; margin: 0 auto; filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.6));"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>', 
+        title: '4. HIZLI İŞLEM VE YAPAY ZEKA', 
+        text: 'Kasandaki paranın tamamıyla (%100) anında işlem yapmak için <b>AL veya SAT butonlarına basılı tut!</b><br><br>Hangi hisseyi alacağını bilemiyorsan, yukarıdaki <b>🤖 AI ANALİST</b> butonuna tıklayarak yapay zekadan tüyo alabilirsin.' 
+    },
+    { 
+        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 42px; height: 42px; display: block; margin: 0 auto; filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.6));"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path><path d="M8 6h.01M16 6h.01M12 6h.01M12 10h.01M12 14h.01M16 10h.01M16 14h.01M8 10h.01M8 14h.01"></path></svg>', 
+        title: '5. ŞİRKETİ ELE GEÇİR', 
+        text: 'Bir şirketin hisselerinin <b>%51\'ine (510.000 adet)</b> ulaştığında Yönetim Kurulu sana geçer!<br><br>Şirketi ele geçirdiğinde ona <b>kendi özel ismini ve emojini</b> verebilirsin. Ancak payın %51\'in altına düşerse şirketi kaybedersin.' 
+    },
+    { 
+        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 42px; height: 42px; display: block; margin: 0 auto; filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.6));"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></svg>', 
+        title: '6. BANKA VE KUMBARALAR', 
+        text: 'Paran biterse bankadan faizli <b>Kredi</b> çekebilirsin.<br><br>Mağaza bölümündeki <b>Küresel Kumbaralara</b> katkı yapmayı unutma! Bar dolduğunda, katkı yapan herkes devasa nakit ve şirket payları kazanır.' 
+    },
+    { 
+        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 42px; height: 42px; display: block; margin: 0 auto; filter: drop-shadow(0 0 8px rgba(0, 242, 254, 0.6));"><path d="M6 3h12l4 6-10 13L2 9z"></path><path d="M11 3L8 9l4 13 4-13-3-6"></path><line x1="2" y1="9" x2="22" y2="9"></line></svg>', 
+        title: '7. MİLYARDER KULÜBÜ', 
+        text: 'Borsada kazandığın paraları <b>Yaşam Alanı\'nda</b> (Menüde) Rezidans, Yat veya Jet alarak değerlendir.<br><br>Bu lüks varlıklar sana her gün oyunda olmasan bile <b>Pasif Gelir</b> kazandıracaktır.' 
+    },
+    { 
+        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 42px; height: 42px; display: block; margin: 0 auto; filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.6));"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>', 
+        title: '8. TERMİNAL ÜCRETİ', 
+        text: 'Unutma! Servetin büyüdükçe borsa ekranında kesilen <b>Terminal (Veri) Ücreti</b> artar. Paran çok diye boş durma, yatırım yapmaya devam et!<br><br>Öğreticiyi ayarlardan tekrar okuyabilirsin. Bol kazançlar!' 
+    }
+];
 
-        let currentTutorialStep = 0;
+let currentTutorialStep = 0;
 
-        function renderTutorialStep() {
-            const step = tutorialSteps[currentTutorialStep];
-            document.getElementById('tutorial-icon').innerText = step.icon;
-            document.getElementById('tutorial-title').innerText = step.title;
-            document.getElementById('tutorial-content').innerHTML = step.text;
+function renderTutorialStep() {
+    const step = tutorialSteps[currentTutorialStep];
+    
+    // YENİLİK: innerText yerine innerHTML kullanılarak SVG'lerin HTML olarak okunması sağlandı
+    document.getElementById('tutorial-icon').innerHTML = step.icon;
+    document.getElementById('tutorial-title').innerText = step.title;
+    document.getElementById('tutorial-content').innerHTML = step.text;
 
-            // Noktaları Çiz
-            const dotsContainer = document.getElementById('tutorial-dots');
-            dotsContainer.innerHTML = '';
-            tutorialSteps.forEach((_, index) => {
-                const dot = document.createElement('div');
-                dot.className = `tutorial-dot ${index === currentTutorialStep ? 'active' : ''}`;
-                dotsContainer.appendChild(dot);
-            });
+    // Noktaları Çiz
+    const dotsContainer = document.getElementById('tutorial-dots');
+    dotsContainer.innerHTML = '';
+    tutorialSteps.forEach((_, index) => {
+        const dot = document.createElement('div');
+        dot.className = `tutorial-dot ${index === currentTutorialStep ? 'active' : ''}`;
+        dotsContainer.appendChild(dot);
+    });
 
-            // Butonları Ayarla
-            btnTutorialPrev.style.visibility = currentTutorialStep === 0 ? 'hidden' : 'visible';
-            
-            if (currentTutorialStep === tutorialSteps.length - 1) {
-                btnTutorialNext.innerText = "OYUNA BAŞLA";
-                btnTutorialNext.style.background = "#10b981";
-                btnTutorialNext.style.boxShadow = "0 5px 15px rgba(16, 185, 129, 0.3)";
-            } else {
-                btnTutorialNext.innerText = "İLERİ";
-                btnTutorialNext.style.background = "#00f2fe";
-                btnTutorialNext.style.boxShadow = "0 5px 15px rgba(0, 242, 254, 0.3)";
-            }
+    // Butonları Ayarla
+    btnTutorialPrev.style.visibility = currentTutorialStep === 0 ? 'hidden' : 'visible';
+    
+    if (currentTutorialStep === tutorialSteps.length - 1) {
+        btnTutorialNext.innerText = "OYUNA BAŞLA";
+        btnTutorialNext.style.background = "#10b981";
+        btnTutorialNext.style.boxShadow = "0 5px 15px rgba(16, 185, 129, 0.3)";
+    } else {
+        btnTutorialNext.innerText = "İLERİ";
+        btnTutorialNext.style.background = "#00f2fe";
+        btnTutorialNext.style.boxShadow = "0 5px 15px rgba(0, 242, 254, 0.3)";
+    }
+}
+
+btnTutorialPrev.addEventListener('click', () => {
+    if (currentTutorialStep > 0) {
+        currentTutorialStep--;
+        renderTutorialStep();
+    }
+});
+
+btnTutorialNext.addEventListener('click', () => {
+    if (currentTutorialStep < tutorialSteps.length - 1) {
+        currentTutorialStep++;
+        renderTutorialStep();
+    } else {
+        // Öğretici Bitti
+        localStorage.setItem('cts_tutorial_seen', 'true');
+        tutorialModal.classList.remove('show');
+        if (typeof showNextStartupPopup === 'function') {
+            showNextStartupPopup(); 
         }
+    }
+});
 
-        btnTutorialPrev.addEventListener('click', () => {
-            if (currentTutorialStep > 0) {
-                currentTutorialStep--;
-                renderTutorialStep();
-            }
-        });
-
-        btnTutorialNext.addEventListener('click', () => {
-            if (currentTutorialStep < tutorialSteps.length - 1) {
-                currentTutorialStep++;
-                renderTutorialStep();
-            } else {
-                // Öğretici Bitti
-                localStorage.setItem('cts_tutorial_seen', 'true');
-                tutorialModal.classList.remove('show');
-                showNextStartupPopup(); // Sırada başka uyarı varsa onu aç
-            }
-        });
-
-        if (btnReplayTutorial) {
-            btnReplayTutorial.addEventListener('click', () => {
-                document.getElementById('settings-screen').style.display = 'none';
-                document.getElementById('mobile-main-menu').style.display = 'flex';
-                document.getElementById('summary-overlay').classList.add('active');
-                currentTutorialStep = 0;
-                renderTutorialStep();
-                tutorialModal.classList.add('show');
-            });
-        }
+if (typeof btnReplayTutorial !== 'undefined' && btnReplayTutorial) {
+    btnReplayTutorial.addEventListener('click', () => {
+        document.getElementById('settings-screen').style.display = 'none';
+        document.getElementById('mobile-main-menu').style.display = 'flex';
+        document.getElementById('summary-overlay').classList.add('active');
+        currentTutorialStep = 0;
+        renderTutorialStep();
+        tutorialModal.classList.add('show');
+    });
+}
 
         // AKILLI AÇILIŞ YÖNETİCİSİ (Sadece 1 Kere Gösterir)
         function showNextStartupPopup() {
@@ -5885,7 +5915,40 @@ window.addEventListener('load', () => {
     }, 2200);
 });
 // ==========================================================================
-// 💵 DİNAMİK KASA DESTEK PAKETİ TIKLANMA VE SATIN ALMA İŞLEMİ
+// 1. KASA DESTEK ARAYÜZÜNÜ GÜNCELLEYEN FONKSİYON
+// ==========================================================================
+function updateCashSupportUI() {
+    const btnBuyCash = document.getElementById('btn-buy-money');
+    const supportDesc = document.getElementById('cash-support-desc');
+
+    if (!btnBuyCash) return;
+
+    let supportAmount = Math.floor(playerBalance * 0.5);
+    if (supportAmount < 10000) supportAmount = 10000;
+    
+    let price = 49.99;
+    
+    // Sınırları DOĞRUDAN Kasa Bakiyesine (playerBalance) göre belirliyoruz
+    if (playerBalance >= 20000000) {
+        price = 1999.99;
+    } else if (playerBalance >= 10000000) {
+        price = 999.99;
+    } else if (playerBalance >= 2000000) {
+        price = 499.99;
+    } else if (playerBalance >= 200000) {
+        price = 249.99;
+    }
+
+    // Fiyatı otomatik olarak virgüllü formata çevirip (1,999.99) butona yazdırıyoruz
+    btnBuyCash.innerText = `₺${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} SATIN AL`;
+
+    if (supportDesc) {
+        supportDesc.innerText = `Anında $${supportAmount.toLocaleString('en-US')} Oyun Parası`;
+    }
+}
+
+// ==========================================================================
+// 2. DİNAMİK KASA DESTEK PAKETİ TIKLANMA VE SATIN ALMA İŞLEMİ
 // ==========================================================================
 const btnBuyCash = document.getElementById('btn-buy-money');
 if (btnBuyCash) {
@@ -5894,55 +5957,26 @@ if (btnBuyCash) {
         if (supportAmount < 10000) supportAmount = 10000;
         
         let price = 49.99;
-        let productId = 'kasa_destek_50'; // 1. Kademe Ürün ID'si
+        let productId = 'kasa_destek_50'; 
         
-        // Kademeli Fiyatlandırma ve Ürün ID Belirleme
-        if (supportAmount >= 10000000) {
+        // Buradaki sınırlar da arayüzdekiyle BİREBİR AYNI olmalı
+        if (playerBalance >= 20000000) {
+            price = 1999.99;
+            productId = 'kasa_destek_2000'; 
+        } else if (playerBalance >= 10000000) {
             price = 999.99;
-            productId = 'kasa_destek_1000'; // 4. Kademe Ürün ID'si
-        } else if (supportAmount >= 1000000) {
+            productId = 'kasa_destek_1000'; 
+        } else if (playerBalance >= 2000000) {
             price = 499.99;
-            productId = 'kasa_destek_500';  // 3. Kademe Ürün ID'si
-        } else if (supportAmount >= 100000) {
+            productId = 'kasa_destek_500';  
+        } else if (playerBalance >= 200000) {
             price = 249.99;
-            productId = 'kasa_destek_250';  // 2. Kademe Ürün ID'si
+            productId = 'kasa_destek_250';  
         }
-        // ==========================================================================
-// 💵 KASA DESTEK PAKETİ ARAYÜZÜNÜ (BUTON VE YAZIYI) CANLI GÜNCELLEME
-// ==========================================================================
-function updateCashSupportUI() {
-    const btnBuyCash = document.getElementById('btn-buy-money');
-    
-    // HTML'deki "Anında $... Oyun Parası" yazısını anlık güncellemek istersen bu ID'yi kullanacağız
-    const supportDesc = document.getElementById('cash-support-desc'); id="cash-support-desc"
-
-    if (!btnBuyCash) return;
-
-    // Arka plandaki aynı hesaplama mantığı
-    let supportAmount = Math.floor(playerBalance * 0.5);
-    if (supportAmount < 10000) supportAmount = 10000;
-    
-    let price = 49.99;
-    
-    if (supportAmount >= 10000000) {
-        price = 999.99;
-    } else if (supportAmount >= 1000000) {
-        price = 499.99;
-    } else if (supportAmount >= 100000) {
-        price = 249.99;
-    }
-
-    // Butondaki yazıyı anında güncelle
-    btnBuyCash.innerText = `₺${price} SATIN AL`;
-
-    // (İsteğe Bağlı) Paketin açıklamasındaki verilecek para miktarını da canlı güncellemek için
-    if (supportDesc) {
-        supportDesc.innerText = `Anında $${supportAmount.toLocaleString('en-US')} Oyun Parası`;
-    }
-}
 
         // --- GOOGLE PLAY ÖDEME EKRANI ---
         if (window.Capacitor && Capacitor.isNativePlatform()) {
+            // ... Senin Google Play kodların buradan devam ediyor ...
             try {
                 const { Purchases } = Capacitor.Plugins;
                 // Belirlenen dinamik ürünü satın alma ekranına çağır
@@ -6712,13 +6746,15 @@ if (btnFeedMegaPiggy) {
 
         // --- ⛔ YENİ EKLENEN KURAL: 3 MİLYON DOLAR KASA BARAJI ---
         if (playerBalance < 3000000) {
-            playSound('error'); // Varsa hata sesi çalsın
+            playSound('error'); 
             if (typeof showStoreModal === 'function') {
-                showStoreModal("⛔ YETERSİZ KASA PERFORMANSI", "Mega Küresel Kumbara sadece <strong>High Roller</strong> (Büyük Oynayan) yatırımcılara özel VIP bir havuzdur.<br><br>Giriş yapabilmek için kasanızda minimum <strong style='color:#00f2fe;'>$3,000,000</strong> nakit bulunması gerekmektedir.", false);
+                const neonAlertIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px; vertical-align: text-bottom; margin-right: 6px; filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.6));"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`;
+                
+                showStoreModal(`${neonAlertIcon} YETERSİZ KASA PERFORMANSI`, "Mega Küresel Kumbara sadece <strong>High Roller</strong> (Büyük Oynayan) yatırımcılara özel VIP bir havuzdur.<br><br>Giriş yapabilmek için kasanızda minimum <strong style='color:#00f2fe;'>$3,000,000</strong> nakit bulunması gerekmektedir.", false);
             } else if (typeof showCustomAlert === 'function') {
                 showCustomAlert("Mega havuza katılabilmek için kasanda minimum $3.000.000 olmalıdır!");
             }
-            return; // İşlemi iptal et ve aşağıya inmesine izin verme
+            return; 
         }
         // --- GOOGLE PLAY ÖDEME EKRANINI AÇ ---
         if (window.Capacitor && Capacitor.isNativePlatform()) {
