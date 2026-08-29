@@ -58,7 +58,7 @@
     <h2 id="offline-title" style="color: #00f2fe; font-size: 20px; font-weight: 900; margin: 0 0 10px 0; letter-spacing: 1px;">BAĞLANILIYOR...</h2>
     <p id="offline-desc" style="color: #94a3b8; font-size: 13px; max-width: 80%; line-height: 1.5; margin-bottom: 30px;">Sunucu ile iletişim kuruluyor, lütfen bekleyin.</p>
 
-    <button id="btn-retry-connection" class="trade-btn" style="display: none; padding: 14px 30px; font-size: 14px; background: #ef4444; color: #fff; border: none; border-radius: 8px; font-weight: 900; box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4); cursor: pointer;">
+    <button id="btn-retry-connection" class="trade-btn" style="display: none; flex: none; height: auto; min-height: 48px; padding: 0 40px; font-size: 14px; background: #ef4444; color: #fff; border: none; border-radius: 8px; font-weight: 900; box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4); cursor: pointer; margin-top: 10px;">
         YENİDEN DENE
     </button>
 
@@ -7787,7 +7787,7 @@ function setOfflineErrorState() {
             offlineTitle.innerText = "BAĞLANTI KOPTU";
             offlineTitle.style.color = "#ef4444";
             offlineDesc.innerText = "İnternet bağlantınız bulunmuyor. İşlemlere devam edebilmek için ağ bağlantınızı kontrol edin.";
-            btnRetryConn.style.display = 'block';
+            btnRetryConn.style.display = 'inline-block';
         }
     }, 1500); 
 }
