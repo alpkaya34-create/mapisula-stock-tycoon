@@ -15,7 +15,7 @@
     
     <title>Stock Market Tycoon - CTS</title>
     <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="style.css?v=lifestyle-rebuild-3">
+    <link rel="stylesheet" href="style.css?v=lifestyle-rebuild-9">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
     
     <!-- İkonun eski belleği silip yenilenmesi için v=6 -->
@@ -6227,7 +6227,280 @@ if (btnBuyCash) {
         if (typeof syncLeaderboardData === 'function') syncLeaderboardData();
     });
 }
-    </script>
+</script>
+<style id="lifestyle-mobile-safe-styles">
+/* Yaşam Alanı kendi 450px'lik mobil oyun kabına göre çizilir. */
+#lifestyle-page.lifestyle-page-rebuilt {
+    width: 100% !important;
+    max-width: 450px !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    padding: 14px 15px 32px !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    font-family: 'Nunito', sans-serif !important;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+#lifestyle-page.lifestyle-page-rebuilt[aria-hidden="false"],
+#lifestyle-page.lifestyle-page-rebuilt:target {
+    display: flex !important;
+    visibility: visible !important;
+}
+
+#lifestyle-page .lifestyle-topbar {
+    display: grid !important;
+    grid-template-columns: 78px minmax(0, 1fr) 104px !important;
+    align-items: center !important;
+    gap: 8px !important;
+    width: 100% !important;
+    min-height: 68px !important;
+    flex-shrink: 0 !important;
+}
+
+#lifestyle-page .lifestyle-menu-button {
+    width: 100% !important;
+    min-height: 54px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 2px !important;
+    border: 1px solid #d8dee9 !important;
+    border-radius: 15px !important;
+    background: linear-gradient(180deg, #f8fafc 0%, #dce2ea 100%) !important;
+    color: #0b1126 !important;
+    font: 900 12px/1 'Nunito', sans-serif !important;
+    text-decoration: none !important;
+    white-space: normal !important;
+}
+
+#lifestyle-page .lifestyle-menu-arrow {
+    font-size: 16px !important;
+    line-height: 1 !important;
+}
+
+#lifestyle-page .lifestyle-title-wrap {
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-align: left !important;
+    line-height: 1.02 !important;
+    white-space: nowrap !important;
+}
+
+#lifestyle-page .lifestyle-title {
+    overflow: hidden !important;
+    color: #ffbd18 !important;
+    font: 900 19px/1.05 'Nunito', sans-serif !important;
+    letter-spacing: 0 !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    text-shadow: 0 0 12px rgba(251, 191, 36, 0.36) !important;
+}
+
+#lifestyle-page .lifestyle-title span {
+    color: #00f2fe !important;
+}
+
+#lifestyle-page .lifestyle-title.club {
+    margin: 2px 0 0 18px !important;
+    color: #ffb716 !important;
+}
+
+#lifestyle-page .lifestyle-balance-wrap {
+    min-width: 104px !important;
+    overflow: hidden !important;
+    text-align: right !important;
+}
+
+#lifestyle-page .lifestyle-balance-label {
+    display: block !important;
+    margin-bottom: 4px !important;
+    color: #7e8ba9 !important;
+    font: 800 9px/1 'Nunito', sans-serif !important;
+    letter-spacing: 1px !important;
+}
+
+#lifestyle-page .lifestyle-balance-wrap strong {
+    display: block !important;
+    color: #10d49b !important;
+    font: 900 15px/1 'Nunito', sans-serif !important;
+    white-space: nowrap !important;
+}
+
+#lifestyle-page .lifestyle-hero {
+    position: relative !important;
+    width: 100% !important;
+    height: 240px !important;
+    min-height: 240px !important;
+    margin: 20px 0 15px !important;
+    overflow: hidden !important;
+    flex-shrink: 0 !important;
+    border: 1px solid rgba(168, 85, 247, 0.72) !important;
+    border-radius: 24px !important;
+    background: linear-gradient(180deg, #080b1d 0%, #171033 52%, #24104f 100%) !important;
+    box-shadow: 0 12px 30px rgba(83, 32, 143, 0.28), inset 0 0 28px rgba(0, 0, 0, 0.52) !important;
+}
+
+#lifestyle-page .lifestyle-residence {
+    bottom: 12% !important;
+    left: 6% !important;
+    font-size: 52px !important;
+}
+
+#lifestyle-page .lifestyle-car {
+    bottom: 7% !important;
+    left: 43% !important;
+    font-size: 42px !important;
+}
+
+#lifestyle-page .lifestyle-yacht {
+    right: 6% !important;
+    bottom: 10% !important;
+    font-size: 50px !important;
+}
+
+#lifestyle-page .lifestyle-jet {
+    top: 18% !important;
+    left: -54px !important;
+    font-size: 28px !important;
+}
+
+#lifestyle-page .lifestyle-status-card {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 10px !important;
+    width: 100% !important;
+    min-height: 82px !important;
+    margin-bottom: 21px !important;
+    padding: 14px 15px !important;
+    box-sizing: border-box !important;
+    border-radius: 18px !important;
+}
+
+#lifestyle-page .lifestyle-status-block {
+    min-width: 0 !important;
+}
+
+#lifestyle-page .lifestyle-status-block.right {
+    flex: 0 0 130px !important;
+}
+
+#lifestyle-page .lifestyle-status-block span,
+#lifestyle-page .lifestyle-section-kicker {
+    display: block !important;
+    font: 900 9px/1.2 'Nunito', sans-serif !important;
+    letter-spacing: 0.6px !important;
+}
+
+#lifestyle-page .lifestyle-status-block strong {
+    display: block !important;
+    margin-top: 8px !important;
+    font: 900 16px/1 'Nunito', sans-serif !important;
+    white-space: nowrap !important;
+}
+
+#lifestyle-page .lifestyle-section-heading {
+    display: flex !important;
+    align-items: flex-end !important;
+    justify-content: space-between !important;
+    margin: 0 2px 13px !important;
+}
+
+#lifestyle-page .lifestyle-section-heading h2 {
+    margin: 6px 0 0 !important;
+    font: 900 23px/1 'Nunito', sans-serif !important;
+}
+
+#lifestyle-page .lifestyle-section-gem {
+    font-size: 28px !important;
+    line-height: 1 !important;
+}
+
+#lifestyle-page .lifestyle-assets-list {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 10px !important;
+    padding-bottom: 20px !important;
+}
+
+#lifestyle-page .lifestyle-asset-card {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+    width: 100% !important;
+    min-height: 104px !important;
+    padding: 12px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    border-radius: 20px !important;
+}
+
+#lifestyle-page .lifestyle-asset-info {
+    display: flex !important;
+    align-items: center !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    gap: 10px !important;
+}
+
+#lifestyle-page .lifestyle-asset-icon {
+    display: grid !important;
+    width: 52px !important;
+    height: 52px !important;
+    flex: 0 0 52px !important;
+    place-items: center !important;
+    border-radius: 15px !important;
+    font-size: 28px !important;
+}
+
+#lifestyle-page .lifestyle-asset-copy {
+    min-width: 0 !important;
+}
+
+#lifestyle-page .lifestyle-asset-copy h3 {
+    overflow: hidden !important;
+    margin: 0 0 6px !important;
+    font: 900 15px/1.1 'Nunito', sans-serif !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+}
+
+#lifestyle-page .lifestyle-asset-copy p {
+    margin: 0 0 5px !important;
+    font: 900 12px/1 'Nunito', sans-serif !important;
+}
+
+#lifestyle-page .lifestyle-asset-copy strong {
+    font: 900 14px/1 'Nunito', sans-serif !important;
+}
+
+#lifestyle-page .lifestyle-buy-button {
+    min-width: 96px !important;
+    min-height: 48px !important;
+    flex: 0 0 96px !important;
+    padding: 0 8px !important;
+    border: 0 !important;
+    border-radius: 11px !important;
+    font: 900 13px/1 'Nunito', sans-serif !important;
+    white-space: nowrap !important;
+}
+
+@media (max-width: 360px) {
+    #lifestyle-page.lifestyle-page-rebuilt { padding-left: 12px !important; padding-right: 12px !important; }
+    #lifestyle-page .lifestyle-topbar { grid-template-columns: 70px minmax(0, 1fr) 92px !important; gap: 6px !important; }
+    #lifestyle-page .lifestyle-balance-wrap { min-width: 92px !important; }
+    #lifestyle-page .lifestyle-balance-wrap strong { font-size: 13px !important; }
+    #lifestyle-page .lifestyle-status-block.right { flex-basis: 116px !important; }
+    #lifestyle-page .lifestyle-status-block strong { font-size: 14px !important; }
+    #lifestyle-page .lifestyle-buy-button { min-width: 88px !important; flex-basis: 88px !important; font-size: 12px !important; }
+}
+</style>
     <!-- YAŞAM ALANI: FOTOĞRAFTAKİ TASARIMA GÖRE SIFIRDAN OLUŞTURULAN EKRAN -->
 <section id="lifestyle-page" class="lifestyle-page-rebuilt" aria-hidden="true" style="display: none;">
     <header class="lifestyle-topbar">
