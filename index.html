@@ -15,7 +15,7 @@
     
     <title>Stock Market Tycoon - CTS</title>
     <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=lifestyle-rebuild-3">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
     
     <!-- İkonun eski belleği silip yenilenmesi için v=6 -->
@@ -336,8 +336,8 @@
             padding-bottom: calc(85px + env(safe-area-inset-bottom, 20px)) !important; 
         }
     </style>
-<body>
 
+    <!-- Ana uygulama içeriği, üstte açılmış olan tek body içinde devam eder. -->
     <div id="mobile-main-menu" class="mobile-screen">
         <div class="menu-header">
             <div class="glow-orb"></div>
@@ -364,11 +364,11 @@
     <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
     <path d="M18 2H6v7a6 6 0 0 0 12 0V2z"></path>
 </svg> BAŞARIMLAR VE HEDEFLER</button>
-            <button id="btn-lifestyle" class="mobile-btn btn-lifestyle premium-glow"><svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 8px; filter: drop-shadow(0 0 5px rgba(0, 242, 254, 0.6));">
+            <a id="btn-lifestyle" class="mobile-btn btn-lifestyle premium-glow" href="#lifestyle-page" onclick="if (typeof window.openLifestylePage === 'function') return window.openLifestylePage(); const page = document.getElementById('lifestyle-page'); const menu = document.getElementById('mobile-main-menu'); if (page) { if (page.parentElement !== document.body) document.body.appendChild(page); if (menu) menu.style.display = 'none'; page.setAttribute('aria-hidden', 'false'); page.style.display = 'flex'; return true; } return false;"><svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 8px; filter: drop-shadow(0 0 5px rgba(0, 242, 254, 0.6));">
     <path d="M6 3h12l4 6-10 13L2 9z"></path>
     <path d="M11 3L8 9l4 13 4-13-3-6"></path>
     <line x1="2" y1="9" x2="22" y2="9"></line>
-</svg> YAŞAM ALANI (PREMIUM)</button>
+</svg> YAŞAM ALANI (PREMIUM)</a>
             <button id="btn-settings" class="mobile-btn btn-settings">AYARLAR</button>
             <button id="btn-exit" class="mobile-btn btn-exit">ÇIKIŞ</button>
         </div>
@@ -1755,6 +1755,62 @@ CTS KRİPTO BORSASI</h3>
         <span class="tab-text">Mağaza</span>
     </div>
 </div>
+<!-- ========================================== -->
+<!-- YAŞAM ALANI AÇILIŞ KORUMASI: Firebase'den önce tanımlanır. -->
+<script>
+(function installEarlyLifestyleOpen() {
+    function premiumIsAvailable() {
+        try {
+            if (localStorage.getItem('cts_premium') === 'true') return true;
+        } catch (storageError) {}
+        try {
+            return typeof isPremium !== 'undefined' && Boolean(isPremium);
+        } catch (stateError) {
+            return false;
+        }
+    }
+
+    window.openLifestylePage = function openLifestylePageBeforeGameScripts() {
+        const page = document.getElementById('lifestyle-page');
+        const menu = document.getElementById('mobile-main-menu');
+        if (!page) return false;
+
+        if (!premiumIsAvailable()) {
+            const message = "Bu alana sadece Premium üyeler girebilir! Milyarderler kulübüne katılmak için Mağaza'dan Premium alın.";
+            if (typeof window.showCustomAlert === 'function') window.showCustomAlert(message, 'PREMİUM GEREKLİ', '#fbbf24');
+            else window.alert(message);
+            return false;
+        }
+
+        if (page.parentElement !== document.body) document.body.appendChild(page);
+        if (menu) menu.style.setProperty('display', 'none', 'important');
+        page.setAttribute('aria-hidden', 'false');
+        page.style.setProperty('display', 'flex', 'important');
+        page.style.setProperty('visibility', 'visible', 'important');
+        page.style.setProperty('opacity', '1', 'important');
+        page.style.setProperty('position', 'fixed', 'important');
+        page.style.setProperty('z-index', '200000', 'important');
+        try {
+            if (typeof window.updateLifestyleUI === 'function') window.updateLifestyleUI();
+        } catch (error) {
+            console.error('Yaşam Alanı başlangıç verileri çizilemedi:', error);
+        }
+        return true;
+    };
+
+    window.closeLifestylePage = function closeLifestylePageBeforeGameScripts() {
+        const page = document.getElementById('lifestyle-page');
+        const menu = document.getElementById('mobile-main-menu');
+        if (page) {
+            page.setAttribute('aria-hidden', 'true');
+            page.style.setProperty('display', 'none', 'important');
+            page.style.setProperty('visibility', 'hidden', 'important');
+        }
+        if (menu) menu.style.setProperty('display', 'flex', 'important');
+        return true;
+    };
+})();
+</script>
 <!-- ========================================== -->
     <!-- FIREBASE VERİTABANI VE HESAP BAĞLANTISI    -->
     <!-- ========================================== -->
@@ -5506,41 +5562,110 @@ function renderAchievementsScreen() {
                 document.getElementById('achievements-screen').style.display = 'none';
                 document.getElementById('mobile-main-menu').style.display = 'flex'; // Not: Ana menünün id'si start-screen değilse burayı ona göre değiştir.
             });
-// OYUN İÇİ UYARI (Yumuşak Tasarımlı ve Dinamik)
+// OYUN İÇİ UYARI (Siyah Ekran Hatası Giderildi - Inline CSS Eklendi)
 function showCustomAlert(message, title = "BİLGİLENDİRME", titleColor = "#00f2fe") {
     if (document.getElementById('custom-game-alert')) return;
     
     const alertOverlay = document.createElement('div');
     alertOverlay.id = 'custom-game-alert';
-    // Arka planı koyulaştıran ve bulanıklaştıran dış çerçeve
-    alertOverlay.style.cssText = "position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px);";
+    // Arkaplanı karartır
+    alertOverlay.style.cssText = "position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 999999; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px);";
     
-    // Kutunun içeriği (Dinamik başlık, renk ve mesaj buraya işleniyor)
-    // NOT: Butonun rengini ve gölgesini doğrudan başlık rengine (titleColor) bağladım.
-    // Böylece hata ise kırmızı, başarılı işlemse yeşil, standart uyarı ise mavi buton çıkacak!
+    // UYARI KUTUSUNUN KENDİ TASARIMI (Artık siyah ekran olmayacak, şık bir kutu çıkacak)
     alertOverlay.innerHTML = `
-        <div class="custom-alert-box">
-            <h3 id="custom-alert-title" style="color: ${titleColor};">${title}</h3>
-            <p id="custom-alert-message">${message}</p>
-            <button id="custom-alert-close-btn" style="width: 100%; padding: 14px; margin-top: 15px; background: ${titleColor}; color: #000; border: none; border-radius: 8px; font-size: 15px; font-weight: 900; letter-spacing: 1px; cursor: pointer; box-shadow: 0 4px 15px ${titleColor}66; transition: 0.2s;">TAMAM</button>
+        <div style="background: #0f172a; border: 1px solid ${titleColor}; border-radius: 16px; padding: 24px; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 0 20px ${titleColor}40;">
+            <h3 style="color: ${titleColor}; margin-top: 0; margin-bottom: 10px; font-size: 18px; font-weight: 900;">${title}</h3>
+            <p style="color: #cbd5e1; font-size: 13px; line-height: 1.5; margin-bottom: 20px;">${message}</p>
+            <button id="custom-alert-close-btn" style="width: 100%; padding: 12px; background: ${titleColor}; color: #000; border: none; border-radius: 8px; font-size: 14px; font-weight: 900; cursor: pointer;">TAMAM</button>
         </div>
     `;
-    
     document.body.appendChild(alertOverlay);
-    
-    // Kapatma işlemi (Sende bu kısımlar vardır, ama yoksa eklemiş olalım)
-    document.getElementById('custom-alert-close-btn').addEventListener('click', () => {
-        alertOverlay.remove();
-    });
+    document.getElementById('custom-alert-close-btn').addEventListener('click', () => { alertOverlay.remove(); });
 }
 
-// --- LÜKS EŞYALAR VE PASİF GELİR DEĞERLERİ ---
+// --- YAŞAM ALANI: SIFIRDAN YENİ, BAĞIMSIZ VERİ VE EKRAN YÖNETİMİ ---
 let luxuryItems = [
     { id: "house1", name: "Penthouse Rezidans", price: 500000, icon: "🏢", passive: 100, owned: false, domId: "stage-asset-residence" },
     { id: "car1", name: "Hypercar Garajı", price: 150000, icon: "🏎️", passive: 30, owned: false, domId: "stage-asset-car" },
     { id: "yacht1", name: "Mega Lüks Yat", price: 1200000, icon: "🛥️", passive: 240, owned: false, domId: "stage-asset-yacht" },
     { id: "plane1", name: "Özel VIP Jet", price: 3500000, icon: "✈️", passive: 700, owned: false, domId: "stage-asset-jet" }
 ];
+
+function lifestyleMoney(value) {
+    return "$" + Number(value || 0).toLocaleString('en-US');
+}
+
+function updateLifestyleBalance() {
+    const display = document.getElementById('life-balance');
+    if (!display) return;
+    const balance = typeof playerBalance !== 'undefined' ? playerBalance : 0;
+    display.textContent = lifestyleMoney(balance) + (Number(balance) % 1 ? '' : '.00');
+}
+
+function calculateLifestyleRank() {
+    const owned = luxuryItems.filter(item => item.owned);
+    const passive = owned.reduce((sum, item) => sum + item.passive, 0);
+    const ranks = ["Çaylak Yatırımcı", "Şehir Eliti", "Finans Baronu", "Piyasa Hükümdarı", "Küresel Milyarder 👑", "Sistemin Efendisi 🚀"];
+    const rank = ranks[Math.min(owned.length, ranks.length - 1)];
+    const rankText = document.getElementById('lifestyle-rank-text');
+    const passiveText = document.getElementById('lifestyle-passive-income');
+    if (rankText) rankText.textContent = rank;
+    if (passiveText) passiveText.textContent = `+$${passive.toLocaleString('en-US')} / Gün`;
+}
+
+function renderLuxuryStage() {
+    luxuryItems.forEach(item => {
+        const stageAsset = document.getElementById(item.domId);
+        if (stageAsset) stageAsset.classList.toggle('is-owned', item.owned);
+    });
+}
+
+function purchaseLifestyleItem(itemId) {
+    const item = luxuryItems.find(entry => entry.id === itemId);
+    if (!item || item.owned) return;
+
+    const balance = typeof playerBalance !== 'undefined' ? playerBalance : 0;
+    if (balance < item.price) {
+        if (typeof showCustomAlert === 'function') {
+            showCustomAlert("Bu varlığı satın almak için yeterli bakiyen yok.", "BAKİYE YETERSİZ", "#ef4444");
+        }
+        return;
+    }
+
+    playerBalance -= item.price;
+    item.owned = true;
+    if (typeof updateBalanceUI === 'function') updateBalanceUI();
+    updateLifestyleUI();
+    if (typeof saveGame === 'function') saveGame();
+}
+
+function lifestyleCardMarkup(item) {
+    const balance = typeof playerBalance !== 'undefined' ? playerBalance : 0;
+    const canBuy = balance >= item.price;
+    const buttonClass = item.owned ? 'is-owned' : (canBuy ? 'can-buy' : 'is-locked');
+    const buttonText = item.owned ? 'SAHİPSİN' : 'SATIN AL';
+    return `
+        <article class="lifestyle-asset-card ${item.owned ? 'is-owned' : ''}" data-lifestyle-card="${item.id}">
+            <div class="lifestyle-asset-info">
+                <div class="lifestyle-asset-icon">${item.icon}</div>
+                <div class="lifestyle-asset-copy">
+                    <h3>${item.name}</h3>
+                    <p>+$${item.passive.toLocaleString('en-US')}/gün getiri</p>
+                    <strong>${lifestyleMoney(item.price)}</strong>
+                </div>
+            </div>
+            <button type="button" class="lifestyle-buy-button ${buttonClass}" data-lifestyle-buy="${item.id}" ${item.owned ? 'disabled' : ''}>${buttonText}</button>
+        </article>`;
+}
+
+function renderLuxuryItemsList() {
+    const container = document.getElementById('luxury-items');
+    if (!container) return;
+    container.innerHTML = luxuryItems.map(lifestyleCardMarkup).join('');
+    container.querySelectorAll('[data-lifestyle-buy]').forEach(button => {
+        button.addEventListener('click', () => purchaseLifestyleItem(button.dataset.lifestyleBuy));
+    });
+}
 
 function updateLifestyleUI() {
     updateLifestyleBalance();
@@ -5549,145 +5674,54 @@ function updateLifestyleUI() {
     calculateLifestyleRank();
 }
 
-function calculateLifestyleRank() {
-    let ownedCount = luxuryItems.filter(i => i.owned).length;
-    let totalPassive = luxuryItems.filter(i => i.owned).reduce((acc, cur) => acc + cur.passive, 0);
-
-    const rankText = document.getElementById('lifestyle-rank-text');
-    const passiveText = document.getElementById('lifestyle-passive-income');
-
-    const ranks = ["Çaylak Yatırımcı", "Şehir Eliti", "Finans Baronu", "Piyasa Hükümdarı", "Küresel Milyarder 👑"];
-    if (rankText) rankText.innerText = ranks[ownedCount];
-    if (passiveText) passiveText.innerText = `+$${totalPassive.toLocaleString('en-US')} / Gün`;
-}
-
-function renderLuxuryStage() {
-    luxuryItems.forEach(item => {
-        const el = document.getElementById(item.domId);
-        if (el) {
-            if (item.owned) el.classList.add('active');
-            else el.classList.remove('active');
-        }
-    });
-}
-
-function renderLuxuryItemsList() {
-    const container = document.getElementById('luxury-items');
-    if (!container) return;
-    container.innerHTML = '';
-
-    luxuryItems.forEach(item => {
-        const canAfford = playerBalance >= item.price;
-        const card = document.createElement('div');
-        card.className = `luxury-card-v2 ${item.owned ? 'purchased' : ''}`;
-        
-        card.innerHTML = `
-            <div class="luxury-card-left">
-                <div class="luxury-icon-box">${item.icon}</div>
-                <div>
-                    <h4 style="margin:0; font-size:14px; color:#fff; font-weight:900;">${item.name}</h4>
-                    <span style="font-size:11px; color:#10b981; font-weight:800;">+$${item.passive.toLocaleString('en-US')}/gün getiri</span>
-                    <div style="font-size:12px; color:#fbbf24; font-weight:900; margin-top:2px;">$${item.price.toLocaleString('en-US')}</div>
-                </div>
-            </div>
-            <button class="btn-buy-luxury ${item.owned ? 'owned' : (canAfford ? 'can-buy' : 'locked')}" 
-                style="padding: 8px 14px; font-size: 12px;"
-                ${item.owned || !canAfford ? 'disabled' : ''}>
-                ${item.owned ? 'SAHİPSİN' : 'SATIN AL'}
-            </button>
-        `;
-
-        if (!item.owned && canAfford) {
-            card.querySelector('.btn-buy-luxury').addEventListener('click', () => {
-                playerBalance -= item.price;
-                item.owned = true;
-                updateBalanceUI();
-                updateLifestyleUI();
-                saveGame();
-            });
-        }
-        container.appendChild(card);
-    });
-}
-
-// Global click yakalayıcıyı da yeni fonksiyona göre güncelle (Eğer yoksa bunu ekle)
-document.addEventListener('click', function(e) {
-    if (e.target.closest('#btn-lifestyle')) {
-        if (typeof isPremium !== 'undefined' && !isPremium) {
-            showCustomAlert("Bu alana sadece Premium üyeler girebilir! Milyarderler kulübüne katılmak için Premium alın.");
-            return;
-        }
-        updateLifestyleUI(); // Eski render fonksiyonları yerine bunu çağırıyoruz
-        const lifestylePage = document.getElementById('lifestyle-page');
-        if (lifestylePage) lifestylePage.style.display = 'flex';
+function openLifestylePage() {
+    const mainMenu = document.getElementById('mobile-main-menu');
+    const lifestylePage = document.getElementById('lifestyle-page');
+    let storedPremium = false;
+    try {
+        storedPremium = localStorage.getItem('cts_premium') === 'true';
+    } catch (storageError) {
+        console.warn('Premium durumu okunamadı; mevcut oturum durumu kullanılacak.', storageError);
     }
-});
+    const premiumActive = (typeof isPremium !== 'undefined' && isPremium) || storedPremium;
 
-// ========================================================
-// %100 GARANTİLİ TIKLAMA YAKALAYICI (TEK VE DÜZELTİLMİŞ SÜRÜM)
-// ========================================================
-document.addEventListener('click', function(e) {
-    
-    // 1. Yaşam Alanı Butonuna Tıklanırsa
-    if (e.target.closest('#btn-lifestyle')) {
-        if (typeof isPremium !== 'undefined' && !isPremium) {
-            if (typeof showCustomAlert === 'function') {
-                showCustomAlert("Bu alana sadece Premium üyeler girebilir! Milyarderler kulübüne katılmak için Premium alın.");
-            } else {
-                alert("Bu alana sadece Premium üyeler girebilir!");
-            }
-            return;
+    if (!premiumActive) {
+        if (typeof showCustomAlert === 'function') {
+            showCustomAlert("Bu alana sadece Premium üyeler girebilir! Milyarderler kulübüne katılmak için Mağaza'dan Premium alın.", "PREMİUM GEREKLİ", "#fbbf24");
         }
-        
-        const mainMenu = document.getElementById('mobile-main-menu');
-        const lifestylePage = document.getElementById('lifestyle-page');
-        
-        // Önce ekranı açıp Ana Menüyü gizleyelim (Siyah ekranı çözer)
-        if (mainMenu) mainMenu.style.display = 'none';
-        
-        if (lifestylePage) {
-            lifestylePage.style.display = 'block'; // 'flex' yerine 'block' yapıldı
-        } else {
-            console.error("HATA: 'lifestyle-page' id'li ekran HTML içinde bulunamadı.");
-            return;
-        }
-
-        // Çökmeyi engelleyen güvenli yükleme (try-catch)
-        try {
-            if (typeof updateLifestyleUI === 'function') {
-                updateLifestyleUI(); 
-            } else {
-                if (typeof updateLifestyleBalance === 'function') updateLifestyleBalance();
-                if (typeof renderLuxuryItems === 'function') renderLuxuryItems();
-                if (typeof renderVisuals === 'function') renderVisuals();
-            }
-        } catch (error) {
-            console.error("Yaşam alanı verileri yüklenirken hata oluştu:", error);
-        }
+        return false;
+    }
+    if (!lifestylePage) {
+        console.error('Yeni Yaşam Alanı kökü bulunamadı.');
+        return false;
     }
 
-    // 2. Geri (◀ MENÜ) Butonuna Tıklanırsa
-    if (e.target.closest('#btn-back-lifestyle')) {
-        const lifestylePage = document.getElementById('lifestyle-page');
-        const mainMenu = document.getElementById('mobile-main-menu');
-        const gameScreen = document.getElementById('game-screen');
-        
-        if (lifestylePage) lifestylePage.style.display = 'none';
-        
-        // Sadece oyun oynanmıyorsa Ana Menüyü göster
-        if (mainMenu && (!gameScreen || gameScreen.style.display === 'none' || gameScreen.style.display === '')) {
-            mainMenu.style.display = 'flex';
-        }
+    if (lifestylePage.parentElement !== document.body) document.body.appendChild(lifestylePage);
+    if (mainMenu) mainMenu.style.display = 'none';
+    lifestylePage.setAttribute('aria-hidden', 'false');
+    lifestylePage.style.display = 'flex';
+    lifestylePage.style.visibility = 'visible';
+    try {
+        updateLifestyleUI();
+    } catch (error) {
+        console.error('Yaşam Alanı verileri çizilemedi:', error);
     }
-});
-
-// Bakiye güncelleme fonksiyonu (Kodlarından eksilmemesi için buraya eklendi)
-function updateLifestyleBalance() {
-    const lifeBalanceDisplay = document.getElementById('life-balance');
-    if (lifeBalanceDisplay && typeof playerBalance !== 'undefined') {
-        lifeBalanceDisplay.innerText = "$" + playerBalance.toLocaleString('en-US', { minimumFractionDigits: 2 });
-    }
+    return true;
 }
+
+function closeLifestylePage() {
+    const lifestylePage = document.getElementById('lifestyle-page');
+    const mainMenu = document.getElementById('mobile-main-menu');
+    if (lifestylePage) {
+        lifestylePage.setAttribute('aria-hidden', 'true');
+        lifestylePage.style.display = 'none';
+    }
+    if (mainMenu) mainMenu.style.display = 'flex';
+    return true;
+}
+
+window.openLifestylePage = openLifestylePage;
+window.closeLifestylePage = closeLifestylePage;
 // --- BAS-TUT HIZLI ARTIŞ / AZALIŞ SİSTEMİ ---
 let holdInterval = null;
 let holdTimeout = null;
@@ -6194,50 +6228,141 @@ if (btnBuyCash) {
     });
 }
     </script>
-    <!-- TAM EKRAN YAŞAM ALANI SAYFASI (LIFESTYLE 2.0) -->
-<div id="lifestyle-page" class="game-page" style="display: none;">
-    <div class="lifestyle-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <button id="btn-back-lifestyle" class="back-btn" style="padding: 6px 12px; font-weight: 800; font-size: 12px;">◀ MENÜ</button>
-        <h2 style="font-size: 16px; font-weight: 900; color: #fbbf24; margin: 0; text-shadow: 0 0 10px rgba(251,191,36,0.3);">💎 MİLYARDER KULÜBÜ</h2>
-        <div class="balance-display" style="font-size: 13px; font-weight: 900; color: #10b981;"><span id="life-balance">$15,000.00</span></div>
+    <!-- YAŞAM ALANI: FOTOĞRAFTAKİ TASARIMA GÖRE SIFIRDAN OLUŞTURULAN EKRAN -->
+<section id="lifestyle-page" class="lifestyle-page-rebuilt" aria-hidden="true" style="display: none;">
+    <header class="lifestyle-topbar">
+        <a id="btn-back-lifestyle" class="lifestyle-menu-button" href="#" onclick="return typeof window.closeLifestylePage === 'function' ? window.closeLifestylePage() : true;">
+            <span class="lifestyle-menu-arrow">◀</span>
+            <span>MENÜ</span>
+        </a>
+        <div class="lifestyle-title-wrap">
+            <div class="lifestyle-title"><span>💎</span> MİLYARDER</div>
+            <div class="lifestyle-title club">KULÜBÜ</div>
+        </div>
+        <div class="lifestyle-balance-wrap">
+            <span class="lifestyle-balance-label">KASA</span>
+            <strong id="life-balance">$15,000.00</strong>
+        </div>
+    </header>
+
+    <div class="lifestyle-hero" aria-label="Milyarder kulübü manzarası">
+        <div class="lifestyle-stars"></div>
+        <div class="lifestyle-moon"></div>
+        <div class="lifestyle-skyline"></div>
+        <div id="stage-asset-jet" class="lifestyle-stage-asset lifestyle-jet">✈️</div>
+        <div id="stage-asset-residence" class="lifestyle-stage-asset lifestyle-residence">🏢</div>
+        <div id="stage-asset-car" class="lifestyle-stage-asset lifestyle-car">🏎️</div>
+        <div id="stage-asset-yacht" class="lifestyle-stage-asset lifestyle-yacht">🛥️</div>
+        <div class="lifestyle-hero-caption">KENDİ İMPARATORLUĞUNU KUR</div>
     </div>
 
-    <!-- Canlı Animasyonlu Sahne -->
-    <div class="penthouse-stage">
-        <div class="stage-sky"></div>
-        <div class="stage-city"></div>
-        <div id="stage-asset-jet" class="stage-asset stage-jet">✈️</div>
-        <div id="stage-asset-residence" class="stage-asset stage-residence">🏢</div>
-        <div id="stage-asset-car" class="stage-asset stage-car">🏎️</div>
-        <div id="stage-asset-yacht" class="stage-asset stage-yacht">🛥️</div>
-    </div>
-
-    <!-- Statü ve Pasif Gelir Barı -->
     <div class="lifestyle-status-card">
-        <div>
-            <span style="font-size: 10px; color: #94a3b8; font-weight: 800; display: block;">STATÜ ÜNVANI</span>
-            <strong id="lifestyle-rank-text" style="font-size: 13px; color: #fff; font-weight: 900;">Çaylak Yatırımcı</strong>
+        <div class="lifestyle-status-block">
+            <span>STATÜ ÜNVANI</span>
+            <strong id="lifestyle-rank-text">Çaylak Yatırımcı</strong>
         </div>
-        <div style="text-align: right;">
-            <span style="font-size: 10px; color: #94a3b8; font-weight: 800; display: block;">GÜNLÜK PASİF GELİR</span>
-            <strong id="lifestyle-passive-income" style="font-size: 13px; color: #10b981; font-weight: 900;">+$0 / Gün</strong>
+        <div class="lifestyle-status-block right">
+            <span>GÜNLÜK PASİF GELİR</span>
+            <strong id="lifestyle-passive-income">+$0 / Gün</strong>
         </div>
     </div>
 
-    <!-- Varlık Listesi -->
-    <div class="luxury-items-container" id="luxury-items" style="padding-bottom: 20px;">
-        <!-- JavaScript dinamik dolduracak -->
+    <div class="lifestyle-section-heading">
+        <div>
+            <span class="lifestyle-section-kicker">PREMİUM YAŞAM</span>
+            <h2>Varlıklarını Seç</h2>
+        </div>
+        <span class="lifestyle-section-gem">✦</span>
     </div>
-</div>
-<!-- Oyun İçi Özel Uyarı Pop-up'ı -->
-<div id="custom-alert-overlay" class="overlay">
-    <div class="custom-alert-box">
-        <h3 id="custom-alert-title">UYARI</h3>
-        <p id="custom-alert-message">Mesaj buraya gelecek.</p>
-        <button id="btn-custom-alert-ok" class="btn-buy-luxury" style="background: #ef4444; width: 100%; margin-top: 10px;">TAMAM</button>
+
+    <div id="luxury-items" class="lifestyle-assets-list">
+        <article class="lifestyle-asset-card" data-lifestyle-card="house1">
+            <div class="lifestyle-asset-info"><div class="lifestyle-asset-icon">🏢</div><div class="lifestyle-asset-copy"><h3>Penthouse Rezidans</h3><p>+$100/gün getiri</p><strong>$500,000</strong></div></div>
+            <button type="button" class="lifestyle-buy-button can-buy" data-lifestyle-buy="house1">SATIN AL</button>
+        </article>
+        <article class="lifestyle-asset-card" data-lifestyle-card="car1">
+            <div class="lifestyle-asset-info"><div class="lifestyle-asset-icon">🏎️</div><div class="lifestyle-asset-copy"><h3>Hypercar Garajı</h3><p>+$30/gün getiri</p><strong>$150,000</strong></div></div>
+            <button type="button" class="lifestyle-buy-button can-buy" data-lifestyle-buy="car1">SATIN AL</button>
+        </article>
+        <article class="lifestyle-asset-card" data-lifestyle-card="yacht1">
+            <div class="lifestyle-asset-info"><div class="lifestyle-asset-icon">🛥️</div><div class="lifestyle-asset-copy"><h3>Mega Lüks Yat</h3><p>+$240/gün getiri</p><strong>$1,200,000</strong></div></div>
+            <button type="button" class="lifestyle-buy-button can-buy" data-lifestyle-buy="yacht1">SATIN AL</button>
+        </article>
+        <article class="lifestyle-asset-card" data-lifestyle-card="plane1">
+            <div class="lifestyle-asset-info"><div class="lifestyle-asset-icon">✈️</div><div class="lifestyle-asset-copy"><h3>Özel VIP Jet</h3><p>+$700/gün getiri</p><strong>$3,500,000</strong></div></div>
+            <button type="button" class="lifestyle-buy-button can-buy" data-lifestyle-buy="plane1">SATIN AL</button>
+        </article>
     </div>
-</div>
-<!-- ... Diğer oyun ekranları ve modalleri burada biter ... -->
+</section>
+<script>
+// Yaşam Alanı açılışı ana oyun/Firebase kodundan bağımsızdır.
+// Ana oyun betiği internet nedeniyle yüklenmese bile ekran siyah kalmaz.
+(function installIndependentLifestyleController() {
+    function hasPremiumAccess() {
+        try {
+            if (localStorage.getItem('cts_premium') === 'true') return true;
+        } catch (storageError) {
+            console.warn('Premium kaydı okunamadı.', storageError);
+        }
+        try {
+            return typeof isPremium !== 'undefined' && Boolean(isPremium);
+        } catch (stateError) {
+            return false;
+        }
+    }
+
+    function openLifestylePageIndependent() {
+        const page = document.getElementById('lifestyle-page');
+        const menu = document.getElementById('mobile-main-menu');
+        if (!page) return false;
+
+        if (!hasPremiumAccess()) {
+            const message = "Bu alana sadece Premium üyeler girebilir! Milyarderler kulübüne katılmak için Mağaza'dan Premium alın.";
+            if (typeof window.showCustomAlert === 'function') {
+                window.showCustomAlert(message, 'PREMİUM GEREKLİ', '#fbbf24');
+            } else {
+                window.alert(message);
+            }
+            return false;
+        }
+
+        if (page.parentElement !== document.body) document.body.appendChild(page);
+        if (menu) menu.style.setProperty('display', 'none', 'important');
+        page.setAttribute('aria-hidden', 'false');
+        page.style.setProperty('display', 'flex', 'important');
+        page.style.setProperty('visibility', 'visible', 'important');
+        page.style.setProperty('opacity', '1', 'important');
+        page.style.setProperty('z-index', '200000', 'important');
+        page.scrollTop = 0;
+
+        try {
+            if (typeof window.updateLifestyleUI === 'function') window.updateLifestyleUI();
+        } catch (error) {
+            console.error('Yaşam Alanı güncellemesi atlandı:', error);
+        }
+        return true;
+    }
+
+    function closeLifestylePageIndependent() {
+        const page = document.getElementById('lifestyle-page');
+        const menu = document.getElementById('mobile-main-menu');
+        if (page) {
+            page.setAttribute('aria-hidden', 'true');
+            page.style.setProperty('display', 'none', 'important');
+            page.style.setProperty('visibility', 'hidden', 'important');
+        }
+        if (menu) menu.style.setProperty('display', 'flex', 'important');
+        return true;
+    }
+
+    const page = document.getElementById('lifestyle-page');
+    if (page && page.parentElement !== document.body) document.body.appendChild(page);
+
+    window.openLifestylePage = openLifestylePageIndependent;
+    window.closeLifestylePage = closeLifestylePageIndependent;
+})();
+</script>
+ <!-- ... Diğer oyun ekranları ve modalleri burada biter ... -->
 
     <!-- BURAYA YAPIŞTIRABİLİRSİN: Özel İsim Değiştirme Modali -->
     <div id="name-change-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(5px);">
