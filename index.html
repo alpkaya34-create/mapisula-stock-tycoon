@@ -257,7 +257,77 @@
 
         .menu-actions { display: flex !important; flex-direction: column !important; justify-content: center !important; gap: 15px !important; flex: 1 !important; }
         .mobile-btn { flex: 0 0 auto !important; height: auto !important; padding: 16px 15px !important; font-size: 14px !important; min-height: 50px !important; }
+/* ---------------------------------------------------- */
+        /* PREMIUM TEMA GÜNCELLEMELERİ (ÜST VE ALT PANELLER)    */
+        /* ---------------------------------------------------- */
+        
+        /* 1. Üst Panel (Dashboard) Lüks Görünümü */
+        body.premium-theme .top-dashboard {
+            background-color: #0c0a05 !important; /* 1. fotoğraftaki derin, sıcak koyu siyah/kahve tonu */
+            border-bottom: 1px solid rgba(251, 191, 36, 0.4) !important;
+            box-shadow: 0 5px 25px rgba(251, 191, 36, 0.15) !important; 
+        }
 
+        /* Üst Paneldeki Menü Butonu */
+        body.premium-theme .btn-menu-back {
+            background: rgba(251, 191, 36, 0.08) !important;
+            border-color: rgba(251, 191, 36, 0.4) !important;
+            color: #fbbf24 !important;
+        }
+
+        /* Üst Paneldeki Gün Kutusu */
+        body.premium-theme .dashboard-box.right-align {
+            background: rgba(251, 191, 36, 0.08) !important;
+            border-color: rgba(251, 191, 36, 0.4) !important;
+        }
+        body.premium-theme .dashboard-box.right-align .dash-value {
+            color: #fbbf24 !important;
+        }
+        body.premium-theme .dashboard-box.right-align .dash-label {
+            color: #fde68a !important;
+        }
+
+        /* Üst Paneldeki AI Analist Butonu */
+        body.premium-theme .btn-ai-nav {
+            background: rgba(251, 191, 36, 0.08) !important;
+            border-color: rgba(251, 191, 36, 0.4) !important;
+            color: #fbbf24 !important;
+            box-shadow: inset 0 0 10px rgba(251, 191, 36, 0.15) !important;
+        }
+        body.premium-theme .btn-ai-nav svg {
+            stroke: #fbbf24 !important;
+            filter: drop-shadow(0 0 5px rgba(251, 191, 36, 0.6)) !important;
+        }
+        body.premium-theme #ai-rights-counter {
+            color: #fbbf24 !important;
+        }
+
+        /* 2. Alt Sekme Çubuğu (Tab Bar) Lüks Görünümü */
+        body.premium-theme .bottom-tab-bar {
+            background-color: #0c0a05 !important; /* 1. fotoğraftaki derin, sıcak koyu siyah/kahve tonu */
+            border-top: 1px solid rgba(251, 191, 36, 0.4) !important;
+            box-shadow: 0 -5px 25px rgba(251, 191, 36, 0.15) !important;
+        }
+
+        /* Alt Menü Pasif İkonlar */
+        body.premium-theme .bottom-tab-bar .tab-item {
+            color: #b45309 !important; 
+        }
+        body.premium-theme .bottom-tab-bar .tab-item svg {
+            stroke: #b45309 !important; 
+            filter: none !important;
+        }
+
+        /* Alt Menü AKTİF İkon (Parlak Altın) */
+        body.premium-theme .bottom-tab-bar .tab-item.active {
+            color: #fbbf24 !important;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.8) !important;
+        }
+        body.premium-theme .bottom-tab-bar .tab-item.active svg {
+            stroke: #fbbf24 !important;
+            filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.8)) !important;
+            transform: translateY(-3px) scale(1.1);
+        }
         /* --- ORİJİNAL TASARIMDAKİ SAĞ/SOL BOŞLUKLARI KORUNUYOR --- */
         .mobile-screen { padding: 0 24px !important; }
         #game-screen { padding: 0 !important; }
@@ -270,7 +340,103 @@
                 box-shadow: 0 0 50px rgba(0, 242, 254, 0.05) !important;
             }
         }
+/* ---------------------------------------------------- */
+        /* PREMIUM TEMA - EKSİK KALAN NEONLAR VE GÜN DÜZELTMESİ */
+        /* ---------------------------------------------------- */
+        
+        /* 1. GÜN Kutusu Arkaplan Hatası (Şeffaf Yapılarak Temizlendi) */
+        body.premium-theme .dashboard-box.right-align {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
 
+        /* 2. Kasa Performansı (Servet Analizi) Modalı */
+        body.premium-theme #wallet-stats-modal {
+            border-color: #fbbf24 !important;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(251, 191, 36, 0.15) !important;
+        }
+
+        /* 3. Gün Sonu Özeti Modalı */
+        body.premium-theme #summary-title {
+            color: #fbbf24 !important;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.6) !important;
+        }
+        body.premium-theme #btn-close-summary {
+            background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%) !important;
+            color: #000 !important;
+            box-shadow: 0 5px 15px rgba(251, 191, 36, 0.4) !important;
+            border: none !important;
+        }
+
+        /* 4. AI Analist Modalı */
+        body.premium-theme #ai-modal h3 {
+            color: #fbbf24 !important;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.6) !important;
+        }
+        body.premium-theme #ai-modal > div:first-child svg {
+            stroke: #fbbf24 !important;
+            filter: drop-shadow(0 0 5px rgba(251, 191, 36, 0.6)) !important;
+        }
+        /* AI Hisse Seçim Çerçevesi */
+        body.premium-theme .ai-stock-select-btn {
+            border: 1px solid rgba(251, 191, 36, 0.4) !important;
+        }
+
+        /* 5. İşlem Panelindeki Gizli Mavi Neonlar */
+        /* Grafik Butonu */
+        body.premium-theme #btn-open-chart {
+            background: rgba(251, 191, 36, 0.1) !important;
+            border-color: #fbbf24 !important;
+            color: #fbbf24 !important;
+        }
+        body.premium-theme #btn-open-chart svg {
+            stroke: #fbbf24 !important;
+            filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.6)) !important;
+        }
+        
+        /* Vadeli İşlem Kaldıraç Çubuğu (Slider) ve Çarpan Metni */
+        body.premium-theme #leverage-slider {
+            accent-color: #fbbf24 !important;
+        }
+        body.premium-theme #leverage-display {
+            color: #fbbf24 !important;
+        }
+
+        /* 6. Teknik Analiz Grafik Modalı */
+        body.premium-theme #chart-modal {
+            border-color: #fbbf24 !important;
+        }
+        body.premium-theme #chart-current-price {
+            color: #fbbf24 !important;
+        }
+        body.premium-theme #btn-close-chart {
+            border: 1px solid #fbbf24 !important;
+            color: #fbbf24 !important;
+        }
+        /* 7. Spot/Vadeli ve Çizgi/Mum Aktif Buton Işıkları */
+        
+        /* Spot ve Vadeli Geçiş Butonları (Aktif Hali) */
+        body.premium-theme .trade-mode-btn.active {
+            color: #fbbf24 !important;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.6) !important;
+        }
+
+        /* Grafik Çizgi ve Mum Geçiş Butonları (Aktif Hali) */
+        body.premium-theme .btn-chart-tab.active {
+            color: #fbbf24 !important;
+            border-color: #fbbf24 !important;
+            box-shadow: 0 0 8px rgba(251, 191, 36, 0.3), inset 0 0 8px rgba(251, 191, 36, 0.1) !important;
+            text-shadow: 0 0 5px rgba(251, 191, 36, 0.4) !important;
+        }
+        /* AI Modalı - Başka Hisse Sor Butonu */
+        body.premium-theme #ai-back-to-list {
+            background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%) !important;
+            color: #000 !important;
+            box-shadow: 0 5px 15px rgba(251, 191, 36, 0.4) !important;
+            border: none !important;
+            font-weight: 900 !important;
+        }
         /* --- OYUN İÇİ ÜST PANELLER (TAVANA KİLİTLENİR VE YATAY HİZALANIR) --- */
         .top-dashboard {
             padding-top: calc(max(env(safe-area-inset-top), 20px) + 15px) !important; 
@@ -1022,7 +1188,13 @@
         
         <div class="top-dashboard">
             <div style="display: flex; align-items: center;">
-                <button id="btn-in-game-menu" class="btn-menu-back">◀ MENÜ</button>
+                <button id="btn-in-game-menu" class="btn-menu-back" style="display: flex; align-items: center; gap: 6px;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-top: -1px;">
+        <path d="M11 17l-5-5 5-5"></path>
+        <path d="M18 17l-5-5 5-5" opacity="0.5"></path>
+    </svg>
+    MENÜ
+</button>
                 <div class="dashboard-box" id="btn-open-wallet-stats" style="margin-left: 0; cursor: pointer;" title="Kasa Analizi İçin Tıkla">
                 <span class="dash-label">KASA <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; vertical-align: middle; margin-left: 4px; filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.6));">
     <line x1="18" y1="20" x2="18" y2="10"></line>
@@ -1985,7 +2157,7 @@ function playSound(type) {
     playSynthSound(type);
 }
 
-// 🎵 ARKA PLAN MÜZİĞİ (Odaklanma - Tycoon Teması)
+// 🎵 ARKA PLAN MÜZİĞİ (Lofi / Chillwave Tycoon Teması)
 function handleBGM() {
     if (isMusicEnabled) {
         try {
@@ -1993,31 +2165,64 @@ function handleBGM() {
             if (!audioCtx) return;
             if (ambientInterval) return;
 
+            const melodyChords = [
+                [174.61, 220.00, 261.63], // 1. Akor (Fmaj)
+                [196.00, 246.94, 293.66], // 2. Akor (Gmaj)
+                [220.00, 261.63, 329.63], // 3. Akor (Amin)
+                [164.81, 196.00, 246.94]  // 4. Akor (Emin)
+            ];
+
+            const compressor = audioCtx.createDynamicsCompressor();
+            compressor.threshold.setValueAtTime(-20, audioCtx.currentTime);
+            compressor.knee.setValueAtTime(10, audioCtx.currentTime);
+            compressor.ratio.setValueAtTime(12, audioCtx.currentTime);
+            // İLK ÇÖZÜM: Kompresörün tepki süresi (attack) 0'dan 0.05'e çıkarıldı ki sese aniden vurup çıtlatmasın
+            compressor.attack.setValueAtTime(0.05, audioCtx.currentTime); 
+            compressor.release.setValueAtTime(0.25, audioCtx.currentTime);
+
+            const masterGain = audioCtx.createGain();
+            masterGain.gain.setValueAtTime(2.5, audioCtx.currentTime); 
+
+            masterGain.connect(compressor);
+            compressor.connect(audioCtx.destination);
+
             ambientInterval = setInterval(() => {
                 try {
                     if (!isMusicEnabled || !audioCtx) return;
                     const now = audioCtx.currentTime;
                     
-                    const oscBase = audioCtx.createOscillator();
-                    const gainBase = audioCtx.createGain();
-                    oscBase.type = 'triangle'; 
-                    
-                    const melody = [220.00, 261.63, 329.63, 293.66, 392.00, 329.63]; 
-                    const note = melody[bgmStep % melody.length];
+                    const chord = melodyChords[bgmStep % melodyChords.length];
                     bgmStep++;
 
-                    oscBase.frequency.setValueAtTime(note / 2, now); 
-                    
-                    gainBase.gain.setValueAtTime(0.001, now);
-                    gainBase.gain.linearRampToValueAtTime(0.15, now + 1.2);
-                    gainBase.gain.linearRampToValueAtTime(0.001, now + 2.8);
-                    
-                    oscBase.connect(gainBase);
-                    gainBase.connect(audioCtx.destination);
-                    oscBase.start(now);
-                    oscBase.stop(now + 3);
+                    chord.forEach((freq) => {
+                        const osc = audioCtx.createOscillator();
+                        const gainNode = audioCtx.createGain();
+                        
+                        osc.type = 'sine'; 
+                        osc.frequency.setValueAtTime(freq, now); 
+                        
+                        // İKİNCİ ÇÖZÜM: Tamamen pürüzsüz bir ses eğrisi (Envelope)
+                        gainNode.gain.setValueAtTime(0, now); // Ses SIFIRDAN başlar
+                        
+                        // 1.2 saniyede yumuşakça tepe noktasına yükselir
+                        gainNode.gain.linearRampToValueAtTime(0.4, now + 1.2);
+                        
+                        // 4.5 saniyeye kadar yavaşça sönümlenir (sıfıra çok yakın bir değer)
+                        gainNode.gain.exponentialRampToValueAtTime(0.001, now + 4.5);
+                        
+                        // Osilatör durmadan hemen ÖNCE sesi ZORLA tam "0" (Sıfır) yaparız. (Patırtıyı kökten çözer)
+                        gainNode.gain.linearRampToValueAtTime(0, now + 4.9);
+                        
+                        osc.connect(gainNode);
+                        gainNode.connect(masterGain); 
+                        
+                        osc.start(now);
+                        // Sesin tam "0" olduğundan emin olduktan sonra osilatör tamamen kapatılır
+                        osc.stop(now + 5.0); 
+                    });
+
                 } catch(e) {}
-            }, 3000); 
+            }, 4000); 
         } catch(e) {}
 
     } else {
@@ -2291,15 +2496,20 @@ function handleBGM() {
             }
             // --- BÜYÜK SAYILARI KISALTMA FONKSİYONU ---
 function formatMoney(amount) {
-    if (amount >= 1000000000000) {
-        return "$" + (amount / 1000000000000).toFixed(2) + "T"; // Trilyon (Trillion) için T
-    } else if (amount >= 1000000000) {
-        return "$" + (amount / 1000000000).toFixed(2) + "B"; // Milyar (Billion) için B
-    } else if (amount >= 1000000) {
-        return "$" + (amount / 1000000).toFixed(2) + "M"; // Milyon (Million) için M
+    let isNegative = amount < 0;
+    let absVal = Math.abs(amount);
+    let prefix = isNegative ? "-$" : "$";
+
+    if (absVal >= 1000000000000) {
+        return prefix + (absVal / 1000000000000).toFixed(2) + "T"; 
+    } else if (absVal >= 1000000000) {
+        return prefix + (absVal / 1000000000).toFixed(2) + "B"; 
+    } else if (absVal >= 1000000) {
+        return prefix + (absVal / 1000000).toFixed(2) + "M"; 
     } else {
-        // 1 Milyonun altındaki paralar için klasik kuruşlu ve virgüllü gösterim
-        return "$" + amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        // Fiyat 1 doların altındaysa 4 basamak, üstündeyse 2 basamak göster
+        let decimals = (absVal > 0 && absVal < 1) ? 4 : 2;
+        return prefix + absVal.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
     }
 }
 
@@ -2634,12 +2844,15 @@ function getDynamicLoanAmount() {
 }
 
 function updateInterestRate() {
+    // BURADAKİ playerBalance'ları KALDIRIP YERİNE getNetWorth() DEĞERİNİ KOYUYORUZ
+    let totalWealth = getNetWorth(); 
+
     // Faiz oranları hesaplaması
-    if (playerBalance >= 15000000) currentInterestRate = 1.00;
-    else if (playerBalance >= 5000000) currentInterestRate = 1.25;
-    else if (playerBalance >= 1000000) currentInterestRate = 1.50;
-    else if (playerBalance >= 250000) currentInterestRate = 1.75;
-    else if (playerBalance >= 50000) currentInterestRate = 2.00;
+    if (totalWealth >= 15000000) currentInterestRate = 1.00;
+    else if (totalWealth >= 5000000) currentInterestRate = 1.25;
+    else if (totalWealth >= 1000000) currentInterestRate = 1.50;
+    else if (totalWealth >= 250000) currentInterestRate = 1.75;
+    else if (totalWealth >= 50000) currentInterestRate = 2.00;
     else currentInterestRate = 2.25;
     
     let dynamicLoan = getDynamicLoanAmount();
@@ -3289,18 +3502,16 @@ stockCards.forEach(card => {
     const lev = parseInt(levSlider.value, 10) || 1;
     if (!currentStockCard || qty <= 0 || price <= 0 || lev <= 0) return false;
 
-    // --- YENİ DİNAMİK KALDIRAÇ KONTROLÜ ---
-    let maxAllowedLeverage = getMaxLeverage(); // Kasa performansına göre sınırı hesapla
+    let maxAllowedLeverage = typeof getMaxLeverage === 'function' ? getMaxLeverage() : 50; 
     if (lev > maxAllowedLeverage) {
         playSound('error');
         if (typeof showCustomAlert === 'function') {
-            showCustomAlert(`Maksimum limit aşıldı! Mevcut kasa performansınızla en fazla ${maxAllowedLeverage}x kaldıraç kullanabilirsiniz.`);
+            showCustomAlert(`Maksimum limit aşıldı! En fazla ${maxAllowedLeverage}x kaldıraç kullanabilirsiniz.`);
         } else {
-            alert(`Maksimum limit aşıldı! En fazla ${maxAllowedLeverage}x açabilirsiniz.`);
+            alert(`Limit aşıldı! En fazla ${maxAllowedLeverage}x açabilirsiniz.`);
         }
-        return false; // İşlemi tamamen engelle!
+        return false; 
     }
-    // -------------------------------------
 
     const positionType = String(type || '').toUpperCase();
     if (positionType !== 'LONG' && positionType !== 'SHORT') return false;
@@ -3310,16 +3521,17 @@ stockCards.forEach(card => {
     try {
         const margin = qty * price;
         const effectiveAmount = qty * lev;
-        
-        // YENİ ORANLAR: Vadeli Premium %0.4 (0.004) | Vadeli Standart %0.8 (0.008)
         const commissionRate = isPremium ? 0.004 : 0.008;
         
-        const commissionFee = effectiveAmount * commissionRate;
+        // İŞTE KRİTİK DÜZELTME: Komisyon hisse adedinden değil, toplam hacim (fiyat x miktar) üzerinden alınmalı!
+        const positionSize = margin * lev; 
+        const commissionFee = positionSize * commissionRate;
+        
         const totalRequiredMoney = margin + commissionFee;
 
         if (playerBalance < totalRequiredMoney) {
             playSound('error');
-            if (marginDisplay) {
+            if (typeof marginDisplay !== 'undefined' && marginDisplay) {
                 marginDisplay.style.color = '#ef4444';
                 setTimeout(() => { marginDisplay.style.color = '#ffffff'; }, 600);
             }
@@ -3338,22 +3550,17 @@ stockCards.forEach(card => {
             margin: margin
         };
 
-        // State'i önce oluştur. UI güncellemesi daha sonra yapılır.
         playerBalance -= totalRequiredMoney;
         activePositions.push(position);
         gameStats.trades++;
         dailyTrades++;
 
         playSound('buy');
-
-        // Paneli işlemin hemen sonunda kapat; aşağıdaki herhangi bir
-        // UI/storage hatası panelin açık kalmasına sebep olmasın.
         closeTradePanelSafely();
 
-        // UI ve kayıt işlemlerini hata yalıtımı ile çalıştır.
-        try { updateBalanceUI(); } catch (e) { console.warn('Futures balance UI:', e); }
-        try { saveGame(); } catch (e) { console.warn('Futures save:', e); }
-        try { refreshLiveUI(true); } catch (e) { console.warn('Futures refresh:', e); }
+        try { updateBalanceUI(); } catch (e) {}
+        try { saveGame(); } catch (e) {}
+        try { refreshLiveUI(true); } catch (e) {}
 
         if (window.getComputedStyle(profileScreen).display !== 'none') {
             try { btnProfile.click(); } catch (e) {}
@@ -3364,7 +3571,6 @@ stockCards.forEach(card => {
         console.error('openFuturesPosition error:', err);
         return false;
     } finally {
-        // Kilit hiçbir koşulda takılı kalmasın.
         futuresActionLock = false;
     }
 }
@@ -3556,8 +3762,9 @@ stockCards.forEach(card => {
 
                     portCard.classList.remove('trend-up', 'trend-down');
                     portCard.classList.add(isDown ? 'trend-down' : 'trend-up');
+                    let avgDecimals = (avgPrice > 0 && avgPrice < 1) ? 4 : 2;
                     if (pOwned) {
-                        pOwned.innerHTML = `Portföy: ${ownedCount.toLocaleString('tr-TR')} Adet <br><span style="color: #38bdf8; font-size: 10px;">Maliyet: $${avgPrice.toFixed(2)}</span>`;
+                        pOwned.innerHTML = `Portföy: ${ownedCount.toLocaleString('tr-TR')} Adet <br><span style="color: #38bdf8; font-size: 10px;">Maliyet: $${avgPrice.toLocaleString('en-US', { minimumFractionDigits: avgDecimals, maximumFractionDigits: avgDecimals })}</span>`;
                     }
                 });
 
@@ -5204,44 +5411,39 @@ chartAreaPath.setAttribute('d', `M ${points.join(' L ')} L 300,130 L 0,130 Z`);
 
         // %100 Maksimum İşlem Gerçekleştirme Fonksiyonu
         function executeMaxAction(type) {
-            if (type === 'BUY') {
-                // --- SPOT ALIM MATEMATİĞİ ---
-                // Spot Komisyon Oranları: Premium %0.2 (0.002) | Standart %0.4 (0.004)
-                let spotCommission = isPremium ? 0.002 : 0.004;
-                
-                let maxQty = Math.floor(playerBalance / (currentStockPrice * (1 + spotCommission)));
-                if (maxQty < 1) maxQty = 1;
-                
-                inputQty.value = maxQty;
-                updateTotalCost();
-                executeBuyAction(); 
-                
-            } else if (type === 'SELL') {
-                // --- SPOT SATIŞ MATEMATİĞİ ---
-                let ownedCount = parseInt(displayTradeOwned.innerText.replace(/[^0-9]/g, "")) || 0;
-                if (ownedCount > 0) {
-                    inputQty.value = ownedCount;
-                    updateTotalCost();
-                    executeSellAction(); 
-                }
-                
-            } else if (type === 'LONG' || type === 'SHORT') {
-                // --- VADELİ İŞLEM MATEMATİĞİ (Tüm Kasayla İşlem Açma) ---
-                // Vadeli Komisyon Oranları: Premium %0.4 (0.004) | Standart %0.8 (0.008)
-                let futuresCommission = isPremium ? 0.004 : 0.008;
-                const lev = parseInt(levSlider.value) || 1;
-                
-                // Vadeli formülü: 1 Adet Hisse Başına Düşen Toplam Maliyet = Teminat (Fiyat) + Komisyon (Fiyat x Kaldıraç x Komisyon Oranı)
-                let costPerShare = currentStockPrice + (currentStockPrice * lev * futuresCommission);
-                let maxQty = Math.floor(playerBalance / costPerShare);
-                
-                if (maxQty < 1) maxQty = 1; // Para yetmese bile en az 1 yazsın, buton hata versin
-                
-                inputQty.value = maxQty;
-                updateTotalCost(); 
-                openFuturesPosition(type); 
-            }
+    if (type === 'BUY') {
+        let spotCommission = isPremium ? 0.002 : 0.004;
+        let costPerShare = currentStockPrice * (1 + spotCommission);
+        let maxQty = Math.floor((playerBalance + 0.001) / costPerShare);
+        if (maxQty < 1) maxQty = 1;
+        
+        inputQty.value = maxQty;
+        updateTotalCost();
+        executeBuyAction(); 
+        
+    } else if (type === 'SELL') {
+        let ownedCount = parseInt(displayTradeOwned.innerText.replace(/[^0-9]/g, "")) || 0;
+        if (ownedCount > 0) {
+            inputQty.value = ownedCount;
+            updateTotalCost();
+            executeSellAction(); 
         }
+        
+    } else if (type === 'LONG' || type === 'SHORT') {
+        let futuresCommission = isPremium ? 0.004 : 0.008;
+        const lev = parseInt(levSlider.value) || 1;
+        
+        // Küsürat hatalarını (+0.001) engelleyerek kasayı son kuruşuna kadar emer
+        let costPerShare = currentStockPrice + (currentStockPrice * lev * futuresCommission);
+        let maxQty = Math.floor((playerBalance + 0.001) / costPerShare);
+        
+        if (maxQty < 1) maxQty = 1; 
+        
+        inputQty.value = maxQty;
+        updateTotalCost(); 
+        openFuturesPosition(type); 
+    }
+}
 
         // DİKKAT: Ekstra document.getElementById('btn-buy').addEventListener('click') eklemiyoruz! 
         // Çünkü oyunun kendi orijinal buton dinleyicileri zaten yukarıda çalışıyor. 
@@ -5251,12 +5453,12 @@ chartAreaPath.setAttribute('d', `M ${points.join(' L ')} L 300,130 L 0,130 Z`);
         setupHoldToMax('btn-sell', 'SELL');
         
         // Sayfa yüklendiğinde butonlara basılı tutma özelliğini bağla
-        window.addEventListener('DOMContentLoaded', () => {
-            setupHoldToMax('btn-buy', 'BUY');
-            setupHoldToMax('btn-sell', 'SELL');
-            
-            // VADELİ BUTONLARININ ESKİ BOZUK KODLARI BURADAN SİLİNDİ!
-        });
+window.addEventListener('DOMContentLoaded', () => {
+    setupHoldToMax('btn-buy', 'BUY');
+    setupHoldToMax('btn-sell', 'SELL');
+    setupHoldToMax('btn-long', 'LONG');    // YENİ EKLENDİ
+    setupHoldToMax('btn-short', 'SHORT');  // YENİ EKLENDİ
+});
             
         // ==========================================================================
 // 🛒 MAĞAZADAN AI HAKKI SATIN ALMA
@@ -5312,8 +5514,8 @@ if (btnBuyAiRights) {
         const tutorialSteps = [
     { 
         icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 42px; height: 42px; display: block; margin: 0 auto; filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.6));"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>', 
-        title: '1. HOŞ GELDİN!', 
-        text: 'CTS Stock Market Tycoon\'a hoş geldin!<br><br>Sermayen <b>$15,000</b>. Amacın doğru yatırımlarla kasayı büyütüp <b>$20 Milyon</b> barajını aşarak <b>Gizli Kripto Borsası\'nı</b> açmak!' 
+        title: "1. HOŞ GELDİN!",
+        text: "CTS Stock Market Tycoon'a hoş geldin!<br><br>Başlangıç Sermayen: <strong style='color: #00f2fe;'>$15,000</strong><br><br>Amacın doğru yatırımlarla kasayı büyütüp <strong style='color: #00f2fe;'>$20 Milyon</strong> barajını aşarak <strong style='color: #a855f7;'>Gizli Borsası'yı</strong> açmak!"
     },
     { 
         icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 42px; height: 42px; display: block; margin: 0 auto; filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.6));"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>', 
