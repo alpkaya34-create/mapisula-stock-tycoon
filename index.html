@@ -437,6 +437,18 @@
             border: none !important;
             font-weight: 900 !important;
         }
+        /* 8. İşlem Penceresi Hisse Fiyatı Altın Rengi (Kapsamlı Seçiciler) */
+        body.premium-theme #trade-stock-price,
+        body.premium-theme #trade-price,
+        body.premium-theme #modal-stock-price,
+        body.premium-theme #modal-price,
+        body.premium-theme #current-stock-price,
+        body.premium-theme .trade-price-display,
+        body.premium-theme [id*="modal"][id*="price"],
+        body.premium-theme [id*="trade"][id*="price"] {
+            color: #fbbf24 !important;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.4) !important;
+        }
         /* --- OYUN İÇİ ÜST PANELLER (TAVANA KİLİTLENİR VE YATAY HİZALANIR) --- */
         .top-dashboard {
             padding-top: calc(max(env(safe-area-inset-top), 20px) + 15px) !important; 
@@ -1626,7 +1638,7 @@ CTS KRİPTO BORSASI</h3>
     <path d="M2 12h20"></path>
     <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
 </svg> MEGA KÜRESEL KUMBARA</h4>
-                        <p style="font-size:11px; color:#94a3b8; font-weight: 700; line-height: 1.4;">Büyük oynayanların havuzu! Bar dolduğunda devasa ödülü paylaş!<br><span style="color: #fbbf24; font-size: 10px;">(Ödüller: $1.000.000'a Varan Nakit, %5 Rastgele Şirket Payı, 2 Aylık Premium)</span></p>
+                        <p style="font-size:11px; color:#94a3b8; font-weight: 700; line-height: 1.4;">Büyük oynayanların havuzu! Bar dolduğunda devasa ödülü paylaş!<br><span style="color: #fbbf24; font-size: 10px;">(Ödüller: $1.500.000'a Varan Nakit, %5 Rastgele Şirket Payı, 2 Aylık Premium)</span></p>
                     </div>
                     <!-- YENİ: Mega Kumbara Tur Sayacı -->
                     <div id="mega-piggy-round-display" style="background: rgba(0, 242, 254, 0.1); border: 1px solid #00f2fe; padding: 6px 12px; border-radius: 8px; color: #00f2fe; font-weight: 900; font-size: 13px; text-shadow: 0 0 5px rgba(0,242,254,0.5); white-space: nowrap; margin-left: 10px;">
@@ -1654,7 +1666,7 @@ CTS KRİPTO BORSASI</h3>
     <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
     <circle cx="12" cy="14" r="1" fill="#ec4899"></circle>
 </svg> KÜRESEL KUMBARA</h4>
-                        <p style="font-size:11px; color:#94a3b8; font-weight: 700; line-height: 1.4;">Bar dolduğunda katkı sağlayanlar büyük ödülü paylaşır! <br><span style="color: #fbbf24; font-size: 10px;">(Ödüller: $350.000'a Varan Nakit, %2 Rastgele Şirket Payı, 1 Aylık Premium)</span></p>
+                        <p style="font-size:11px; color:#94a3b8; font-weight: 700; line-height: 1.4;">Bar dolduğunda katkı sağlayanlar büyük ödülü paylaşır! <br><span style="color: #fbbf24; font-size: 10px;">(Ödüller: $500.000'a Varan Nakit, %2 Rastgele Şirket Payı, 1 Aylık Premium)</span></p>
                     </div>
                     <!-- YENİ: Normal Kumbara Tur Sayacı -->
                     <div id="piggy-round-display" style="background: rgba(236, 72, 153, 0.1); border: 1px solid #ec4899; padding: 6px 12px; border-radius: 8px; color: #ec4899; font-weight: 900; font-size: 13px; text-shadow: 0 0 5px rgba(236,72,153,0.5); white-space: nowrap; margin-left: 10px;">
@@ -2045,6 +2057,7 @@ document.addEventListener('DOMContentLoaded', initGooglePayments);
 let audioCtx = null;
 let ambientInterval = null;
 let bgmStep = 0; 
+let isAudioUnlocked = false; // MOBİL SES KİLİDİ DURUMU
 
 function initAudio() {
     try {
@@ -2055,18 +2068,47 @@ function initAudio() {
             }
         }
         if (audioCtx && audioCtx.state === 'suspended') {
-            audioCtx.resume().catch(e => console.log("Ses engeli"));
+            audioCtx.resume().catch(e => console.log("Kullanıcı etkileşimi bekleniyor..."));
         }
     } catch (error) {
         console.log("Mobil ses engellendi.");
     }
 }
 
+// YENİ: MOBİL TARAYICI SES KİLİDİNİ KIRAN FONKSİYON (iOS/Android için kritik)
+function unlockMobileAudio() {
+    if (isAudioUnlocked) return;
+    
+    initAudio();
+    if (!audioCtx) return;
+
+    // Tarayıcıyı kandırmak için 0.1 saniyelik "sessiz" bir frekans çalarız
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    gain.gain.value = 0; // SIFIR SES
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(0);
+    osc.stop(audioCtx.currentTime + 0.1);
+
+    audioCtx.resume().then(() => {
+        isAudioUnlocked = true;
+        // Kilit açıldıktan sonra tetikleyicileri temizle (Sistemi yormamak için)
+        document.removeEventListener('touchstart', unlockMobileAudio);
+        document.removeEventListener('click', unlockMobileAudio);
+        console.log("Mobil ses motoru aktif!");
+    }).catch(e => console.log("Ses kilidi açılamadı:", e));
+}
+
+// Oyuncu ekrana ilk dokunduğunda/tıkladığında kilidi aç (once: true ile sadece 1 kez çalışır)
+document.addEventListener('touchstart', unlockMobileAudio, { once: true });
+document.addEventListener('click', unlockMobileAudio, { once: true });
+
 function playSynthSound(type) {
     if (!isSoundEnabled) return;
     try {
         initAudio();
-        if (!audioCtx) return;
+        if (!audioCtx || audioCtx.state === 'suspended') return; // Kilit açılmadan çalmayı dene ve çökmesini engelle
 
         const now = audioCtx.currentTime;
         const osc = audioCtx.createOscillator();
@@ -2075,15 +2117,12 @@ function playSynthSound(type) {
         gainNode.connect(audioCtx.destination);
 
         if (type === 'buy') {
-            // YENİ: PARA ŞINGIRTISI (Altın Sesi)
-            // İki yüksek frekanslı sinyal birbirine çarpıp şıngırtı hissi verir
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(2500, now); // Çok ince başlangıç
+            osc.frequency.setValueAtTime(2500, now); 
             osc.frequency.setValueAtTime(3200, now + 0.03); 
             gainNode.gain.setValueAtTime(0.4, now);
             gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
             
-            // Şıngırtıyı zenginleştiren ikinci yankı
             const osc2 = audioCtx.createOscillator();
             const gain2 = audioCtx.createGain();
             osc2.type = 'triangle';
@@ -2099,7 +2138,6 @@ function playSynthSound(type) {
             osc.stop(now + 0.15);
         } 
         else if (type === 'sell') {
-            // YENİ: SATIŞ SESİ (Nakit/Kasa Sesi gibi tok ve hızlı)
             osc.type = 'square';
             osc.frequency.setValueAtTime(800, now); 
             osc.frequency.exponentialRampToValueAtTime(200, now + 0.15); 
@@ -2109,33 +2147,30 @@ function playSynthSound(type) {
             osc.stop(now + 0.15);
         } 
         else if (type === 'error') {
-            // YENİ: YUMUŞAK HATA SESİ (Kulak tırmalamayan tok uyarı)
             osc.type = 'sine'; 
             osc.frequency.setValueAtTime(220, now); 
             osc.frequency.exponentialRampToValueAtTime(110, now + 0.2); 
-            gainNode.gain.setValueAtTime(0.3, now); // Sesi epey kıstık
+            gainNode.gain.setValueAtTime(0.3, now); 
             gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
             osc.start(now);
             osc.stop(now + 0.2);
         }
         else if (type === 'bankruptcy') {
-            // YENİ: İFLAS SESİ (Dramatik, dibe çakılan sistem çöküşü)
-            osc.type = 'sawtooth'; // Keskin ve rahatsız edici dalga
-            osc.frequency.setValueAtTime(300, now); // Yüksekten başlar
-            osc.frequency.exponentialRampToValueAtTime(30, now + 1.2); // 1.2 saniyede hızla dibe (30Hz) çakılır
+            osc.type = 'sawtooth'; 
+            osc.frequency.setValueAtTime(300, now); 
+            osc.frequency.exponentialRampToValueAtTime(30, now + 1.2); 
             
-            gainNode.gain.setValueAtTime(0.6, now); // Yüksek sesle başlar
-            gainNode.gain.linearRampToValueAtTime(0.001, now + 1.2); // Yavaşça sönümlenir
+            gainNode.gain.setValueAtTime(0.6, now); 
+            gainNode.gain.linearRampToValueAtTime(0.001, now + 1.2); 
             
             osc.start(now);
             osc.stop(now + 1.2);
         }
         else if (type === 'tick') {
-            // YENİ: ARAYÜZ TIKLAMA SESİ (Sekme değiştirirken çıkan tatlı tık sesi)
             osc.type = 'sine';
             osc.frequency.setValueAtTime(1200, now);
-            gainNode.gain.setValueAtTime(0.08, now); // Çok hafif
-            gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.05); // Çok kısa
+            gainNode.gain.setValueAtTime(0.08, now); 
+            gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.05); 
             osc.start(now);
             osc.stop(now + 0.05);
         }
@@ -2162,21 +2197,20 @@ function handleBGM() {
     if (isMusicEnabled) {
         try {
             initAudio();
-            if (!audioCtx) return;
+            if (!audioCtx || audioCtx.state === 'suspended') return; // Kilit açılmadıysa boşuna interval başlatma
             if (ambientInterval) return;
 
             const melodyChords = [
-                [174.61, 220.00, 261.63], // 1. Akor (Fmaj)
-                [196.00, 246.94, 293.66], // 2. Akor (Gmaj)
-                [220.00, 261.63, 329.63], // 3. Akor (Amin)
-                [164.81, 196.00, 246.94]  // 4. Akor (Emin)
+                [174.61, 220.00, 261.63], 
+                [196.00, 246.94, 293.66], 
+                [220.00, 261.63, 329.63], 
+                [164.81, 196.00, 246.94]  
             ];
 
             const compressor = audioCtx.createDynamicsCompressor();
             compressor.threshold.setValueAtTime(-20, audioCtx.currentTime);
             compressor.knee.setValueAtTime(10, audioCtx.currentTime);
             compressor.ratio.setValueAtTime(12, audioCtx.currentTime);
-            // İLK ÇÖZÜM: Kompresörün tepki süresi (attack) 0'dan 0.05'e çıkarıldı ki sese aniden vurup çıtlatmasın
             compressor.attack.setValueAtTime(0.05, audioCtx.currentTime); 
             compressor.release.setValueAtTime(0.25, audioCtx.currentTime);
 
@@ -2188,7 +2222,7 @@ function handleBGM() {
 
             ambientInterval = setInterval(() => {
                 try {
-                    if (!isMusicEnabled || !audioCtx) return;
+                    if (!isMusicEnabled || !audioCtx || audioCtx.state === 'suspended') return;
                     const now = audioCtx.currentTime;
                     
                     const chord = melodyChords[bgmStep % melodyChords.length];
@@ -2201,23 +2235,15 @@ function handleBGM() {
                         osc.type = 'sine'; 
                         osc.frequency.setValueAtTime(freq, now); 
                         
-                        // İKİNCİ ÇÖZÜM: Tamamen pürüzsüz bir ses eğrisi (Envelope)
-                        gainNode.gain.setValueAtTime(0, now); // Ses SIFIRDAN başlar
-                        
-                        // 1.2 saniyede yumuşakça tepe noktasına yükselir
+                        gainNode.gain.setValueAtTime(0, now); 
                         gainNode.gain.linearRampToValueAtTime(0.4, now + 1.2);
-                        
-                        // 4.5 saniyeye kadar yavaşça sönümlenir (sıfıra çok yakın bir değer)
                         gainNode.gain.exponentialRampToValueAtTime(0.001, now + 4.5);
-                        
-                        // Osilatör durmadan hemen ÖNCE sesi ZORLA tam "0" (Sıfır) yaparız. (Patırtıyı kökten çözer)
                         gainNode.gain.linearRampToValueAtTime(0, now + 4.9);
                         
                         osc.connect(gainNode);
                         gainNode.connect(masterGain); 
                         
                         osc.start(now);
-                        // Sesin tam "0" olduğundan emin olduktan sonra osilatör tamamen kapatılır
                         osc.stop(now + 5.0); 
                     });
 
@@ -2506,6 +2532,9 @@ function formatMoney(amount) {
         return prefix + (absVal / 1000000000).toFixed(2) + "B"; 
     } else if (absVal >= 1000000) {
         return prefix + (absVal / 1000000).toFixed(2) + "M"; 
+    } else if (absVal >= 10000) {
+        // 10.000 ile 999.999 arasındaki sayılarda üst barın sıkışmasını önler
+        return prefix + (absVal / 1000).toFixed(2) + "K";
     } else {
         // Fiyat 1 doların altındaysa 4 basamak, üstündeyse 2 basamak göster
         let decimals = (absVal > 0 && absVal < 1) ? 4 : 2;
@@ -2808,9 +2837,18 @@ function checkLiquidations() {
                 summaryTitle.innerText = isEOD ? `GÜN ${gameStats.days} SONU ÖZETİ` : `GÜN ${gameStats.days} DURUMU`;
                 summaryTrades.innerText = dailyTrades;
                 
-                let pnlSign = pnl >= 0 ? '+' : '';
-                summaryPnl.innerText = pnlSign + "$" + pnl.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                // --- KÂR/ZARAR KISALTMA ENTEGRASYONU ---
+                let formattedPnl = formatMoney(pnl);
+                
+                // Eğer kâr sıfır veya daha büyükse, başına "+" ekleyelim (+$1.50M gibi)
+                // formatMoney zaten negatifler için "-$" koyuyor, pozitiflere biz "+" ekliyoruz.
+                if (pnl >= 0) {
+                    formattedPnl = "+" + formattedPnl;
+                }
+                
+                summaryPnl.innerText = formattedPnl;
                 summaryPnl.style.color = pnl >= 0 ? '#10b981' : '#ef4444';
+                // ---------------------------------------
                 
                 summaryOverlay.classList.add('active');
                 summaryModal.classList.add('show');
@@ -3428,7 +3466,9 @@ stockCards.forEach(card => {
 
                             // YENİ: YÖNETİM KURULU DÜŞERSE ŞİRKETİ YENİ YATIRIMCILAR DEVRALIR!
                             const sName = currentStockCard.dataset.name;
-                            if (customBrands[sName]) {
+                            
+                            // KRİTİK DÜZELTME: İsim değiştirilmişse VE henüz "isLost" (kaybedildi) olarak işaretlenmemişse çalışır!
+                            if (customBrands[sName] && customBrands[sName].isLost !== true) {
                                 // Genişletilmiş profesyonel holding ve yatırım şirketi isimleri
                                 const lostNames = [
                                     "Apex Finans", "Global Yatırım", "Atlas Sermaye", "Zirve Holding", 
@@ -3448,8 +3488,8 @@ stockCards.forEach(card => {
                                 let rName = lostNames[Math.floor(Math.random() * lostNames.length)];
                                 let rEmoji = lostEmojis[Math.floor(Math.random() * lostEmojis.length)];
                                 
-                                // Şirketin ismini ve emojisini yeni kurumsal isme çevir
-                                customBrands[sName] = { name: rName, emoji: rEmoji };
+                                // ÇÖZÜM: Şirketin ismini yeni isme çevirirken "isLost: true" bayrağını da ekliyoruz.
+                                customBrands[sName] = { name: rName, emoji: rEmoji, isLost: true };
                                 localStorage.setItem('cts_custom_brands', JSON.stringify(customBrands));
                                 
                                 // Paneldeki ve borsadaki isimleri anında güncelle
@@ -5298,8 +5338,12 @@ chartAreaPath.setAttribute('d', `M ${points.join(' L ')} L 300,130 L 0,130 Z`);
                 let maxPrice = Math.max(...history);
                 let spread = maxPrice - minPrice || 1;
 
-                chartDipVal.innerText = "$" + minPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                chartZirveVal.innerText = "$" + maxPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                // DİP VE ZİRVE İÇİN 4 HANE KONTROLÜ
+                let minDecimals = minPrice < 1 ? 4 : 2;
+                let maxDecimals = maxPrice < 1 ? 4 : 2;
+
+                chartDipVal.innerText = "$" + minPrice.toLocaleString('en-US', { minimumFractionDigits: minDecimals, maximumFractionDigits: minDecimals });
+                chartZirveVal.innerText = "$" + maxPrice.toLocaleString('en-US', { minimumFractionDigits: maxDecimals, maximumFractionDigits: maxDecimals });
                 
                 const currentPriceElement = document.getElementById('chart-current-price');
                 const currentPercentElement = document.getElementById('chart-current-percent');
@@ -5335,8 +5379,12 @@ chartAreaPath.setAttribute('d', `M ${points.join(' L ')} L 300,130 L 0,130 Z`);
                         let maxP = Math.max(...currentHistory);
                         let sprd = maxP - minP || 1;
 
-                        chartDipVal.innerText = "$" + minP.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                        chartZirveVal.innerText = "$" + maxP.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                        // DÜZELTME: Doğru değişkenler (minP ve maxP) kullanıldı ve ondalıklar bunlara bağlandı
+                        let minDecimals = minP < 1 ? 4 : 2;
+                        let maxDecimals = maxP < 1 ? 4 : 2;
+
+                        chartDipVal.innerText = "$" + minP.toLocaleString('en-US', { minimumFractionDigits: minDecimals, maximumFractionDigits: minDecimals });
+                        chartZirveVal.innerText = "$" + maxP.toLocaleString('en-US', { minimumFractionDigits: maxDecimals, maximumFractionDigits: maxDecimals });
 
                         if (currentPriceElement) {
                             let decimals = currentHistory[currentHistory.length - 1] < 1 ? 4 : 2;
@@ -7401,8 +7449,8 @@ function generateNextReward() {
     let roll = Math.random();
     
     if (roll < 0.88) {
-        // 0.00 - 0.88 arası: %88 İHTİMALLE NAKİT PARA
-        return { type: 'cash', pool: Math.floor(50000 + Math.random() * 300000) };
+        // 0.00 - 0.88 arası: %88 İHTİMALLE NAKİT PARA (Maksimum 500.000)
+        return { type: 'cash', pool: Math.floor(50000 + Math.random() * 450000) };
         
     } else if (roll < 0.96) {
         // 0.88 - 0.96 arası: %8 İHTİMALLE ŞİRKET PAYI
@@ -7664,8 +7712,8 @@ function generateNextMegaReward() {
     
     if (roll < 0.88) {
         // 0.00 - 0.88 arası: %88 İHTİMALLE MEGA NAKİT
-        // Mega Nakit: $200.000 ile $1.000.000 arası rastgele dev havuz
-        return { type: 'cash', pool: Math.floor(200000 + Math.random() * 800000) };
+        // Mega Nakit: $200.000 ile $1.500.000 arası rastgele dev havuz
+        return { type: 'cash', pool: Math.floor(200000 + Math.random() * 1300000) };
         
     } else if (roll < 0.96) {
         // 0.88 - 0.96 arası: %8 İHTİMALLE ŞİRKET PAYI
