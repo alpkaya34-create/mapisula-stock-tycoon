@@ -31,7 +31,7 @@ html, body {
 
 .mobile-screen {
     width: 100%;
-    max-width: 450px; 
+    max-width: 450px;
     height: 100%;
     position: absolute; 
     top: 0;
@@ -1127,302 +1127,6 @@ body.premium-theme .section-title { color: #fbbf24 !important; }
     100% { background-position: 0% 50%; }
 }
 
-/* Yaşam Alanı Paneli Animasyonu */
-.overlay {
-    display: none; /* Gizli başlar */
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(5px);
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.overlay.active {
-    display: flex;
-    opacity: 1;
-}
-
-.animated-panel {
-    background: #0f172a;
-    width: 90%;
-    max-width: 500px;
-    border-radius: 15px;
-    border: 2px solid #00f2fe;
-    transform: translateY(50px) scale(0.9);
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    padding: 20px;
-    box-shadow: 0 15px 35px rgba(0, 242, 254, 0.2);
-}
-
-.overlay.active .animated-panel {
-    transform: translateY(0) scale(1);
-}
-
-/* Eşya Kartları */
-.luxury-card {
-    background: #1e293b;
-    border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-left: 4px solid #9333ea;
-    transition: all 0.3s ease;
-}
-
-.luxury-card:hover {
-    transform: translateX(5px);
-    box-shadow: 0 5px 15px rgba(147, 51, 234, 0.3);
-}
-
-.btn-buy-luxury {
-    background: #10b981;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
-    color: white;
-    cursor: pointer;
-    font-weight: bold;
-}
-.btn-buy-luxury:disabled {
-    background: #475569;
-    cursor: not-allowed;
-}
-/* ==========================================================================
-   💎 YENİ NESİL PENTHOUSE YAŞAM ALANI (LIFESTYLE 2.0)
-   ========================================================================== */
-
-/* --- MOBİL KART DOKUNMA (TAP) EFEKTİ --- */
-.luxury-card {
-    background: #1e293b;
-    border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-left: 4px solid #9333ea;
-    transition: transform 0.05s ease, background-color 0.05s ease !important;
-}
-
-/* Hover yerine sadece parmakla basıldığında içeri çöker */
-.luxury-card:active {
-    transform: scale(0.96) !important;
-    background-color: rgba(30, 41, 59, 0.8) !important;
-    box-shadow: none !important;
-}
-
-.btn-buy-luxury {
-    background: #10b981;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
-    color: white;
-    cursor: pointer;
-    font-weight: bold;
-}
-.btn-buy-luxury:disabled {
-    background: #475569;
-    cursor: not-allowed;
-}
-
-/* ==========================================================================
-   🚨 YENİ YUMUŞAK TASARIMLI OYUN İÇİ UYARI KUTUSU (CUSTOM ALERT)
-   ========================================================================== */
-.custom-alert-box {
-    background: #0f172a; /* İstediğin koyu lacivert ton */
-    border-radius: 24px; /* Çok daha yumuşak köşeler */
-    padding: 28px 20px 20px 20px;
-    width: 85%;
-    max-width: 320px;
-    text-align: center;
-    box-shadow: 0 25px 50px rgba(0,0,0,0.6);
-    border: none; /* Agresif kırmızı kenarlık tamamen kaldırıldı */
-    
-    /* Ekrana gelirken tatlı bir zıplama efekti (Animasyon) */
-    animation: alertPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-@keyframes alertPop {
-    0% { transform: scale(0.8); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
-}
-
-#custom-alert-title {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 16px;
-    font-weight: 800;
-    margin-top: 0;
-    margin-bottom: 15px;
-    letter-spacing: 0.5px;
-}
-
-#custom-alert-message {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 13px;
-    color: #cbd5e1;
-    line-height: 1.6;
-    margin-bottom: 24px;
-}
-
-.custom-alert-btn {
-    background: #1e293b; /* Koyu gri/lacivert buton */
-    color: #ffffff;
-    border: none;
-    border-radius: 12px; /* Yumuşak buton kenarları */
-    padding: 14px 0;
-    width: 100%; /* Kutunun geneline yayılır, böylece büyük ve şık durur */
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 700;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.custom-alert-btn:hover {
-    background: #334155;
-}
-
-/* TAM EKRAN YAŞAM ALANI KAPSAYICISI */
-#lifestyle-page {
-    position: absolute !important;
-    top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
-    width: 100% !important; max-width: 450px !important; height: 100% !important;
-    margin: 0 auto !important; /* Ekranı ortalar */
-    background: radial-gradient(circle at top, #150d2a 0%, #060814 100%) !important;
-    z-index: 1000 !important;
-    flex-direction: column !important;
-    overflow-y: auto !important;
-    padding: calc(env(safe-area-inset-top, 20px) + 15px) 18px calc(env(safe-area-inset-bottom, 20px) + 30px) 18px !important;
-    box-sizing: border-box !important;
-}
-
-/* Canlı Penthouse Sahnesi */
-.penthouse-stage {
-    width: 100%;
-    height: 200px;
-    border-radius: 18px;
-    background: linear-gradient(180deg, #090b1e 0%, #1e1338 60%, #2e1065 100%);
-    border: 1px solid rgba(192, 132, 252, 0.3);
-    box-shadow: 0 10px 30px rgba(147, 51, 234, 0.25), inset 0 0 20px rgba(0,0,0,0.5);
-    position: relative;
-    overflow: hidden;
-    margin-bottom: 16px;
-    flex-shrink: 0;
-}
-
-/* Gökyüzü Işıkları ve Yıldızlar */
-.stage-sky {
-    position: absolute;
-    inset: 0;
-    background-image: radial-gradient(2px 2px at 20px 30px, #fff, rgba(0,0,0,0)),
-                      radial-gradient(2px 2px at 75px 60px, #a855f7, rgba(0,0,0,0)),
-                      radial-gradient(1.5px 1.5px at 160px 40px, #00f2fe, rgba(0,0,0,0)),
-                      radial-gradient(2px 2px at 240px 25px, #fbbf24, rgba(0,0,0,0));
-    background-repeat: repeat;
-    background-size: 280px 200px;
-}
-
-/* YENİ NESİL Şehir Silüeti (Hapishane demirleri düzeltildi) */
-.stage-city {
-    position: absolute;
-    bottom: 0; left: 0; right: 0; height: 60px;
-    background: linear-gradient(180deg, transparent 0%, #020617 100%);
-    border-bottom: 2px solid #00f2fe;
-    box-shadow: 0 -5px 25px rgba(0, 242, 254, 0.2);
-}
-.stage-city::before {
-    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 100%;
-    background: repeating-linear-gradient(90deg, 
-        #0f172a 0px, #0f172a 15px, transparent 15px, transparent 20px, 
-        #1e293b 20px, #1e293b 35px, transparent 35px, transparent 40px);
-    opacity: 0.6; z-index: -1;
-}
-
-/* Varlık Katmanları */
-.stage-asset {
-    position: absolute;
-    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.stage-residence { bottom: 15px; left: 15px; font-size: 50px; opacity: 0.3; filter: grayscale(100%); transition: all 0.5s ease; }
-.stage-residence.active { opacity: 1; filter: grayscale(0%) drop-shadow(0 0 15px rgba(251,191,36,0.6)); transform: scale(1.05); }
-
-.stage-car { bottom: 8px; left: 40%; font-size: 38px; opacity: 0.3; filter: grayscale(100%); transition: all 0.5s ease; }
-.stage-car.active { opacity: 1; filter: grayscale(0%) drop-shadow(0 0 10px rgba(239,68,68,0.7)); animation: idleCar 2s ease-in-out infinite alternate; }
-
-.stage-yacht { bottom: 10px; right: 15px; font-size: 45px; opacity: 0.3; filter: grayscale(100%); transition: all 0.5s ease; }
-.stage-yacht.active { opacity: 1; filter: grayscale(0%) drop-shadow(0 0 15px rgba(0,242,254,0.5)); animation: floatYacht 3.5s ease-in-out infinite; }
-
-.stage-jet { top: 20px; left: -100px; font-size: 30px; opacity: 0; }
-.stage-jet.active { opacity: 1; filter: drop-shadow(0 0 10px rgba(255,255,255,0.8)); animation: flyJet 14s linear infinite; }
-
-@keyframes flyJet {
-    0% { transform: translateX(0) translateY(0); }
-    50% { transform: translateX(250px) translateY(8px); }
-    100% { transform: translateX(500px) translateY(-5px); }
-}
-@keyframes floatYacht {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
-}
-@keyframes idleCar {
-    0% { transform: scale(1); }
-    100% { transform: scale(1.04); }
-}
-
-/* Statü Paneli */
-.lifestyle-status-card {
-    background: rgba(15, 23, 42, 0.75);
-    border: 1px solid #334155;
-    border-radius: 14px;
-    padding: 12px 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-}
-
-/* Yeni Lüks Kart Tasarımı (Hover efektleri yok, mobil touch var) */
-.luxury-card-v2 {
-    background: #0f172a;
-    border: 1px solid #1e293b;
-    border-radius: 14px;
-    padding: 14px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    transition: transform 0.05s ease, background-color 0.05s ease !important;
-}
-.luxury-card-v2:active {
-    transform: scale(0.96) !important;
-    background-color: rgba(30, 41, 59, 0.8) !important;
-}
-.luxury-card-v2.purchased {
-    border-color: rgba(16, 185, 129, 0.4);
-    background: linear-gradient(145deg, rgba(16, 185, 129, 0.05), #0f172a);
-}
-.luxury-card-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-.luxury-icon-box {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    background: rgba(30, 41, 59, 0.8);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-}
 /* ==========================================================================
    📈 TİCARET PANELİ - FİYAT DEĞİŞİM ROZETİ
    ========================================================================== */
@@ -1586,4 +1290,739 @@ body.premium-theme .section-title { color: #fbbf24 !important; }
     height: 22px;
     display: block;
     margin: 0 auto 3px auto; /* Ortala ve alttaki yazıya 3 piksel mesafe bırak */
+}
+
+/* ==========================================================================
+   💎 YAŞAM ALANI - SIFIRDAN YENİ TASARIM
+   Bu bölüm eski lifestyle stillerinden bağımsızdır. Ekran açıldığında
+   içeriği hazırdır; JavaScript yalnızca bakiye ve satın alma durumunu günceller.
+   ========================================================================== */
+#lifestyle-page.lifestyle-page-rebuilt {
+    position: fixed !important;
+    inset: 0 auto auto 50% !important;
+    transform: translateX(-50%) !important;
+    width: 100% !important;
+    max-width: 450px !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    margin: 0 !important;
+    padding: clamp(16px, 3vw, 32px) clamp(16px, 4vw, 42px) 42px !important;
+    display: none !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+    background:
+        radial-gradient(circle at 50% -10%, rgba(61, 35, 124, 0.34), transparent 42%),
+        linear-gradient(180deg, #080d22 0%, #080a19 55%, #050611 100%) !important;
+    color: #fff !important;
+    z-index: 200000 !important;
+    isolation: isolate;
+}
+
+#lifestyle-page.lifestyle-page-rebuilt[aria-hidden="false"] {
+    display: flex !important;
+    visibility: visible !important;
+}
+
+#lifestyle-page.lifestyle-page-rebuilt[aria-hidden="true"] {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* JavaScript yüklenemezse anchor hedefi tek başına ekranı açar. */
+#lifestyle-page.lifestyle-page-rebuilt:target {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* The page currently lives inside the hidden game host. Reveal that host too
+   so the target fallback and the JavaScript controller can both render it. */
+#game-screen:has(#lifestyle-page.lifestyle-page-rebuilt[aria-hidden="false"]),
+#game-screen:has(#lifestyle-page.lifestyle-page-rebuilt:target) {
+    display: block !important;
+    overflow: visible !important;
+}
+
+.mobile-btn.btn-lifestyle {
+    display: block;
+    box-sizing: border-box;
+    color: inherit;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.lifestyle-topbar {
+    display: grid;
+    grid-template-columns: minmax(84px, 132px) 1fr auto;
+    align-items: center;
+    gap: clamp(10px, 2vw, 26px);
+    width: 100%;
+    min-height: 82px;
+    flex-shrink: 0;
+    border-bottom: 1px solid rgba(76, 92, 157, 0.28);
+}
+
+.lifestyle-menu-button {
+    width: 100%;
+    min-height: 64px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    border: 1px solid #d8dee9;
+    border-radius: 17px;
+    background: linear-gradient(180deg, #f8fafc 0%, #dce2ea 100%);
+    color: #0b1126;
+    text-decoration: none;
+    font: 900 14px/1 'Montserrat', sans-serif;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.24);
+    transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.lifestyle-menu-button:active {
+    transform: scale(0.96);
+    filter: brightness(0.94);
+}
+
+.lifestyle-menu-arrow {
+    color: #55718f;
+    font-size: 17px;
+    line-height: 1;
+}
+
+.lifestyle-title-wrap {
+    min-width: 0;
+    text-align: left;
+    line-height: 1.03;
+    white-space: nowrap;
+}
+
+.lifestyle-title {
+    overflow: hidden;
+    color: #ffbd18;
+    font: 900 clamp(18px, 3vw, 30px)/1.05 'Montserrat', sans-serif;
+    letter-spacing: 0.5px;
+    text-overflow: ellipsis;
+    text-shadow: 0 0 14px rgba(251, 191, 36, 0.36);
+}
+
+.lifestyle-title span {
+    color: #00f2fe;
+    filter: drop-shadow(0 0 8px rgba(0, 242, 254, 0.55));
+}
+
+.lifestyle-title.club {
+    margin-left: 31px;
+    margin-top: 2px;
+    color: #ffb716;
+}
+
+.lifestyle-balance-wrap {
+    min-width: 120px;
+    text-align: right;
+}
+
+.lifestyle-balance-label {
+    display: block;
+    margin-bottom: 4px;
+    color: #7e8ba9;
+    font: 800 9px/1 'Montserrat', sans-serif;
+    letter-spacing: 1.5px;
+}
+
+.lifestyle-balance-wrap strong {
+    display: block;
+    color: #10d49b;
+    font: 900 clamp(16px, 2.5vw, 25px)/1 'Montserrat', sans-serif;
+    white-space: nowrap;
+    text-shadow: 0 0 12px rgba(16, 185, 129, 0.22);
+}
+
+.lifestyle-hero {
+    position: relative;
+    width: 100%;
+    height: clamp(220px, 31vw, 360px);
+    min-height: 220px;
+    margin: 30px 0 18px;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 1px solid rgba(168, 85, 247, 0.72);
+    border-radius: 30px;
+    background: linear-gradient(180deg, #080b1d 0%, #171033 52%, #24104f 100%);
+    box-shadow: 0 12px 34px rgba(83, 32, 143, 0.28), inset 0 0 32px rgba(0, 0, 0, 0.52);
+}
+
+.lifestyle-hero::after {
+    content: '';
+    position: absolute;
+    right: 4%;
+    bottom: 0;
+    left: 4%;
+    height: 3px;
+    border-radius: 99px;
+    background: #00f2fe;
+    box-shadow: 0 0 14px rgba(0, 242, 254, 0.86);
+}
+
+.lifestyle-stars {
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(circle at 7% 22%, #fff 0 2px, transparent 3px),
+        radial-gradient(circle at 23% 49%, #b86cff 0 2px, transparent 3px),
+        radial-gradient(circle at 43% 31%, #00f2fe 0 2px, transparent 3px),
+        radial-gradient(circle at 67% 18%, #fbbf24 0 2px, transparent 3px),
+        radial-gradient(circle at 84% 28%, #fff 0 2px, transparent 3px),
+        radial-gradient(circle at 95% 49%, #a855f7 0 2px, transparent 3px);
+    opacity: 0.86;
+}
+
+.lifestyle-moon {
+    position: absolute;
+    top: 24%;
+    left: 50%;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #fbbf24;
+    box-shadow: 0 0 11px 3px rgba(251, 191, 36, 0.35);
+}
+
+.lifestyle-skyline {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 34%;
+    border-top: 1px solid rgba(0, 242, 254, 0.18);
+    background:
+        linear-gradient(180deg, rgba(25, 20, 71, 0) 0%, #130d35 100%),
+        repeating-linear-gradient(90deg, #201c4d 0 14px, #120f2d 14px 21px, #2a2458 21px 35px, #120f2d 35px 43px);
+    opacity: 0.88;
+}
+
+.lifestyle-skyline::before,
+.lifestyle-skyline::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    width: 17%;
+    background: linear-gradient(180deg, #282553, #0c0b21);
+    box-shadow: inset 0 8px rgba(0, 242, 254, 0.05);
+}
+
+.lifestyle-skyline::before {
+    left: 6%;
+    height: 140%;
+}
+
+.lifestyle-skyline::after {
+    right: 8%;
+    height: 112%;
+}
+
+.lifestyle-stage-asset {
+    position: absolute;
+    z-index: 2;
+    opacity: 0.32;
+    filter: grayscale(100%);
+    transition: opacity 0.35s ease, filter 0.35s ease, transform 0.35s ease;
+}
+
+.lifestyle-stage-asset.is-owned {
+    opacity: 1;
+    filter: grayscale(0%) drop-shadow(0 0 13px rgba(251, 191, 36, 0.52));
+}
+
+.lifestyle-residence {
+    bottom: 12%;
+    left: 6%;
+    font-size: clamp(44px, 8vw, 76px);
+}
+
+.lifestyle-car {
+    bottom: 7%;
+    left: 43%;
+    font-size: clamp(34px, 6vw, 58px);
+}
+
+.lifestyle-yacht {
+    right: 6%;
+    bottom: 10%;
+    font-size: clamp(42px, 7vw, 68px);
+}
+
+.lifestyle-jet {
+    top: 18%;
+    left: -70px;
+    font-size: clamp(25px, 4vw, 38px);
+}
+
+.lifestyle-stage-asset.is-owned.lifestyle-jet {
+    animation: lifestyleJetFlight 12s linear infinite;
+}
+
+.lifestyle-stage-asset.is-owned.lifestyle-car {
+    animation: lifestyleCarIdle 2s ease-in-out infinite alternate;
+}
+
+.lifestyle-stage-asset.is-owned.lifestyle-yacht {
+    animation: lifestyleYachtFloat 3.5s ease-in-out infinite;
+}
+
+@keyframes lifestyleJetFlight {
+    from { transform: translateX(0) translateY(0); }
+    to { transform: translateX(900px) translateY(-12px); }
+}
+
+@keyframes lifestyleCarIdle {
+    from { transform: scale(1); }
+    to { transform: scale(1.05); }
+}
+
+@keyframes lifestyleYachtFloat {
+    from { transform: translateY(0); }
+    to { transform: translateY(-7px); }
+}
+
+.lifestyle-hero-caption {
+    position: absolute;
+    right: 0;
+    bottom: 16px;
+    left: 0;
+    z-index: 3;
+    color: rgba(255, 255, 255, 0.36);
+    font: 900 9px/1 'Montserrat', sans-serif;
+    letter-spacing: 2px;
+    text-align: center;
+}
+
+.lifestyle-status-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 88px;
+    flex-shrink: 0;
+    margin-bottom: 27px;
+    padding: 17px 22px;
+    box-sizing: border-box;
+    border: 1px solid #344362;
+    border-radius: 22px;
+    background: linear-gradient(135deg, rgba(20, 31, 57, 0.95), rgba(12, 19, 38, 0.97));
+    box-shadow: inset 0 1px rgba(255, 255, 255, 0.04), 0 8px 18px rgba(0, 0, 0, 0.15);
+}
+
+.lifestyle-status-block span,
+.lifestyle-section-kicker {
+    display: block;
+    color: #a7b3cc;
+    font: 900 10px/1.2 'Montserrat', sans-serif;
+    letter-spacing: 0.8px;
+}
+
+.lifestyle-status-block strong {
+    display: block;
+    margin-top: 10px;
+    color: #f8fafc;
+    font: 900 clamp(16px, 2.8vw, 24px)/1 'Montserrat', sans-serif;
+}
+
+.lifestyle-status-block.right {
+    text-align: right;
+}
+
+.lifestyle-status-block.right strong {
+    color: #10d49b;
+}
+
+.lifestyle-section-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    margin: 0 2px 14px;
+}
+
+.lifestyle-section-heading h2 {
+    margin: 7px 0 0;
+    color: #f8fafc;
+    font: 900 clamp(18px, 3vw, 27px)/1 'Montserrat', sans-serif;
+}
+
+.lifestyle-section-gem {
+    color: #00f2fe;
+    font-size: 31px;
+    line-height: 1;
+    text-shadow: 0 0 12px rgba(0, 242, 254, 0.55);
+}
+
+.lifestyle-assets-list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 12px;
+    padding-bottom: 20px;
+}
+
+.lifestyle-asset-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    width: 100%;
+    min-height: 116px;
+    padding: 19px 22px;
+    box-sizing: border-box;
+    border: 1px solid #263553;
+    border-radius: 25px;
+    background: linear-gradient(145deg, #111c34 0%, #0c1529 100%);
+    box-shadow: 0 9px 22px rgba(0, 0, 0, 0.16), inset 0 1px rgba(255, 255, 255, 0.025);
+    transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.lifestyle-asset-card:active {
+    transform: scale(0.985);
+}
+
+.lifestyle-asset-card.is-owned {
+    border-color: rgba(16, 185, 129, 0.5);
+    background: linear-gradient(145deg, rgba(16, 185, 129, 0.12), #0c1729 72%);
+}
+
+.lifestyle-asset-info {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    gap: 18px;
+}
+
+.lifestyle-asset-icon {
+    display: grid;
+    width: 64px;
+    height: 64px;
+    flex: 0 0 64px;
+    place-items: center;
+    border-radius: 19px;
+    background: #1a2742;
+    font-size: 36px;
+    box-shadow: inset 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.lifestyle-asset-copy {
+    min-width: 0;
+}
+
+.lifestyle-asset-copy h3 {
+    overflow: hidden;
+    margin: 0 0 8px;
+    color: #f8fafc;
+    font: 900 clamp(15px, 2.5vw, 23px)/1.1 'Montserrat', sans-serif;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.lifestyle-asset-copy p {
+    margin: 0 0 7px;
+    color: #10c991;
+    font: 900 clamp(12px, 2vw, 17px)/1 'Montserrat', sans-serif;
+}
+
+.lifestyle-asset-copy strong {
+    color: #fbbf24;
+    font: 900 clamp(13px, 2vw, 18px)/1 'Montserrat', sans-serif;
+}
+
+.lifestyle-buy-button {
+    min-width: 124px;
+    min-height: 52px;
+    flex: 0 0 auto;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 12px;
+    background: #10b981;
+    color: #fff;
+    font: 900 clamp(13px, 2vw, 18px)/1 'Montserrat', sans-serif;
+    cursor: pointer;
+    box-shadow: 0 6px 15px rgba(16, 185, 129, 0.2);
+    transition: transform 0.15s ease, filter 0.15s ease, background 0.15s ease;
+}
+
+.lifestyle-buy-button.can-buy:hover {
+    filter: brightness(1.12);
+    transform: translateY(-1px);
+}
+
+.lifestyle-buy-button.is-owned {
+    background: #1d8067;
+    cursor: default;
+}
+
+.lifestyle-buy-button.is-locked {
+    background: #334155;
+    color: #9aa8be;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+@media (max-width: 540px) {
+    #lifestyle-page.lifestyle-page-rebuilt {
+        padding-right: 15px !important;
+        padding-left: 15px !important;
+    }
+
+    .lifestyle-topbar {
+        grid-template-columns: 82px 1fr auto;
+        gap: 9px;
+    }
+
+    .lifestyle-menu-button {
+        min-height: 58px;
+        border-radius: 15px;
+        font-size: 12px;
+    }
+
+    .lifestyle-balance-wrap {
+        min-width: 94px;
+    }
+
+    .lifestyle-balance-wrap strong {
+        font-size: 14px;
+    }
+
+    .lifestyle-hero {
+        margin-top: 22px;
+        border-radius: 24px;
+    }
+
+    .lifestyle-status-card {
+        padding: 15px 16px;
+        border-radius: 18px;
+    }
+
+    .lifestyle-status-block strong {
+        font-size: 14px;
+    }
+
+    .lifestyle-asset-card {
+        min-height: 104px;
+        padding: 14px 13px;
+        border-radius: 20px;
+        gap: 8px;
+    }
+
+    .lifestyle-asset-info {
+        gap: 10px;
+    }
+
+    .lifestyle-asset-icon {
+        width: 52px;
+        height: 52px;
+        flex-basis: 52px;
+        border-radius: 15px;
+        font-size: 28px;
+    }
+
+    .lifestyle-asset-copy h3 {
+        margin-bottom: 6px;
+        font-size: 13px;
+    }
+
+    .lifestyle-asset-copy p {
+        margin-bottom: 5px;
+        font-size: 11px;
+    }
+
+    .lifestyle-asset-copy strong {
+        font-size: 12px;
+    }
+
+    .lifestyle-buy-button {
+        min-width: 86px;
+        min-height: 46px;
+        padding: 0 8px;
+        border-radius: 11px;
+        font-size: 12px;
+    }
+}
+
+/*
+ * Masaüstü önizlemesinde de 450px'lik mobil oyun kabı kullanılır.
+ * Bu nedenle Yaşam Alanı tipografisi pencerenin tamamına göre değil,
+ * kendi sabit oyun kabına göre kompakt tutulur.
+ */
+@media (min-width: 541px) {
+    #lifestyle-page.lifestyle-page-rebuilt {
+        padding: 16px 24px 42px !important;
+    }
+
+    #lifestyle-page .lifestyle-topbar {
+        grid-template-columns: 86px minmax(0, 1fr) 96px;
+        gap: 8px;
+        min-height: 78px;
+    }
+
+    #lifestyle-page .lifestyle-menu-button {
+        min-height: 58px;
+        border-radius: 15px;
+        font-size: 12px;
+    }
+
+    #lifestyle-page .lifestyle-title-wrap {
+        overflow: hidden;
+    }
+
+    #lifestyle-page .lifestyle-title {
+        font-size: 19px;
+        letter-spacing: 0;
+    }
+
+    #lifestyle-page .lifestyle-title.club {
+        margin-left: 24px;
+    }
+
+    #lifestyle-page .lifestyle-balance-wrap {
+        min-width: 96px;
+    }
+
+    #lifestyle-page .lifestyle-balance-wrap strong {
+        font-size: 15px;
+    }
+
+    #lifestyle-page .lifestyle-hero {
+        height: 280px;
+        min-height: 280px;
+        margin-top: 22px;
+        border-radius: 24px;
+    }
+
+    #lifestyle-page .lifestyle-residence {
+        font-size: 54px;
+    }
+
+    #lifestyle-page .lifestyle-car {
+        font-size: 44px;
+    }
+
+    #lifestyle-page .lifestyle-yacht {
+        font-size: 52px;
+    }
+
+    #lifestyle-page .lifestyle-jet {
+        font-size: 30px;
+    }
+
+    #lifestyle-page .lifestyle-status-card {
+        min-height: 84px;
+        margin-bottom: 22px;
+        padding: 14px 16px;
+        gap: 10px;
+        border-radius: 18px;
+    }
+
+    #lifestyle-page .lifestyle-status-block {
+        min-width: 0;
+    }
+
+    #lifestyle-page .lifestyle-status-block.right {
+        flex: 0 0 140px;
+    }
+
+    #lifestyle-page .lifestyle-status-block strong {
+        margin-top: 8px;
+        font-size: 17px;
+        white-space: nowrap;
+    }
+
+    #lifestyle-page .lifestyle-section-heading h2 {
+        font-size: 23px;
+    }
+
+    #lifestyle-page .lifestyle-section-gem {
+        font-size: 28px;
+    }
+
+    #lifestyle-page .lifestyle-asset-card {
+        min-height: 104px;
+        padding: 14px 12px;
+        gap: 8px;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    #lifestyle-page .lifestyle-asset-info {
+        flex: 1 1 auto;
+        min-width: 0;
+        gap: 10px;
+    }
+
+    #lifestyle-page .lifestyle-asset-icon {
+        width: 52px;
+        height: 52px;
+        flex-basis: 52px;
+        border-radius: 15px;
+        font-size: 28px;
+    }
+
+    #lifestyle-page .lifestyle-asset-copy h3 {
+        margin-bottom: 6px;
+        font-size: 15px;
+    }
+
+    #lifestyle-page .lifestyle-asset-copy p {
+        margin-bottom: 5px;
+        font-size: 12px;
+    }
+
+    #lifestyle-page .lifestyle-asset-copy strong {
+        font-size: 14px;
+    }
+
+    #lifestyle-page .lifestyle-buy-button {
+        min-width: 96px;
+        min-height: 48px;
+        padding: 0 8px;
+        border-radius: 11px;
+        font-size: 13px;
+    }
+}
+/* Çizgi Roman Tarzı Tema Geçiş Pop-up'ı */
+.theme-transition-popup {
+    position: fixed;
+    top: 30%;
+    left: -50%;
+    transform: translate(-50%, -50%);
+    font-size: 5rem;
+    font-weight: 900;
+    font-style: italic;
+    letter-spacing: 2px;
+    z-index: 99999;
+    pointer-events: none;
+    font-family: 'Impact', 'Arial Black', sans-serif;
+    animation: comicSlide 2.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.theme-transition-popup.premium {
+    color: #fbbf24;
+    text-shadow: 4px 4px 0px #000, 8px 8px 0px #b45309;
+}
+
+.theme-transition-popup.standard {
+    color: #f8fafc;
+    text-shadow: 4px 4px 0px #000, 8px 8px 0px #475569;
+}
+
+@keyframes comicSlide {
+    0%   { left: -50%; transform: translate(-50%, -50%) scale(0.3) skewX(20deg); opacity: 0; }
+    15%  { left: 50%; transform: translate(-50%, -50%) scale(1.2) skewX(-10deg); opacity: 1; }
+    25%  { left: 50%; transform: translate(-50%, -50%) scale(1) skewX(0deg); opacity: 1; }
+    80%  { left: 50%; transform: translate(-50%, -50%) scale(1) skewX(0deg); opacity: 1; } /* Ekranda asılı kaldığı süre uzatıldı */
+    100% { left: 150%; transform: translate(-50%, -50%) scale(0.8) skewX(-20deg); opacity: 0; }
 }
