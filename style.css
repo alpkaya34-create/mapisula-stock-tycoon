@@ -1993,36 +1993,54 @@ body.premium-theme .section-title { color: #fbbf24 !important; }
         font-size: 13px;
     }
 }
-/* Çizgi Roman Tarzı Tema Geçiş Pop-up'ı */
+/* Çizgi Roman Tarzı - Mobil GPU Hızlandırmalı */
 .theme-transition-popup {
     position: fixed;
-    top: 30%;
-    left: -50%;
-    transform: translate(-50%, -50%);
-    font-size: 5rem;
+    top: 35%; /* Mobilde diğer butonları çok kapatmaması için hafif aşağı alındı */
+    left: 47%; /* İtalik ve sağ gölge ağırlığını dengelemek için hafif sola çekildi (Optik Merkezleme) */
+    font-size: 3.2rem; /* Ekrana tam oturması için bir tık küçültüldü */
     font-weight: 900;
     font-style: italic;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
     z-index: 99999;
     pointer-events: none;
     font-family: 'Impact', 'Arial Black', sans-serif;
-    animation: comicSlide 2.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    text-align: center;
+    white-space: nowrap;
+    will-change: transform, opacity; /* Tarayıcıya bu elementin hareket edeceğini önceden haber verir (Kasmayı çözer) */
+    animation: comicSlideSmooth 2.2s cubic-bezier(0.2, 0.9, 0.3, 1.1) forwards;
 }
 
 .theme-transition-popup.premium {
     color: #fbbf24;
-    text-shadow: 4px 4px 0px #000, 8px 8px 0px #b45309;
+    text-shadow: 2px 2px 0px #000, 5px 5px 0px #b45309; /* Mobili yormamak için gölge 1px azaltıldı */
 }
 
 .theme-transition-popup.standard {
     color: #f8fafc;
-    text-shadow: 4px 4px 0px #000, 8px 8px 0px #475569;
+    text-shadow: 2px 2px 0px #000, 5px 5px 0px #475569;
 }
 
-@keyframes comicSlide {
-    0%   { left: -50%; transform: translate(-50%, -50%) scale(0.3) skewX(20deg); opacity: 0; }
-    15%  { left: 50%; transform: translate(-50%, -50%) scale(1.2) skewX(-10deg); opacity: 1; }
-    25%  { left: 50%; transform: translate(-50%, -50%) scale(1) skewX(0deg); opacity: 1; }
-    80%  { left: 50%; transform: translate(-50%, -50%) scale(1) skewX(0deg); opacity: 1; } /* Ekranda asılı kaldığı süre uzatıldı */
-    100% { left: 150%; transform: translate(-50%, -50%) scale(0.8) skewX(-20deg); opacity: 0; }
+@keyframes comicSlideSmooth {
+    /* translate yerine translate3d kullanılarak animasyon %100 Ekran Kartına (GPU) aktarıldı (60fps akıcılık sağlar) */
+    0% {
+        transform: translate3d(-100vw, -50%, 0) scale(0.6) skewX(20deg);
+        opacity: 0;
+    }
+    15% {
+        transform: translate3d(-50%, -50%, 0) scale(1.1) skewX(-10deg);
+        opacity: 1;
+    }
+    25% {
+        transform: translate3d(-50%, -50%, 0) scale(1) skewX(0deg);
+        opacity: 1;
+    }
+    80% {
+        transform: translate3d(-50%, -50%, 0) scale(1) skewX(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translate3d(100vw, -50%, 0) scale(0.8) skewX(-20deg);
+        opacity: 0;
+    }
 }
