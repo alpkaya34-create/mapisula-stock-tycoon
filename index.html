@@ -2375,97 +2375,121 @@ function handleBGM() {
                 resetModal.classList.remove('show');
             });
             // ==========================================================================
-            // 🔄 KORUMALI NİHAİ SIFIRLAMA SİSTEMİ (Çift İflas Hatası Giderildi)
-            // ==========================================================================
-            function performHardReset(isBankruptcy) {
-                // 1. Ekrandaki tüm pop-up'ları güvenli bir şekilde kapat
-                let mModal = document.getElementById('milestone-modal');
-                let rModal = document.getElementById('reset-confirm-modal');
-                let bModal = document.getElementById('bankruptcy-modal');
-                let sOverlay = document.getElementById('summary-overlay');
-                
-                if (mModal) mModal.classList.remove('show');
-                if (rModal) rModal.classList.remove('show');
-                if (bModal) bModal.classList.remove('show');
-                if (sOverlay) sOverlay.classList.remove('active');
+// 🔄 NİHAİ KUSURSUZ SIFIRLAMA SİSTEMİ (saveGame Formatına Tam Uyumlu)
+// ==========================================================================
+function performHardReset(isBankruptcy) {
+    // 1. Arayüzü Temizle
+    let modals = ['milestone-modal', 'reset-confirm-modal', 'bankruptcy-modal'];
+    modals.forEach(id => {
+        let el = document.getElementById(id);
+        if (el) el.classList.remove('show');
+    });
+    let sOverlay = document.getElementById('summary-overlay');
+    if (sOverlay) sOverlay.classList.remove('active');
 
-                // 2. Oyunun eski verileri tekrar kaydetmesini engelle
-                if (typeof isGamePaused !== 'undefined') isGamePaused = true;
-                window.__ctsResetInProgress = true; 
-                window.saveGame = function() { console.log("Otomatik kayıt engellendi!"); };
+    // 2. Oyun Motorunu ve Otomatik Kaydı Durdur (Hayalet kayıtları engeller)
+    if (typeof isGamePaused !== 'undefined') isGamePaused = true;
+    window.__ctsResetInProgress = true; 
+    window.saveGame = function() { console.log("Otomatik kayıt sıfırlama nedeniyle iptal edildi."); };
 
-                // 3. KORUNACAK VERİLERİ HAFIZADAN ÇEK
-                let currentMaxWealth = 15000;
-                let currentBankruptcies = 0;
-                
-                // İstatistikleri güvenli şekilde oku
-                if (typeof gameStats !== 'undefined' && gameStats) {
-                    currentMaxWealth = gameStats.maxWealth || 15000;
-                    currentBankruptcies = gameStats.bankruptcies || 0;
-                } else if (localStorage.getItem('cts_stats')) {
-                    let parsedStats = JSON.parse(localStorage.getItem('cts_stats'));
-                    currentMaxWealth = parsedStats.maxWealth || 15000;
-                    currentBankruptcies = parsedStats.bankruptcies || 0;
-                }
+    // 3. KORUNACAK DEĞERLERİ BELLEĞE AL
+    let safeMaxWealth = 15000;
+    let safeBankruptcies = 0;
+    
+    if (localStorage.getItem('cts_stats')) {
+        try {
+            let parsedStats = JSON.parse(localStorage.getItem('cts_stats'));
+            safeMaxWealth = parsedStats.maxWealth && parsedStats.maxWealth > 15000 ? parsedStats.maxWealth : 15000;
+            safeBankruptcies = parsedStats.bankruptcies || 0;
+        } catch(e) {}
+    }
 
-                // DÜZELTME: Oyun iflas anında (500$ altına düşünce) zaten +1 ekliyor. 
-                // Biz burada tekrar +1 EKLEMİYORUZ, sadece oyunun kaydettiği güncel değeri Firebase'e iletiyoruz.
-                let finalBankruptcies = currentBankruptcies;
+    // İflas ederek sıfırlanıyorsa sayacı 1 artır (Aksi halde aynı bırak)
+    if (isBankruptcy) {
+        safeBankruptcies += 1;
+    }
+    
+    // Diğer kalıcı ayarları al
+    let uid = localStorage.getItem('cts_player_uid');
+    let pName = localStorage.getItem('cts_player_name') || "CTS TRADER";
+    let hasChangedName = localStorage.getItem('cts_name_changed_once') === 'true';
+    let userIsPremium = localStorage.getItem('cts_premium') === 'true';
+    let userNoAds = localStorage.getItem('cts_noads') === 'true';
+    let aiRights = localStorage.getItem('cts_ai_rights') || 3;
 
-                // Premium ve VIP durumunu koru
-                let userIsPremium = (typeof isPremium !== 'undefined') ? isPremium : (localStorage.getItem('cts_premium') === 'true');
-                let resetMilestones = { k50: false, k250: false, m1: false, m5: false, m15: false, m20: false };
+    // ==========================================================
+    // 4. LOKAL HAFIZAYI (CİHAZI) KUSURSUZ SIFIRLA
+    // ==========================================================
+    localStorage.clear(); 
 
-                // 4. LOCALSTORAGE GÜNCELLEMESİ (Sadece oyun içi ilerleme sıfırlanır)
-                localStorage.setItem('cts_balance', '15000');
-                localStorage.setItem('cts_debt', '0');
-                localStorage.setItem('cts_principal_debt', '0');
-                localStorage.setItem('cts_start_wealth', '15000');
-                localStorage.setItem('cts_tick_count', '0');
-                localStorage.setItem('cts_daily_trades', '0');
-                localStorage.setItem('cts_milestones', JSON.stringify(resetMilestones));
-                
-                // Zirve Varlık ve İflas Sayısı KORUNARAK kaydedilir:
-                localStorage.setItem('cts_stats', JSON.stringify({ 
-                    trades: 0, 
-                    maxWealth: currentMaxWealth, 
-                    bankruptcies: finalBankruptcies, 
-                    days: 1 
-                }));
-                
-                localStorage.setItem('cts_portfolio', JSON.stringify({}));
-                localStorage.setItem('cts_futures', JSON.stringify([]));
-                localStorage.setItem('cts_averages', JSON.stringify({}));
-                
-                let uid = localStorage.getItem('cts_player_uid');
-                
-                // 5. BULUT (FIREBASE) GÜNCELLEMESİ
-                if (uid && typeof database !== 'undefined') {
-                    let updates = {
-                        balance: 15000,
-                        debt: 0,
-                        principalDebt: 0,
-                        portfolio: {},
-                        futures: [],   
-                        averages: {},
-                        milestones: resetMilestones,
-                        isPremium: userIsPremium, // VIP abonelik durumu korunur
-                        'stats/maxWealth': currentMaxWealth, // Zirve Varlık korunur
-                        'stats/trades': 0,
-                        'stats/days': 1,
-                        'stats/bankruptcies': finalBankruptcies // Çift iflas engellendi
-                    };
+    // Sadece gerekli ve korunanları geri koy
+    if (uid) localStorage.setItem('cts_player_uid', uid);
+    localStorage.setItem('cts_player_name', pName);
+    localStorage.setItem('cts_name_changed_once', hasChangedName);
+    localStorage.setItem('cts_premium', userIsPremium);
+    localStorage.setItem('cts_noads', userNoAds);
+    localStorage.setItem('cts_ai_rights', aiRights);
+    
+    // Temel başlangıç ekonomisi
+    localStorage.setItem('cts_balance', '15000');
+    localStorage.setItem('cts_debt', '0');
+    localStorage.setItem('cts_principal_debt', '0');
+    localStorage.setItem('cts_start_wealth', '15000');
+    localStorage.setItem('cts_tick_count', '0');
+    localStorage.setItem('cts_daily_trades', '0');
+    
+    // İstatistikler (Sadece gün ve işlemler sıfırlandı, zirve/iflas korundu)
+    let newStats = { days: 1, trades: 0, maxWealth: safeMaxWealth, bankruptcies: safeBankruptcies };
+    localStorage.setItem('cts_stats', JSON.stringify(newStats));
+    
+    // Oyunun hata vermemesi için boş şablonlar (Eski eşya ve hisseler yok edildi)
+    localStorage.setItem('cts_lifestyle', "{}"); // saveGame'deki gibi stringified boş obje
+    localStorage.setItem('cts_portfolio', "{}");
+    localStorage.setItem('cts_averages', "{}");
+    localStorage.setItem('cts_futures', "[]");
+    localStorage.setItem('cts_milestones', JSON.stringify({ k50: false, k250: false, m1: false, m5: false, m15: false, m20: false }));
+    // DİKKAT: cts_stock_prices ve cts_custom_brands bilerek yazılmadı ki oyun sıfırdan üretsin!
 
-                    database.ref('users/' + uid).update(updates).then(() => {
-                        window.location.reload();
-                    }).catch((err) => {
-                        console.error("Firebase Güncelleme Hatası:", err);
-                        window.location.reload();
-                    });
-                } else {
-                    window.location.reload();
-                }
-            }
+    // ==========================================================
+    // 5. BULUTU (FIREBASE) KUSURSUZ SIFIRLA
+    // ==========================================================
+    if (uid && typeof database !== 'undefined') {
+        // saveGame'in kullandığı .set() yapısını kullanarak tüm bulut düğümünü eziyoruz
+        let resetCloudData = {
+            name: pName,
+            nameChanged: hasChangedName,
+            balance: 15000,
+            debt: 0,
+            principalDebt: 0,
+            stats: newStats, // Korunan istatistikler
+            lifestyle: "{}", // Eşyalar buluttan silindi
+            averages: {},
+            portfolio: {},
+            futures: [],
+            customBrands: null, // Özel isimler silindi
+            stockPrices: null, // Hisse fiyatları silindi
+            isPremium: userIsPremium,
+            hasAdsRemoved: userNoAds,
+            aiRights: parseInt(aiRights),
+            lastAiResetDay: 0,
+            milestones: { k50: false, k250: false, m1: false, m5: false, m15: false, m20: false },
+            startOfDayWealth: 15000,
+            dailyTrades: 0,
+            tickCount: 0,
+            lastUpdated: firebase.database.ServerValue.TIMESTAMP
+        };
+
+        // .update yerine .set kullanıyoruz ki arta kalan hiçbir eski veri yaşamasın
+        database.ref('users/' + uid).set(resetCloudData).then(() => {
+            window.location.reload();
+        }).catch((err) => {
+            console.error("Bulut sıfırlama hatası:", err);
+            window.location.reload();
+        });
+    } else {
+        window.location.reload();
+    }
+}
 
             // GÜVENLİ BUTON BAĞLAMALARI (Çift tıklamaları önler)
             const hResetBtn = document.getElementById('btn-confirm-reset');
@@ -2497,29 +2521,37 @@ function handleBGM() {
                 });
             }
 
-            // --- ÇIKIŞ (GÜVENLİ HESAP ÇIKIŞI) BUTONU İŞLEVİ ---
-            const btnExit = document.getElementById('btn-exit');
-            if (btnExit) {
-                btnExit.addEventListener('click', () => {
-                    if (typeof saveGame === 'function') saveGame();
-                    if (typeof syncLeaderboardData === 'function') syncLeaderboardData();
+            // --- ÇIKIŞ (GÜVENLİ HESAP ÇIKIŞI) BUTONU İŞLEVİ (GÜNCELLENDİ) ---
+const btnExit = document.getElementById('btn-exit');
+if (btnExit) {
+    btnExit.addEventListener('click', () => {
+        if (typeof saveGame === 'function') saveGame();
+        if (typeof syncLeaderboardData === 'function') syncLeaderboardData();
 
-                    if (typeof auth !== 'undefined') {
-                        auth.signOut().then(() => {
-                            console.log("Güvenli çıkış yapıldı.");
-                            if (typeof playSound === 'function') playSound('tick');
-                            
-                            localStorage.clear();
-                            location.reload(); 
-                        }).catch((error) => {
-                            console.error("Çıkış yapılırken hata oluştu:", error);
-                            if (typeof showCustomAlert === 'function') {
-                                showCustomAlert("Çıkış yapılamadı: " + error.message);
-                            }
-                        });
-                    }
-                });
-            }
+        if (typeof auth !== 'undefined') {
+            auth.signOut().then(() => {
+                console.log("Güvenli çıkış yapıldı.");
+                if (typeof playSound === 'function') playSound('tick');
+                
+                // Çıkış yaparken sadece kalıcı istatistikleri cihazda tut (Opsiyonel)
+                let tempStats = localStorage.getItem('cts_stats');
+                let tempTheme = localStorage.getItem('cts_theme_active');
+                
+                localStorage.clear(); // Cihazdaki oturumu temizle
+                
+                if (tempStats) localStorage.setItem('cts_stats', tempStats);
+                if (tempTheme) localStorage.setItem('cts_theme_active', tempTheme);
+                
+                location.reload(); 
+            }).catch((error) => {
+                console.error("Çıkış yapılırken hata oluştu:", error);
+                if (typeof showCustomAlert === 'function') {
+                    showCustomAlert("Çıkış yapılamadı: " + error.message);
+                }
+            });
+        }
+    });
+}
             // --- BÜYÜK SAYILARI KISALTMA FONKSİYONU ---
 function formatMoney(amount) {
     let isNegative = amount < 0;
@@ -7290,7 +7322,7 @@ function updateLeverageLimitsUI() {
     }
 }
 // ==========================================================================
-// 💀 İFLAS KONTROL MOTORU VE SIFIRLAMA
+// 💀 İFLAS KONTROL MOTORU VE SIFIRLAMA (GÜNCELLENDİ)
 // ==========================================================================
 function checkBankruptcy(isOffline = false) {
     let currentNetWorth = getNetWorth(); 
@@ -7301,12 +7333,16 @@ function checkBankruptcy(isOffline = false) {
             ? "Çevrimdışı olduğun süre boyunca terminal kesintileri ve piyasa dalgalanmaları nedeniyle toplam varlığın $500'ın altına düştü.\n\nMaalesef İFLAS ETTİN!" 
             : "Toplam varlığın $500'ın altına düştü.\n\nMaalesef İFLAS ETTİN!";
 
-        // Tarayıcının varsayılan uyarısını kullanıyoruz ki, oyuncu "Tamam" diyene kadar oyun arkada akmaya devam etmesin
         alert(message);
 
-        // Kullanıcı "Tamam" butonuna bastığı an kayıtları sil ve oyunu yeniden başlat
-        localStorage.clear(); // Eğer sadece belirli kayıtları siliyorsan buraya localStorage.removeItem('oyunKaydi') yazabilirsin.
-        window.location.reload(); // Sayfayı yenileyerek oyunu baştan başlatır
+        // ESKİ localStorage.clear() YERİNE YENİ SİSTEMİ ÇAĞIRIYORUZ:
+        // isBankruptcy = true olarak gönderiyoruz ki iflas sayısı korunsun ve artsın
+        if (typeof performHardReset === 'function') {
+            performHardReset(true);
+        } else {
+            localStorage.clear();
+            window.location.reload();
+        }
     }
 }
 // ==========================================================================
@@ -8464,7 +8500,7 @@ if (btnLogin) {
     // ==========================================================================
 
     function executeFlawlessReset(isBankruptcy) {
-        // 1. Oyunun kendi kaydetme mekanizmasını felç ediyoruz (Eski 38 Milyon sızamasın diye)
+        // 1. Oyunun kendi kaydetme mekanizmasını felç et
         window.saveGame = function() { console.log("Eski kayıt engellendi!"); };
         if (typeof isGamePaused !== 'undefined') isGamePaused = true;
         
@@ -8473,10 +8509,37 @@ if (btnLogin) {
         document.querySelectorAll('.active').forEach(el => el.classList.remove('active'));
 
         let uid = localStorage.getItem('cts_player_uid');
-        let stats = (typeof gameStats !== 'undefined' && gameStats) ? gameStats : { bankruptcies: 0 };
-        let newBankruptcies = isBankruptcy ? (stats.bankruptcies || 0) + 1 : (stats.bankruptcies || 0);
 
-        // 2. Tarayıcı hafızasını sıfırla ve 15 BİN dolar formatına çek
+        // Zirve varlık ve iflas sayısını güvenle oku
+        let currentMaxWealth = 15000;
+        let currentBankruptcies = 0;
+
+        if (typeof gameStats !== 'undefined' && gameStats) {
+            currentMaxWealth = gameStats.maxWealth || 15000;
+            currentBankruptcies = gameStats.bankruptcies || 0;
+        } else if (localStorage.getItem('cts_stats')) {
+            try {
+                let pStats = JSON.parse(localStorage.getItem('cts_stats'));
+                currentMaxWealth = pStats.maxWealth || 15000;
+                currentBankruptcies = pStats.bankruptcies || 0;
+            } catch(e) {}
+        }
+
+        let newBankruptcies = isBankruptcy ? currentBankruptcies + 1 : currentBankruptcies;
+
+        // 2. YAŞAM ALANI, PORTFÖY VE HİSSELERİ TAMAMEN SIFIRLA
+        localStorage.removeItem('cts_lifestyle');
+        if (typeof luxuryItems !== 'undefined') {
+            luxuryItems.forEach(item => { item.owned = false; });
+        }
+
+        // --- HİSSE İSİMLERİ VE DEĞERLERİNİ SIFIRLAMA ---
+        localStorage.removeItem('cts_stock_prices');
+        localStorage.removeItem('cts_stock_names');
+        localStorage.removeItem('cts_stocks');
+        localStorage.removeItem('cts_custom_brands');
+
+        // 3. TARAYICI HAFIZASINI GÜNCELLE
         localStorage.setItem('cts_balance', '15000');
         localStorage.setItem('cts_debt', '0');
         localStorage.setItem('cts_principal_debt', '0');
@@ -8484,12 +8547,20 @@ if (btnLogin) {
         localStorage.setItem('cts_tick_count', '0');
         localStorage.setItem('cts_daily_trades', '0');
         localStorage.setItem('cts_milestones', JSON.stringify({ k50: false, k250: false, m1: false, m5: false, m15: false, m20: false }));
-        localStorage.setItem('cts_stats', JSON.stringify({ trades: 0, maxWealth: 15000, bankruptcies: newBankruptcies, days: 1 }));
+        
+        // İstatistikler (Zirve Varlık ve İflas Sayısı korundu)
+        localStorage.setItem('cts_stats', JSON.stringify({ 
+            trades: 0, 
+            maxWealth: currentMaxWealth, 
+            bankruptcies: newBankruptcies, 
+            days: 1 
+        }));
+
         localStorage.setItem('cts_portfolio', JSON.stringify({}));
         localStorage.setItem('cts_futures', JSON.stringify([]));
         localStorage.removeItem('cts_averages');
 
-        // 3. FİREBASE'İ KUSURSUZ (null kullanmadan) SIFIRLA VE SAYFAYI YENİLE
+        // 4. FİREBASE'İ VE HİSSELERİ BULUTTAN SIFIRLA
         if (uid && typeof database !== 'undefined') {
             database.ref('users/' + uid).update({
                 balance: 15000,
@@ -8498,11 +8569,16 @@ if (btnLogin) {
                 portfolio: {}, 
                 futures: [],   
                 averages: {},
+                lifestyle: "{}", 
+                stockPrices: null, // Buluttaki hisse değerleri sıfırlandı
+                stockNames: null,  // Buluttaki hisse isimleri sıfırlandı
+                stocks: null,
+                customBrands: null,
                 milestones: { k50: false, k250: false, m1: false, m5: false, m15: false, m20: false },
-                'stats/maxWealth': 15000,
+                'stats/maxWealth': currentMaxWealth, 
                 'stats/trades': 0,
                 'stats/days': 1,
-                'stats/bankruptcies': newBankruptcies
+                'stats/bankruptcies': newBankruptcies 
             }).then(() => {
                 window.location.reload();
             }).catch(() => {
@@ -8904,6 +8980,29 @@ function showComicThemePopup(type) {
         popup.remove();
     }, 2600);
 }
+// ==========================================================
+// ALT MENÜ GEÇİŞLERİNDE AÇIK PENCEREYİ OTOMATİK KAPATMA
+// ==========================================================
+document.addEventListener('click', (e) => {
+    // Tıklanan yerin alt menü çubuğu olup olmadığını tespit eder
+    const isBottomNavClick = e.target.closest('nav, footer, .bottom-nav, .nav-item, .nav-btn, [class*="nav"], [class*="menu"], [class*="tab"]');
+    
+    // Eğer alt menüye tıklandıysa ve kapatma fonksiyonumuz varsa çalıştır
+    if (isBottomNavClick && typeof closeTradePanelSafely === 'function') {
+        
+        // Panelin açık olup olmadığını kontrol et (tradePanel global değişkenine göre)
+        if (typeof tradePanel !== 'undefined' && tradePanel.classList.contains('open')) {
+            closeTradePanelSafely();
+        } 
+        // Alternatif olarak ID ile kontrol et
+        else {
+            const panelEl = document.getElementById('trade-panel') || document.querySelector('.trade-panel');
+            if (panelEl && panelEl.classList.contains('open')) {
+                closeTradePanelSafely();
+            }
+        }
+    }
+});
 </script>
 </body>
 </html>
