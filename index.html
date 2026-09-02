@@ -4159,7 +4159,6 @@ function shootConfetti(colors) {
     document.getElementById('summary-overlay').classList.add('active');
     storeModal.classList.add('show');
 }
-
             // ==========================================================================
 // 🛒 PREMİUM ABONELİK SATIN ALMA VEYA TEMA DEĞİŞTİRME
 // ==========================================================================
@@ -4214,6 +4213,16 @@ if (btnBuyPremium) {
             // --- ZATEN PREMİUMSA SADECE TEMAYI DEĞİŞTİR (Ödeme sormaz) ---
             document.body.classList.toggle('premium-theme');
             let isActive = document.body.classList.contains('premium-theme');
+            
+            // YENİ: Geçiş yapılan temaya göre doğru animasyonu fırlat
+            if (isActive) {
+                showComicThemePopup('premium');
+                if (typeof playSound === 'function') playSound('milestone');
+            } else {
+                showComicThemePopup('standard');
+                if (typeof playSound === 'function') playSound('tick');
+            }
+            
             localStorage.setItem('cts_theme_active', isActive);
         }
     });
@@ -8881,6 +8890,20 @@ window.addEventListener('load', () => {
         setOfflineErrorState();
     }
 });
+// ==========================================================
+// TEMA ANİMASYONU FONKSİYONU (EN ALTTA DURMALI)
+// ==========================================================
+function showComicThemePopup(type) {
+    const popup = document.createElement('div');
+    popup.className = `theme-transition-popup ${type}`;
+    popup.innerText = type === 'premium' ? 'PREMIUM!' : 'STANDART!';
+    
+    document.body.appendChild(popup);
+    
+    setTimeout(() => {
+        popup.remove();
+    }, 2600);
+}
 </script>
 </body>
 </html>
