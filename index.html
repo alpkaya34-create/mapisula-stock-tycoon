@@ -3334,6 +3334,24 @@ stockCards.forEach(card => {
                         console.log("Kripto kontrolü hatası:", err);
                     }
                     // ---------------------------------------------------
+                    
+                    // --- KALDIRAÇ SINIRINI VE YAZISINI AÇILIŞTA GÜNCELLE ---
+                    let currentMaxLeverage = typeof getMaxLeverage === 'function' ? getMaxLeverage() : 5;
+                    
+                    // DİKKAT: HTML'indeki range (kaydırıcı) ve yazı ID'lerine göre burayı düzenle. 
+                    // Örn: 'leverage-input' veya 'leverage-value' olabilir.
+                    const leverageSlider = document.getElementById('leverage'); 
+                    const leverageDisplay = document.getElementById('leverage-val'); 
+
+                    if (leverageSlider) {
+                        leverageSlider.max = currentMaxLeverage;
+                        leverageSlider.value = 1; // Hatalı yüksek kalmaması için her açılışta 1x'e sıfırla
+                        
+                        if (leverageDisplay) {
+                            leverageDisplay.innerText = "1x";
+                        }
+                    }
+                    // ---------------------------------------------------
                     updateLeverageLimitsUI(); // <--- BURAYA EKLENDİ
                     setTimeout(() => { tradePanel.classList.add('open'); }, 10); 
                 });
@@ -5229,7 +5247,7 @@ document.getElementById('btn-close-milestone').addEventListener('click', () => {
     document.getElementById('milestone-modal').classList.remove('show');
 });
 // ==========================================================================
-// ⏳ ÇEVRİMDIŞI (OFFLINE) TERMİNAL KESİNTİSİ HESAPLAMA (HİLE KORUMALI)
+// ⏳ ÇEVRİMDIŞI (OFFLINE) SİSTEM: TERMİNAL KESİNTİSİ & PASİF GELİR HESABI
 // ==========================================================================
 function calculateOfflineProgress() {
     let lastPlayed = localStorage.getItem('cts_last_played_server');
@@ -5238,79 +5256,140 @@ function calculateOfflineProgress() {
     // Firebase'in sunucu saati ile cihaz saati arasındaki sapmayı (offset) alıyoruz
     database.ref('.info/serverTimeOffset').once('value').then((snap) => {
         let offset = snap.val() || 0;
-        
-        // Cihaz saati ne olursa olsun, offset ile toplayarak GERÇEK SUNUCU SAATİNİ buluyoruz!
         let trueNow = Date.now() + offset; 
-        
         let diffMs = trueNow - parseInt(lastPlayed);
         
-        // Eğer oyuncu saati geriye almışsa (eksi değer çıkarsa) hile yapmaya çalışıyordur, işlemi iptal et
+        // Eğer oyuncu saati geriye almışsa hile yapmaya çalışıyordur, iptal et
         if (diffMs < 0) return;
 
         let missedTicks = Math.floor(diffMs / 4000);
+        let offlineSeconds = Math.floor(diffMs / 1000);
 
-        // Eğer Premium değilse ve en az 15 tick (1 dakika) çevrimdışı kalmışsa hesapla
+        // --- 1. TERMİNAL KESİNTİSİ HESAPLAMA ---
+        let totalOfflineFee = 0;
         if (missedTicks > 15 && !isPremium) {
             let currentWealth = getNetWorth(); 
             let terminalFee = 1;
             
-            // Çevrimdışı kesinti için güncellenmiş kademeler ($320 ve $640 dahil)
-            if (currentWealth >= 100000000) {
-                terminalFee = 640;
-            } else if (currentWealth >= 50000000) {
-                terminalFee = 320;
-            } else if (currentWealth >= 20000000) {
-                terminalFee = 160;
-            } else if (currentWealth >= 15000000) {
-                terminalFee = 80;
-            } else if (currentWealth >= 5000000) {
-                terminalFee = 40;
-            } else if (currentWealth >= 1000000) {
-                terminalFee = 20;
-            } else if (currentWealth >= 250000) {
-                terminalFee = 10;
-            } else if (currentWealth >= 50000) {
-                terminalFee = 5;
+            if (currentWealth >= 100000000) terminalFee = 640;
+            else if (currentWealth >= 50000000) terminalFee = 320;
+            else if (currentWealth >= 20000000) terminalFee = 160;
+            else if (currentWealth >= 15000000) terminalFee = 80;
+            else if (currentWealth >= 5000000) terminalFee = 40;
+            else if (currentWealth >= 1000000) terminalFee = 20;
+            else if (currentWealth >= 250000) terminalFee = 10;
+            else if (currentWealth >= 50000) terminalFee = 5;
+
+            totalOfflineFee = missedTicks * terminalFee;
+        }
+
+        // --- 2. PASİF GELİR HESAPLAMA (YENİ) ---
+        let totalOfflineEarnings = 0;
+        // calculateTotalPassiveIncome fonksiyonun yoksa 0 döner, hata vermez
+        let totalDailyIncome = typeof calculateTotalPassiveIncome === 'function' ? calculateTotalPassiveIncome() : 0;
+        
+        // Oyuncu en az 5 dakika (300sn) çevrimdışı kaldıysa pasif gelir ver
+        if (offlineSeconds > 300 && totalDailyIncome > 0) {
+            let incomePerSecond = totalDailyIncome / 86400;
+            totalOfflineEarnings = offlineSeconds * incomePerSecond;
+        }
+
+        // --- 3. BAKİYE GÜNCELLEMESİ (GELİR - GİDER) ---
+        if (totalOfflineEarnings > 0) {
+            playerBalance += totalOfflineEarnings;
+        }
+
+        if (totalOfflineFee > 0) {
+            if (playerBalance >= totalOfflineFee) {
+                playerBalance = Math.round((playerBalance - totalOfflineFee) * 100) / 100;
             } else {
-                terminalFee = 1;
-            }
-
-            let totalOfflineFee = missedTicks * terminalFee;
-
-            if (totalOfflineFee > 0) {
-                if (playerBalance >= totalOfflineFee) {
-                    playerBalance = Math.round((playerBalance - totalOfflineFee) * 100) / 100;
-                } else {
-                    totalOfflineFee = playerBalance; // Eksiye düşmemesi için
-                    playerBalance = 0;
-                }
-
-                // Oyun yüklendikten 1.5 saniye sonra oyuncuya şok edici haberi ver
-                setTimeout(() => {
-                    if (typeof showCustomAlert === 'function') {
-                        let timeStr = "";
-                        let minutes = Math.floor(diffMs / 60000);
-                        let hours = Math.floor(minutes / 60);
-                        
-                        if (hours > 0) {
-                            timeStr = hours + " saat " + (minutes % 60) + " dakika";
-                        } else {
-                            timeStr = minutes + " dakika";
-                        }
-                        
-                        // Yenilenmiş ve düzeltilmiş Terminal Pop-up'ı
-                        showCustomAlert(
-                            `Çevrimdışı olduğun <b>${timeStr}</b> boyunca piyasa verilerin güncellenmeye devam etti.<br><br>Geçen süre zarfında kasandan <b style="white-space: nowrap;">-$${totalOfflineFee.toLocaleString('en-US', { minimumFractionDigits: 2 })}</b> terminal kullanım ücreti kesildi!`, 
-                            `<svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px; vertical-align: middle; margin-right: 8px; filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.6));"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line><path d="M10 6h8"></path><path d="M10 18h8"></path></svg> TERMİNAL KESİNTİSİ`,
-                            "#ef4444"
-                        );
-                    }
-                    updateBalanceUI();
-                    saveGame();
-                }, 1500);
+                totalOfflineFee = playerBalance; // Eksiye düşmemesi için
+                playerBalance = 0;
             }
         }
+
+        // --- 4. BİRLEŞTİRİLMİŞ POP-UP BİLDİRİMİ ---
+        if (totalOfflineFee > 0 || totalOfflineEarnings > 0) {
+            setTimeout(() => {
+                if (typeof showCustomAlert === 'function') {
+                    let timeStr = "";
+                    let minutes = Math.floor(diffMs / 60000);
+                    let hours = Math.floor(minutes / 60);
+                    
+                    if (hours > 0) timeStr = hours + " saat " + (minutes % 60) + " dakika";
+                    else timeStr = minutes + " dakika";
+                    
+                    let alertMsg = `Çevrimdışı olduğun <b>${timeStr}</b> boyunca imparatorluğun yaşamaya devam etti!<br><br>`;
+                    
+                    if (totalOfflineEarnings > 0) {
+                        alertMsg += `<span style="color:#10b981;">+ Yaşam alanı varlıklarından <b>$${totalOfflineEarnings.toLocaleString('en-US', { maximumFractionDigits: 0 })}</b> pasif gelir elde ettin.</span><br><br>`;
+                    }
+                    if (totalOfflineFee > 0) {
+                        alertMsg += `<span style="color:#ef4444;">- Kasandan <b>$${totalOfflineFee.toLocaleString('en-US', { maximumFractionDigits: 0 })}</b> terminal kullanım ücreti kesildi.</span>`;
+                    }
+
+                    showCustomAlert(
+                        alertMsg, 
+                        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 22px; vertical-align: middle; margin-right: 8px;"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg> SİSTEM ÖZETİ`,
+                        totalOfflineEarnings > totalOfflineFee ? "#10b981" : (totalOfflineFee > 0 ? "#ef4444" : "#38bdf8")
+                    );
+                }
+                updateBalanceUI();
+                saveGame();
+            }, 1500);
+        }
     });
+}
+// ==========================================================================
+// 🪐 MİLYARDER KULÜBÜ: GÖRSEL EVRİM VE STATÜ GÜNCELLEMESİ
+// ==========================================================================
+function updateBillionaireVisuals() {
+    const planetEl = document.querySelector('.cyber-planet');
+    const rankTextEl = document.getElementById('lifestyle-rank-text');
+    
+    let dailyIncome = typeof calculateTotalPassiveIncome === 'function' ? calculateTotalPassiveIncome() : 0;
+
+    // --- 1. GEZEGENİN AURA VE BOYUT EVRİMİ ---
+    if (planetEl) {
+        planetEl.style.transition = "all 1.5s cubic-bezier(0.4, 0, 0.2, 1)";
+        
+        if (dailyIncome >= 700) { 
+            planetEl.style.boxShadow = '0 0 80px rgba(251, 191, 36, 0.9), inset 0 0 40px rgba(251, 191, 36, 0.6)'; 
+            planetEl.style.transform = 'scale(1.15)';
+        } else if (dailyIncome >= 240) { 
+            planetEl.style.boxShadow = '0 0 55px rgba(56, 189, 248, 0.8), inset 0 0 30px rgba(56, 189, 248, 0.5)'; 
+            planetEl.style.transform = 'scale(1.10)';
+        } else if (dailyIncome >= 100) { 
+            planetEl.style.boxShadow = '0 0 35px rgba(16, 185, 129, 0.7), inset 0 0 20px rgba(16, 185, 129, 0.4)'; 
+            planetEl.style.transform = 'scale(1.05)';
+        } else if (dailyIncome >= 30) { 
+            planetEl.style.boxShadow = '0 0 20px rgba(239, 68, 68, 0.6), inset 0 0 10px rgba(239, 68, 68, 0.3)'; 
+            planetEl.style.transform = 'scale(1.02)';
+        } else { 
+            planetEl.style.boxShadow = 'none';
+            planetEl.style.transform = 'scale(1)';
+        }
+    }
+
+    // --- 2. STATÜ ÜNVANI EVRİMİ ---
+    if (rankTextEl) {
+        if (dailyIncome >= 700) {
+            rankTextEl.innerText = "Küresel Hükümdar";
+            rankTextEl.style.color = "#fbbf24"; 
+        } else if (dailyIncome >= 240) {
+            rankTextEl.innerText = "Milyarder İş İnsanı";
+            rankTextEl.style.color = "#38bdf8"; 
+        } else if (dailyIncome >= 100) {
+            rankTextEl.innerText = "Silikon Vadisi Devi";
+            rankTextEl.style.color = "#10b981"; 
+        } else if (dailyIncome >= 30) {
+            rankTextEl.innerText = "Profesyonel Trader";
+            rankTextEl.style.color = "#ef4444"; 
+        } else {
+            rankTextEl.innerText = "Çaylak Yatırımcı";
+            rankTextEl.style.color = "#94a3b8"; 
+        }
+    }
 }
             function loadGame() {
                 if (localStorage.getItem('cts_sound') !== null) { isSoundEnabled = localStorage.getItem('cts_sound') === 'true'; toggleSound.checked = isSoundEnabled; }
@@ -5402,6 +5481,7 @@ function calculateOfflineProgress() {
                 
                 // YENİ EKLENEN: Çevrimdışı kesintileri hesapla
                 calculateOfflineProgress();
+                updateBillionaireVisuals();
                 // Çevrimdışı işlemler bittikten sonra iflası kontrol et
 // checkBankruptcy(true);
             }
@@ -5653,11 +5733,14 @@ chartAreaPath.setAttribute('d', `M ${points.join(' L ')} L 300,130 L 0,130 Z`);
         }
 
         // %100 Maksimum İşlem Gerçekleştirme Fonksiyonu
-        function executeMaxAction(type) {
+function executeMaxAction(type) {
     if (type === 'BUY') {
-        let spotCommission = isPremium ? 0.002 : 0.004;
+        // HATA DÜZELTİLDİ: Oranlar updateTotalCost ile birebir aynı yapıldı (%0.3 / %0.6)
+        let spotCommission = isPremium ? 0.003 : 0.006;
         let costPerShare = currentStockPrice * (1 + spotCommission);
-        let maxQty = Math.floor((playerBalance + 0.001) / costPerShare);
+        
+        // +0.001 kaldırıldı, milimetrik aşağı yuvarlama yapıldı
+        let maxQty = Math.floor(playerBalance / costPerShare);
         if (maxQty < 1) maxQty = 1;
         
         inputQty.value = maxQty;
@@ -5673,12 +5756,15 @@ chartAreaPath.setAttribute('d', `M ${points.join(' L ')} L 300,130 L 0,130 Z`);
         }
         
     } else if (type === 'LONG' || type === 'SHORT') {
-        let futuresCommission = isPremium ? 0.004 : 0.008;
+        // HATA DÜZELTİLDİ: Oranlar updateTotalCost ile birebir aynı yapıldı (%0.5 / %1.0)
+        let futuresCommission = isPremium ? 0.005 : 0.01;
         const lev = parseInt(levSlider.value) || 1;
         
-        // Küsürat hatalarını (+0.001) engelleyerek kasayı son kuruşuna kadar emer
+        // Vadeli işlemde kasadan düşülecek net "1 Adetlik" maliyet hesabı
         let costPerShare = currentStockPrice + (currentStockPrice * lev * futuresCommission);
-        let maxQty = Math.floor((playerBalance + 0.001) / costPerShare);
+        
+        // +0.001 kaldırıldı, bakiye neyse ona göre en güvenli adet hesaplandı
+        let maxQty = Math.floor(playerBalance / costPerShare);
         
         if (maxQty < 1) maxQty = 1; 
         
@@ -6095,8 +6181,12 @@ function purchaseLifestyleItem(itemId) {
 
     playerBalance -= item.price;
     item.owned = true;
+    
     if (typeof updateBalanceUI === 'function') updateBalanceUI();
-    updateLifestyleUI();
+    
+    // BURASI ÇOK ÖNEMLİ: Satın alındığı an ekranı ve görsel evrimi tetikler
+    updateLifestyleUI(); 
+    
     if (typeof saveGame === 'function') saveGame();
 }
 
@@ -6133,6 +6223,51 @@ function updateLifestyleUI() {
     renderLuxuryStage();
     renderLuxuryItemsList();
     calculateLifestyleRank();
+
+    // --- KESİN VE BARİZ GÖRSEL EVRİM ---
+    const planetEl = document.querySelector('.cyber-planet');
+    const ownedCount = luxuryItems.filter(item => item.owned).length;
+
+    if (planetEl) {
+        planetEl.style.transition = "all 1.2s cubic-bezier(0.34, 1.56, 0.64, 1)";
+        planetEl.style.transformOrigin = "center center"; 
+        
+        let scaleVal = 1;
+        let bgGradient = "linear-gradient(135deg, #00f2fe 0%, #3b82f6 50%, #9333ea 100%)";
+        let shadowVal = "0 0 60px rgba(59, 130, 246, 0.6), inset -10px -10px 30px rgba(0,0,0,0.5)";
+
+        if (ownedCount >= 4) {
+            // 4. Mülk: Zirve / Altın İmparatorluk (Devasa parlama ve altın renkler)
+            scaleVal = 1.35;
+            bgGradient = "linear-gradient(135deg, #f59e0b 0%, #ef4444 50%, #b45309 100%)";
+            shadowVal = "0 0 100px rgba(245, 158, 11, 0.9), inset -15px -15px 40px rgba(0,0,0,0.6)";
+        } else if (ownedCount === 3) {
+            // 3. Mülk: Zümrüt / Yeşil Egemenlik
+            scaleVal = 1.25;
+            bgGradient = "linear-gradient(135deg, #10b981 0%, #059669 50%, #064e3b 100%)";
+            shadowVal = "0 0 80px rgba(16, 185, 129, 0.8), inset -12px -12px 35px rgba(0,0,0,0.6)";
+        } else if (ownedCount === 2) {
+            // 2. Mülk: Mor / Cyber Güç
+            scaleVal = 1.15;
+            bgGradient = "linear-gradient(135deg, #a855f7 0%, #7c3aed 50%, #4c1d95 100%)";
+            shadowVal = "0 0 70px rgba(168, 85, 247, 0.8), inset -10px -10px 30px rgba(0,0,0,0.6)";
+        } else if (ownedCount === 1) {
+            // 1. Mülk: Turkuaz / İlk Adım
+            scaleVal = 1.08;
+            bgGradient = "linear-gradient(135deg, #38bdf8 0%, #0284c7 50%, #0369a1 100%)";
+            shadowVal = "0 0 50px rgba(56, 189, 248, 0.7), inset -10px -10px 30px rgba(0,0,0,0.6)";
+        } else {
+            // Başlangıç (0 Mülk)
+            scaleVal = 1;
+            bgGradient = "linear-gradient(135deg, #00f2fe 0%, #3b82f6 50%, #9333ea 100%)";
+            shadowVal = "0 0 60px rgba(59, 130, 246, 0.6), inset -10px -10px 30px rgba(0,0,0,0.5)";
+        }
+
+        // Ortalamayı bozmadan (translateX) renkleri ve boyutu bariz şekilde değiştiriyoruz
+        planetEl.style.transform = `translateX(-50%) scale(${scaleVal})`;
+        planetEl.style.background = bgGradient;
+        planetEl.style.boxShadow = shadowVal;
+    }
 }
 
 function openLifestylePage() {
@@ -6187,7 +6322,17 @@ window.closeLifestylePage = closeLifestylePage;
 let holdInterval = null;
 let holdTimeout = null;
 
+function stopChangingQuantity() {
+    clearTimeout(holdTimeout);
+    clearInterval(holdInterval);
+    holdTimeout = null;
+    holdInterval = null;
+}
+
 function startChangingQuantity(amount) {
+    // YENİ KORUMA: Sayaç üst üste binmesini ve takılı kalmayı engeller
+    stopChangingQuantity(); 
+
     changeQuantity(amount);
 
     // İlk basışta 400ms bekler, ardından her 75ms'de bir hızlıca miktar ekler/çıkarır
@@ -6198,55 +6343,52 @@ function startChangingQuantity(amount) {
     }, 400);
 }
 
-function stopChangingQuantity() {
-    clearTimeout(holdTimeout);
-    clearInterval(holdInterval);
-}
-
 // Adeti değiştiren ve arayüzü güncelleyen ana fonksiyon
-        function changeQuantity(amount) {
-            const qtyInput = document.getElementById('trade-qty');
-            if (!qtyInput) return;
-            
-            let currentVal = parseInt(qtyInput.value) || 1;
-            let currentOwned = parseInt(document.getElementById('trade-owned-count').innerText.replace(/[^0-9]/g, "")) || 0;
-            let remainingShares = 1000000 - currentOwned;
+function changeQuantity(amount) {
+    const qtyInput = document.getElementById('trade-qty');
+    if (!qtyInput) return;
+    
+    let currentVal = parseInt(qtyInput.value) || 1;
+    let currentOwned = parseInt(document.getElementById('trade-owned-count').innerText.replace(/[^0-9]/g, "")) || 0;
+    let remainingShares = 1000000 - currentOwned;
 
-            currentVal += amount;
-            
-            // Minimum 1 adet sınırı
-            if (currentVal < 1) currentVal = 1;
-            
-            // YENİ: Maksimum kalan hisse sınırı (Piyasadaki boştaki hisseler)
-            if (currentVal > remainingShares && remainingShares > 0) {
-                currentVal = remainingShares;
-            }
-            
-            qtyInput.value = currentVal;
-            
-            if (typeof updateTradeCalculations === 'function') {
-                updateTradeCalculations();
-            } else if (typeof updateTotalCost === 'function') {
-                updateTotalCost();
-            }
-        }
+    currentVal += amount;
+    
+    // Minimum 1 adet sınırı
+    if (currentVal < 1) currentVal = 1;
+    
+    // YENİ: Maksimum kalan hisse sınırı (Piyasadaki boştaki hisseler)
+    if (currentVal > remainingShares && remainingShares > 0) {
+        currentVal = remainingShares;
+    }
+    
+    qtyInput.value = currentVal;
+    
+    if (typeof updateTradeCalculations === 'function') {
+        updateTradeCalculations();
+    } else if (typeof updateTotalCost === 'function') {
+        updateTotalCost();
+    }
+}
 
 // --- HTML'DEKİ BUTONLARLA BAĞLANTI (ID'ler eşleştirildi) ---
 const btnPlus = document.getElementById('btn-qty-plus');
 const btnMinus = document.getElementById('btn-qty-minus');
 
 if (btnPlus && btnMinus) {
-    // Artı Butonu Dinleyicileri (Mouse ve Mobil Dokunma)
-    btnPlus.addEventListener('mousedown', () => startChangingQuantity(1));
+    // Artı Butonu Dinleyicileri (Fare ve Mobil Dokunma)
+    btnPlus.addEventListener('mousedown', (e) => { e.preventDefault(); startChangingQuantity(1); });
     btnPlus.addEventListener('touchstart', (e) => { e.preventDefault(); startChangingQuantity(1); });
 
     // Eksi Butonu Dinleyicileri
-    btnMinus.addEventListener('mousedown', () => startChangingQuantity(-1));
+    btnMinus.addEventListener('mousedown', (e) => { e.preventDefault(); startChangingQuantity(-1); });
     btnMinus.addEventListener('touchstart', (e) => { e.preventDefault(); startChangingQuantity(-1); });
 
-    // Parmağı veya Mouse'u Butondan Çekince Durdurma
-    document.addEventListener('mouseup', stopChangingQuantity);
-    document.addEventListener('touchend', stopChangingQuantity);
+    // YENİ KAPSAMLI İPTAL DİNLEYİCİLERİ: Parmağı çekme, kaydırma veya ekrandan çıkma durumları
+    window.addEventListener('mouseup', stopChangingQuantity);
+    window.addEventListener('touchend', stopChangingQuantity);
+    window.addEventListener('touchcancel', stopChangingQuantity); // Mobilde parmak butondan kayarsa durdurur
+    window.addEventListener('blur', stopChangingQuantity); // Telefon çalarsa veya oyun alta alınırsa durdurur
 }
 // ==========================================================================
 // 👑 ŞİRKET ELE GEÇİRME VE YENİDEN MARKALAMA SİSTEMİ
@@ -7243,44 +7385,6 @@ if (btnBuyCash) {
         <div class="cyber-planet"></div>
         <div class="cyber-ground"></div>
         <div class="hud-caption">SİSTEM AKTİF</div>
-
-        <!-- Jet -->
-        <div id="stage-asset-jet" class="stage-item s-jet">
-            <div class="anim-inner">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                    <g transform="translate(12, 12) rotate(45) scale(0.8) translate(-12, -12)">
-                        <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
-                    </g>
-                </svg>
-            </div>
-        </div>
-        
-        <!-- Rezidans -->
-        <div id="stage-asset-residence" class="stage-item s-residence">
-            <div class="anim-inner">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16H3v2h18v-2h-2zM9 7h2v2H9V7zm0 4h2v2H9v-2zm0 4h2v2H9v-2zm4-8h2v2h-2V7zm0 4h2v2h-2v-2zm0 4h2v2h-2v-2z"/>
-                </svg>
-            </div>
-        </div>
-        
-        <!-- Araba -->
-        <div id="stage-asset-car" class="stage-item s-car">
-            <div class="anim-inner">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
-                </svg>
-            </div>
-        </div>
-        
-        <!-- Yat -->
-        <div id="stage-asset-yacht" class="stage-item s-yacht">
-            <div class="anim-inner">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M20 21c-1.39 0-2.78-.47-4-1.32-2.44 1.71-5.56 1.71-8 0C6.78 20.53 5.39 21 4 21H2v2h2c1.38 0 2.74-.35 4-.99 2.52 1.29 5.48 1.29 8 0 1.26.65 2.62.99 4 .99h2v-2h-2zM3.95 19H4c1.6 0 3.02-.88 4-2 .98 1.12 2.4 2 4 2s3.02-.88 4-2c.98 1.12 2.4 2 4 2h.05l1.89-6.68c.08-.26.06-.54-.06-.78s-.34-.42-.6-.5L20 11v-1c0-2.61-1.91-4.76-4.46-5.08L14 3.42V3c0-.55-.45-1-1-1h-2c-.55 0-1 .45-1 1v.42l-1.54 1.5C5.91 5.24 4 7.39 4 10v1l-1.28.36c-.26.08-.48.26-.6.5s-.14.52-.06.78L3.95 19zM6 10c0-1.78 1.23-3.29 2.94-3.73l2.06-2 2.06 2C14.77 6.71 16 8.22 16 10v1H6v-1z"/>
-                </svg>
-            </div>
-        </div>
     </div>
 
     <div class="lifestyle-status-card">
