@@ -6371,24 +6371,27 @@ function changeQuantity(amount) {
     }
 }
 
-// --- HTML'DEKİ BUTONLARLA BAĞLANTI (ID'ler eşleştirildi) ---
+// --- KUSURSUZ MOBİL UYUMLU POINTER EVENTS BAĞLANTISI ---
 const btnPlus = document.getElementById('btn-qty-plus');
 const btnMinus = document.getElementById('btn-qty-minus');
 
 if (btnPlus && btnMinus) {
-    // Artı Butonu Dinleyicileri (Fare ve Mobil Dokunma)
-    btnPlus.addEventListener('mousedown', (e) => { e.preventDefault(); startChangingQuantity(1); });
-    btnPlus.addEventListener('touchstart', (e) => { e.preventDefault(); startChangingQuantity(1); });
+    // Artı Butonu (Hem Mobil Dokunma hem Fare için ortak)
+    btnPlus.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        startChangingQuantity(1);
+    });
 
-    // Eksi Butonu Dinleyicileri
-    btnMinus.addEventListener('mousedown', (e) => { e.preventDefault(); startChangingQuantity(-1); });
-    btnMinus.addEventListener('touchstart', (e) => { e.preventDefault(); startChangingQuantity(-1); });
+    // Eksi Butonu
+    btnMinus.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        startChangingQuantity(-1);
+    });
 
-    // YENİ KAPSAMLI İPTAL DİNLEYİCİLERİ: Parmağı çekme, kaydırma veya ekrandan çıkma durumları
-    window.addEventListener('mouseup', stopChangingQuantity);
-    window.addEventListener('touchend', stopChangingQuantity);
-    window.addEventListener('touchcancel', stopChangingQuantity); // Mobilde parmak butondan kayarsa durdurur
-    window.addEventListener('blur', stopChangingQuantity); // Telefon çalarsa veya oyun alta alınırsa durdurur
+    // Parmağı veya Fareyi Ekrandan Çektiği An (Global Pencere Yakalaması)
+    window.addEventListener('pointerup', stopChangingQuantity);
+    window.addEventListener('pointercancel', stopChangingQuantity);
+    window.addEventListener('blur', stopChangingQuantity);
 }
 // ==========================================================================
 // 👑 ŞİRKET ELE GEÇİRME VE YENİDEN MARKALAMA SİSTEMİ
