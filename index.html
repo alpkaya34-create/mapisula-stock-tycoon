@@ -1198,50 +1198,42 @@
     <!-- OYUN İÇİ: ANA BORSA EKRANI -->
     <div id="game-screen" class="mobile-screen" style="display: none;">
         
-        <div class="top-dashboard">
-            <div style="display: flex; align-items: center;">
-                <button id="btn-in-game-menu" class="btn-menu-back" style="display: flex; align-items: center; gap: 6px;">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-top: -1px;">
-        <path d="M11 17l-5-5 5-5"></path>
-        <path d="M18 17l-5-5 5-5" opacity="0.5"></path>
-    </svg>
-    MENÜ
-</button>
-                <div class="dashboard-box" id="btn-open-wallet-stats" style="margin-left: 0; cursor: pointer;" title="Kasa Analizi İçin Tıkla">
-                <span class="dash-label">KASA <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; vertical-align: middle; margin-left: 4px; filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.6));">
-    <line x1="18" y1="20" x2="18" y2="10"></line>
-    <line x1="12" y1="20" x2="12" y2="4"></line>
-    <line x1="6" y1="20" x2="6" y2="14"></line>
-</svg></span>
-                <span class="dash-value text-gold">$15,000.00</span>
-                <!-- YENİ EKLENEN: Terminal Ücreti Uyarı Metni -->
-                <span id="terminal-fee-display" style="font-size: 9px; color: #ef4444; font-weight: 800; margin-top: 2px; transition: all 0.3s;"><svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; vertical-align: middle; margin-right: 2px; filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.6));">
-    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-</svg> Terminal: -$1</span>
-            </div>
-            </div>
-
-            <!-- YENİ: Kasa ile Gün arasına Yapay Zeka Butonu -->
-            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                <button id="btn-open-ai" class="btn-ai-nav">
-                    <span><svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 6px; filter: drop-shadow(0 0 5px rgba(0, 242, 254, 0.6));">
-    <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
-    <rect x="9" y="9" width="6" height="6"></rect>
-    <line x1="9" y1="1" x2="9" y2="4"></line>
-    <line x1="15" y1="1" x2="15" y2="4"></line>
-    <line x1="9" y1="20" x2="9" y2="23"></line>
-    <line x1="15" y1="20" x2="15" y2="23"></line>
-</svg> AI ANALİST</span>
+        <div class="top-dashboard" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+            
+            <!-- Sol Kısım: Menü ve Kasa/Terminal -->
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <button id="btn-in-game-menu" class="btn-menu-back" style="display: flex; align-items: center; gap: 4px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
+                        <path d="M11 17l-5-5 5-5"></path>
+                        <path d="M18 17l-5-5 5-5" opacity="0.5"></path>
+                    </svg>
+                    MENÜ
                 </button>
-                <span id="ai-rights-counter" style="font-size: 9px; color: #94a3b8; font-weight: 800; margin-top: 3px;">Hak: 5 / 5</span>
+                
+                <div class="dashboard-box" id="btn-open-wallet-stats" style="cursor: pointer; padding: 4px 8px;" title="Kasa Analizi İçin Tıkla">
+                    <span class="dash-label">KASA <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" style="width: 14px; height: 14px; vertical-align: middle;"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg></span>
+                    <span class="dash-value text-gold" style="font-size: 13px;">$15,000.00</span>
+                    <!-- YATAY HİZALANMIŞ TERMINAL -->
+                    <span id="terminal-fee-display" style="font-size: 8px; color: #ef4444; font-weight: 800; white-space: nowrap;"><svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" style="width: 10px; height: 10px; vertical-align: middle;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> Terminal: -$1</span>
+                </div>
             </div>
 
-            <div class="dashboard-box right-align" id="btn-day-summary" style="cursor: pointer; display: flex; flex-direction: column; align-items: flex-end;">
-    <span class="dash-label">GÜN</span>
-    <span class="dash-value" id="dash-day">1</span>
-    <!-- YENİ: Günlük İşlem Sınırı Göstergesi -->
-    <span id="trade-limit-text" style="font-size: 9px; color: #10b981; font-weight: 800; margin-top: 3px;">İşlem: 5/5</span>
-</div>
+            <!-- Orta Kısım: AI Analist -->
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <button id="btn-open-ai" class="btn-ai-nav" style="padding: 4px 8px;">
+                    <span><svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2" style="width: 14px; height: 14px; vertical-align: middle;"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect></svg> AI ANALİST</span>
+                </button>
+                <span id="ai-rights-counter" style="font-size: 8px; color: #94a3b8; font-weight: 800; margin-top: 2px;">Hak: 5 / 5</span>
+            </div>
+
+            <!-- Sağ Kısım: Gün ve İşlem Sınırı -->
+            <div class="dashboard-box right-align" id="btn-day-summary" style="cursor: pointer; display: flex; flex-direction: column; align-items: flex-end; padding: 4px 8px;">
+                <span class="dash-label">GÜN</span>
+                <span class="dash-value" id="dash-day" style="font-size: 13px;">1</span>
+                <!-- YATAY HİZALANMIŞ İŞLEM -->
+                <span id="trade-limit-text" style="font-size: 8px; color: #10b981; font-weight: 800; white-space: nowrap;">İşlem: 5/5</span>
+            </div>
+            
         </div>
 
         <div class="category-tabs" id="category-tabs">
