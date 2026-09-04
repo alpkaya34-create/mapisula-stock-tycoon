@@ -1236,10 +1236,12 @@
                 <span id="ai-rights-counter" style="font-size: 9px; color: #94a3b8; font-weight: 800; margin-top: 3px;">Hak: 5 / 5</span>
             </div>
 
-            <div class="dashboard-box right-align" id="btn-day-summary" style="cursor: pointer;">
-                <span class="dash-label">GÜN</span>
-                <span class="dash-value" id="dash-day">1</span>
-            </div>
+            <div class="dashboard-box right-align" id="btn-day-summary" style="cursor: pointer; display: flex; flex-direction: column; align-items: flex-end;">
+    <span class="dash-label">GÜN</span>
+    <span class="dash-value" id="dash-day">1</span>
+    <!-- YENİ: Günlük İşlem Sınırı Göstergesi -->
+    <span id="trade-limit-text" style="font-size: 9px; color: #10b981; font-weight: 800; margin-top: 3px;">İşlem: 5/5</span>
+</div>
         </div>
 
         <div class="category-tabs" id="category-tabs">
@@ -1270,6 +1272,14 @@
             <button class="cat-btn locked" data-cat="cyber"><svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 6px; filter: drop-shadow(0 0 4px rgba(59, 130, 246, 0.6));">
     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
 </svg> SİBER</button>
+<button class="cat-btn locked" data-cat="defense" id="tab-cat-defense"><svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 6px; filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.6));">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+</svg> SAVUNMA</button>
+<button class="cat-btn locked" data-cat="quantum" id="tab-cat-quantum">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 6px; filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.6));">
+        <circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+    </svg> KUANTUM
+</button>
             <button class="cat-btn locked" data-cat="vip" id="tab-cat-vip"><svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 6px; filter: drop-shadow(0 0 4px rgba(56, 189, 248, 0.6));">
     <path d="M6 3h12l4 6-10 13L2 9z"></path>
 </svg> VIP</button>
@@ -1394,6 +1404,49 @@
                 <div class="stock-info"><span class="stock-name">StealthGuard</span><span class="stock-owned">Portföy: 0 Adet</span></div>
                 <div class="stock-price-data"><span class="stock-price">$134.60</span><span class="stock-change">▼ -1.7%</span></div>
             </div>
+
+            <!-- SAVUNMA (4) - YENİ 50M BARAJI -->
+            <div class="stock-card trend-up" data-cat="defense" data-name="Ares Defense">
+                <div class="stock-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">🎯</div>
+                <div class="stock-info"><span class="stock-name">Ares Defense</span><span class="stock-owned">Portföy: 0 Adet</span></div>
+                <div class="stock-price-data"><span class="stock-price">$1250.00</span><span class="stock-change">▲ +4.2%</span></div>
+            </div>
+            <div class="stock-card trend-up" data-cat="defense" data-name="Vanguard Systems">
+                <div class="stock-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">🛰️</div>
+                <div class="stock-info"><span class="stock-name">Vanguard Systems</span><span class="stock-owned">Portföy: 0 Adet</span></div>
+                <div class="stock-price-data"><span class="stock-price">$890.50</span><span class="stock-change">▲ +2.8%</span></div>
+            </div>
+            <div class="stock-card trend-down" data-cat="defense" data-name="Titan Armor">
+                <div class="stock-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">🛡️</div>
+                <div class="stock-info"><span class="stock-name">Titan Armor</span><span class="stock-owned">Portföy: 0 Adet</span></div>
+                <div class="stock-price-data"><span class="stock-price">$2100.00</span><span class="stock-change">▼ -1.5%</span></div>
+            </div>
+            <div class="stock-card trend-up" data-cat="defense" data-name="Orion Aerospace">
+                <div class="stock-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">🚀</div>
+                <div class="stock-info"><span class="stock-name">Orion Aerospace</span><span class="stock-owned">Portföy: 0 Adet</span></div>
+                <div class="stock-price-data"><span class="stock-price">$1750.25</span><span class="stock-change">▲ +5.1%</span></div>
+            </div>
+<!-- KUANTUM (4) - 100M BARAJI -->
+<div class="stock-card trend-up" data-cat="quantum" data-name="Aether Quantum">
+    <div class="stock-icon" style="background: rgba(251, 191, 36, 0.1); color: #fbbf24;">⚛️</div>
+    <div class="stock-info"><span class="stock-name">Aether Quantum</span><span class="stock-owned">Portföy: 0 Adet</span></div>
+    <div class="stock-price-data"><span class="stock-price">$5400.00</span><span class="stock-change">▲ +6.4%</span></div>
+</div>
+<div class="stock-card trend-up" data-cat="quantum" data-name="Singularity Tech">
+    <div class="stock-icon" style="background: rgba(251, 191, 36, 0.1); color: #fbbf24;">🌌</div>
+    <div class="stock-info"><span class="stock-name">Singularity Tech</span><span class="stock-owned">Portföy: 0 Adet</span></div>
+    <div class="stock-price-data"><span class="stock-price">$8900.50</span><span class="stock-change">▲ +8.1%</span></div>
+</div>
+<div class="stock-card trend-down" data-cat="quantum" data-name="Chronos Dynamics">
+    <div class="stock-icon" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;">⏳</div>
+    <div class="stock-info"><span class="stock-name">Chronos Dynamics</span><span class="stock-owned">Portföy: 0 Adet</span></div>
+    <div class="stock-price-data"><span class="stock-price">$4150.00</span><span class="stock-change">▼ -2.2%</span></div>
+</div>
+<div class="stock-card trend-up" data-cat="quantum" data-name="Void Corporation">
+    <div class="stock-icon" style="background: rgba(251, 191, 36, 0.1); color: #fbbf24;">🕳️</div>
+    <div class="stock-info"><span class="stock-name">Void Corporation</span><span class="stock-owned">Portföy: 0 Adet</span></div>
+    <div class="stock-price-data"><span class="stock-price">$12500.00</span><span class="stock-change">▲ +10.5%</span></div>
+</div>
 
             <!-- VIP HİSSELER (4) -->
             <div class="stock-card trend-up" data-cat="vip" data-name="CTS Capital">
@@ -1867,7 +1920,7 @@ CTS KRİPTO BORSASI</h3>
 
            <!-- TEK SATIR MİNİ KOMİSYON BİLGİSİ -->
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background: rgba(15, 23, 42, 0.75); border: 1px solid #334155; padding: 8px 12px; border-radius: 10px;">
-                <span style="font-size: 11.5px; font-weight: 800; color: #cbd5e1;">Komisyon (<span id="commission-rate-text">%0.4</span>): <strong id="commission-fee-text" style="font-size: 13.5px; font-weight: 900; color: #ef4444;">$0.00</strong></span>
+                <span style="font-size: 11.5px; font-weight: 800; color: #cbd5e1;">Komisyon (<span id="commission-rate-text">%0.5</span>): <strong id="commission-fee-text" style="font-size: 13.5px; font-weight: 900; color: #ef4444;">$0.00</strong></span>
                 <span id="commission-badge-text" style="font-size: 10px; font-weight: 800; color: #fbbf24;"><svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 6px; filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.6));">
     <path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7z"></path>
     <path d="M2 20h20"></path>
@@ -2321,9 +2374,19 @@ function handleBGM() {
             let aiRights = 5; // Başlangıç ücretsiz hak
     let lastAiResetDay = 1; // Premium günlük hak sıfırlama takibi için
 
-            const categoryRequirements = { 'ai': 0, 'bio': 250000, 'energy': 1000000, 'ecom': 5000000, 'cyber': 15000000, 'vip': Infinity, 'crypto': 0 };
-            let currentCategoryFilter = 'all';
-            const catBtns = document.querySelectorAll('.cat-btn');
+            const categoryRequirements = { 
+    'ai': 0, 
+    'bio': 250000, 
+    'energy': 1000000, 
+    'ecom': 5000000, 
+    'cyber': 15000000, 
+    'defense': 50000000, // 50 Milyon barajı gereksinimi
+    'quantum': 100000000, // YENİ: 100 Milyon barajı gereksinimi
+    'vip': Infinity, 
+    'crypto': 0 
+};
+let currentCategoryFilter = 'all';
+const catBtns = document.querySelectorAll('.cat-btn');
 
             btnProfile.addEventListener('click', () => {
                 menuScreen.style.display = 'none';
@@ -2894,7 +2957,11 @@ function checkLiquidations() {
                     gameStats.days += 1; 
                     document.getElementById('dash-day').innerText = gameStats.days;
                     tickCount = 0; 
+                    
+                    // YENİ GÜNDE LİMİTLERİ SIFIRLA VE EKRANA YANSIT
                     dailyTrades = 0;
+                    if (typeof updateTradeLimitUI === 'function') updateTradeLimitUI();
+                    
                     startOfDayWealth = getNetWorth(); 
                     isEODPending = false;
                     saveGame();
@@ -2902,23 +2969,27 @@ function checkLiquidations() {
                 isGamePaused = false; 
             });
 
-            // Kasa performansına göre çekilebilecek maksimum krediyi belirler
+            // Kasa performansına göre çekilebilecek maksimum krediyi belirler (100M'da sınır kaldırıldı)
 function getDynamicLoanAmount() {
     let nw = getNetWorth();
-    if (nw >= 20000000) return 2000000; // 2 Milyon Kredi
-    if (nw >= 5000000) return 500000;   // 500 Bin Kredi
-    if (nw >= 1000000) return 100000;   // 100 Bin Kredi
-    if (nw >= 250000) return 50000;     // 50 Bin Kredi
-    if (nw >= 50000) return 10000;      // 10 Bin Kredi
-    return 5000;                        // 5 Bin Kredi (Başlangıç)
+    if (nw >= 100000000) return 10000000; // YENİ: 100 Milyon$ ve üzeri -> Sınır kaldırıldı, net servetin yarısı kadar devasa/esnek limit!
+    if (nw >= 50000000) return 5000000;   // 50 Milyon$ üstü -> 5 Milyon Kredi
+    if (nw >= 20000000) return 2000000;   // 2 Milyon Kredi
+    if (nw >= 5000000) return 500000;     // 500 Bin Kredi
+    if (nw >= 1000000) return 100000;     // 100 Bin Kredi
+    if (nw >= 250000) return 50000;       // 50 Bin Kredi
+    if (nw >= 50000) return 10000;        // 10 Bin Kredi
+    return 5000;                          // 5 Bin Kredi (Başlangıç)
 }
 
 function updateInterestRate() {
     // BURADAKİ playerBalance'ları KALDIRIP YERİNE getNetWorth() DEĞERİNİ KOYUYORUZ
     let totalWealth = getNetWorth(); 
 
-    // Faiz oranları hesaplaması
-    if (totalWealth >= 15000000) currentInterestRate = 1.00;
+    // Faiz oranları hesaplaması (100M ve 50M kademeleri eklendi)
+    if (totalWealth >= 100000000) currentInterestRate = 0.50; // YENİ: 100 Milyon$ üstü -> %0.50 Faiz
+    else if (totalWealth >= 50000000) currentInterestRate = 0.75; // 50 Milyon$ üstü -> %0.75 Faiz
+    else if (totalWealth >= 15000000) currentInterestRate = 1.00;
     else if (totalWealth >= 5000000) currentInterestRate = 1.25;
     else if (totalWealth >= 1000000) currentInterestRate = 1.50;
     else if (totalWealth >= 250000) currentInterestRate = 1.75;
@@ -2930,17 +3001,17 @@ function updateInterestRate() {
     // Arayüzdeki kredi limitlerini ve yazıları güncelle
     const loanInfoText = document.getElementById('loan-info-text');
     if(loanInfoText) {
-        loanInfoText.innerText = `Tutar: $${dynamicLoan.toLocaleString('en-US')} | 4 Saniyede %${currentInterestRate.toFixed(2)} Faiz`;
+        loanInfoText.innerText = `Tutar: $${dynamicLoan.toLocaleString('en-US', {maximumFractionDigits: 0})} | 4 Saniyede %${currentInterestRate.toFixed(2)} Faiz`;
     }
     
     const btnTakeLoan = document.getElementById('btn-take-loan');
     if(btnTakeLoan) {
-        btnTakeLoan.innerText = `$${dynamicLoan.toLocaleString('en-US')} KREDİ ÇEK`;
+        btnTakeLoan.innerText = `$${dynamicLoan.toLocaleString('en-US', {maximumFractionDigits: 0})} KREDİ ÇEK`;
     }
     
     const btnPayLoan = document.getElementById('btn-pay-loan');
     if(btnPayLoan) {
-        btnPayLoan.innerText = `$${dynamicLoan.toLocaleString('en-US')} ÖDE`;
+        btnPayLoan.innerText = `$${dynamicLoan.toLocaleString('en-US', {maximumFractionDigits: 0})} ÖDE`;
     }
 }
 
@@ -3050,18 +3121,19 @@ function updateInterestRate() {
             });
 
             function renderMarketList() {
-                const cardsArray = Array.from(stockCards);
-                const categoryOrder = { 'ai': 1, 'bio': 2, 'energy': 3, 'ecom': 4, 'cyber': 5, 'vip': 6 };
-                cardsArray.sort((a, b) => categoryOrder[a.dataset.cat] - categoryOrder[b.dataset.cat]);
-                
-                marketContainer.innerHTML = '';
-                cardsArray.forEach(card => {
-                    if (card.dataset.cat === 'crypto') return; // YENİ EKLENEN: Kriptoları ana borsaya karıştırma
-                    if(currentCategoryFilter === 'all' || card.dataset.cat === currentCategoryFilter) {
-                        marketContainer.appendChild(card);
-                    }
-                });
-            }
+    const cardsArray = Array.from(stockCards);
+    // YENİ: 'quantum' kategorisi 7. sıraya eklendi
+    const categoryOrder = { 'ai': 1, 'bio': 2, 'energy': 3, 'ecom': 4, 'cyber': 5, 'defense': 6, 'quantum': 7, 'vip': 8 };
+    cardsArray.sort((a, b) => (categoryOrder[a.dataset.cat] || 99) - (categoryOrder[b.dataset.cat] || 99));
+    
+    marketContainer.innerHTML = '';
+    cardsArray.forEach(card => {
+        if (card.dataset.cat === 'crypto') return; // Kriptoları ana borsaya karıştırma
+        if(currentCategoryFilter === 'all' || card.dataset.cat === currentCategoryFilter) {
+            marketContainer.appendChild(card);
+        }
+    });
+}
 
             function updateBalanceUI() {
     displayPlayerBalance.innerText = formatMoney(playerBalance);
@@ -3093,7 +3165,12 @@ function updateInterestRate() {
             
             let currentFee = 1;
             
-            if (realTotalWealth >= 20000000) {
+            // YENİ: 100 Milyon ve 50 Milyon kademeleri en üste eklendi
+            if (realTotalWealth >= 100000000) {
+                currentFee = 640;
+            } else if (realTotalWealth >= 50000000) {
+                currentFee = 320;
+            } else if (realTotalWealth >= 20000000) {
                 currentFee = 160;
             } else if (realTotalWealth >= 15000000) {
                 currentFee = 80;
@@ -3112,7 +3189,7 @@ function updateInterestRate() {
             feeDisplay.innerText = "⚡ Terminal: -$" + currentFee;
             feeDisplay.style.color = "#ef4444";
         }
-    } 
+    }
 
     // --- KASA DESTEK PAKETİ DİNAMİK GÜNCELLEMESİ ---
     if (typeof updateCashSupportUI === 'function') {
@@ -3309,9 +3386,9 @@ stockCards.forEach(card => {
 
     if (tradeMode === 'FUTURES') {
         // --- VADELİ İŞLEMLER İÇİN YENİ ORANLAR ---
-        // Vadeli Premium %0.4 | Vadeli Standart %0.8
-        commissionRateVal = isPremium ? 0.004 : 0.008;
-        commissionRatePercent = isPremium ? "%0.4" : "%0.8";
+        // Vadeli Premium %0.5 | Vadeli Standart %1.0
+        commissionRateVal = isPremium ? 0.005 : 0.01;
+        commissionRatePercent = isPremium ? "%0.5" : "%1.0";
 
         const lev = parseInt(levSlider.value) || 1;
         const positionSize = margin * lev; 
@@ -3334,9 +3411,9 @@ stockCards.forEach(card => {
         }
     } else {
         // --- SPOT İŞLEMLER İÇİN YENİ ORANLAR ---
-        // Spot Premium %0.2 | Spot Standart %0.4
-        commissionRateVal = isPremium ? 0.002 : 0.004;
-        commissionRatePercent = isPremium ? "%0.2" : "%0.4";
+        // Spot Premium %0.3 | Spot Standart %0.6
+        commissionRateVal = isPremium ? 0.003 : 0.006;
+        commissionRatePercent = isPremium ? "%0.3" : "%0.6";
 
         // Spot tarafta komisyon net tutar üzerinden alınır
         commissionFee = margin * commissionRateVal;
@@ -3381,86 +3458,109 @@ stockCards.forEach(card => {
             let stockAverages = {}; // YENİ: Hisse maliyet ortalamalarını tutan obje
 
             const executeBuyAction = () => {
-                const qty = parseInt(inputQty.value);
-                let currentOwned = parseInt(displayTradeOwned.innerText.replace(/[^0-9]/g, "")) || 0;
-                
-                // --- KRİPTO KONTROLÜ (KARTA KAZINAN BİLGİYİ OKU) ---
-                let isCryptoCheck = currentStockCard && currentStockCard.dataset.isCrypto === "true";
-                // ---------------------------------------------------
-                
-                // --- %100 HİSSE SINIRI KONTROLÜ (UYARISIZ / SESSİZ DÜZELTME) ---
-                if (!isCryptoCheck && currentOwned + qty > 1000000) {
-                    const remaining = 1000000 - currentOwned;
-                    // Eğer zaten %100'e sahipse ve alınacak hiç hisse kalmadıysa çık
-                    if (remaining <= 0) return;
-                    // Uyarı göstermeden, direkt kalan maksimum adede eşitle
-                    inputQty.value = remaining;
-                    qty = remaining; 
-                }
-                // -------------------------------------------------------------
+    // YENİ EKLENEN: GÜNLÜK İŞLEM LİMİTİ KONTROLÜ
+    let userIsPremium = (typeof isPremium !== 'undefined' && isPremium) || localStorage.getItem('cts_theme_active') === 'true';
+    
+    if (!userIsPremium && (typeof dailyTrades !== 'undefined' ? dailyTrades : 0) >= 5) {
+        if (typeof showStoreModal === 'function') {
+            // Şık popup tasarımı ile mağazaya yönlendirme
+            showStoreModal(
+                "GÜNLÜK LİMİT DOLDU! 🛑", 
+                "Bugünlük 5 işlem limitini doldurdun.<br><br>Sınırsız işlem yapmak ve komisyonları yarıya düşürmek için <strong>Premium Abonelik</strong> alabilirsin.", 
+                false
+            );
+        } else {
+            alert("Günlük 5 işlem limitini doldurdun! Sınırsız işlem için Premium alabilirsin.");
+        }
+        return; // Limite takıldıysa alım işlemini iptal et
+    }
 
-                const totalCost = qty * currentStockPrice;
-                
-                // YENİ ORANLAR: Premium %0.2 (0.002) | Standart %0.4 (0.004)
-                let commissionRate = isPremium ? 0.002 : 0.004;
-                
-                let commissionFee = totalCost * commissionRate;
-                let totalCostWithFee = totalCost + commissionFee;
+    let qty = parseInt(inputQty.value);
+    let currentOwned = parseInt(displayTradeOwned.innerText.replace(/[^0-9]/g, "")) || 0;
+    
+    // --- KRİPTO KONTROLÜ (KARTA KAZINAN BİLGİYİ OKU) ---
+    let isCryptoCheck = currentStockCard && currentStockCard.dataset.isCrypto === "true";
+    // ---------------------------------------------------
+    
+    // --- %100 HİSSE SINIRI KONTROLÜ (UYARISIZ / SESSİZ DÜZELTME) ---
+    if (!isCryptoCheck && currentOwned + qty > 1000000) {
+        const remaining = 1000000 - currentOwned;
+        // Eğer zaten %100'e sahipse ve alınacak hiç hisse kalmadıysa çık
+        if (remaining <= 0) return;
+        // Uyarı göstermeden, direkt kalan maksimum adede eşitle
+        inputQty.value = remaining;
+        qty = remaining; 
+    }
+    // -------------------------------------------------------------
 
-                if (playerBalance >= totalCostWithFee) {
-                    const stockName = currentStockCard.dataset.name;
-                    
-                    let oldTotalSpent = currentOwned * (stockAverages[stockName] || currentStockPrice);
-                    let newTotalSpent = oldTotalSpent + totalCost;
-                    let newOwned = currentOwned + qty;
-                    stockAverages[stockName] = newTotalSpent / newOwned;
+    const totalCost = qty * currentStockPrice;
+    
+    // YENİ ORANLAR: Premium %0.3 (0.003) | Standart %0.6 (0.006)
+    let commissionRate = isPremium ? 0.003 : 0.006;
+    
+    let commissionFee = totalCost * commissionRate;
+    let totalCostWithFee = totalCost + commissionFee;
 
-                    playerBalance -= totalCostWithFee;
-                    playSound('buy');
-                    updateBalanceUI();
-                    displayTradeOwned.innerText = newOwned.toLocaleString('tr-TR');
-                    
-                    // KRİPTO DEĞİLSE ŞİRKET PAYINI GÜNCELLE VE YÖNETİM KURULUNU AÇ
-                    if (!isCryptoCheck) {
-                        let ownershipPercent = (newOwned / 1000000) * 100;
-                        const ownershipEl = document.getElementById('trade-ownership-percent');
-                        if (ownershipEl) {
-                            ownershipEl.style.display = 'block';
-                            ownershipEl.innerText = "Şirket Payı: %" + ownershipPercent.toFixed(4);
-                        }
+    if (playerBalance >= totalCostWithFee) {
+        const stockName = currentStockCard.dataset.name;
+        
+        let oldTotalSpent = currentOwned * (stockAverages[stockName] || currentStockPrice);
+        let newTotalSpent = oldTotalSpent + totalCost;
+        let newOwned = currentOwned + qty;
+        stockAverages[stockName] = newTotalSpent / newOwned;
 
-                        if (newOwned >= 510000) {
-                            const takeoverBtn = document.getElementById('btn-open-takeover');
-                            if(takeoverBtn) takeoverBtn.style.display = 'block';
-                        }
-                    }
+        playerBalance -= totalCostWithFee;
+        playSound('buy');
+        updateBalanceUI();
+        displayTradeOwned.innerText = newOwned.toLocaleString('tr-TR');
+        
+        // KRİPTO DEĞİLSE ŞİRKET PAYINI GÜNCELLE VE YÖNETİM KURULUNU AÇ
+        if (!isCryptoCheck) {
+            let ownershipPercent = (newOwned / 1000000) * 100;
+            const ownershipEl = document.getElementById('trade-ownership-percent');
+            if (ownershipEl) {
+                ownershipEl.style.display = 'block';
+                ownershipEl.innerText = "Şirket Payı: %" + ownershipPercent.toFixed(4);
+            }
 
-                    currentStockCard.querySelector('.stock-owned').innerText = "Portföy: " + newOwned.toLocaleString('tr-TR') + " Adet";
+            if (newOwned >= 510000) {
+                const takeoverBtn = document.getElementById('btn-open-takeover');
+                if(takeoverBtn) takeoverBtn.style.display = 'block';
+            }
+        }
 
-                    gameStats.trades++;
-                    dailyTrades++;
-                    tradePanel.style.pointerEvents = 'none';
-                    tradePanel.classList.remove('open');
-                    tradeOverlay.classList.remove('active');
-                    setTimeout(() => { tradePanel.style.pointerEvents = 'auto'; }, 400);
-                    saveGame();
-                    refreshLiveUI(true);
-                } else {
-                    playSound('error');
-                    displayTotalCost.style.color = '#ef4444'; 
-                    setTimeout(() => { displayTotalCost.style.color = '#ffd700'; }, 600);
-                }
-                // Profil ekranı açıksa state'i de yenile.
-                if (window.getComputedStyle(profileScreen).display !== 'none') {
+        currentStockCard.querySelector('.stock-owned').innerText = "Portföy: " + newOwned.toLocaleString('tr-TR') + " Adet";
+
+        gameStats.trades++;
+        dailyTrades++;
+        tradePanel.style.pointerEvents = 'none';
+        tradePanel.classList.remove('open');
+        tradeOverlay.classList.remove('active');
+        setTimeout(() => { tradePanel.style.pointerEvents = 'auto'; }, 400);
+        
+        saveGame();
+        refreshLiveUI(true);
+
+        // DÜZELTME: UI ezilmesin diye işlem limiti en son güncelleniyor!
+        if (typeof updateTradeLimitUI === 'function') updateTradeLimitUI();
+
+    } else {
+        playSound('error');
+        displayTotalCost.style.color = '#ef4444'; 
+        setTimeout(() => { displayTotalCost.style.color = '#ffd700'; }, 600);
+    }
+    
+    // Profil ekranı açıksa state'i de yenile.
+    if (window.getComputedStyle(profileScreen).display !== 'none') {
         btnProfile.click();
     }
-            };
+};
 
-            btnBuy.addEventListener('click', executeBuyAction);
-            btnBuy.addEventListener('touchend', (e) => {
-                e.preventDefault();
-                executeBuyAction();
-            });
+btnBuy.addEventListener('click', executeBuyAction);
+btnBuy.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    executeBuyAction();
+});
 
             const executeSellAction = () => {
                 const qty = parseInt(inputQty.value);
@@ -3470,7 +3570,7 @@ stockCards.forEach(card => {
                 let isCryptoCheck = currentStockCard && currentStockCard.dataset.isCrypto === "true";
                 // ---------------------------------------------------
                 
-                let commissionRate = isPremium ? 0.002 : 0.004;
+                let commissionRate = isPremium ? 0.003 : 0.006;
                 let commissionFee = totalRevenue * commissionRate;
                 let netRevenue = totalRevenue - commissionFee;
                 let currentOwned = parseInt(displayTradeOwned.innerText.replace(/[^0-9]/g, "")) || 0;
@@ -3566,8 +3666,25 @@ stockCards.forEach(card => {
 
             let futuresActionLock = false;
 
-            function openFuturesPosition(type) {
+function openFuturesPosition(type) {
     if (futuresActionLock) return false;
+
+    // YENİ EKLENEN: GÜNLÜK İŞLEM LİMİTİ KONTROLÜ
+    let userIsPremium = (typeof isPremium !== 'undefined' && isPremium) || localStorage.getItem('cts_theme_active') === 'true';
+    
+    if (!userIsPremium && (typeof dailyTrades !== 'undefined' ? dailyTrades : 0) >= 5) {
+        if (typeof showStoreModal === 'function') {
+            // Şık popup tasarımı ile mağazaya yönlendirme
+            showStoreModal(
+                "GÜNLÜK LİMİT DOLDU! 🛑", 
+                "Bugünlük 5 işlem limitini doldurdun.<br><br>Sınırsız pozisyon açmak ve komisyonları yarıya düşürmek için <strong>Premium Abonelik</strong> alabilir veya yeni güne geçebilirsin.", 
+                false
+            );
+        } else {
+            alert("Günlük 5 işlem limitini doldurdun! Sınırsız işlem için Premium alabilirsin.");
+        }
+        return false; // Limite takıldıysa işlemi iptal et
+    }
 
     const qty = parseInt(inputQty.value, 10) || 0;
     const price = Number(currentStockPrice) || 0;
@@ -3593,7 +3710,7 @@ stockCards.forEach(card => {
     try {
         const margin = qty * price;
         const effectiveAmount = qty * lev;
-        const commissionRate = isPremium ? 0.004 : 0.008;
+        const commissionRate = isPremium ? 0.005 : 0.01;
         
         // İŞTE KRİTİK DÜZELTME: Komisyon hisse adedinden değil, toplam hacim (fiyat x miktar) üzerinden alınmalı!
         const positionSize = margin * lev; 
@@ -3637,6 +3754,9 @@ stockCards.forEach(card => {
         if (window.getComputedStyle(profileScreen).display !== 'none') {
             try { btnProfile.click(); } catch (e) {}
         }
+
+        // DÜZELTME: UI ezilmesin diye işlem limiti en son güncelleniyor!
+        if (typeof updateTradeLimitUI === 'function') updateTradeLimitUI();
 
         return true;
     } catch (err) {
@@ -4191,7 +4311,7 @@ function shootConfetti(colors) {
     document.getElementById('summary-overlay').classList.add('active');
     storeModal.classList.add('show');
 }
-            // ==========================================================================
+// ==========================================================================
 // 🛒 PREMİUM ABONELİK SATIN ALMA VEYA TEMA DEĞİŞTİRME
 // ==========================================================================
 const btnBuyPremium = document.getElementById('btn-buy-premium');
@@ -4238,6 +4358,9 @@ if (btnBuyPremium) {
             // Premium aktifleştiği an arayüzü ve komisyon ücretlerini anında yeniler
             if (typeof updateBalanceUI === 'function') updateBalanceUI();
             if (typeof updateTotalCost === 'function') updateTotalCost();
+            
+            // YENİ EKLENEN: Satın alım biter bitmez işlem limitini anında "Sınırsız" yapar
+            if (typeof updateTradeLimitUI === 'function') updateTradeLimitUI();
             
             if (typeof saveGame === 'function') saveGame();
             
@@ -4415,13 +4538,16 @@ setInterval(() => {
 
                 // Terminal Kesintisi ve Parlama Efekti
 if (!isPremium) {
-    // Zirve varlık hatası giderildi, artık arayüzle birebir aynı şekilde anlık net varlığı baz alacak
     let currentWealth = getNetWorth(); 
     let terminalFee = 1;
 
-    // İstediğin net kademelendirme sıralaması:
-    if (currentWealth >= 20000000) {
-        terminalFee = 160; // 20 Milyon$ ve üzeri
+    // Kademe sıralaması (En yüksekten en düşüğe)
+    if (currentWealth >= 100000000) {
+        terminalFee = 640; // YENİ: 100 Milyon$ ve üzeri -> -$640
+    } else if (currentWealth >= 50000000) {
+        terminalFee = 320; // 50 Milyon$ ile 100 Milyon$ arası -> -$320
+    } else if (currentWealth >= 20000000) {
+        terminalFee = 160; // 20 Milyon$ ile 50 Milyon$ arası
     } else if (currentWealth >= 15000000) {
         terminalFee = 80;  // 15 Milyon$ ile 20 Milyon$ arası
     } else if (currentWealth >= 5000000) {
@@ -4458,7 +4584,6 @@ if (!isPremium) {
     
     updateBalanceUI();
 }
-
                 stockCards.forEach(card => {
                     // Tek bir kartta DOM elemanı eksik olsa bile tüm oyun döngüsünü
                     // durdurma. Özellikle iOS'ta bir kartın render problemi diğer
@@ -5021,45 +5146,47 @@ if (btnCloseWalletStats) {
         });
     }
 }
-            function checkMilestones() {
+            // Başarım objesinin kontrolü için m50 eklenmeli (Eğer tanımlı olduğu yer varsa):
+// reachedMilestones = { k50: false, k250: false, m1: false, m5: false, m15: false, m20: false, m50: false, ... }
+
+function checkMilestones() {
     let mTitle = "";
     let mDesc = "";
     let triggered = false;
 
-    // Kontrolleri sırayla yapıyoruz. En son ulaşılan (en büyük) baraj en altta olduğu için 
-    // mTitle ve mDesc değişkenine en son o yazılacak ve ekrana o gelecektir.
-    
-    if (playerBalance >= 50000 && !reachedMilestones.k50) {
+    let trueWealth = typeof getNetWorth === 'function' ? getNetWorth() : playerBalance;
+
+    if (trueWealth >= 50000 && !reachedMilestones.k50) {
         reachedMilestones.k50 = true;
         mTitle = "💸 $50 BİN BARAJI!";
         mDesc = "İlk büyük hedefe ulaştın! Banka sana artık çok daha fazla güveniyor.<br><br><span style='color:#00f2fe;'>📉 Kredi Faizi %2.25 ➔ %2.00'a Düştü!</span><br><br><span style='color:#ef4444;'>⚡ Terminal Ücreti: -$5</span>";
         triggered = true;
     }
-    if (playerBalance >= 250000 && !reachedMilestones.k250) {
+    if (trueWealth >= 250000 && !reachedMilestones.k250) {
         reachedMilestones.k250 = true;
         mTitle = "📈 $250 BİN BARAJI!";
         mDesc = "İşler büyüyor! Yeni yatırım fırsatları seni bekliyor.<br><br><span style='color:#10b981;'>🔓 Biyoteknoloji Hisseleri Açıldı!</span><br><span style='color:#00f2fe;'>📉 Kredi Faizi %2.00 ➔ %1.75'e Düştü!</span><br><br><span style='color:#ef4444;'>⚡ Terminal Ücreti: -$10</span>";
         triggered = true;
     }
-    if (playerBalance >= 1000000 && !reachedMilestones.m1) {
+    if (trueWealth >= 1000000 && !reachedMilestones.m1) {
         reachedMilestones.m1 = true;
         mTitle = "💼 $1 MİLYON BARAJI!";
         mDesc = "Resmen bir milyonersin! Portföyün hızla genişliyor.<br><br><span style='color:#10b981;'>🔓 Enerji Hisseleri Açıldı!</span><br><span style='color:#00f2fe;'>📉 Kredi Faizi %1.75 ➔ %1.50'ye Düştü!</span><br><br><span style='color:#ef4444;'>⚡ Terminal Ücreti: -$20</span>";
         triggered = true;
     }
-    if (playerBalance >= 5000000 && !reachedMilestones.m5) {
+    if (trueWealth >= 5000000 && !reachedMilestones.m5) {
         reachedMilestones.m5 = true;
         mTitle = "🚀 $5 MİLYON BARAJI!";
         mDesc = "Harika gidiyorsun! Sermayen durdurulamaz şekilde katlanıyor.<br><br><span style='color:#10b981;'>🔓 E-Ticaret Hisseleri Açıldı!</span><br><span style='color:#00f2fe;'>📉 Kredi Faizi %1.50 ➔ %1.25'e Düştü!</span><br><br><span style='color:#ef4444;'>⚡ Terminal Ücreti: -$40</span>";
         triggered = true;
     }
-    if (playerBalance >= 15000000 && !reachedMilestones.m15) {
+    if (trueWealth >= 15000000 && !reachedMilestones.m15) {
         reachedMilestones.m15 = true;
         mTitle = "💎 $15 MİLYON BARAJI!";
         mDesc = "İnanılmaz! Artık piyasayı yönlendiren bir devsiniz.<br><br><span style='color:#10b981;'>🔓 Siber Güvenlik Hisseleri Açıldı!</span><br><span style='color:#00f2fe;'>📉 Kredi Faizi %1.25 ➔ %1.00'a Düştü!</span><br><br><span style='color:#ef4444;'>⚡ Terminal Ücreti: -$80</span>";
         triggered = true;
     }
-    if (playerBalance >= 20000000 && !reachedMilestones.m20) {
+    if (trueWealth >= 20000000 && !reachedMilestones.m20) {
         reachedMilestones.m20 = true;
         mTitle = "🪙 $20 MİLYON BARAJI!";
         mDesc = "Efsanevi bir servet! Yeraltı ekonomisinin kapıları sana sonuna kadar açıldı.<br><br><span style='color:#f59e0b;'>🔓 GİZLİ KRİPTO BORSASI AÇILDI!</span><br><br><span style='color:#ef4444;'>⚡ Terminal Ücreti: -$160</span>";
@@ -5073,8 +5200,20 @@ if (btnCloseWalletStats) {
             borsaNavBtn.style.color = "#00f2fe";
         }
     }
+    // YENİ: 50 MİLYON BARAJI
+    if (trueWealth >= 50000000 && !reachedMilestones.m50) {
+        reachedMilestones.m50 = true;
+        mTitle = "👑 $50 MİLYON BARAJI!";
+        mDesc = "Küresel piyasanın zirvesindesin! Yeni özel sektör ve devasa imkanlar kilidi açıldı.<br><br><span style='color:#10b981;'>🔓 Yeni Özel Sektör & 4 Yeni Hisse Açıldı!</span><br><span style='color:#00f2fe;'>📉 Kredi Faizi %1.00 ➔ %0.75'e Düştü!</span><br><span style='color:#f59e0b;'>⚡ Maksimum Kaldıraç: 75x oldu!</span><br><br><span style='color:#ef4444;'>⚡ Terminal Ücreti: -$320</span>";
+        triggered = true;
+    }
+    if (trueWealth >= 100000000 && !reachedMilestones.m100) {
+    reachedMilestones.m100 = true;
+    mTitle = "👑 $100 MİLYON BARAJI!";
+    mDesc = "Piyasanın mutlak hakimisin! Zirvedeki yerini tescilledin.<br><br><span style='color:#fbbf24;'>🔓 Yeni Sektör & 4 Yeni Hisse Açıldı!</span><br><span style='color:#00f2fe;'>📉 Kredi Faizi %0.50'ye Düştü!</span><br><span style='color:#f59e0b;'>⚡ Maksimum Kaldıraç: 100x oldu!</span><br><span style='color:#38bdf8;'>♾️ Kredi Limiti Sınırı Kaldırıldı!</span><br><br><span style='color:#ef4444;'>⚡ Terminal Ücreti: -$640</span>";
+    triggered = true;
+}
 
-    // Eğer birden fazla atlandıysa, en alttaki (en büyük) baraj mTitle ve mDesc olarak kalacağı için ekrana o yansır.
     if (triggered) {
         document.getElementById('milestone-title').innerText = mTitle;
         document.getElementById('milestone-desc').innerHTML = mDesc;
@@ -5115,13 +5254,26 @@ function calculateOfflineProgress() {
             let currentWealth = getNetWorth(); 
             let terminalFee = 1;
             
-            if (currentWealth >= 20000000) terminalFee = 160;
-            else if (currentWealth >= 15000000) terminalFee = 80;
-            else if (currentWealth >= 5000000) terminalFee = 40;
-            else if (currentWealth >= 1000000) terminalFee = 20;
-            else if (currentWealth >= 250000) terminalFee = 10;
-            else if (currentWealth >= 50000) terminalFee = 5;
-            else terminalFee = 1;
+            // Çevrimdışı kesinti için güncellenmiş kademeler ($320 ve $640 dahil)
+            if (currentWealth >= 100000000) {
+                terminalFee = 640;
+            } else if (currentWealth >= 50000000) {
+                terminalFee = 320;
+            } else if (currentWealth >= 20000000) {
+                terminalFee = 160;
+            } else if (currentWealth >= 15000000) {
+                terminalFee = 80;
+            } else if (currentWealth >= 5000000) {
+                terminalFee = 40;
+            } else if (currentWealth >= 1000000) {
+                terminalFee = 20;
+            } else if (currentWealth >= 250000) {
+                terminalFee = 10;
+            } else if (currentWealth >= 50000) {
+                terminalFee = 5;
+            } else {
+                terminalFee = 1;
+            }
 
             let totalOfflineFee = missedTicks * terminalFee;
 
@@ -5147,11 +5299,11 @@ function calculateOfflineProgress() {
                         }
                         
                         // Yenilenmiş ve düzeltilmiş Terminal Pop-up'ı
-showCustomAlert(
-    `Çevrimdışı olduğun <b>${timeStr}</b> boyunca piyasa verilerin güncellenmeye devam etti.<br><br>Geçen süre zarfında kasandan <b style="white-space: nowrap;">-$${totalOfflineFee.toLocaleString('en-US', { minimumFractionDigits: 2 })}</b> terminal kullanım ücreti kesildi!`, 
-    `<svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px; vertical-align: middle; margin-right: 8px; filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.6));"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line><path d="M10 6h8"></path><path d="M10 18h8"></path></svg> TERMİNAL KESİNTİSİ`,
-    "#ef4444"
-);
+                        showCustomAlert(
+                            `Çevrimdışı olduğun <b>${timeStr}</b> boyunca piyasa verilerin güncellenmeye devam etti.<br><br>Geçen süre zarfında kasandan <b style="white-space: nowrap;">-$${totalOfflineFee.toLocaleString('en-US', { minimumFractionDigits: 2 })}</b> terminal kullanım ücreti kesildi!`, 
+                            `<svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px; vertical-align: middle; margin-right: 8px; filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.6));"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line><path d="M10 6h8"></path><path d="M10 18h8"></path></svg> TERMİNAL KESİNTİSİ`,
+                            "#ef4444"
+                        );
                     }
                     updateBalanceUI();
                     saveGame();
@@ -5220,7 +5372,7 @@ showCustomAlert(
                 if (localStorage.getItem('cts_tick_count') !== null) { tickCount = parseInt(localStorage.getItem('cts_tick_count')); }
                 if (localStorage.getItem('cts_daily_trades') !== null) { dailyTrades = parseInt(localStorage.getItem('cts_daily_trades')); }
                 
-                updateBalanceUI(); updateBankUI();
+                updateBalanceUI(); updateBankUI(); updateTradeLimitUI();
                 
                 if (localStorage.getItem('cts_portfolio') !== null) {
                     const portfolio = JSON.parse(localStorage.getItem('cts_portfolio'));
@@ -5243,6 +5395,8 @@ showCustomAlert(
                     });
                 }
                 // -------------------------------------------------------
+                // YENİ EKLENEN: Oyun yüklendiğinde işlem limitini ekrana yazdır
+                updateTradeLimitUI();
 
                 renderMarketList(); 
                 
@@ -5804,8 +5958,18 @@ const allMilestonesData = [
     { 
         id: 'm20', 
         title: `<svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; vertical-align: text-bottom; margin-right: 6px; filter: drop-shadow(0 0 5px rgba(251, 191, 36, 0.6));"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v12 M15 9.5C15 8.12 13.66 7 12 7s-3 1.12-3 2.5 1.38 2.5 3 2.5 3 1.12 3 2.5-1.38 2.5-3 2.5-3-1.12-3-2.5"></path></svg> $20 MİLYON BARAJI`, 
-        desc: `Yeraltı ekonomisi kapılarını açtın.<br>${svgKilit} <span style="color:#f59e0b; font-weight:bold;">GİZLİ KRİPTO BORSASI AÇILDI!</span><br>${svgKaldirac} Maksimum Kaldıraç: <strong>50x (Zirve)</strong><br><span style="color:#ef4444;">${svgTerminal} Terminal Ücreti: -$160</span>` 
-    }
+        desc: `Yeraltı ekonomisi kapılarını açtın.<br>${svgKilit} <span style="color:#f59e0b; font-weight:bold;">GİZLİ KRİPTO BORSASI AÇILDI!</span><br>${svgKaldirac} Maksimum Kaldıraç: <strong>50x</strong><br><span style="color:#ef4444;">${svgTerminal} Terminal Ücreti: -$160</span>` 
+    },
+    { 
+        id: 'm50', 
+        title: `<svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; vertical-align: text-bottom; margin-right: 6px; filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.6));"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg> $50 MİLYON BARAJI`, 
+        desc: `Küresel piyasanın zirvesindesin!<br>${svgKilit} <span style="color:#10b981; font-weight:bold;">Yeni Özel Sektör & 4 Yeni Hisse Açıldı!</span><br>${svgFaiz} Kredi Faizi %0.75'e Düştü.<br>${svgKaldirac} Maksimum Kaldıraç: <strong>75x</strong><br><span style="color:#ef4444;">${svgTerminal} Terminal Ücreti: -$320</span>` 
+    },
+    { 
+    id: 'm100', 
+    title: `<svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; vertical-align: text-bottom; margin-right: 6px; filter: drop-shadow(0 0 5px rgba(251, 191, 36, 0.6));"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> $100 MİLYON BARAJI`, 
+    desc: `Piyasanın mutlak hakimisin!<br>${svgKilit} <span style="color:#fbbf24; font-weight:bold;">Kuantum/Uzay Sektörü & 4 Yeni Hisse Açıldı!</span><br>${svgFaiz} Kredi Faizi %0.50'ye Düştü.<br>${svgKaldirac} Maksimum Kaldıraç: <strong>100x (Zirve)</strong><br><span style="color:#38bdf8;">♾️ Kredi Limiti Sınırı Kaldırıldı!</span><br><span style="color:#ef4444;">${svgTerminal} Terminal Ücreti: -$640</span>` 
+}
 ];
 
 function renderAchievementsScreen() {
@@ -7295,15 +7459,16 @@ window.confirmNameChange = function() {
 // 📈 DİNAMİK KALDIRAÇ SINIRI HESAPLAYICI (Gerçek Kasa Performansına Göre)
 // ==========================================================================
 function getMaxLeverage() {
-    // Oyunun zaten var olan kusursuz kasa performansı (Toplam Varlık) hesaplayıcısını kullanıyoruz
     let currentNetWorth = getNetWorth(); 
 
-    if (currentNetWorth >= 20000000) return 50; // $20.000.000 üstü -> 50x
-    if (currentNetWorth >= 5000000) return 40;  // $5.000.000 üstü -> 40x
-    if (currentNetWorth >= 1000000) return 30;  // $1.000.000 üstü -> 30x
-    if (currentNetWorth >= 250000) return 20;   // $250.000 üstü -> 20x
-    if (currentNetWorth >= 50000) return 10;    // $50.000 üstü -> 10x
-    return 5;                                   // $50.000 altı -> 5x
+    if (currentNetWorth >= 100000000) return 100; // YENİ: $100.000.000 üstü -> 100x
+    if (currentNetWorth >= 50000000) return 75;   // $50.000.000 üstü -> 75x
+    if (currentNetWorth >= 20000000) return 50;   // $20.000.000 üstü -> 50x
+    if (currentNetWorth >= 5000000) return 40;    // $5.000.000 üstü -> 40x
+    if (currentNetWorth >= 1000000) return 30;    // $1.000.000 üstü -> 30x
+    if (currentNetWorth >= 250000) return 20;     // $250.000 üstü -> 20x
+    if (currentNetWorth >= 50000) return 10;      // $50.000 üstü -> 10x
+    return 5;                                     // $50.000 altı -> 5x
 }
 
 function updateLeverageLimitsUI() {
@@ -7624,34 +7789,53 @@ piggyRef.on('value', (snapshot) => {
                 }
             }
             // 3. HERKES (VEYA ZATEN PREMİUM OLANLAR) PAYINI ALIR
-            else if (rewardDestiny.type === 'premium') {
-                let alreadyPremium = typeof isPremium !== 'undefined' ? isPremium : (localStorage.getItem('cts_premium') === 'true');
+else if (rewardDestiny.type === 'premium') {
+    let alreadyPremium = typeof isPremium !== 'undefined' ? isPremium : (localStorage.getItem('cts_premium') === 'true');
 
-                if (alreadyPremium) {
-                    let bonusCash = Math.floor(playerBalance * 0.25);
-                    if (bonusCash < 100000) bonusCash = 100000; 
-                    playerBalance += bonusCash;
-                    prizeTitle = "🌟 VIP NAKİT İKRAMİYESİ (%25)";
-                    prizeDesc = `Havuzdan Premium çıktı! Zaten VIP olduğun için nakit varlıklarının %25'i olan <strong style="color:#10b981;">$${bonusCash.toLocaleString()}</strong> hesabına eklendi!`;
-                } else {
-                    isPremium = true;
-                    document.body.classList.add('premium-theme');
-                    localStorage.setItem('cts_theme_active', 'true');
-                    localStorage.setItem('cts_premium', 'true');
-                    categoryRequirements['vip'] = 0;
-                    
-                    const premiumBtn = document.getElementById('btn-buy-premium');
-                    if (premiumBtn) {
-                        premiumBtn.innerText = "TEMA DEĞİŞTİR";
-                        premiumBtn.style.background = "#1e293b";
-                        premiumBtn.style.color = "#fff";
-                        premiumBtn.style.boxShadow = "none";
-                    }
-                    
-                    prizeTitle = "🌟 1 AYLIK PREMIUM PAYLAŞILDI!";
-                    prizeDesc = `Havuzdan Premium çıktı! Katkı sağlayan herkese (sana da) <strong>1 Aylık Ücretsiz VIP Abonelik</strong> tanımlandı!`;
-                }
-            }
+    if (alreadyPremium) {
+        let calculatedBonus = playerBalance * 0.25;
+        let bonusCash = Math.floor(calculatedBonus);
+        let isMinApplied = false;
+
+        if (bonusCash < 100000) {
+            bonusCash = 100000;
+            isMinApplied = true;
+        }
+
+        playerBalance += bonusCash;
+        prizeTitle = "🌟 VIP NAKİT İKRAMİYESİ (%25)";
+
+        if (isMinApplied) {
+            prizeDesc = `Havuzdan Premium çıktı! Zaten VIP olduğun ve nakit bakiyen düşük olduğu için minimum taban ödül olan <strong style="color:#10b981;">$${bonusCash.toLocaleString()}</strong> hesabına eklendi!`;
+        } else {
+            prizeDesc = `Havuzdan Premium çıktı! Zaten VIP olduğun için nakit varlıklarının %25'i olan <strong style="color:#10b981;">$${bonusCash.toLocaleString()}</strong> hesabına eklendi!`;
+        }
+    } else {
+        isPremium = true;
+        document.body.classList.add('premium-theme');
+        localStorage.setItem('cts_theme_active', 'true');
+        localStorage.setItem('cts_premium', 'true');
+        categoryRequirements['vip'] = 0;
+        if (typeof checkCategoryUnlocks === 'function') checkCategoryUnlocks();
+
+        const btnBuyPremium = document.getElementById('btn-buy-premium');
+        if (btnBuyPremium) {
+            btnBuyPremium.innerText = "TEMA DEĞİŞTİR";
+            btnBuyPremium.style.background = "#1e293b";
+            btnBuyPremium.style.color = "#fff";
+            btnBuyPremium.style.boxShadow = "none";
+        }
+
+        const feeDisplay = document.getElementById('terminal-fee-display');
+        if (feeDisplay) {
+            feeDisplay.innerText = "👑 Terminal: Ücretsiz";
+            feeDisplay.style.color = "#10b981";
+        }
+
+        prizeTitle = "👑 PREMİUM ABONELİK KAZANDIN!";
+        prizeDesc = `Küresel Kumbara'dan şansına <strong>1 Aylık Premium Abonelik</strong> çıktı! VIP ayrıcalıkların ve komisyon indirimlerin anında aktif edildi!`;
+    }
+}
 
             updateBalanceUI();
             saveGame();
@@ -8495,11 +8679,11 @@ if (btnLogin) {
             window.history.replaceState({}, document.title, window.location.pathname);
         }
 
-    // ==========================================================================
-    // FONKSİYON TANIMLAMALARI (DOKUNULMADI)
-    // ==========================================================================
-
     function executeFlawlessReset(isBankruptcy) {
+        // ÇİFT TIKLAMA KİLİDİ: Butona art arda basılmasını engeller
+        if (window.__ctsResetInProgress) return;
+        window.__ctsResetInProgress = true;
+
         // 1. Oyunun kendi kaydetme mekanizmasını felç et
         window.saveGame = function() { console.log("Eski kayıt engellendi!"); };
         if (typeof isGamePaused !== 'undefined') isGamePaused = true;
@@ -8525,7 +8709,8 @@ if (btnLogin) {
             } catch(e) {}
         }
 
-        let newBankruptcies = isBankruptcy ? currentBankruptcies + 1 : currentBankruptcies;
+        // ÇÖZÜM: Oyun iflası zaten algılayıp kaydettiği için burada +1 yapmıyoruz
+        let newBankruptcies = currentBankruptcies;
 
         // 2. YAŞAM ALANI, PORTFÖY VE HİSSELERİ TAMAMEN SIFIRLA
         localStorage.removeItem('cts_lifestyle');
@@ -8777,8 +8962,20 @@ document.addEventListener('DOMContentLoaded', () => {
         "💳": `${svgBase}<rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>`,
         "🔬": `${svgBase}<path d="M4 22h16 M14 2h-4v3 M14 20v-5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v5 M12 5v10"></path></svg>`,
         "📡": `${svgBase}<path d="M2 12h2 M20 12h2 M12 2v2 M12 20v2 M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"></path></svg>`,
-        "💧": `${svgBase}<path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>`
-    };
+        "💧": `${svgBase}<path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>`,
+
+        // SAVUNMA SEKTÖRÜ EMOJİLERİ
+        "🎯": `${svgBase}<circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>`,
+        "🛰️": `${svgBase}<circle cx="12" cy="12" r="2"></circle><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path></svg>`,
+        "🛡️": `${svgBase}<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>`,
+        "🚀": `${svgBase}<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path></svg>`,
+        
+        // KUANTUM SEKTÖRÜ EMOJİLERİ
+        "⚛️": `${svgBase}<circle cx="12" cy="12" r="3"></circle><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(45 12 12)"></ellipse><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(135 12 12)"></ellipse></svg>`,
+        "🌌": `${svgBase}<circle cx="12" cy="12" r="10"></circle><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path><path d="M2 12h20"></path></svg>`,
+        "⏳": `${svgBase}<path d="M4 22V2l6 6-6 6"></path><path d="M20 2v20l-6-6 6-6"></path><line x1="2" y1="2" x2="22" y2="2"></line><line x1="2" y1="22" x2="22" y2="22"></line><circle cx="12" cy="12" r="2"></circle></svg>`,
+        "🕳️": `${svgBase}<circle cx="12" cy="12" r="8"></circle><circle cx="12" cy="12" r="4"></circle><circle cx="12" cy="12" r="1"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M22 12h-2"></path><path d="M4 12H2"></path></svg>`
+};
 
     // Eğer oyuncu sistemde olmayan rastgele bir emoji kullanırsa yedek fütüristik logo (Altıgen Prizma)
     const genericFallback = `${svgBase}<path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>`;
@@ -9003,6 +9200,42 @@ document.addEventListener('click', (e) => {
         }
     }
 });
+// ==========================================================================
+// 📊 GÜNLÜK İŞLEM LİMİTİ UI GÜNCELLEMESİ
+// ==========================================================================
+function updateTradeLimitUI() {
+    let limitText = document.getElementById('trade-limit-text');
+    if (!limitText) return;
+
+    let userIsPremium = (typeof isPremium !== 'undefined' && isPremium) || localStorage.getItem('cts_theme_active') === 'true';
+
+    if (userIsPremium) {
+        limitText.innerText = "İşlem: Sınırsız";
+        limitText.style.color = "#fbbf24"; 
+    } else {
+        let currentTrades = typeof dailyTrades !== 'undefined' ? dailyTrades : 0;
+        let tradesLeft = 5 - currentTrades;
+        if (tradesLeft < 0) tradesLeft = 0;
+        
+        limitText.innerText = "İşlem: " + tradesLeft + "/5";
+        limitText.style.color = tradesLeft === 0 ? "#ef4444" : "#10b981"; 
+    }
+}
+// ==========================================================================
+// 🛑 HİSSE EKRANI İÇİNDEKİ TIKLAMALARIN PANELİ KAPATMASINI ENGELLE
+// ==========================================================================
+const tradePanelUI = document.getElementById('trade-panel'); // Koddaki hisse panelinin ID'si (genelde trade-panel'dir)
+
+if (tradePanelUI) {
+    // Panel içine yapılan tıklamaların alt menüye veya arka plana ulaşmasını durdur
+    tradePanelUI.addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+    
+    tradePanelUI.addEventListener('touchend', (e) => {
+        e.stopPropagation();
+    });
+}
 </script>
 </body>
 </html>
