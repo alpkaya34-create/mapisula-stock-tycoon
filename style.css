@@ -2044,3 +2044,24 @@ body.premium-theme .section-title { color: #fbbf24 !important; }
         opacity: 0;
     }
 }
+/* ==========================================================================
+   🪐 MİLYARDER KULÜBÜ: IŞIN (SHOOTING STAR) EFEKTİ
+   ========================================================================== */
+.cosmic-beam {
+    position: absolute;
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #ffffff, #f59e0b, transparent);
+    box-shadow: 0 0 8px #f59e0b;
+    border-radius: 50%;
+    pointer-events: none; /* Tıklamaları engellemesin */
+    z-index: 10;
+    opacity: 0;
+    animation: beamShoot ease-out forwards;
+}
+
+@keyframes beamShoot {
+    0% { opacity: 0; transform: translate(0, 0) rotate(-45deg) scale(0.5); }
+    10% { opacity: 1; transform: translate(50px, -50px) rotate(-45deg) scale(1); }
+    100% { opacity: 0; transform: translate(250px, -250px) rotate(-45deg) scale(0.2); }
+}
