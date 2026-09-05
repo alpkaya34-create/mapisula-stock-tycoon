@@ -5008,7 +5008,9 @@ function updateWalletChartModal() {
     const safeCurrentNW = Number.isFinite(currentNW) ? currentNW : 0;
 
     const currentValEl = document.getElementById('wallet-current-val');
-    if (currentValEl) currentValEl.textContent = '$' + safeCurrentNW.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    if (currentValEl && !window.isWalletHovered) {
+        currentValEl.textContent = '$' + safeCurrentNW.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
 
     const winEl = document.getElementById('stat-winning-futures');
     const loseEl = document.getElementById('stat-losing-futures');
@@ -5690,7 +5692,8 @@ chartAreaPath.setAttribute('d', `M ${points.join(' L ')} L 300,130 L 0,130 Z`);
                         chartDipVal.innerText = "$" + minP.toLocaleString('en-US', { minimumFractionDigits: minDecimals, maximumFractionDigits: minDecimals });
                         chartZirveVal.innerText = "$" + maxP.toLocaleString('en-US', { minimumFractionDigits: maxDecimals, maximumFractionDigits: maxDecimals });
 
-                        if (currentPriceElement) {
+                        // YENİ: Sadece grafiğe dokunulmuyorsa fiyatı canlı güncelle
+                        if (currentPriceElement && !window.isTechHovered) {
                             let decimals = currentHistory[currentHistory.length - 1] < 1 ? 4 : 2;
                             currentPriceElement.innerText = "$" + currentHistory[currentHistory.length - 1].toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
                         }
@@ -9442,53 +9445,50 @@ function hapticFeedback(pattern = 50) {
     }
 }
 // ==========================================
-// GRAFİK DOKUNMATİK (HOVER) ETKİLEŞİM SİSTEMİ
+// GRAFİK DOKUNMATİK (HOVER) ETKİLEŞİM SİSTEMİ (GÜNCELLENDİ)
 // ==========================================
+window.isWalletHovered = false;
+window.isTechHovered = false;
 
-// 1. KASA GRAFİĞİ ETKİLEŞİMİ
+// 1. KASA GRAFİĞİ
 const walletChartContainer = document.getElementById('wallet-area-path')?.parentElement;
 if (walletChartContainer) {
     function handleWalletHover(e) {
+        window.isWalletHovered = true; // Döngüyü durdur
         if (walletHistory.length === 0) return;
         const rect = walletChartContainer.getBoundingClientRect();
-        
-        // Dokunma (mobil) veya fare (PC) pozisyonunu al
         let clientX = e.touches ? e.touches[0].clientX : e.clientX;
         let percent = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-        
-        // Yüzdeyi geçmiş dizisindeki indekse çevir
         let index = Math.min(walletHistory.length - 1, Math.floor(percent * walletHistory.length));
-        let hoverVal = Number(walletHistory[index]);
         
-        document.getElementById('wallet-current-val').textContent = '$' + hoverVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        document.getElementById('wallet-current-val').textContent = '$' + Number(walletHistory[index]).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
     function resetWalletHover() {
+        window.isWalletHovered = false; // Döngüyü tekrar aç
         const currentNW = Number(typeof getNetWorth === 'function' ? getNetWorth() : (walletHistory[walletHistory.length-1] || 0));
         document.getElementById('wallet-current-val').textContent = '$' + currentNW.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
-    walletChartContainer.addEventListener('mousemove', handleWalletHover);
-    walletChartContainer.addEventListener('touchmove', handleWalletHover);
-    walletChartContainer.addEventListener('mouseleave', resetWalletHover);
+    // Hem tıklama hem basılı tutma dinleyicileri eklendi
+    walletChartContainer.addEventListener('touchstart', handleWalletHover, {passive: true});
+    walletChartContainer.addEventListener('touchmove', handleWalletHover, {passive: true});
     walletChartContainer.addEventListener('touchend', resetWalletHover);
+    walletChartContainer.addEventListener('mousedown', handleWalletHover);
+    walletChartContainer.addEventListener('mousemove', (e) => { if(window.isWalletHovered) handleWalletHover(e); });
+    walletChartContainer.addEventListener('mouseup', resetWalletHover);
+    walletChartContainer.addEventListener('mouseleave', resetWalletHover);
 }
 
-// 2. HİSSE (TEKNİK ANALİZ) GRAFİĞİ ETKİLEŞİMİ
-const techSvgBoxes = [
-    document.getElementById('canvas-wrapper-line'), 
-    document.getElementById('canvas-wrapper-candle')
-];
-
+// 2. HİSSE (TEKNİK ANALİZ) GRAFİĞİ
+const techSvgBoxes = [document.getElementById('canvas-wrapper-line'), document.getElementById('canvas-wrapper-candle')];
 techSvgBoxes.forEach(box => {
     if (!box) return;
-    
     function handleTechHover(e) {
+        window.isTechHovered = true;
         const stockTitleEl = document.getElementById('chart-stock-title');
         if (!stockTitleEl) return;
-        
-        const stockName = stockTitleEl.innerText;
-        const history = stockHistory[stockName] || [];
+        const history = stockHistory[stockTitleEl.innerText] || [];
         if (history.length === 0) return;
         
         const rect = box.getBoundingClientRect();
@@ -9496,30 +9496,28 @@ techSvgBoxes.forEach(box => {
         let percent = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
         let index = Math.min(history.length - 1, Math.floor(percent * history.length));
         
-        // Geçmiş veri obje mi (mum) yoksa düz sayı mı (çizgi) kontrolü
         let rawData = history[index];
         let hoverVal = typeof rawData === 'object' ? (rawData.c !== undefined ? rawData.c : rawData.price) : rawData;
-        
-        if (hoverVal !== undefined) {
-            document.getElementById('chart-current-price').innerText = '$' + Number(hoverVal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        }
+        document.getElementById('chart-current-price').innerText = '$' + Number(hoverVal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
     function resetTechHover() {
-        const stockName = document.getElementById('chart-stock-title')?.innerText;
-        const history = stockHistory[stockName] || [];
-        
+        window.isTechHovered = false;
+        const history = stockHistory[document.getElementById('chart-stock-title')?.innerText] || [];
         if (history.length > 0) {
-            let rawData = history[history.length - 1]; // En güncel canlı fiyat
+            let rawData = history[history.length - 1];
             let lastVal = typeof rawData === 'object' ? (rawData.c !== undefined ? rawData.c : rawData.price) : rawData;
             document.getElementById('chart-current-price').innerText = '$' + Number(lastVal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
     }
 
-    box.addEventListener('mousemove', handleTechHover);
-    box.addEventListener('touchmove', handleTechHover);
-    box.addEventListener('mouseleave', resetTechHover);
+    box.addEventListener('touchstart', handleTechHover, {passive: true});
+    box.addEventListener('touchmove', handleTechHover, {passive: true});
     box.addEventListener('touchend', resetTechHover);
+    box.addEventListener('mousedown', handleTechHover);
+    box.addEventListener('mousemove', (e) => { if(window.isTechHovered) handleTechHover(e); });
+    box.addEventListener('mouseup', resetTechHover);
+    box.addEventListener('mouseleave', resetTechHover);
 });
 </script>
 </body>
