@@ -688,6 +688,16 @@
             </span>
             <label class="toggle-switch"><input type="checkbox" id="toggle-music" checked><span class="slider"></span></label>
         </div>
+        <div class="profile-stat-box">
+            <span class="profile-stat-label" style="color: #e2e8f0;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 8px; filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.6));">
+                    <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12s4.48 10 10 10 10-4.48 10-10z"></path>
+                    <path d="M8 12h8"></path>
+                    <path d="M12 8v8"></path>
+                </svg> Titreşim (Haptic)
+            </span>
+            <label class="toggle-switch"><input type="checkbox" id="toggle-vibration" checked><span class="slider"></span></label>
+        </div>
 
         <!-- ÖĞRETİCİ VE SÜRÜM NOTLARI BUTONLARI -->
         <div style="margin-top: 20px;">
@@ -6180,6 +6190,7 @@ function purchaseLifestyleItem(itemId) {
     }
 
     playerBalance -= item.price;
+hapticFeedback([50, 100, 50]); // Kalp atışı gibi tok ve lüks bir titreşim hissi
     item.owned = true;
     
     if (typeof updateBalanceUI === 'function') updateBalanceUI();
@@ -6237,10 +6248,10 @@ function updateLifestyleUI() {
         let shadowVal = "0 0 60px rgba(59, 130, 246, 0.6), inset -10px -10px 30px rgba(0,0,0,0.5)";
 
         if (ownedCount >= 4) {
-            // 4. Mülk: Zirve / Altın İmparatorluk (Devasa parlama ve altın renkler)
-            scaleVal = 1.35;
-            bgGradient = "linear-gradient(135deg, #f59e0b 0%, #ef4444 50%, #b45309 100%)";
-            shadowVal = "0 0 100px rgba(245, 158, 11, 0.9), inset -15px -15px 40px rgba(0,0,0,0.6)";
+            // ZİRVE: Altın Süpernova (Kör edici beyaz merkez, devasa altın parlama)
+            scaleVal = 1.40;
+            bgGradient = "radial-gradient(circle at 35% 35%, #ffffff 0%, #fdf08a 25%, #f59e0b 65%, #7f1d1d 100%)";
+            shadowVal = "0 0 120px rgba(245, 158, 11, 1), 0 0 50px rgba(255, 255, 255, 0.8), inset -15px -15px 40px rgba(153, 27, 27, 0.8)";
         } else if (ownedCount === 3) {
             // 3. Mülk: Zümrüt / Yeşil Egemenlik
             scaleVal = 1.25;
@@ -6318,6 +6329,28 @@ function closeLifestylePage() {
 
 window.openLifestylePage = openLifestylePage;
 window.closeLifestylePage = closeLifestylePage;
+// --- EKRANDA GEZEN IŞINLAR (SHOOTING STARS) SİSTEMİ ---
+function spawnCosmicBeams() {
+    const stage = document.querySelector('.cyber-planet');
+    if (!stage) return;
+    
+    const container = stage.parentElement; 
+
+    setInterval(() => {
+        const ownedCount = luxuryItems.filter(item => item.owned).length;
+        if (ownedCount < 4) return; 
+
+        const beam = document.createElement('div');
+        beam.className = 'cosmic-beam';
+        
+        beam.style.left = (Math.random() * 100) + '%';
+        beam.style.top = (Math.random() * 80) + '%'; 
+        beam.style.animationDuration = (Math.random() * 1.5 + 0.5) + 's';
+        
+        container.appendChild(beam);
+        setTimeout(() => beam.remove(), 2000);
+    }, 400); 
+}
 // --- BAS-TUT HIZLI ARTIŞ / AZALIŞ SİSTEMİ ---
 let holdInterval = null;
 let holdTimeout = null;
@@ -7320,6 +7353,25 @@ if (btnBuyCash) {
             box-shadow: 0 0 60px rgba(59, 130, 246, 0.6), inset -10px -10px 30px rgba(0,0,0,0.5);
             z-index: 2;
         }
+        /* Gezegenin etrafındaki enerji halkası (Sadece son seviyede JS ile aktifleştirilecek) */
+.cyber-planet::before {
+    content: '';
+    position: absolute;
+    top: -20px; left: -20px; right: -20px; bottom: -20px;
+    border-radius: 50%;
+    border: 2px dashed rgba(255, 255, 255, 0); /* Varsayılan olarak görünmez */
+    pointer-events: none;
+    transition: all 1.2s ease;
+}
+
+@keyframes spinRing {
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes pulseCore {
+    0% { transform: translateX(-50%) scale(1); }
+    100% { transform: translateX(-50%) scale(1.05); }
+}
 
         /* Zemin ve Perspektif Izgara */
         .cyber-ground {
@@ -8527,7 +8579,13 @@ window.handleResetPassword = function() {
     errorMsg.style.color = "#00f2fe";
     errorMsg.innerText = "Sıfırlama maili gönderiliyor...";
 
-    auth.sendPasswordResetEmail(email)
+    // Kullanıcıyı doğrudan kendi reset.html sayfamıza yönlendiren yapılandırma:
+    const actionCodeSettings = {
+        url: 'https://cts-tycoon.firebaseapp.com/reset.html',
+        handleCodeInApp: true
+    };
+
+    auth.sendPasswordResetEmail(email, actionCodeSettings)
         .then(() => {
             errorMsg.style.color = "#10b981";
             errorMsg.innerText = "Şifre sıfırlama bağlantısı e-postanıza gönderildi.";
@@ -9342,6 +9400,27 @@ if (tradePanelUI) {
     tradePanelUI.addEventListener('touchend', (e) => {
         e.stopPropagation();
     });
+}
+// --- TİTREŞİM (HAPTIC) MOTORU VE AYAR KAYDI ---
+let isVibEnabled = localStorage.getItem('cts_vibration') !== 'false';
+
+document.addEventListener("DOMContentLoaded", () => {
+    const vibCheckbox = document.getElementById('toggle-vibration');
+    if (vibCheckbox) {
+        vibCheckbox.checked = isVibEnabled;
+        vibCheckbox.addEventListener('change', (e) => {
+            isVibEnabled = e.target.checked;
+            localStorage.setItem('cts_vibration', isVibEnabled);
+            if (isVibEnabled) hapticFeedback([50]); 
+        });
+    }
+    spawnCosmicBeams(); // Sayfa yüklendiğinde ışınları başlatır
+});
+
+function hapticFeedback(pattern = 50) {
+    if (isVibEnabled && navigator.vibrate) {
+        navigator.vibrate(pattern);
+    }
 }
 </script>
 </body>
