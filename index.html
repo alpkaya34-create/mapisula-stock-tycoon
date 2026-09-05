@@ -2356,7 +2356,7 @@ function handleBGM() {
             const btnSell = document.getElementById('btn-sell');
 
             let playerBalance = 15000.00;
-            let reachedMilestones = { k50: false, k250: false, m1: false, m5: false, m15: false, m20: false };
+            let reachedMilestones = { k50: false, k250: false, m1: false, m5: false, m15: false, m20: false, m50: false, m100: false };
             let playerDebt = 0.00;
             let playerPrincipalDebt = 0.00;
             let currentInterestRate = 2.0; 
@@ -2764,19 +2764,25 @@ function checkLiquidations() {
             }
 
             const newsToast = document.getElementById('news-toast');
-            if(newsToast) {
-                document.getElementById('news-desc').innerHTML = `<strong style="color: #00f2fe;">${displayName}</strong> ${pos.leverage}x işlemin ters yöne gittiği için LİKİDE OLDU!`;
-                document.getElementById('news-title').innerText = "LİKİDASYON 💥";
-                document.getElementById('news-title').style.color = "#ef4444";
-                
-                newsToast.classList.remove('positive');
-                newsToast.classList.add('negative', 'show');
-                newsToast.style.borderColor = '#ef4444'; 
-                
-                setTimeout(() => { 
-                    newsToast.classList.remove('show'); 
-                    newsToast.style.borderColor = ''; 
+                if(newsToast) {
+                    document.getElementById('news-desc').innerHTML = `<strong style="color: #00f2fe;">${displayName}</strong> ${pos.leverage}x işlemin ters yöne gittiği için LİKİDE OLDU!`;
+                    document.getElementById('news-title').innerText = "LİKİDASYON 💥";
+                    document.getElementById('news-title').style.color = "#ef4444";
+                    
+                    newsToast.classList.remove('positive');
+                    newsToast.classList.add('negative', 'show');
+                    newsToast.style.borderColor = '#ef4444'; 
+                    
+                    // --- TİTREŞİM KODU BURAYA EKLENİYOR ---
+                    if (typeof window.navigator.vibrate === 'function') {
+                        window.navigator.vibrate([200, 100, 200]); // Kritik uyarı: uzun, bekle, uzun
+                    }
+                    // --------------------------------------
+
                     setTimeout(() => { 
+                        newsToast.classList.remove('show'); 
+                        newsToast.style.borderColor = ''; 
+                        setTimeout(() => {
                         document.getElementById('news-title').innerText = "FLAŞ HABER"; 
                         document.getElementById('news-title').style.color = ""; 
                     }, 300);
@@ -4269,6 +4275,12 @@ newsArchiveList.appendChild(archiveCard);
                 // İŞTE YENİ İFLAS SESİMİZİ BURADA ÇALDIRIYORUZ!
                 playSound('bankruptcy');
                 
+                // --- İFLAS TİTREŞİMİ (Ses ile senkronize ağır darbe) ---
+                if (typeof window.navigator.vibrate === 'function') {
+                    window.navigator.vibrate([400, 200, 400, 200, 600]);
+                }
+                // ---------------------------------------------------------
+                
                 document.getElementById('summary-overlay').classList.add('active');
                 bankruptcyModal.classList.add('show');
             }
@@ -4705,10 +4717,17 @@ priceElement.innerText = "$" + newPrice.toLocaleString('en-US', { minimumFractio
                 try { updateWalletChartModal(); } catch (e) { console.warn('Wallet live update:', e); }
 
                 if (playerDebt > 0) {
-                    let multiplier = 1 + (currentInterestRate / 100);
-                    playerDebt = playerDebt * multiplier; 
-                    if (bankContainer.style.display === 'block') { updateBankUI(); }
-                }
+    let multiplier = 1 + (currentInterestRate / 100);
+    playerDebt = playerDebt * multiplier; 
+    
+    // --- FAİZ TİTREŞİMİ BURAYA EKLENİYOR ---
+    if (typeof window.navigator.vibrate === 'function') {
+        window.navigator.vibrate(30); // Android cihazlarda her faiz kesildiğinde minik bir tık hissi verir
+    }
+    // --------------------------------------
+
+    if (bankContainer.style.display === 'block') { updateBankUI(); }
+}
 
                 // Likidasyon fiyat değişikliğinin hemen ardından yukarıda kontrol edildi.
                 // Burada ikinci kez çalıştırmıyoruz; aynı tick'te çift bildirim oluşmasın.
@@ -9422,6 +9441,86 @@ function hapticFeedback(pattern = 50) {
         navigator.vibrate(pattern);
     }
 }
+// ==========================================
+// GRAFİK DOKUNMATİK (HOVER) ETKİLEŞİM SİSTEMİ
+// ==========================================
+
+// 1. KASA GRAFİĞİ ETKİLEŞİMİ
+const walletChartContainer = document.getElementById('wallet-area-path')?.parentElement;
+if (walletChartContainer) {
+    function handleWalletHover(e) {
+        if (walletHistory.length === 0) return;
+        const rect = walletChartContainer.getBoundingClientRect();
+        
+        // Dokunma (mobil) veya fare (PC) pozisyonunu al
+        let clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        let percent = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+        
+        // Yüzdeyi geçmiş dizisindeki indekse çevir
+        let index = Math.min(walletHistory.length - 1, Math.floor(percent * walletHistory.length));
+        let hoverVal = Number(walletHistory[index]);
+        
+        document.getElementById('wallet-current-val').textContent = '$' + hoverVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function resetWalletHover() {
+        const currentNW = Number(typeof getNetWorth === 'function' ? getNetWorth() : (walletHistory[walletHistory.length-1] || 0));
+        document.getElementById('wallet-current-val').textContent = '$' + currentNW.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    walletChartContainer.addEventListener('mousemove', handleWalletHover);
+    walletChartContainer.addEventListener('touchmove', handleWalletHover);
+    walletChartContainer.addEventListener('mouseleave', resetWalletHover);
+    walletChartContainer.addEventListener('touchend', resetWalletHover);
+}
+
+// 2. HİSSE (TEKNİK ANALİZ) GRAFİĞİ ETKİLEŞİMİ
+const techSvgBoxes = [
+    document.getElementById('canvas-wrapper-line'), 
+    document.getElementById('canvas-wrapper-candle')
+];
+
+techSvgBoxes.forEach(box => {
+    if (!box) return;
+    
+    function handleTechHover(e) {
+        const stockTitleEl = document.getElementById('chart-stock-title');
+        if (!stockTitleEl) return;
+        
+        const stockName = stockTitleEl.innerText;
+        const history = stockHistory[stockName] || [];
+        if (history.length === 0) return;
+        
+        const rect = box.getBoundingClientRect();
+        let clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        let percent = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+        let index = Math.min(history.length - 1, Math.floor(percent * history.length));
+        
+        // Geçmiş veri obje mi (mum) yoksa düz sayı mı (çizgi) kontrolü
+        let rawData = history[index];
+        let hoverVal = typeof rawData === 'object' ? (rawData.c !== undefined ? rawData.c : rawData.price) : rawData;
+        
+        if (hoverVal !== undefined) {
+            document.getElementById('chart-current-price').innerText = '$' + Number(hoverVal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+    }
+
+    function resetTechHover() {
+        const stockName = document.getElementById('chart-stock-title')?.innerText;
+        const history = stockHistory[stockName] || [];
+        
+        if (history.length > 0) {
+            let rawData = history[history.length - 1]; // En güncel canlı fiyat
+            let lastVal = typeof rawData === 'object' ? (rawData.c !== undefined ? rawData.c : rawData.price) : rawData;
+            document.getElementById('chart-current-price').innerText = '$' + Number(lastVal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+    }
+
+    box.addEventListener('mousemove', handleTechHover);
+    box.addEventListener('touchmove', handleTechHover);
+    box.addEventListener('mouseleave', resetTechHover);
+    box.addEventListener('touchend', resetTechHover);
+});
 </script>
 </body>
 </html>
