@@ -1902,7 +1902,7 @@ CTS KRİPTO BORSASI</h3>
                     <span id="trade-ownership-percent" style="font-size: 10px; color: #fbbf24; font-weight: 900; letter-spacing: 0.5px; text-shadow: 0 0 5px rgba(251, 191, 36, 0.4);">Şirket Payı: %0.0000</span>
                     
                     <!-- YENİ EKLENEN: SADECE %51 OLUNCA ÇIKACAK KÜÇÜK BUTON -->
-                    <button id="btn-open-takeover" style="display: none; background: #fbbf24; border: none; color: #000; padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 900; cursor: pointer; margin-top: 5px; width: 100%; box-shadow: 0 0 10px rgba(251,191,36,0.3);">
+                    <button id="btn-open-takeover" onclick="triggerTakeover(event)" style="display: none; background: #fbbf24; border: none; color: #000; padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 900; cursor: pointer; margin-top: 5px; width: 100%; box-shadow: 0 0 10px rgba(251,191,36,0.3);">
     <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px; vertical-align: middle; margin-right: 4px;">
         <path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7z"></path>
         <path d="M2 20h20"></path>
@@ -9241,49 +9241,48 @@ document.addEventListener('DOMContentLoaded', () => {
 // ==========================================================================
 // 👑 YÖNETİM KURULU BUTONU İÇİN GÜVENLİ TETİKLEYİCİ (Tıklama Sorununu Çözer)
 // ==========================================================================
-document.addEventListener('click', function(e) {
-    const takeoverBtn = e.target.closest('#btn-open-takeover');
-    if (takeoverBtn) {
+window.triggerTakeover = function(e) {
+    if(e) {
         e.preventDefault();
-        e.stopPropagation();
-
-        if (typeof currentStockCard === 'undefined' || !currentStockCard) return;
-
-        const name = currentStockCard.dataset.name;
-        const emojiInput = document.getElementById('new-company-emoji');
-        const nameInput = document.getElementById('new-company-name');
-        const visualBox = document.getElementById('visual-emoji-box');
-        
-        // Verileri doldur
-        let eVal = "🚀";
-        let nVal = name;
-        
-        if (typeof customBrands !== 'undefined' && customBrands[name]) {
-            eVal = customBrands[name].emoji;
-            nVal = customBrands[name].name;
-            if (!eVal || eVal === "undefined") eVal = "🚀";
-        }
-        
-        if (emojiInput) emojiInput.value = eVal;
-        if (nameInput) nameInput.value = nVal;
-        
-        // SVG'yi ekrandaki görsel kutuya yansıt
-        if (visualBox && typeof window.getNeonIcon === 'function') {
-            visualBox.innerHTML = window.getNeonIcon(eVal);
-        }
-        
-        // Modalı Aç
-        const overlay = document.getElementById('summary-overlay');
-        const modal = document.getElementById('takeover-modal');
-        
-        if (overlay) overlay.classList.add('active');
-        if (modal) {
-            modal.style.opacity = '1';
-            modal.style.pointerEvents = 'auto';
-            modal.style.transform = 'translate(-50%, -50%) scale(1)';
-        }
+        e.stopPropagation(); // Arkadaki panelin kapanmasını veya çakışmayı kesin olarak engeller
     }
-});
+
+    if (typeof currentStockCard === 'undefined' || !currentStockCard) return;
+
+    const name = currentStockCard.dataset.name;
+    const emojiInput = document.getElementById('new-company-emoji');
+    const nameInput = document.getElementById('new-company-name');
+    const visualBox = document.getElementById('visual-emoji-box');
+    
+    // Verileri doldur
+    let eVal = "🚀";
+    let nVal = name;
+    
+    if (typeof customBrands !== 'undefined' && customBrands[name]) {
+        eVal = customBrands[name].emoji;
+        nVal = customBrands[name].name;
+        if (!eVal || eVal === "undefined") eVal = "🚀";
+    }
+    
+    if (emojiInput) emojiInput.value = eVal;
+    if (nameInput) nameInput.value = nVal;
+    
+    // SVG'yi ekrandaki görsel kutuya yansıt
+    if (visualBox && typeof window.getNeonIcon === 'function') {
+        visualBox.innerHTML = window.getNeonIcon(eVal);
+    }
+    
+    // Modalı Aç
+    const overlay = document.getElementById('summary-overlay');
+    const modal = document.getElementById('takeover-modal');
+    
+    if (overlay) overlay.classList.add('active');
+    if (modal) {
+        modal.style.opacity = '1';
+        modal.style.pointerEvents = 'auto';
+        modal.style.transform = 'translate(-50%, -50%) scale(1)';
+    }
+};
 // ==========================================================================
 // 📡 AĞ BAĞLANTISI (BEYAZ EKRAN / KOPMA KORUMASI) YÖNETİMİ
 // ==========================================================================
@@ -9482,13 +9481,40 @@ if (walletChartContainer) {
 
 // 2. HİSSE (TEKNİK ANALİZ) GRAFİĞİ
 const techSvgBoxes = [document.getElementById('canvas-wrapper-line'), document.getElementById('canvas-wrapper-candle')];
+
 techSvgBoxes.forEach(box => {
     if (!box) return;
+
+    // YENİ: Ekranda yeni isim yazsa bile sistemin orijinal ismi bulmasını sağlayan motor
+    function getOriginalName(displayedName) {
+        // İsim değişmemişse doğrudan veriyi bulur
+        if (stockHistory[displayedName]) return displayedName;
+        
+        // Aktif kart üzerinden orijinal isme erişir (En kesin yöntem)
+        if (typeof currentStockCard !== 'undefined' && currentStockCard && stockHistory[currentStockCard.dataset.name]) {
+            return currentStockCard.dataset.name;
+        }
+        
+        // Yanılma payına karşı markalar listesinde ters arama yapar
+        if (typeof customBrands !== 'undefined') {
+            for (let key in customBrands) {
+                if (customBrands[key].name === displayedName || displayedName.includes(customBrands[key].name)) {
+                    return key;
+                }
+            }
+        }
+        return displayedName;
+    }
+
     function handleTechHover(e) {
         window.isTechHovered = true;
         const stockTitleEl = document.getElementById('chart-stock-title');
         if (!stockTitleEl) return;
-        const history = stockHistory[stockTitleEl.innerText] || [];
+
+        // DÜZELTME: Görsel isim yerine orijinal ismi çağırıyoruz
+        const originalName = getOriginalName(stockTitleEl.innerText);
+        const history = stockHistory[originalName] || [];
+        
         if (history.length === 0) return;
         
         const rect = box.getBoundingClientRect();
@@ -9503,7 +9529,13 @@ techSvgBoxes.forEach(box => {
 
     function resetTechHover() {
         window.isTechHovered = false;
-        const history = stockHistory[document.getElementById('chart-stock-title')?.innerText] || [];
+        const stockTitleEl = document.getElementById('chart-stock-title');
+        if (!stockTitleEl) return;
+
+        // DÜZELTME: Kapatırken de son fiyatı orijinal isimden alıyoruz
+        const originalName = getOriginalName(stockTitleEl.innerText);
+        const history = stockHistory[originalName] || [];
+        
         if (history.length > 0) {
             let rawData = history[history.length - 1];
             let lastVal = typeof rawData === 'object' ? (rawData.c !== undefined ? rawData.c : rawData.price) : rawData;
