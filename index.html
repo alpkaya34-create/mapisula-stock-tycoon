@@ -6373,27 +6373,42 @@ function spawnCosmicBeams() {
         setTimeout(() => beam.remove(), 2000);
     }, 400); 
 }
-// --- BAS-TUT HIZLI ARTIŞ / AZALIŞ SİSTEMİ ---
+// --- BAS-TUT HIZLI ARTIŞ / AZALIŞ SİSTEMİ (3 KADEMELİ) ---
 let holdInterval = null;
 let holdTimeout = null;
+let holdDuration = 0; // Basılı tutulan süreyi takip edecek değişken
 
 function stopChangingQuantity() {
     clearTimeout(holdTimeout);
     clearInterval(holdInterval);
     holdTimeout = null;
     holdInterval = null;
+    holdDuration = 0; // Sayacı sıfırla
 }
 
 function startChangingQuantity(amount) {
-    // YENİ KORUMA: Sayaç üst üste binmesini ve takılı kalmayı engeller
+    // Sayaç üst üste binmesini ve takılı kalmayı engeller
     stopChangingQuantity(); 
 
     changeQuantity(amount);
 
-    // İlk basışta 400ms bekler, ardından her 75ms'de bir hızlıca miktar ekler/çıkarır
+    // İlk basışta 400ms bekler, ardından her 75ms'de bir döngüye girer
     holdTimeout = setTimeout(() => {
         holdInterval = setInterval(() => {
-            changeQuantity(amount);
+            holdDuration += 75; // Her döngüde süreyi 75ms artır
+            
+            let currentStep = amount;
+
+            // KADEME 3: 6 saniyeyi (6000ms) geçerse adımı 500 katına çıkar
+            if (holdDuration >= 6000) {
+                currentStep = amount * 500;
+            } 
+            // KADEME 2: 3 saniyeyi (3000ms) geçerse adımı 50 katına çıkar
+            else if (holdDuration >= 3000) {
+                currentStep = amount * 50;
+            }
+            
+            changeQuantity(currentStep);
         }, 75);
     }, 400);
 }
@@ -6412,7 +6427,7 @@ function changeQuantity(amount) {
     // Minimum 1 adet sınırı
     if (currentVal < 1) currentVal = 1;
     
-    // YENİ: Maksimum kalan hisse sınırı (Piyasadaki boştaki hisseler)
+    // Maksimum kalan hisse sınırı (Piyasadaki boştaki hisseler)
     if (currentVal > remainingShares && remainingShares > 0) {
         currentVal = remainingShares;
     }
