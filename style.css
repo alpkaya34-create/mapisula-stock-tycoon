@@ -2065,3 +2065,20 @@ body.premium-theme .section-title { color: #fbbf24 !important; }
     10% { opacity: 1; transform: translate(50px, -50px) rotate(-45deg) scale(1); }
     100% { opacity: 0; transform: translate(250px, -250px) rotate(-45deg) scale(0.2); }
 }
+/* Haber bildirimi / toast bildiriminin gizli state'i (ekranın dışına çıktığı an) */
+.news-banner, .toast-notification, #breaking-news-box, [class*="news-popup"] {
+    /* Sadece translateY(-100%) yetmeyebilir, ekran çentiği/safe area yüzünden takılabilir */
+    transform: translateY(-200%) !important; 
+    opacity: 0 !important;
+    pointer-events: none !important;
+    visibility: hidden;
+    transition: transform 0.4s ease, opacity 0.4s ease, visibility 0.4s !important;
+}
+
+/* Bildirim ekrana geldiğinde aktif olan class (örneğin .show veya .active) */
+.news-banner.show, .toast-notification.show, #breaking-news-box.active, [class*="news-popup"].active {
+    transform: translateY(0) !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    visibility: visible !important;
+}
