@@ -230,7 +230,11 @@ if (isVIP) {
     localStorage.setItem('cts_has_used_premium_intro', 'true');
     document.body.classList.add('premium-theme');
     
+    // 👑 VIP AKTİF: Altın ikona geç
+    setAppIconToGold(true);
+    
     updatePremiumButtonUI();
+    updateProfileVipBadge(); // 👈 1. BURAYA EKLENDİ
 } else {
     // VIP olmayan hesapta hakları kaldır ve butonu bayrağa göre güncelle
     window.isPremium = false;
@@ -239,7 +243,11 @@ if (isVIP) {
     localStorage.removeItem('cts_theme_active');
     document.body.classList.remove('premium-theme');
 
+    // 🔄 VIP DEĞİL: Standart ikona dön
+    setAppIconToGold(false);
+
     updatePremiumButtonUI();
+    updateProfileVipBadge(); // 👈 2. BURAYA EKLENDİ
 }
 
     // B) 🛡️ REKLAMLARI KALDIR KONTROLÜ (Geri Yükleme Mantığı)
@@ -1025,23 +1033,26 @@ document.addEventListener('DOMContentLoaded', () => {
             <div style="margin-top: 5px; display: flex; flex-direction: column; align-items: center; gap: 8px;">
                 
                 <!-- İsim ve Kalem İkonu -->
-<div id="name-display-container" style="display: flex; align-items: center; justify-content: center; gap: 8px; position: relative; z-index: 9999;">
-    <p id="player-name-display" style="color: #94a3b8; font-size: 14px; font-weight: 900; margin: 0; letter-spacing: 2px;">CTS TRADER</p>
-    <span id="force-edit-pencil" 
-          onclick="window.tryOpenNameChange(event);" 
-          ontouchend="window.tryOpenNameChange(event);" 
-          style="cursor: pointer; font-size: 18px; padding: 8px; display: inline-block; position: relative; z-index: 100000; pointer-events: auto !important; -webkit-tap-highlight-color: transparent;">✏️</span>
-</div>
+                <div id="name-display-container" style="display: flex; align-items: center; justify-content: center; gap: 8px; position: relative; z-index: 9999;">
+                    <p id="player-name-display" style="color: #94a3b8; font-size: 14px; font-weight: 900; margin: 0; letter-spacing: 2px;">CTS TRADER</p>
+                    <span id="force-edit-pencil" 
+                          onclick="window.tryOpenNameChange(event);" 
+                          ontouchend="window.tryOpenNameChange(event);" 
+                          style="cursor: pointer; font-size: 18px; padding: 8px; display: inline-block; position: relative; z-index: 100000; pointer-events: auto !important; -webkit-tap-highlight-color: transparent;">✏️</span>
+                </div>
 
-<!-- Gizli İsim Düzenleme Kutusu ve Kaydet Butonu -->
-<div id="name-input-container" style="display: none; align-items: center; gap: 5px;">
-    <input type="text" id="player-name-input" maxlength="20" placeholder="İSİM GİRİN" style="background: #0f172a; color: #94a3b8; border: 1px solid #8b5cf6; border-radius: 6px; padding: 4px 8px; font-size: 12px; text-align: center; font-weight: 900; letter-spacing: 2px; outline: none; text-transform: uppercase; width: 140px;">
-    <button id="save-name-btn" style="background: #10b981; color: white; border: none; border-radius: 6px; padding: 4px 8px; font-size: 12px; cursor: pointer; font-weight: bold;">✅</button>
-</div>
+                <!-- Gizli İsim Düzenleme Kutusu ve Kaydet Butonu -->
+                <div id="name-input-container" style="display: none; align-items: center; gap: 5px;">
+                    <input type="text" id="player-name-input" maxlength="20" placeholder="İSİM GİRİN" style="background: #0f172a; color: #94a3b8; border: 1px solid #8b5cf6; border-radius: 6px; padding: 4px 8px; font-size: 12px; text-align: center; font-weight: 900; letter-spacing: 2px; outline: none; text-transform: uppercase; width: 140px;">
+                    <button id="save-name-btn" style="background: #10b981; color: white; border: none; border-radius: 6px; padding: 4px 8px; font-size: 12px; cursor: pointer; font-weight: bold;">✅</button>
+                </div>
                 
                 <!-- ID Rozeti -->
                 <div id="player-uid-display" style="background: rgba(139, 92, 246, 0.15); color: #c4b5fd; padding: 4px 12px; border-radius: 12px; font-size: 10px; font-family: monospace; letter-spacing: 1px; border: 1px solid rgba(139, 92, 246, 0.3);">#CTS-XXXXXX</div>
             
+                <!-- 👑 YENİ: VIP SİMGE VE STATÜ ROZETİ (BURAYA EKLENDİ) -->
+                <div id="vip-badge-container" style="margin-top: 2px; display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 800; letter-spacing: 0.5px; transition: all 0.3s ease;"></div>
+
                 <!-- YENİ: E-POSTA DOĞRULAMA DURUMU BURAYA GELDİ -->
                 <div id="verification-status" style="margin-top: 10px; font-size: 11px; text-align: center;"></div>
             </div>
@@ -1244,28 +1255,28 @@ document.addEventListener('DOMContentLoaded', () => {
             <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path>
             <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path>
         </svg>
-        <h2 style="color: #00f2fe; font-size: 18px; font-weight: 900; margin: 0; letter-spacing: 0.5px;">YENİ SÜRÜM NOTLARI v1.0.8</h2>
+        <h2 style="color: #00f2fe; font-size: 18px; font-weight: 900; margin: 0; letter-spacing: 0.5px;">YENİ SÜRÜM NOTLARI v1.0.9</h2>
     </div>
     <div style="color: #cbd5e1; font-size: 12px; text-align: left; margin-bottom: 20px; line-height: 1.6; max-height: 220px; overflow-y: auto; padding-right: 5px;">
         
         <div style="display: flex; align-items: center; margin-bottom: 5px;">
             <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px; filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.6));"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-            <strong style="color: #10b981; font-size: 13px;">Önemli Yenilikler & İyileştirmeler:</strong>
+            <strong style="color: #10b981; font-size: 13px;">Önemli Yenilikler & Ayrıcalıklar:</strong>
         </div>
         <ul style="margin: 5px 0 15px 15px; padding: 0;">
-            <li><strong>Dinamik Gelir Vergisi & Faiz Sistemi:</strong> Spot satışlar ve vadeli kârlardan %5 vergi kesintisi getirildi. Ödenmeyen borçlara her 4 saniyede bir %0.5 gecikme faizi işler. VIP üyeler için vergi %2, faiz ise %0.2'ye indirildi.</li>
-            <li><strong>Canlı Uyarı ve İflas Riski Entegrasyonu:</strong> Ödenmemiş vergi borcu varken buton animasyonlu uyarı moduna geçer. Vergi borcu net servetten düşülür; faiz birikip net değer $500 altına indiğinde iflas mekanizması tetiklenir.</li>
-            <li><strong>VIP Teşvik & Tasarruf Bildirimi:</strong> Borç kapatıldığında standart kullanıcılara VIP üyelikle ne kadar tasarruf edebileceklerini gösteren özel oyun içi bilgilendirme paneli entegre edildi.</li>
+            <li><strong>👑 Dinamik VIP Altın İkon:</strong> VIP üyelerimiz için özel olarak tasarlanan prestijli Altın Boğa uygulama simgesi entegre edildi. Üyeliğiniz aktifleştiğinde uygulama simgeniz otomatik olarak altın temaya bürünür.</li>
+            <li><strong>🏆 Yatırımcı Profil Rozetleri:</strong> Yatırımcı profili ekranına statünüzü yansıtan dinamik VIP ve standart üyelik rozetleri eklendi.</li>
+            <li><strong>⚡ Akıllı Mağaza Köprüsü:</strong> Profil rozeti üzerinden CTS Mağaza ve Premium ayrıcalıklar paneline tek dokunuşla doğrudan geçiş sağlandı.</li>
         </ul>
 
         <div style="display: flex; align-items: center; margin-bottom: 5px; margin-top: 10px;">
             <svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px; filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.6));"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
-            <strong style="color: #fbbf24; font-size: 13px;">Hata Düzeltmeleri & UI Düzenlemeleri:</strong>
+            <strong style="color: #fbbf24; font-size: 13px;">Sistem & Başlatıcı Optimizasyonları:</strong>
         </div>
         <ul style="margin: 5px 0 0 15px; padding: 0;">
-            <li>Menü buton metinleri "SÜRÜM NOTLARI" ve "YOL HARİTASI" olarak sadeleştirildi; tipografi dengelendi.</li>
-            <li>Hayata geçirilen vergi sistemi gelecek yol haritası listesinden kaldırıldı.</li>
-            <li>Vergi ödemesi sonrası çıkan tarayıcı bildirim kutuları kaldırılarak arayüz akışı pürüzsüzleştirildi.</li>
+            <li>Android launcher ve simge geçiş mimarisi (Activity-Alias) tamamen kararlı hale getirilerek olası çökme durumları giderildi.</li>
+            <li>Farklı cihaz çözünürlükleri için mipmap grafik kaynakları optimize edildi.</li>
+            <li>Menü ve mağaza sekmeleri arasındaki ekran geçişleri daha akıcı hale getirildi.</li>
         </ul>
     </div>
     <button class="trade-btn" id="btn-close-patch-notes" style="width: 100%; padding: 12px; font-size: 13px; background: #00f2fe; color: #000; box-shadow: 0 5px 15px rgba(0, 242, 254, 0.4); font-weight: 900; border: none; border-radius: 8px; cursor: pointer;">HARİKA, BAŞLAYALIM!</button>
@@ -1577,8 +1588,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     <!-- DİNAMİK GELİR VERGİSİ DETAY VE ÖDEME MODALI -->
     <div id="tax-detail-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.85); z-index: 999999; justify-content: center; align-items: center; backdrop-filter: blur(8px);">
-        <div style="background: linear-gradient(145deg, #1e293b, #0f172a); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 16px; padding: 22px; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);">
-            <div style="font-size: 32px; margin-bottom: 6px;">⚖️</div>
+        <div style="background: linear-gradient(145deg, #1e293b, #0f172a); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 16px; padding: 22px; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);">
+            
+            <!-- 🏛️ ÖZGÜN NEON VERGİ İKON ROZETİ -->
+            <div style="width: 52px; height: 52px; margin: 0 auto 10px auto; border-radius: 14px; background: radial-gradient(circle, rgba(245, 158, 11, 0.2) 0%, rgba(15, 23, 42, 0.8) 100%); border: 1px solid rgba(245, 158, 11, 0.4); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 16px rgba(245, 158, 11, 0.25);">
+                <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.8));">
+                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                    <circle cx="12" cy="12" r="10" stroke-dasharray="2 3" opacity="0.35" stroke="#fbbf24" />
+                </svg>
+            </div>
+
             <h3 style="color: #f1f5f9; font-size: 15px; font-weight: 900; margin: 0 0 4px 0; letter-spacing: 1px;">GELİR VERGİ DAİRESİ</h3>
             <p id="tax-user-tier-badge" style="color: #fbbf24; font-size: 11px; margin: 0 0 16px 0; font-weight: 700;">Oran: %5 | Gecikme Faizi: %0.5 / 4sn</p>
             
@@ -1599,6 +1618,69 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         </div>
     </div>
+    <!-- BORSA HAZİNESİ & MERKEZ BANKASI MODALI -->
+<div id="treasury-modal" style="display: none; position: fixed; inset: 0; background: rgba(5, 10, 24, 0.85); backdrop-filter: blur(8px); z-index: 99999; align-items: center; justify-content: center; padding: 18px;">
+    <div style="background: #0b1329; border: 1.5px solid #00f2fe; box-shadow: 0 0 35px rgba(0, 242, 254, 0.25); border-radius: 24px; width: 100%; max-width: 420px; padding: 22px; position: relative;">
+        
+        <div style="text-align: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 14px; margin-bottom: 16px;">
+            <div style="width: 44px; height: 44px; background: rgba(0, 242, 254, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px auto;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px;">
+                    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                    <polyline points="2 17 12 22 22 17"></polyline>
+                    <polyline points="2 12 12 17 22 12"></polyline>
+                </svg>
+            </div>
+            <h3 style="color: #00f2fe; font-size: 16px; font-weight: 900; margin: 0 0 4px 0; letter-spacing: 0.5px;">MERKEZ BANKASI HAZİNESİ</h3>
+            <p style="color: #64748b; font-size: 10.5px; margin: 0;">Tüm oyuncuların oyuna ödediği toplam kesintiler (Canlı)</p>
+        </div>
+
+        <!-- Karşılaştırmalı Tablo -->
+        <div style="background: rgba(15, 23, 42, 0.6); border-radius: 14px; padding: 12px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 14px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; font-size: 10px; font-weight: 800; color: #64748b; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px; margin-bottom: 8px;">
+                <span>GİDER KALEMİ</span>
+                <span style="text-align: center; color: #f87171;">STANDART</span>
+                <span style="text-align: right; color: #10b981;">VIP PREMİUM</span>
+            </div>
+
+            <!-- Terminal Masrafı -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; font-size: 11px; padding: 6px 0; border-bottom: 1px dashed rgba(255,255,255,0.05);">
+                <span style="color: #cbd5e1; font-weight: 600;">Terminal</span>
+                <span id="std-terminal-val" style="text-align: center; color: #f87171; font-weight: 700;">$0.00</span>
+                <span id="vip-terminal-val" style="text-align: right; color: #10b981; font-weight: 700;">$0.00</span>
+            </div>
+
+            <!-- Borsa Komisyonu -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; font-size: 11px; padding: 6px 0; border-bottom: 1px dashed rgba(255,255,255,0.05);">
+                <span style="color: #cbd5e1; font-weight: 600;">Komisyon</span>
+                <span id="std-comm-val" style="text-align: center; color: #f87171; font-weight: 700;">$0.00</span>
+                <span id="vip-comm-val" style="text-align: right; color: #10b981; font-weight: 700;">$0.00</span>
+            </div>
+
+            <!-- Gelir Vergisi & Faiz -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; font-size: 11px; padding: 6px 0; border-bottom: 1px dashed rgba(255,255,255,0.05);">
+                <span style="color: #cbd5e1; font-weight: 600;">Gelir Vergisi</span>
+                <span id="std-tax-val" style="text-align: center; color: #f87171; font-weight: 700;">$0.00</span>
+                <span id="vip-tax-val" style="text-align: right; color: #10b981; font-weight: 700;">$0.00</span>
+            </div>
+
+            <!-- TOPLANAN BORSA HAZİNESİ -->
+            <div style="display: grid; grid-template-columns: 1.2fr 1fr 1fr; font-size: 11px; padding: 10px 0 4px 0; margin-top: 4px;">
+                <span style="color: #00f2fe; font-weight: 900; font-size: 10.5px;">TOPLANAN BORSA HAZİNESİ</span>
+                <span id="std-total-val" style="text-align: center; color: #ef4444; font-weight: 900;">$0.00</span>
+                <span id="vip-total-val" style="text-align: right; color: #10b981; font-weight: 900;">$0.00</span>
+            </div>
+        </div>
+
+        <!-- Teşvik ve Durum Bilgi Kutusu -->
+        <div id="treasury-user-banner" style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25); border-radius: 12px; padding: 10px 12px; font-size: 11px; color: #fca5a5; line-height: 1.5; margin-bottom: 14px;">
+            ⚠️ Standart oyuncular piyasaya daha yüksek komisyon ve vergi öder. Kazancını korumak için Mağaza'dan <strong>VIP Premium</strong>'a geçebilirsin.
+        </div>
+
+        <button onclick="closeTreasuryModal()" style="width: 100%; background: linear-gradient(135deg, #00f2fe 0%, #06b6d4 100%); color: #051329; font-weight: 900; font-size: 13px; padding: 12px; border: none; border-radius: 10px; cursor: pointer;">
+            KAPAT
+        </button>
+    </div>
+</div>
     
 
     <!-- MAĞAZA SATIN ALIM BİLDİRİMİ -->
@@ -2183,7 +2265,9 @@ CTS KRİPTO BORSASI</h3>
         
         <!-- DİNAMİK VERGİ BUTONU -->
         <button id="tax-header-btn" type="button" onclick="openTaxModal();" style="display: flex; align-items: center; gap: 6px; background: rgba(15, 23, 42, 0.85); border: 1px solid #334155; border-radius: 8px; padding: 4px 10px; cursor: pointer; transition: all 0.3s ease;">
-            <span style="font-size: 13px;">⚖️</span>
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#fbbf24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.7)); flex-shrink: 0;">
+                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+            </svg>
             <span style="color: #94a3b8; font-size: 11px; font-weight: 800;">VERGİ:</span>
             <span id="tax-btn-amount" style="color: #10b981; font-size: 11px; font-weight: 900;">$0.00</span>
         </button>
@@ -2268,14 +2352,24 @@ CTS KRİPTO BORSASI</h3>
         </div>
 
         <div id="bank-container" class="market-container" style="display: none;">
-            <h3 class="section-title">CTS BANKASI & KREDİ</h3>
-            <div id="debt-summary-card" class="portfolio-summary-card neon-debt-box">
-                <span class="summary-label">TOPLAM BORÇ (FAİZLİ)</span>
-                <strong id="bank-total-debt" class="summary-value" style="color: #ef4444;">$0.00</strong>
-                <div style="font-size: 11px; color: #f87171; margin-top: 8px; font-weight: 800; text-transform: uppercase;">
-                    İşleyen Faiz: <span id="bank-accrued-interest" style="color: #fff;">$0.00</span>
-                </div>
-            </div>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+        <h3 class="section-title" style="margin: 0;">CTS BANKASI & KREDİ</h3>
+        <button id="btn-open-treasury" onclick="openTreasuryModal()" style="display: flex; align-items: center; gap: 6px; background: rgba(14, 23, 42, 0.8); border: 1px solid rgba(0, 242, 254, 0.4); border-radius: 8px; padding: 6px 12px; cursor: pointer; transition: all 0.2s ease;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; filter: drop-shadow(0 0 4px rgba(0, 242, 254, 0.6));">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+            </svg>
+            <span style="color: #00f2fe; font-size: 11px; font-weight: 900; letter-spacing: 0.5px;">HAZİNE</span>
+        </button>
+    </div>
+
+    <div id="debt-summary-card" class="portfolio-summary-card neon-debt-box">
+        <span class="summary-label">TOPLAM BORÇ (FAİZLİ)</span>
+        <strong id="bank-total-debt" class="summary-value" style="color: #ef4444;">$0.00</strong>
+        <div style="font-size: 11px; color: #f87171; margin-top: 8px; font-weight: 800; text-transform: uppercase;">
+            İşleyen Faiz: <span id="bank-accrued-interest" style="color: #fff;">$0.00</span>
+        </div>
+    </div>
 
             <div class="stock-card" style="flex-direction: column; align-items: stretch; gap: 15px; padding: 20px;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -2410,7 +2504,7 @@ CTS KRİPTO BORSASI</h3>
                                 <span style="font-size: 16px;"><svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px; vertical-align: middle; margin-right: 8px; filter: drop-shadow(0 0 5px rgba(251, 191, 36, 0.6));">
     <path d="M12 2l3 7h6l-5 4 2 7-6-4-6 4 2-7-5-4h6z"></path>
 </svg></span>
-                                <span style="font-size: 11px; color: #fde047; font-weight: 800;">Lüks Altın Tema & VIP Hisseler</span>
+                                <span style="font-size: 11px; color: #fde047; font-weight: 800;">VIP Altın İkon, Tema & Hisseler</span>
                             </div>
                             
                             <div style="display: flex; align-items: center; gap: 10px; background: rgba(16, 185, 129, 0.15); padding: 8px 12px; border-radius: 10px; border: 1px solid rgba(16, 185, 129, 0.3);">
@@ -2418,7 +2512,7 @@ CTS KRİPTO BORSASI</h3>
     <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
     <line x1="7" y1="7" x2="7.01" y2="7"></line>
 </svg></span>
-                                <span style="font-size: 11px; color: #6ee7b7; font-weight: 800;">%50 İndirimli Borsa Komisyonu</span>
+                                <span style="font-size: 11px; color: #6ee7b7; font-weight: 800;">%50 İndirimli Komisyon, %60 İndirimli Vergi</span>
                             </div>
                             
                             <div style="display: flex; align-items: center; gap: 10px; background: rgba(0, 242, 254, 0.15); padding: 8px 12px; border-radius: 10px; border: 1px solid rgba(0, 242, 254, 0.3);">
@@ -3034,18 +3128,21 @@ let currentCategoryFilter = 'all';
 const catBtns = document.querySelectorAll('.cat-btn');
 
             btnProfile.addEventListener('click', () => {
-                menuScreen.style.display = 'none';
-                profileScreen.style.display = 'flex';
-                document.getElementById('stat-trades').innerText = gameStats.trades;
-                document.getElementById('stat-max-wealth').innerText = "$" + gameStats.maxWealth.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                document.getElementById('stat-bankruptcies').innerText = gameStats.bankruptcies;
-                document.getElementById('stat-days').innerText = gameStats.days;
-            });
+    menuScreen.style.display = 'none';
+    profileScreen.style.display = 'flex';
+    document.getElementById('stat-trades').innerText = gameStats.trades;
+    document.getElementById('stat-max-wealth').innerText = "$" + gameStats.maxWealth.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    document.getElementById('stat-bankruptcies').innerText = gameStats.bankruptcies;
+    document.getElementById('stat-days').innerText = gameStats.days;
+    
+    // 👑 PROFİL AÇILDIĞINDA VIP ROZETİNİ GÜNCELLE
+    updateProfileVipBadge();
+});
 
-            btnCloseProfile.addEventListener('click', () => {
-                profileScreen.style.display = 'none';
-                menuScreen.style.display = 'flex';
-            });
+btnCloseProfile.addEventListener('click', () => {
+    profileScreen.style.display = 'none';
+    menuScreen.style.display = 'flex';
+});
 
             const resetModal = document.getElementById('reset-confirm-modal');
             const btnCancelReset = document.getElementById('btn-cancel-reset');
@@ -4202,6 +4299,12 @@ const executeBuyAction = () => {
         stockAverages[stockName] = newTotalSpent / newOwned;
 
         playerBalance -= totalCostWithFee;
+
+        // 🏛️ Spot Alış Komisyonunu Hazine Havuzuna Ekle
+        if (typeof trackTreasuryExpense === 'function') {
+            trackTreasuryExpense('commission', commissionFee);
+        }
+
         playSound('buy');
         updateBalanceUI();
         displayTradeOwned.innerText = newOwned.toLocaleString('tr-TR');
@@ -4254,7 +4357,7 @@ btnBuy.addEventListener('touchend', (e) => {
     executeBuyAction();
 });
 
-            const executeSellAction = () => {
+const executeSellAction = () => {
     const qty = parseInt(inputQty.value);
     const totalRevenue = qty * currentStockPrice;
     
@@ -4290,6 +4393,12 @@ btnBuy.addEventListener('touchend', (e) => {
         }
 
         playerBalance += netRevenue;
+
+        // 🏛️ Spot Satış Komisyonunu Hazine Havuzuna Ekle
+        if (typeof trackTreasuryExpense === 'function') {
+            trackTreasuryExpense('commission', commissionFee);
+        }
+
         playSound('sell');
         updateBalanceUI();
 
@@ -4314,7 +4423,6 @@ btnBuy.addEventListener('touchend', (e) => {
                 
                 // KRİTİK DÜZELTME: İsim değiştirilmişse VE henüz "isLost" (kaybedildi) olarak işaretlenmemişse çalışır!
                 if (customBrands[sName] && customBrands[sName].isLost !== true) {
-                    // Genişletilmiş profesyonel holding ve yatırım şirketi isimleri
                     const lostNames = [
                         "Apex Finans", "Global Yatırım", "Atlas Sermaye", "Zirve Holding", 
                         "Kuzey Endüstri", "Nova Ortaklık", "Bosphorus Teknoloji", "Orion Madencilik", 
@@ -4327,22 +4435,18 @@ btnBuy.addEventListener('touchend', (e) => {
                         "Sinerji Yazılım", "Momentum Otomotiv", "Vertex Bilişim"
                     ];
                     
-                    // Şirketlerin yeni sektörlerine uygun genişletilmiş emoji havuzu
                     const lostEmojis = ["🏛️", "💼", "🌐", "🏢", "📊", "💎", "📈", "🚢", "✈️", "🏗️", "🏭", "💻", "📱", "🔋", "🛡️", "⚙️", "🚄", "📦", "💡", "💰", "💳", "🔬", "📡"];
                     
                     let rName = lostNames[Math.floor(Math.random() * lostNames.length)];
                     let rEmoji = lostEmojis[Math.floor(Math.random() * lostEmojis.length)];
                     
-                    // ÇÖZÜM: Şirketin ismini yeni isme çevirirken "isLost: true" bayrağını da ekliyoruz.
                     customBrands[sName] = { name: rName, emoji: rEmoji, isLost: true };
                     localStorage.setItem('cts_custom_brands', JSON.stringify(customBrands));
                     
-                    // Paneldeki ve borsadaki isimleri anında güncelle
                     document.getElementById('trade-stock-name').innerText = rName;
                     applyCustomBrands();
                     if (typeof updatePortfolioView === 'function') updatePortfolioView();
                     
-                    // Oyuncuya el değiştirme uyarısı göster
                     if (typeof showStoreModal === 'function') {
                         showStoreModal("YÖNETİM EL DEĞİŞTİRDİ! ⚠️", `Hisse payın %51'in altına düştüğü için şirketteki kontrolünü kaybettin.<br><br>Şirket yeni bir yatırım grubuna devredildi ve marka adı <strong style="color: #00f2fe; display: inline-flex; align-items: center;">${window.getNeonIcon ? window.getNeonIcon(rEmoji) : rEmoji} ${rName}</strong> olarak güncellendi.`, false);
                         if (typeof playSound === 'function') playSound('error');
@@ -4366,7 +4470,6 @@ btnBuy.addEventListener('touchend', (e) => {
         setTimeout(() => { displayTradeOwned.style.color = '#ffffff'; }, 600);
     }
     
-    // YENİ: Hem masaüstü hem mobilde ekranın gerçekten açık olup olmadığını denetler
     if (window.getComputedStyle(profileScreen).display !== 'none') {
         btnProfile.click();
     }
@@ -4388,7 +4491,6 @@ function openFuturesPosition(type) {
     
     if (!userIsPremium && (typeof dailyTrades !== 'undefined' ? dailyTrades : 0) >= 5) {
         if (typeof showStoreModal === 'function') {
-            // Şık popup tasarımı ile mağazaya yönlendirme
             showStoreModal(
                 "GÜNLÜK LİMİT DOLDU! 🛑", 
                 "Bugünlük 5 işlem limitini doldurdun.<br><br>Sınırsız pozisyon açmak ve komisyonları yarıya düşürmek için <strong>Premium Abonelik</strong> alabilir veya yeni güne geçebilirsin.", 
@@ -4397,7 +4499,7 @@ function openFuturesPosition(type) {
         } else {
             alert("Günlük 5 işlem limitini doldurdun! Sınırsız işlem için Premium alabilirsin.");
         }
-        return false; // Limite takıldıysa işlemi iptal et
+        return false;
     }
 
     const qty = parseInt(inputQty.value, 10) || 0;
@@ -4431,7 +4533,6 @@ function openFuturesPosition(type) {
                            localStorage.getItem('cts_premium') === 'true';
         const commissionRate = userIsPrem ? 0.005 : 0.01;
         
-        // İŞTE KRİTİK DÜZELTME: Komisyon hisse adedinden değil, toplam hacim (fiyat x miktar) üzerinden alınmalı!
         const positionSize = margin * lev; 
         const commissionFee = positionSize * commissionRate;
         
@@ -4459,6 +4560,12 @@ function openFuturesPosition(type) {
         };
 
         playerBalance -= totalRequiredMoney;
+
+        // 🏛️ Vadeli İşlem Komisyonunu Hazine Havuzuna Ekle
+        if (typeof trackTreasuryExpense === 'function') {
+            trackTreasuryExpense('commission', commissionFee);
+        }
+
         activePositions.push(position);
         gameStats.trades++;
         dailyTrades++;
@@ -4474,7 +4581,6 @@ function openFuturesPosition(type) {
             try { btnProfile.click(); } catch (e) {}
         }
 
-        // DÜZELTME: UI ezilmesin diye işlem limiti en son güncelleniyor!
         if (typeof updateTradeLimitUI === 'function') updateTradeLimitUI();
 
         return true;
@@ -5385,10 +5491,18 @@ if (!isUserPremium) {
     }
 
     // Kasadan düşme işlemi
+    let deductedFee = 0;
     if (playerBalance >= terminalFee) {
         playerBalance = Math.round((playerBalance - terminalFee) * 100) / 100;
+        deductedFee = terminalFee;
     } else {
+        deductedFee = playerBalance;
         playerBalance = 0;
+    }
+
+    // 🏛️ Fiilen kesilen terminal masrafını Canlı Borsa Hazinesi sepetine ekle
+    if (deductedFee > 0 && typeof trackTreasuryExpense === 'function') {
+        trackTreasuryExpense('terminal', deductedFee);
     }
     
     updateBalanceUI();
@@ -5970,6 +6084,11 @@ if (btnCloseWalletStats) {
         }).catch((error) => {
             console.error("Buluta kayıt hatası:", error);
         });
+    }
+
+    // 🏛️ 3. TOPLANAN HAZİNE GİDERLERİNİ BATCH OLARAK BULUTA SENKRONİZE ET
+    if (typeof syncTreasuryWithFirebase === 'function') {
+        syncTreasuryWithFirebase();
     }
 }
             // Başarım objesinin kontrolü için m50 eklenmeli (Eğer tanımlı olduğu yer varsa):
@@ -9635,12 +9754,102 @@ window.sendVerificationEmail = function() {
             });
     }
 };
+// 👑 VIP Altın İkon Değiştirici (Bilgilendirme Uyarısıyla Birlikte)
+function setAppIconToGold(isVip) {
+    if (!window.AndroidIconManager || typeof window.AndroidIconManager.setGoldIcon !== 'function') {
+        return;
+    }
+
+    // Durum zaten aynıysa uygulamayı boş yere yeniden başlatma
+    const currentIcon = localStorage.getItem('cts_active_app_icon') || 'default';
+    const targetIcon = isVip ? 'gold' : 'default';
+    if (currentIcon === targetIcon) return;
+
+    if (isVip) {
+        // VIP simgesine geçerken oyuncuyu uyar
+        alert("👑 TEBRİKLER! VIP Ayrıcalıklarınız Aktif Edildi.\n\nÖzel Altın Uygulama Simgesinin cihazınıza uygulanabilmesi için oyun 1 saniyeliğine yeniden başlayacaktır.");
+        
+        localStorage.setItem('cts_active_app_icon', 'gold');
+        setTimeout(() => {
+            window.AndroidIconManager.setGoldIcon(true);
+        }, 300);
+
+    } else {
+        // Standart simgeye geri dönerken
+        localStorage.setItem('cts_active_app_icon', 'default');
+        window.AndroidIconManager.setGoldIcon(false);
+    }
+}
+
+// 👑 Profil VIP Rozet Güncelleyici
+function updateProfileVipBadge() {
+    const badge = document.getElementById('vip-badge-container');
+    if (!badge) return;
+
+    const isVip = window.isPremium || localStorage.getItem('cts_premium') === 'true';
+
+    if (isVip) {
+        // 👑 VIP Üye
+        badge.innerHTML = `👑 VIP TRADER • ALTIN SİMGE AKTİF`;
+        badge.style.background = 'linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(218, 165, 32, 0.25) 100%)';
+        badge.style.color = '#ffd700';
+        badge.style.border = '1px solid rgba(255, 215, 0, 0.4)';
+        badge.style.boxShadow = '0 0 10px rgba(255, 215, 0, 0.2)';
+        badge.style.cursor = 'default';
+        badge.onclick = null;
+    } else {
+        // Standart Üye: Tıklanabilir
+        badge.innerHTML = `STANDART TRADER • VIP'YE GEÇ`;
+        badge.style.background = 'rgba(255, 255, 255, 0.05)';
+        badge.style.color = '#94a3b8';
+        badge.style.border = '1px solid rgba(255, 255, 255, 0.1)';
+        badge.style.boxShadow = 'none';
+        badge.style.cursor = 'pointer';
+        
+        // 🛒 MAĞAZA / ABONELİK EKRANINI AÇAN TETİKLEYİCİ
+        badge.onclick = () => {
+            // 1. Profil ekranını kapat
+            const profileScreen = document.getElementById('profile-screen');
+            if (profileScreen) profileScreen.style.display = 'none';
+
+            // 2. Oyun ana ekranını aktif tut
+            const gameScreen = document.getElementById('game-screen');
+            if (gameScreen) gameScreen.style.display = 'flex';
+
+            // 3. Alt menüdeki Mağaza sekmesini aç
+            const navStoreBtn = document.querySelector('[data-tab="store"]') || 
+                                document.getElementById('tab-store') || 
+                                document.getElementById('nav-store') ||
+                                document.getElementById('btn-nav-store');
+
+            if (navStoreBtn) {
+                navStoreBtn.click();
+            } else if (typeof switchTab === 'function') {
+                switchTab('store');
+            } else {
+                // Diğer market sekmelerini gizleyip sadece mağazayı aç
+                document.querySelectorAll('.market-container').forEach(c => c.style.display = 'none');
+                const storeContainer = document.getElementById('store-container');
+                if (storeContainer) storeContainer.style.display = 'block';
+            }
+
+            // 4. Doğrudan Premium kartına odaklan
+            setTimeout(() => {
+                const premBox = document.querySelector('.premium-neon-box') || document.getElementById('btn-premium-toggle-final');
+                if (premBox) {
+                    premBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 150);
+        };
+    }
+}
 
 // Firebase, oyuncunun giriş yapıp yapmadığını otomatik dinler
 auth.onAuthStateChanged(async (user) => {
     if (user) {
         // OYUNCU GİRİŞ YAPMIŞ
-        document.getElementById('auth-modal').style.display = 'none'; // Ekranı gizle
+        const authModalEl = document.getElementById('auth-modal');
+        if (authModalEl) authModalEl.style.display = 'none'; // Ekranı gizle
         
         // 🔄 1. REVENUECAT KULLANICI EŞLEŞTİRME (user.uid KULLANILIYOR)
         try {
@@ -9655,6 +9864,9 @@ auth.onAuthStateChanged(async (user) => {
                 if (typeof checkUserEntitlements === 'function') {
                     checkUserEntitlements(result?.customerInfo || result);
                 }
+                
+                // 🟢 Profil rozetini hemen güncelle
+                updateProfileVipBadge();
             }
         } catch (rcErr) {
             console.warn("⚠️ RevenueCat login senkronizasyon hatası:", rcErr);
@@ -9674,6 +9886,11 @@ auth.onAuthStateChanged(async (user) => {
         // Sahte UID yerine Firebase'in verdiği KESİN VE GERÇEK UID'yi kullan
         let myUid = user.uid;
         localStorage.setItem('cts_player_uid', myUid);
+        
+        // 🟢 GERÇEK HESAPLA ÇEVRİMİÇİ SİSTEMİNİ ATEŞLE
+        if (typeof initPresenceSystem === 'function') {
+            initPresenceSystem();
+        }
         
         const uidDisplay = document.getElementById('player-uid-display');
         if (uidDisplay) uidDisplay.innerText = "#" + myUid.substring(0, 8).toUpperCase();
@@ -9721,23 +9938,25 @@ auth.onAuthStateChanged(async (user) => {
                 }
                 
                 // Satın Alımlar ve Haklar
-localStorage.setItem('cts_premium', data.isPremium || false);
-localStorage.setItem('cts_noads', data.hasAdsRemoved || false);
+                localStorage.setItem('cts_premium', data.isPremium || false);
+                localStorage.setItem('cts_noads', data.hasAdsRemoved || false);
 
-// 🟢 EKLENEN KISIM: Buluttan gelen bilgiye göre pencere ve buton durumunu eşitle
+                // 🟢 Buluttan gelen bilgiye göre pencere ve buton durumunu eşitle
 if (data.isPremium) {
     window.isPremium = true;
     localStorage.setItem('cts_theme_active', 'true');
+    setAppIconToGold(true); // 👑 VIP İSE ALTIN SİMGE YAP
 } else {
     window.isPremium = false;
+    setAppIconToGold(false); // STANDART SİMGE
 }
-if (typeof updatePremiumButtonUI === 'function') {
-    updatePremiumButtonUI();
-}
+                if (typeof updatePremiumButtonUI === 'function') {
+                    updatePremiumButtonUI();
+                }
 
-if (data.aiRights !== undefined) localStorage.setItem('cts_ai_rights', data.aiRights);
-if (data.lastAiResetDay !== undefined) localStorage.setItem('cts_ai_reset_day', data.lastAiResetDay);
-if (data.milestones) localStorage.setItem('cts_milestones', JSON.stringify(data.milestones));
+                if (data.aiRights !== undefined) localStorage.setItem('cts_ai_rights', data.aiRights);
+                if (data.lastAiResetDay !== undefined) localStorage.setItem('cts_ai_reset_day', data.lastAiResetDay);
+                if (data.milestones) localStorage.setItem('cts_milestones', JSON.stringify(data.milestones));
                 
                 // Oyun Döngüsü Durumu
                 if (data.startOfDayWealth !== undefined) localStorage.setItem('cts_start_wealth', data.startOfDayWealth);
@@ -9784,6 +10003,13 @@ if (data.milestones) localStorage.setItem('cts_milestones', JSON.stringify(data.
             console.warn("RevenueCat logout:", e);
         }
 
+        // 🛑 ÇEVRİMİÇİ SAYACINDAN ÇIKAN HESABI HEMEN SİL
+        let currentOnlineUid = localStorage.getItem('cts_player_uid');
+        if (currentOnlineUid && typeof database !== 'undefined') {
+            database.ref('status/onlineUsers/' + currentOnlineUid).remove();
+        }
+        localStorage.removeItem('cts_player_uid');
+
         // Cihazdaki eski kullanıcı verilerini sil
         localStorage.removeItem('cts_ads_removed');
         localStorage.removeItem('cts_no_ads');
@@ -9796,7 +10022,10 @@ if (data.milestones) localStorage.setItem('cts_milestones', JSON.stringify(data.
         if (typeof hasAdsRemoved !== 'undefined') hasAdsRemoved = false;
         document.body.classList.remove('premium-theme');
 
-        // 🔴 Reklam Butonunu Başlangıç Haline Çevir (Beyaz kalmaz, kırmızı degradeye döner)
+        setAppIconToGold(false);
+        updateProfileVipBadge(); // 👈 3. BURAYA EKLİYORSUN (Çıkış Yapılınca)
+
+        // 🔴 Reklam Butonunu Başlangıç Haline Çevir
         const btnAds = document.getElementById('btn-buy-noads') || document.getElementById('btn-buy-ads');
         if (btnAds) {
             btnAds.disabled = false;
@@ -9813,7 +10042,8 @@ if (data.milestones) localStorage.setItem('cts_milestones', JSON.stringify(data.
             updatePremiumButtonUI();
         }
 
-        authModal.style.display = 'flex'; // Giriş ekranını zorla göster
+        const authModalEl = document.getElementById('auth-modal');
+        if (authModalEl) authModalEl.style.display = 'flex'; // Giriş ekranını zorla göster
         isCloudSyncComplete = true;
     }
 });
@@ -10018,28 +10248,41 @@ if (btnLogin) {
     }
 
     function initPresenceSystem() {
-        const onlineUsersRef = database.ref('status/onlineUsers');
-        onlineUsersRef.on('value', (snapshot) => {
-            let onlineCount = snapshot.numChildren();
-            const viewerEl = document.getElementById('online-viewer-count');
-            if (viewerEl) {
-                viewerEl.innerText = onlineCount > 0 ? onlineCount : 1; 
-            }
-        });
+    if (typeof database === 'undefined') return;
 
-        let presenceUid = localStorage.getItem('cts_player_uid');
-        if (presenceUid && typeof database !== 'undefined') {
-            const connectedRef = database.ref('.info/connected');
-            const myPresenceRef = database.ref('status/onlineUsers/' + presenceUid);
+    // 1. Canlı Sayaç Dinleyicisi
+    const onlineUsersRef = database.ref('status/onlineUsers');
+    onlineUsersRef.on('value', (snapshot) => {
+        let onlineCount = snapshot.numChildren();
+        const viewerEl = document.getElementById('online-viewer-count');
+        if (viewerEl) {
+            viewerEl.innerText = onlineCount > 0 ? onlineCount : 1; 
+        }
+    });
 
-            connectedRef.on('value', (snap) => {
-                if (snap.val() === true) {
-                    myPresenceRef.set(true);
-                    myPresenceRef.onDisconnect().remove();
-                }
+    // 2. Kullanıcının Gerçek E-Posta / Hesap UID'sini Al
+    let presenceUid = localStorage.getItem('cts_player_uid');
+    if (!presenceUid && typeof auth !== 'undefined' && auth.currentUser) {
+        presenceUid = auth.currentUser.uid;
+        localStorage.setItem('cts_player_uid', presenceUid);
+    }
+
+    // Kullanıcı oturum açmamışsa online listesine ekleme
+    if (!presenceUid) return;
+
+    // 3. Bağlantı ve Kopma Yönetimi
+    const connectedRef = database.ref('.info/connected');
+    const myPresenceRef = database.ref('status/onlineUsers/' + presenceUid);
+
+    connectedRef.on('value', (snap) => {
+        if (snap.val() === true) {
+            // Çıkış yapıldığında, sekme kapandığında veya internet koptuğunda kaydı otomatik sil
+            myPresenceRef.onDisconnect().remove().then(() => {
+                myPresenceRef.set(true);
             });
         }
-    }
+    });
+}
 
     // ==========================================
 // 🔔 FIREBASE BİLDİRİM YÖNETİMİ
@@ -11084,6 +11327,9 @@ window.payTaxDebt = function() {
     currentTaxDebt = 0;
     localStorage.setItem('cts_tax_debt', 0);
 
+    // 🏛️ Ödenen vergiyi Borsa Hazinesi sepetine ekle
+    if (typeof trackTreasuryExpense === 'function') trackTreasuryExpense('tax', paidAmount);
+
     // Arayüzü ve hafızayı güncelle
     if (typeof updateBalanceUI === 'function') updateBalanceUI();
     updateTaxUI();
@@ -11116,6 +11362,150 @@ window.payTaxDebt = function() {
 document.addEventListener('DOMContentLoaded', () => {
     updateTaxUI();
 });
+// ==========================================================================
+// CANLI BORSA HAZİNESİ (REALTIME DATABASE BATCH ENGINE)
+// ==========================================================================
+
+// İstemcide biriken harcamalar (Kota koruma mekanizması)
+let sessionExpenses = {
+    terminal: 0,
+    commission: 0,
+    tax: 0
+};
+
+// 1. Harcama Ekleme Yardımcısı (Kodlarında masraf kesilen yerlerde çağrılır)
+function trackTreasuryExpense(type, amount) {
+    if (!amount || amount <= 0) return;
+    if (sessionExpenses[type] !== undefined) {
+        sessionExpenses[type] += Number(amount);
+    }
+}
+
+// 2. Firebase Realtime Database Toplu Gönderim (saveGame çalıştığında tetiklenir)
+function syncTreasuryWithFirebase() {
+    if (sessionExpenses.terminal <= 0 && sessionExpenses.commission <= 0 && sessionExpenses.tax <= 0) return;
+    if (typeof firebase === 'undefined' || !firebase.database) return;
+
+    const isVIP = (typeof window.isPremium !== 'undefined' && window.isPremium) || 
+                  (typeof isPremium !== 'undefined' && isPremium) ||
+                  localStorage.getItem('cts_premium') === 'true';
+
+    const branch = isVIP ? 'premium' : 'standard';
+    const treasuryRef = firebase.database().ref('game_treasury/' + branch);
+
+    // Kopyala ve yerel sepeti sıfırla
+    const outgoing = { ...sessionExpenses };
+    sessionExpenses = { terminal: 0, commission: 0, tax: 0 };
+
+    treasuryRef.transaction((current) => {
+        current = current || { terminalFees: 0, tradingCommissions: 0, incomeTaxes: 0, total: 0 };
+        
+        current.terminalFees = Math.round(((current.terminalFees || 0) + outgoing.terminal) * 100) / 100;
+        current.tradingCommissions = Math.round(((current.tradingCommissions || 0) + outgoing.commission) * 100) / 100;
+        current.incomeTaxes = Math.round(((current.incomeTaxes || 0) + outgoing.tax) * 100) / 100;
+        current.total = Math.round((current.terminalFees + current.tradingCommissions + current.incomeTaxes) * 100) / 100;
+        
+        return current;
+    });
+}
+
+// 3. Modalı Açma ve Realtime Canlı Dinleme
+let treasuryListener = null;
+
+function openTreasuryModal() {
+    const modal = document.getElementById('treasury-modal');
+    if (!modal) return;
+    modal.style.display = 'flex';
+
+    // VIP Durumuna göre alt kutuyu süsle
+    const isVIP = (typeof window.isPremium !== 'undefined' && window.isPremium) || 
+                  (typeof isPremium !== 'undefined' && isPremium) ||
+                  localStorage.getItem('cts_premium') === 'true';
+
+    const banner = document.getElementById('treasury-user-banner');
+    if (banner) {
+        if (isVIP) {
+            banner.style.background = 'rgba(16, 185, 129, 0.1)';
+            banner.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+            banner.style.color = '#6ee7b7';
+            banner.innerHTML = '👑 <strong>VIP Ayrıcalığı Aktif:</strong> Sıfır terminal ücreti, %50 düşük komisyon ve %2 indirimli vergiyle hazineye en az katkıyı siz yapıyorsunuz!';
+        } else {
+            banner.style.background = 'rgba(239, 68, 68, 0.08)';
+            banner.style.borderColor = 'rgba(239, 68, 68, 0.25)';
+            banner.style.color = '#fca5a5';
+            banner.innerHTML = '⚠️ Standart oyuncular piyasaya daha yüksek komisyon ve vergi öder. Kazancını korumak için Mağaza\'dan <strong>VIP Premium</strong>\'a geçebilirsin.';
+        }
+    }
+
+    // 💰 Sayı Kısaltma Formatlayıcısı (K, M, B, T, Q)
+    const fmt = (num) => {
+        let val = Number(num) || 0;
+        if (val < 1000) {
+            return "$" + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+        const units = [
+    { threshold: 1e24, symbol: 'Sp' }, // Septillion ($10^24)
+    { threshold: 1e21, symbol: 'Sx' }, // Sextillion ($10^21)
+    { threshold: 1e18, symbol: 'Qi' }, // Quintillion ($10^18)
+    { threshold: 1e15, symbol: 'Qa' }, // Quadrillion ($10^15)
+    { threshold: 1e12, symbol: 'T' },  // Trillion ($10^12)
+    { threshold: 1e9,  symbol: 'B' },  // Billion ($10^9)
+    { threshold: 1e6,  symbol: 'M' },  // Million ($10^6)
+    { threshold: 1e3,  symbol: 'K' }   // Thousand ($10^3)
+];
+        for (let unit of units) {
+            if (val >= unit.threshold) {
+                return "$" + (val / unit.threshold).toFixed(2) + unit.symbol;
+            }
+        }
+        return "$" + val.toFixed(2);
+    };
+
+    // Realtime Database üzerinden canlı veriyi dinle
+    if (typeof firebase !== 'undefined' && firebase.database) {
+        const rootRef = firebase.database().ref('game_treasury');
+        treasuryListener = rootRef.on('value', (snapshot) => {
+            const data = snapshot.val() || {};
+            const std = data.standard || { terminalFees: 0, tradingCommissions: 0, incomeTaxes: 0, total: 0 };
+            const vip = data.premium || { terminalFees: 0, tradingCommissions: 0, incomeTaxes: 0, total: 0 };
+
+            // Standart Terminal
+            document.getElementById('std-terminal-val').innerText = fmt(std.terminalFees);
+            
+            // 👑 VIP Terminal: $0.00 yerine kalıcı yeşil "ÜCRETSİZ" yazısı
+            const vipTermEl = document.getElementById('vip-terminal-val');
+            if (vipTermEl) {
+                vipTermEl.innerText = "ÜCRETSİZ";
+                vipTermEl.style.fontWeight = "bold";
+                vipTermEl.style.letterSpacing = "0.5px";
+            }
+
+            document.getElementById('std-comm-val').innerText = fmt(std.tradingCommissions);
+            document.getElementById('vip-comm-val').innerText = fmt(vip.tradingCommissions);
+
+            document.getElementById('std-tax-val').innerText = fmt(std.incomeTaxes);
+            document.getElementById('vip-tax-val').innerText = fmt(vip.incomeTaxes);
+
+            document.getElementById('std-total-val').innerText = fmt(std.total);
+            document.getElementById('vip-total-val').innerText = fmt(vip.total);
+        });
+    }
+}
+
+function closeTreasuryModal() {
+    const modal = document.getElementById('treasury-modal');
+    if (modal) modal.style.display = 'none';
+
+    // Kota tasarrufu için modal kapanınca canlı dinlemeyi durdur
+    if (treasuryListener && typeof firebase !== 'undefined' && firebase.database) {
+        firebase.database().ref('game_treasury').off('value', treasuryListener);
+        treasuryListener = null;
+    }
+}
+
+// Global HTML onclick erişimi güvencesi
+window.openTreasuryModal = openTreasuryModal;
+window.closeTreasuryModal = closeTreasuryModal;
 </script>
   </body>
 </html>
