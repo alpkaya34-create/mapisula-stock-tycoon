@@ -208,6 +208,36 @@ async function initRevenueCat() {
         console.error("🔴 RevenueCat başlatma hatası:", err);
     }
 }
+// ==========================================
+// 👑 VIP DİNAMİK İKON DEĞİŞTİRİCİ (JAVA BRIDGE TAM ENTEGRE)
+// ==========================================
+window.setAppIconToGold = function(isGold) {
+    const targetIcon = isGold ? 'gold' : 'standard';
+
+    // 1. MainActivity.java içindeki köprüye doğrudan bağlan
+    if (window.AndroidIconManager && typeof window.AndroidIconManager.setGoldIcon === 'function') {
+        window.AndroidIconManager.setGoldIcon(isGold);
+        console.log("🟢 AndroidIconManager.setGoldIcon çağrıldı:", isGold);
+    } else {
+        console.warn("⚠️ AndroidIconManager köprüsü henüz hazır değil veya web ortamındasınız.");
+    }
+
+    // 2. Hafızayı güncelle
+    localStorage.setItem('cts_active_app_icon', targetIcon);
+
+    // 3. VIP Bildirim Pop-up'ını Güvenle Göster
+    if (isGold) {
+        setTimeout(() => {
+            if (typeof showCustomAlert === 'function') {
+                showCustomAlert("VIP Ayrıcalığı Aktif! Uygulamadan çıktığınızda simgeniz Prestijli Altın Boğa olarak güncellenecektir. 👑", "VIP İKON", "#fbbf24");
+            } else if (typeof showStoreModal === 'function') {
+                showStoreModal("VIP AYRICALIĞI AKTİF 👑", "Uygulamadan çıktığınızda ana ekran simgeniz <b>Altın Boğa</b> olarak güncellenecektir!", true);
+            } else {
+                alert("VIP Ayrıcalığı Aktif! Uygulamadan çıktığınızda simgeniz Altın Boğa olarak güncellenecektir. 👑");
+            }
+        }, 600);
+    }
+};
 
 // 2. Yetki Kontrolü (Paneldeki ID'lerle tam uyumlu)
 function checkUserEntitlements(customerInfo) {
@@ -226,28 +256,30 @@ if (isVIP) {
     try { if (typeof isPremium !== 'undefined') isPremium = true; } catch(e){}
     localStorage.setItem('cts_premium', 'true');
     localStorage.setItem('cts_theme_active', 'true');
-    // Hesabında aktif yetki görüldüğü an ilk ay teklifini tüketmiş kabul edilir
     localStorage.setItem('cts_has_used_premium_intro', 'true');
     document.body.classList.add('premium-theme');
     
-    // 👑 VIP AKTİF: Altın ikona geç
-    setAppIconToGold(true);
+    // 👑 VIP AKTİF: Eğer simge zaten altın DEĞİLSE değiştir (Açılışta tekrar eden alert'i keser!)
+    if (localStorage.getItem('cts_active_app_icon') !== 'gold') {
+        setAppIconToGold(true);
+    }
     
     updatePremiumButtonUI();
-    updateProfileVipBadge(); // 👈 1. BURAYA EKLENDİ
+    updateProfileVipBadge();
 } else {
-    // VIP olmayan hesapta hakları kaldır ve butonu bayrağa göre güncelle
     window.isPremium = false;
     try { if (typeof isPremium !== 'undefined') isPremium = false; } catch(e){}
     localStorage.removeItem('cts_premium');
     localStorage.removeItem('cts_theme_active');
     document.body.classList.remove('premium-theme');
 
-    // 🔄 VIP DEĞİL: Standart ikona dön
-    setAppIconToGold(false);
+    // 🔄 VIP DEĞİL: Eğer simge altın kalmışsa standart ikona dön
+    if (localStorage.getItem('cts_active_app_icon') === 'gold') {
+        setAppIconToGold(false);
+    }
 
     updatePremiumButtonUI();
-    updateProfileVipBadge(); // 👈 2. BURAYA EKLENDİ
+    updateProfileVipBadge();
 }
 
     // B) 🛡️ REKLAMLARI KALDIR KONTROLÜ (Geri Yükleme Mantığı)
@@ -590,8 +622,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 4. Manipülasyon Butonu
-    const btnManip = document.getElementById('btn-buy-manipulation');
-    if (btnManip) btnManip.onclick = buyManipülasyonAction;
+const btnManip = document.getElementById('btn-buy-manipulation');
+if (btnManip) {
+    btnManip.onclick = () => {
+        if (typeof buyManipülasyonAction === 'function') {
+            buyManipülasyonAction();
+        } else if (typeof buyManipulasyonAction === 'function') {
+            buyManipulasyonAction();
+        } else {
+            console.warn("Manipülasyon fonksiyonu bulunamadı!");
+        }
+    };
+}
 
     // 5. Standart Kumbara (₺50)
     const btnPiggy = document.getElementById('btn-feed-piggy') || document.getElementById('btn-kumbara-50');
@@ -1294,88 +1336,81 @@ document.addEventListener('DOMContentLoaded', () => {
                 <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path>
             </svg>
         </div>
+        
 
         <h3 style="color: #00f2fe; font-size: 17px; font-weight: 900; margin: 0 0 16px 0; letter-spacing: 0.8px; text-shadow: 0 0 10px rgba(0, 242, 254, 0.6); text-align: center;">
-            GELECEK GÜNCELLEMELER
-        </h3>
+    GELECEK GÜNCELLEMELER
+</h3>
 
-        <!-- Kaydırılabilir Liste -->
-        <div class="custom-scroll-cyan" style="width: 100%; max-height: 280px; overflow-y: auto; padding-right: 8px; margin-bottom: 18px;">
-            <!-- Modal içi başlık satırı -->
-            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; filter: drop-shadow(0 0 6px rgba(0, 242, 254, 0.8));">
-                    <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path>
-                    <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path>
-                </svg>
-                <span style="color: #38bdf8; font-size: 13px; font-weight: 800; letter-spacing: 0.5px;">Planlanan Yol Haritası:</span>
-            </div>
-
-            <!-- Özgün Neon SVG İkonlu Liste -->
-            <ul style="margin: 0; padding-left: 18px; color: #94a3b8; font-size: 11.5px; line-height: 1.6;">
-                
-                <!-- 1. GÜNLÜK GÖREVLER -->
-                <li style="margin-bottom: 12px;">
-                    <span style="display: inline-flex; align-items: center; gap: 6px; color: #00f2fe; font-weight: 800;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; filter: drop-shadow(0 0 4px rgba(0,242,254,0.7));"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
-                        Günlük Görevler ve Ödüller:
-                    </span><br>
-                    Her gün yenilenen özel borsa hedefleri! (Örn: "3 Biyoteknoloji işlemi yap", "Spot'ta %10 kâr al"). Tamamlanan her görev için anında nakit ve sürpriz ödüller.
-                </li>
-
-                <!-- 2. ŞİRKET BİLGİ KARTLARI -->
-                <li style="margin-bottom: 12px;">
-                    <span style="display: inline-flex; align-items: center; gap: 6px; color: #10b981; font-weight: 800;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; filter: drop-shadow(0 0 4px rgba(16,185,129,0.7));"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                        Şirket Bilgi ve İstihbarat Kartları:
-                    </span><br>
-                    Hisse kartlarındaki yeni <strong>[i]</strong> paneli ile şirketlerin CEO geçmişi, piyasa değeri, temettü oranı ve finansal risk analizleri tek tıkla incelenebilecek.
-                </li>
-
-                <!-- 3. HOLDİNG SİSTEMİ -->
-                <li style="margin-bottom: 12px;">
-                    <span style="display: inline-flex; align-items: center; gap: 6px; color: #a855f7; font-weight: 800;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; filter: drop-shadow(0 0 4px rgba(168,85,247,0.7));"><path d="M3 21h18M3 7v14M21 7v14M6 7V3h12v4"></path></svg>
-                        Holding & Şirket Kurma Modülü:
-                    </span><br>
-                    Kendi anonim şirketinizi kurup borsada halka arz (IPO) yapabileceğiniz ve alt şirketler satın alabileceğiniz holding yönetim mekaniği.
-                </li>
-
-                <!-- 4. TEKNİK GÖSTERGELER -->
-                <li style="margin-bottom: 12px;">
-                    <span style="display: inline-flex; align-items: center; gap: 6px; color: #38bdf8; font-weight: 800;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; filter: drop-shadow(0 0 4px rgba(56,189,248,0.7));"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-                        Gelişmiş Teknik Göstergeler:
-                    </span><br>
-                    Grafik ekranına RSI, MACD ve Hareketli Ortalamalar (SMA) gibi indikatörler eklenecek; vadeli işlemlerde teknik analiz yapılabilecek.
-                </li>
-
-                <!-- 5. KÜRESEL KRİZLER -->
-                <li style="margin-bottom: 12px;">
-                    <span style="display: inline-flex; align-items: center; gap: 6px; color: #ef4444; font-weight: 800;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; filter: drop-shadow(0 0 4px rgba(239,68,68,0.7));"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-                        Küresel Finansal Kriz Senaryoları:
-                    </span><br>
-                    Rastgele patlak veren merkez bankası faiz kararları, enerji krizleri ve spekülatif short fırsatları ile dinamik piyasa çöküşleri.
-                </li>
-
-                <!-- 6. LONCALAR -->
-                <li style="margin-bottom: 6px;">
-                    <span style="display: inline-flex; align-items: center; gap: 6px; color: #ec4899; font-weight: 800;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; filter: drop-shadow(0 0 4px rgba(236,72,153,0.7));"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                        Canlı Çok Oyunculu Loncalar:
-                    </span><br>
-                    Arkadaşlarınızla yatırım fonu kurup ortak sermayeyi yönetebileceğiniz ve diğer klanlarla rekabet edebileceğiniz lonca savaşları.
-                </li>
-
-            </ul>
-        </div>
-
-        <!-- Kapatma Butonu -->
-        <button id="btn-close-roadmap" style="width: 100%; background: linear-gradient(135deg, #00f2fe 0%, #06b6d4 100%); color: #051329; font-weight: 900; font-size: 13px; padding: 13px; border: none; border-radius: 12px; cursor: pointer; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(0, 242, 254, 0.4); text-transform: uppercase;">
-            HARİKA, BEKLEMEDEYİM!
-        </button>
+<!-- Kaydırılabilir Liste -->
+<div class="custom-scroll-cyan" style="width: 100%; max-height: 280px; overflow-y: auto; padding-right: 8px; margin-bottom: 18px;">
+    <!-- Modal içi başlık satırı -->
+    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; filter: drop-shadow(0 0 6px rgba(0, 242, 254, 0.8));">
+            <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path>
+            <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path>
+        </svg>
+        <span style="color: #38bdf8; font-size: 13px; font-weight: 800; letter-spacing: 0.5px;">Planlanan Yol Haritası:</span>
     </div>
+
+    <!-- Özgün Neon SVG İkonlu Liste -->
+    <ul style="margin: 0; padding-left: 18px; color: #94a3b8; font-size: 11.5px; line-height: 1.6;">
+        
+        <!-- 1. GÜNLÜK GÖREVLER -->
+        <li style="margin-bottom: 12px;">
+            <span style="display: inline-flex; align-items: center; gap: 6px; color: #00f2fe; font-weight: 800;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; filter: drop-shadow(0 0 4px rgba(0,242,254,0.7));"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                Günlük Görevler ve Ödüller:
+            </span><br>
+            Her gün yenilenen özel borsa hedefleri! (Örn: "3 Biyoteknoloji işlemi yap", "Spot'ta %10 kâr al"). Tamamlanan her görev için anında nakit ve sürpriz ödüller.
+        </li>
+
+        <!-- 2. ŞİRKET BİLGİ KARTLARI -->
+        <li style="margin-bottom: 12px;">
+            <span style="display: inline-flex; align-items: center; gap: 6px; color: #10b981; font-weight: 800;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; filter: drop-shadow(0 0 4px rgba(16,185,129,0.7));"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                Şirket Bilgi ve İstihbarat Kartları:
+            </span><br>
+            Hisse kartlarındaki yeni <strong>[i]</strong> paneli ile şirketlerin CEO geçmişi, piyasa değeri, temettü oranı ve finansal risk analizleri tek tıkla incelenebilecek.
+        </li>
+
+        <!-- 3. HOLDİNG SİSTEMİ -->
+        <li style="margin-bottom: 12px;">
+            <span style="display: inline-flex; align-items: center; gap: 6px; color: #a855f7; font-weight: 800;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; filter: drop-shadow(0 0 4px rgba(168,85,247,0.7));"><path d="M3 21h18M3 7v14M21 7v14M6 7V3h12v4"></path></svg>
+                Holding & Şirket Kurma Modülü:
+            </span><br>
+            Kendi anonim şirketinizi kurup borsada halka arz (IPO) yapabileceğiniz ve alt şirketler satın alabileceğiniz holding yönetim mekaniği.
+        </li>
+
+        <!-- 4. TEKNİK GÖSTERGELER -->
+        <li style="margin-bottom: 12px;">
+            <span style="display: inline-flex; align-items: center; gap: 6px; color: #38bdf8; font-weight: 800;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; filter: drop-shadow(0 0 4px rgba(56,189,248,0.7));"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                Gelişmiş Teknik Göstergeler:
+            </span><br>
+            Grafik ekranına RSI, MACD ve Hareketli Ortalamalar (SMA) gibi indikatörler eklenecek; vadeli işlemlerde teknik analiz yapılabilecek.
+        </li>
+
+        <!-- 5. LONCALAR -->
+        <li style="margin-bottom: 6px;">
+            <span style="display: inline-flex; align-items: center; gap: 6px; color: #ec4899; font-weight: 800;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; filter: drop-shadow(0 0 4px rgba(236,72,153,0.7));"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                Canlı Çok Oyunculu Loncalar:
+            </span><br>
+            Arkadaşlarınızla yatırım fonu kurup ortak sermayeyi yönetebileceğiniz ve diğer klanlarla rekabet edebileceğiniz lonca savaşları.
+        </li>
+
+    </ul>
 </div>
+
+<!-- Kapatma Butonu -->
+<button id="btn-close-roadmap" style="width: 100%; background: linear-gradient(135deg, #00f2fe 0%, #06b6d4 100%); color: #051329; font-weight: 900; font-size: 13px; padding: 13px; border: none; border-radius: 12px; cursor: pointer; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(0, 242, 254, 0.4); text-transform: uppercase;">
+    HARİKA, BEKLEMEDEYİM!
+</button>
+    </div> <!-- İç kartı kapatır -->
+</div> <!-- roadmap-modal-overlay katmanını kapatır -->
+
     <!-- ÖĞRETİCİ (TUTORIAL) MODALI -->
     <div id="tutorial-modal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 92%; max-width: 380px; background: #0b1126; border: 1px solid #1e293b; border-radius: 20px; padding: 24px; z-index: 1200; opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 15px 50px rgba(0,0,0,0.8);">
         <div style="text-align: center; border-bottom: 1px solid #1e293b; padding-bottom: 15px; margin-bottom: 15px;">
@@ -1681,7 +1716,6 @@ document.addEventListener('DOMContentLoaded', () => {
         </button>
     </div>
 </div>
-    
 
     <!-- MAĞAZA SATIN ALIM BİLDİRİMİ -->
     <div id="store-modal">
@@ -2838,8 +2872,12 @@ CTS KRİPTO BORSASI</h3>
         // GÜVENLİK YAMASI: Bulut verisi inmeden kaydetmeyi engeller
         let isCloudSyncComplete = false;
         
-// Oyun yüklendiğinde sistemi başlat
-document.addEventListener('DOMContentLoaded', initGooglePayments);
+// Oyun yüklendiğinde sistemi güvenle başlat
+document.addEventListener('DOMContentLoaded', () => {
+    if (typeof window.initGooglePayments === 'function') {
+        window.initGooglePayments();
+    }
+});
     </script>
     <!-- OYUN MANTIĞI -->
     <script>
@@ -3338,14 +3376,16 @@ if (btnExit) {
                 console.log("Güvenli çıkış yapıldı.");
                 if (typeof playSound === 'function') playSound('tick');
                 
-                // Çıkış yaparken sadece kalıcı istatistikleri cihazda tut (Opsiyonel)
-                let tempStats = localStorage.getItem('cts_stats');
-                let tempTheme = localStorage.getItem('cts_theme_active');
-                
-                localStorage.clear(); // Cihazdaki oturumu temizle
-                
-                if (tempStats) localStorage.setItem('cts_stats', tempStats);
-                if (tempTheme) localStorage.setItem('cts_theme_active', tempTheme);
+                // Çıkış yaparken sadece kalıcı istatistikleri ve en son hisse fiyatlarını tut
+let tempStats = localStorage.getItem('cts_stats');
+let tempTheme = localStorage.getItem('cts_theme_active');
+let tempStockPrices = localStorage.getItem('cts_stock_prices'); // 📌 FİYATLAR SİLİNMESİN
+
+localStorage.clear(); // Oturumu temizle
+
+if (tempStats) localStorage.setItem('cts_stats', tempStats);
+if (tempTheme) localStorage.setItem('cts_theme_active', tempTheme);
+if (tempStockPrices) localStorage.setItem('cts_stock_prices', tempStockPrices); // 📌 GERİ YÜKLE
                 
                 location.reload(); 
             }).catch((error) => {
@@ -4959,50 +4999,89 @@ function openFuturesPosition(type) {
 }
 
             function renderNewsArchive() {
-                const newsArchiveList = document.getElementById('persistent-news-list');
-                if (!newsArchiveList) return;
+    const newsArchiveList = document.getElementById('persistent-news-list');
+    if (!newsArchiveList) return;
 
-                if (newsArchiveData.length === 0) {
-                    newsArchiveList.innerHTML = `<div class="empty-state"><span><svg viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 36px; height: 36px; display: block; margin: 0 auto 10px auto; filter: drop-shadow(0 0 8px rgba(192, 132, 252, 0.6));">
-    <path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"></path>
-    <path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path>
-    <path d="M12 2v2"></path>
-    <path d="M12 20v2"></path>
-    <path d="M2 12h2"></path>
-    <path d="M20 12h2"></path>
-    <path d="M4.93 4.93l1.41 1.41"></path>
-    <path d="M17.66 17.66l1.41 1.41"></path>
-</svg></span><p>Henüz flaş haber akışı gerçekleşmedi.</p></div>`;
-                    return;
-                }
+    if (newsArchiveData.length === 0) {
+        newsArchiveList.innerHTML = `<div class="empty-state"><span><svg viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 36px; height: 36px; display: block; margin: 0 auto 10px auto; filter: drop-shadow(0 0 8px rgba(192, 132, 252, 0.6));">
+            <path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"></path>
+            <path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path>
+            <path d="M12 2v2"></path>
+            <path d="M12 20v2"></path>
+            <path d="M2 12h2"></path>
+            <path d="M20 12h2"></path>
+            <path d="M4.93 4.93l1.41 1.41"></path>
+            <path d="M17.66 17.66l1.41 1.41"></path>
+        </svg></span><p>Henüz flaş haber akışı gerçekleşmedi.</p></div>`;
+        return;
+    }
 
-                newsArchiveList.innerHTML = '';
-                newsArchiveData.forEach(news => {
-                    const archiveCard = document.createElement('div');
-                    archiveCard.style.padding = '15px';
-                    archiveCard.style.borderRadius = '12px';
-                    archiveCard.style.marginBottom = '10px';
-                    archiveCard.style.background = news.type === 'positive' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)';
-                    archiveCard.style.border = news.type === 'positive' ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid rgba(239, 68, 68, 0.3)';
-                    archiveCard.style.display = 'flex';
-                    archiveCard.style.gap = '15px';
-                    archiveCard.style.alignItems = 'center';
+    newsArchiveList.innerHTML = '';
+    newsArchiveData.forEach(news => {
+        const archiveCard = document.createElement('div');
+        archiveCard.style.padding = '15px';
+        archiveCard.style.borderRadius = '12px';
+        archiveCard.style.marginBottom = '10px';
+        archiveCard.style.display = 'flex';
+        archiveCard.style.gap = '15px';
+        archiveCard.style.alignItems = 'center';
 
-                    archiveCard.innerHTML = `
-    <div style="display: flex; align-items: center;">
-        ${news.type === 'positive' 
-            ? '<svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px; min-width: 24px; filter: drop-shadow(0 0 5px rgba(16, 185, 129, 0.6));"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>' 
-            : '<svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px; min-width: 24px; filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.6));"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>'
+        const isPos = news.type === 'positive';
+        const isGlobal = news.scope === 'global';
+        const isSector = news.scope === 'sector';
+
+        // Dinamik Tema & Kenarlık Renkleri
+        if (isGlobal) {
+            archiveCard.style.background = isPos ? 'rgba(251, 191, 36, 0.12)' : 'rgba(244, 63, 94, 0.15)';
+            archiveCard.style.border = isPos ? '1px solid rgba(251, 191, 36, 0.5)' : '1px solid rgba(244, 63, 94, 0.5)';
+        } else if (isSector) {
+            archiveCard.style.background = isPos ? 'rgba(0, 242, 254, 0.1)' : 'rgba(245, 158, 11, 0.1)';
+            archiveCard.style.border = isPos ? '1px solid rgba(0, 242, 254, 0.4)' : '1px solid rgba(245, 158, 11, 0.4)';
+        } else {
+            archiveCard.style.background = isPos ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)';
+            archiveCard.style.border = isPos ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid rgba(239, 68, 68, 0.3)';
         }
-    </div>
-    <div style="display: flex; flex-direction: column; margin-left: 12px;">
-        <span style="font-size: 11px; color: #94a3b8; font-weight: bold; margin-bottom: 4px;">${news.time} - ${news.stockName}</span>
-        <span style="font-size: 13px; color: #fff; line-height: 1.4;">${news.text}</span>
-    </div>
-`;
-newsArchiveList.appendChild(archiveCard);
-                });
-            }
+
+        // İkon Seçimi
+        let iconMarkup = '';
+        if (isGlobal) {
+            iconMarkup = isPos
+                ? '<svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px; min-width: 24px; filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.8));"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>'
+                : '<svg viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px; min-width: 24px; filter: drop-shadow(0 0 6px rgba(244, 63, 94, 0.8));"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
+        } else if (isSector) {
+            iconMarkup = isPos
+                ? '<svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px; min-width: 24px; filter: drop-shadow(0 0 5px rgba(0, 242, 254, 0.6));"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>'
+                : '<svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px; min-width: 24px; filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.6));"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>';
+        } else {
+            iconMarkup = isPos
+                ? '<svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px; min-width: 24px; filter: drop-shadow(0 0 5px rgba(16, 185, 129, 0.6));"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>'
+                : '<svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px; min-width: 24px; filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.6));"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>';
+        }
+
+        // Başlık Yanı Rozet Etiketi
+        let tagBadge = '';
+        if (isGlobal) {
+            tagBadge = `<span style="background:${isPos ? 'rgba(251,191,36,0.2)' : 'rgba(244,63,94,0.2)'}; color:${isPos ? '#fbbf24' : '#f43f5e'}; font-size:9px; padding:2px 6px; border-radius:4px; font-weight:900; letter-spacing:0.5px; margin-left:8px;">KÜRESEL ŞOK</span>`;
+        } else if (isSector) {
+            tagBadge = `<span style="background:${isPos ? 'rgba(0,242,254,0.15)' : 'rgba(245,158,11,0.15)'}; color:${isPos ? '#00f2fe' : '#f59e0b'}; font-size:9px; padding:2px 6px; border-radius:4px; font-weight:800; letter-spacing:0.5px; margin-left:8px;">SEKTÖREL</span>`;
+        }
+
+        archiveCard.innerHTML = `
+            <div style="display: flex; align-items: center;">
+                ${iconMarkup}
+            </div>
+            <div style="display: flex; flex-direction: column; margin-left: 12px; flex: 1;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                    <span style="font-size: 11px; color: #94a3b8; font-weight: bold;">${news.time} - ${news.stockName}</span>
+                    ${tagBadge}
+                </div>
+                <span style="font-size: 13px; color: #fff; line-height: 1.4;">${news.text}</span>
+            </div>
+        `;
+
+        newsArchiveList.appendChild(archiveCard);
+    });
+}
 
             const bankTotalDebt = document.getElementById('bank-total-debt');
             
@@ -5642,65 +5721,184 @@ priceElement.innerText = "$" + newPrice.toLocaleString('en-US', { minimumFractio
                 refreshLiveUI(true);
                 if (tickCount >= 45) { showDaySummary(true); } else { saveGame(); }
             }, 4000);
-            const categoryNewsScenarios = [
-                { type: 'positive', text: "sektörüne devasa devlet teşviki onaylandı! Tüm hisseler uçuşta.", min: 10, max: 20 },
-                { type: 'negative', text: "sektörüne beklenmedik ağır regülasyonlar getirildi. Hisseler düşüşte.", min: -20, max: -10 }
-            ];
+            // ==========================================================================
+            // 📰 GELİŞMİŞ VE DERİNLEŞTİRİLMİŞ HABER SİSTEMİ (V1.0.9 KÜRESEL & SEKTÖREL ŞOKLAR)
+            // ==========================================================================
+            const catDisplayNames = {
+                'ai': 'YAPAY ZEKA',
+                'bio': 'BİYOTEKNOLOJİ',
+                'energy': 'ENERJİ',
+                'ecom': 'E-TİCARET',
+                'cyber': 'SİBER GÜVENLİK',
+                'defense': 'SAVUNMA SANAYİİ',
+                'quantum': 'KUANTUM TEKNOLOJİLERİ',
+                'crypto': 'KRİPTO PARA PİYASASI'
+            };
+
+            const sectorNewsScenarios = {
+                'ai': {
+                    pos: "Küresel çip konsorsiyumu yeni nesil mimariyi duyurdu! Sektör hisseleri tavan kilitledi.",
+                    neg: "Nadir toprak elementleri tedarik zinciri koptu! Çip ve Yapay Zeka sektörü ağır darbe aldı."
+                },
+                'bio': {
+                    pos: "DSÖ devrim niteliğindeki yeni genetik tedavileri onayladı! Biyoteknoloji şirketleri tarihi ralli yaşıyor.",
+                    neg: "Klinik deney skandalları ve beklenmedik ağır regülasyonlar sektörü vurdu! Biyoteknoloji tahtaları kızıla boyandı."
+                },
+                'energy': {
+                    pos: "Küresel füzyon enerjisi konsorsiyumu devasa teşvik paketini açıkladı! Enerji hisseleri uçuşa geçti.",
+                    neg: "Uluslararası enerji nakil hatlarında sabotaj ve kriz! Enerji şirketleri sert çöküş yaşıyor."
+                },
+                'ecom': {
+                    pos: "Dijital ticaret harcamaları tüm zamanların rekorunu kırdı! E-Ticaret devleri coşuyor.",
+                    neg: "Uluslararası dijital gümrük vergileri yürürlüğe girdi! E-Ticaret devlerinde panik satışları başladı."
+                },
+                'cyber': {
+                    pos: "Kritik altyapıların korunması için hükümetler milyar dolarlık siber bütçe onayladı! Siber hisseler uçuyor.",
+                    neg: "Sıfırıncı gün (Zero-Day) açığı ile küresel protokoller çöktü! Siber güvenlik şirketlerinde panik ve güven kaybı."
+                },
+                'defense': {
+                    pos: "Çok uluslu savunma ve radar modernizasyonu anlaşmaları imzalandı! Savunma hisselerine yoğun akın var.",
+                    neg: "Küresel barış ve silahsızlanma anlaşmaları onaylandı! Savunma sanayii siparişleri iptal ediliyor."
+                },
+                'quantum': {
+                    pos: "Oda sıcaklığında süper iletken kuantum işlemci üretildi! Kuantum hisseleri tarihin en büyük rallisinde.",
+                    neg: "Kuantum soğutma sistemlerinde kronik teknik arızalar baş gösterdi! Yatırımcılar sektörden kaçıyor."
+                },
+                'crypto': {
+                    pos: "Öncü merkez bankaları kripto paraları resmi rezerv varlık ilan etti! Kripto piyasasında mega boğa rallisi!",
+                    neg: "Büyük bir kripto borsası hacklendi ve tasfiye sürecine girdi! Kripto piyasasında tarihi panik satışı!"
+                }
+            };
+
+            const globalBlackSwanNews = {
+                pos: "KÜRESEL TEŞVİK ŞOKU: Merkez bankaları faizleri sürpriz şekilde indirip piyasaya sınırsız likidite pompalıyor! Tüm borsalarda tarihi mega ralli!",
+                neg: "KARA KUĞU (BLACK SWAN): Küresel finans sisteminde dev likidite krizi patlak verdi! FED acil faiz artırdı, tüm piyasalar kan gölü!"
+            };
 
             const newsToast = document.getElementById('news-toast');
-            const newsScenarios = [
-                { type: 'positive', text: "hükümet ile milyar dolarlık gizli bir ihale imzaladığını duyurdu! Hisseler uçuşta.", min: 15, max: 30 },
-                { type: 'positive', text: "devrim niteliğinde bir teknoloji patenti aldı. Piyasalar bu haberi çıldırarak kutluyor!", min: 15, max: 25 },
-                { type: 'positive', text: "rakiplerinden birini sürpriz bir şekilde satın aldı. Tekel olma yolunda ilerliyor.", min: 12, max: 20 },
-                { type: 'positive', text: "beklenenden çok daha yüksek çeyrek kârı açıkladı. Yatırımcılar akın ediyor.", min: 8, max: 15 },
-                { type: 'positive', text: "yeni ürün lansmanında büyük övgü topladı. Analistler alım tavsiyesi veriyor.", min: 5, max: 12 },
-                { type: 'negative', text: "sunucularında devasa bir siber sızıntı tespit edildi! Milyonlarca veri çalındı, hisseler çakılıyor.", min: -30, max: -15 },
-                { type: 'negative', text: "CEO'sunun karıştığı yolsuzluk skandalı patlak verdi! Yönetim kurulu acil toplandı.", min: -25, max: -15 },
-                { type: 'negative', text: "ürettiği son teknolojide ölümcül bir hata tespit edildi. Ürünler toplatılıyor!", min: -28, max: -18 },
-                { type: 'negative', text: "hakkında antitröst (tekelcilik) soruşturması başlatıldı. Yatırımcılar tedirgin.", min: -15, max: -8 },
-                { type: 'negative', text: "beklentilerin çok altında bir gelir tablosu yayınladı. Satış dalgası başladı.", min: -12, max: -5 }
-            ];
+            let lastNewsText = "";
 
-            // YENİ HABER SİSTEMİ (Kripto ve Normal Ayrımı)
-            let lastNewsText = ""; // Haberin tekrara düşmesini engellemek için eklendi
+            // Sarı Yanıp Sönme Animasyon Yardımcısı (Kartlar ve Kategori Butonları İçin)
+            function flashElementYellow(element) {
+                if (!element) return;
+                element.animate([
+                    { boxShadow: 'none', borderColor: 'rgba(30, 41, 59, 1)' }, 
+                    { boxShadow: '0 0 35px rgba(251, 191, 36, 0.9)', borderColor: '#fbbf24' },
+                    { boxShadow: 'none', borderColor: 'rgba(30, 41, 59, 1)' }
+                ], {
+                    duration: 800,
+                    iterations: 6,
+                    easing: 'ease-in-out'
+                });
+            }
+
+            // Fiyat ve Arayüz Güncelleme Yardımcısı
+            function applyPriceImpact(card, changePercentSigned) {
+                let priceElement = card.querySelector('.stock-price');
+                if (!priceElement) return;
+                let currentPrice = parseFloat(priceElement.textContent.replace('$', '').replace(/,/g, ''));
+                let newPrice = currentPrice * (1 + (changePercentSigned / 100));
+                if (newPrice < 0.01) newPrice = 0.01;
+
+                let decimals = newPrice < 1 ? 4 : 2;
+                priceElement.innerText = "$" + newPrice.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+                
+                let changeElement = card.querySelector('.stock-change');
+                let isUp = changePercentSigned >= 0;
+                changeElement.innerText = (isUp ? "▲ +" : "▼ ") + Math.abs(changePercentSigned).toFixed(1) + "%";
+                changeElement.style.color = isUp ? "#10b981" : "#ef4444"; 
+
+                card.classList.remove('trend-up', 'trend-down');
+                card.classList.add(isUp ? 'trend-up' : 'trend-down');
+
+                if (typeof tradePanel !== 'undefined' && tradePanel.classList.contains('open') && currentStockCard === card) {
+                    currentStockPrice = newPrice;
+                    displayTradeStockPrice.innerText = priceElement.innerText;
+                    if (typeof updateTotalCost === "function") updateTotalCost();
+                }
+            }
 
             setInterval(() => {
                 if (isGamePaused) return;
-                
-                // 1. Sadece kilidi açık hisseleri seç
-                // 2. Eğer kripto barajı AŞILMADIYSA, kriptoları listeye dahil etme
+
+                // 1. Kilitli olmayan hisseleri ve aktif kategorileri belirle
                 const openCards = Array.from(stockCards).filter(c => {
                     if (c.classList.contains('locked-card')) return false;
                     if (c.dataset.cat === 'crypto' && !(playerBalance >= 20000000 || reachedMilestones.m20)) return false;
                     return true;
                 });
-                
                 if (openCards.length === 0) return;
 
-                const card = openCards[Math.floor(Math.random() * openCards.length)];
-                const sName = card.dataset.name;
-                const isCrypto = card.dataset.cat === 'crypto';
+                const activeCategories = [...new Set(openCards.map(c => c.dataset.cat).filter(Boolean))];
 
-                // --- İSİM DÜZELTME: Şirketin güncel özel adını EN BAŞTA buluyoruz ---
-                let displayName = sName;
-                const matchedCard = document.querySelector(`.stock-card[data-name="${sName}"]`);
-                if (matchedCard) {
-                    const nameEl = matchedCard.querySelector('.stock-name');
-                    if (nameEl) displayName = nameEl.innerText;
+                // 2. Olasılık Zarı (%95 Standart, %4.5 Sektörel, %0.5 Black Swan / Mega Ralli)
+                const roll = Math.random() * 100;
+                let newsScope = 'single';
+                if (roll < 0.5) {
+                    newsScope = 'global'; // %0.5 Black Swan / Mega Coşku
+                } else if (roll < 5.0) {
+                    newsScope = 'sector'; // %4.5 Sektörel Kategori Şoku
                 }
-                // ----------------------------------------------------
-                
-                // %50 iyi haber, %50 kötü haber olasılığı
-                const isPositive = Math.random() > 0.5;
-                const fluctuation = (Math.random() * 0.15 + 0.05); // %5 ile %20 arası fiyat etkisi
-                
-                let newsText = "";
-                let pool = []; 
-                
-                // KRİPTOYA ÖZEL HABERLER (Artık displayName kullanılıyor)
-                if (isCrypto) {
-                    if (isPositive) {
-                        pool = [
+
+                let isPositive = Math.random() > 0.5;
+                let newsTitle = "";
+                let newsBody = "";
+                let affectedCards = [];
+                let archiveSubject = "";
+
+                // ==========================================
+                // SENARYO A: KÜRESEL BLACK SWAN VEYA MEGA BOĞA (%0.5)
+                // ==========================================
+                if (newsScope === 'global') {
+                    newsTitle = isPositive ? "⚡ KÜRESEL COŞKU VE RALLİ!" : "🚨 KÜRESEL FİNANSAL KRİZ (BLACK SWAN)!";
+                    newsBody = isPositive ? globalBlackSwanNews.pos : globalBlackSwanNews.neg;
+                    affectedCards = openCards;
+                    archiveSubject = isPositive ? "KÜRESEL MEGA RALLİ" : "KARA KUĞU (BLACK SWAN)";
+
+                    // Bütün açık kategori butonlarını sarı neonla parlat
+                    activeCategories.forEach(catKey => {
+                        const tabBtn = document.querySelector(`.cat-btn[data-cat="${catKey}"]`);
+                        flashElementYellow(tabBtn);
+                    });
+                }
+                // ==========================================
+                // SENARYO B: SEKTÖREL / KATEGORİ ŞOKU (%4.5)
+                // ==========================================
+                else if (newsScope === 'sector') {
+                    const targetCat = activeCategories[Math.floor(Math.random() * activeCategories.length)];
+                    const catName = catDisplayNames[targetCat] || targetCat.toUpperCase();
+
+                    newsTitle = `${catName} SEKTÖRÜ ${isPositive ? 'ŞAHLANDI!' : 'ÇÖKÜŞTE!'}`;
+                    if (sectorNewsScenarios[targetCat]) {
+                        newsBody = isPositive ? sectorNewsScenarios[targetCat].pos : sectorNewsScenarios[targetCat].neg;
+                    } else {
+                        newsBody = `${catName} sektöründe gerçekleşen kritik gelişmelerle tahtalarda sert ${isPositive ? 'alım' : 'satış'} dalgası başladı!`;
+                    }
+
+                    affectedCards = openCards.filter(c => c.dataset.cat === targetCat);
+                    archiveSubject = `${catName} SEKTÖRÜ`;
+
+                    // İlgili kategori hap butonunu sarı neonla parlat
+                    const tabBtn = document.querySelector(`.cat-btn[data-cat="${targetCat}"]`);
+                    flashElementYellow(tabBtn);
+                }
+                // ==========================================
+                // SENARYO C: STANDART TEKİL HİSSE / KRİPTO (%95.0)
+                // ==========================================
+                else {
+                    const card = openCards[Math.floor(Math.random() * openCards.length)];
+                    affectedCards = [card];
+                    const sName = card.dataset.name;
+                    const isCrypto = card.dataset.cat === 'crypto';
+
+                    let displayName = sName;
+                    const nameEl = card.querySelector('.stock-name');
+                    if (nameEl) displayName = nameEl.innerText;
+
+                    let pool = [];
+
+                    if (isCrypto) {
+                        pool = isPositive ? [
                             `${displayName} ağında devasa bir güncelleme başarıyla tamamlandı.`,
                             `Kurumsal devler portföylerine yüklü miktarda ${displayName} ekliyor.`,
                             `Lider bir regülatör, ${displayName} için olumlu bir çerçeve yayınladı.`,
@@ -5709,9 +5907,7 @@ priceElement.innerText = "$" + newPrice.toLocaleString('en-US', { minimumFractio
                             `Ünlü bir milyarder ${displayName} projesini desteklediğini açıkladı.`,
                             `${displayName} ağındaki işlem ücretleri sıfıra indirildi, kullanıcılar akın ediyor.`,
                             `Yeni Web3 entegrasyonu sayesinde ${displayName} kullanımı %500 arttı.`
-                        ];
-                    } else {
-                        pool = [
+                        ] : [
                             `Büyük bir "balina" borsalara devasa miktarda ${displayName} transfer etti.`,
                             `Bir ülkeden daha ${displayName} işlemlerine kısıtlama haberi geldi.`,
                             `${displayName} ağında geçici bir tıkanıklık ve güvenlik endişesi yaşandı.`,
@@ -5721,12 +5917,8 @@ priceElement.innerText = "$" + newPrice.toLocaleString('en-US', { minimumFractio
                             `Devlet yetkilileri ${displayName} hakkında kara para aklama soruşturması başlattı.`,
                             `${displayName} ağındaki kritik bir yazılım hatası işlemleri durma noktasına getirdi.`
                         ];
-                    }
-                } 
-                // NORMAL ŞİRKETLERE ÖZEL HABERLER (Artık displayName kullanılıyor)
-                else {
-                    if (isPositive) {
-                        pool = [
+                    } else {
+                        pool = isPositive ? [
                             `${displayName} şirketinin son çeyrek kârı beklentileri katbekat aştı.`,
                             `${displayName}, pazarı sarsacak yeni nesil bir ürün duyurdu.`,
                             `${displayName} yönetimi yüklü miktarda hisse geri alımı yapacak.`,
@@ -5735,9 +5927,7 @@ priceElement.innerText = "$" + newPrice.toLocaleString('en-US', { minimumFractio
                             `Hükümetin açıkladığı yeni teşvik paketi doğrudan ${displayName} şirketine yaradı.`,
                             `${displayName}, en büyük rakiplerinden birini sürpriz bir şekilde satın aldı!`,
                             `Ünlü analistler ${displayName} için "Güçlü Al" tavsiyesi yayınladı.`
-                        ];
-                    } else {
-                        pool = [
+                        ] : [
                             `${displayName} şirketinin tedarik zincirinde büyük sorunlar çıktı.`,
                             `${displayName} CEO'su beklenmedik bir şekilde istifa etti.`,
                             `Yeni regülasyonlar ${displayName} şirketinin kâr marjını daraltıyor.`,
@@ -5748,105 +5938,86 @@ priceElement.innerText = "$" + newPrice.toLocaleString('en-US', { minimumFractio
                             `${displayName} sunucularına yapılan siber saldırıda milyonlarca müşterinin verisi sızdı.`
                         ];
                     }
+
+                    do {
+                        newsBody = pool[Math.floor(Math.random() * pool.length)];
+                    } while (newsBody === lastNewsText && pool.length > 1);
+
+                    newsTitle = displayName + (isPositive ? " YÜKSELİŞTE!" : " DÜŞÜŞTE!");
+                    archiveSubject = displayName;
                 }
 
-                // Tekrara düşmeyi engelleyen yeni döngü
-                do {
-                    newsText = pool[Math.floor(Math.random() * pool.length)];
-                } while (newsText === lastNewsText && pool.length > 1);
-                
-                lastNewsText = newsText;
+                lastNewsText = newsBody;
 
-                // Fiyatı ve Arayüzü Güncelle
-                let priceElement = card.querySelector('.stock-price');
-                let currentPrice = parseFloat(priceElement.textContent.replace('$', '').replace(/,/g, ''));
-                let newPrice = isPositive ? currentPrice * (1 + fluctuation) : currentPrice * (1 - fluctuation);
-                
-                // Fiyat 1 doların altındaysa küsuratları kaçırmamak için 4 hane, büyük paralarda 2 hane gösterir
-                let decimals = newPrice < 1 ? 4 : 2;
-                priceElement.innerText = "$" + newPrice.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
-                
-                let changeElement = card.querySelector('.stock-change');
-                let changePercent = (isPositive ? (fluctuation * 100) : -(fluctuation * 100)).toFixed(1);
-                changeElement.innerText = (isPositive ? "▲ +" : "▼ ") + changePercent + "%";
-                changeElement.style.color = isPositive ? "#10b981" : "#ef4444"; 
+                // 3. Etkilenen Kartlara Fiyat Değişimini ve Sarı Çerçeve Animasyonunu Uygula
+                affectedCards.forEach(c => {
+                    let fluctuationPercent = 0;
+                    if (newsScope === 'global') {
+                        // Küresel Şok: %25 ile %50 arası sert dalgalanma
+                        fluctuationPercent = isPositive ? (Math.random() * 25 + 25) : -(Math.random() * 25 + 25);
+                    } else if (newsScope === 'sector') {
+                        // Sektörel Şok: %20 ile %40 arası dalgalanma
+                        fluctuationPercent = isPositive ? (Math.random() * 20 + 20) : -(Math.random() * 20 + 20);
+                    } else {
+                        // Standart Tekil: %5 ile %20 arası dalgalanma
+                        fluctuationPercent = isPositive ? (Math.random() * 15 + 5) : -(Math.random() * 15 + 5);
+                    }
 
-                card.classList.remove('trend-up', 'trend-down');
-                card.classList.add(isPositive ? 'trend-up' : 'trend-down');
+                    applyPriceImpact(c, fluctuationPercent);
+                    flashElementYellow(c);
+                });
 
-                // Eğer değişen hisse o an panelde açıksa oradaki fiyatı da canlı güncelle
-                if (typeof tradePanel !== 'undefined' && tradePanel.classList.contains('open') && currentStockCard === card) {
-                    currentStockPrice = newPrice;
-                    displayTradeStockPrice.innerText = priceElement.innerText;
-                    if (typeof updateTotalCost === "function") updateTotalCost();
-                }
-
-                // Yukarıdan İnen Flaş Haber Pop-up'ı (Toast)
+                // 4. Toast Bildirimini Göster
                 const nt = document.getElementById('news-toast');
                 if (nt) {
                     const newsTitleEl = document.getElementById('news-title');
                     const newsDescEl = document.getElementById('news-desc');
                     
-                    newsTitleEl.innerText = displayName + (isPositive ? " YÜKSELİŞTE!" : " DÜŞÜŞTE!");
-                    newsTitleEl.style.color = isPositive ? '#10b981' : '#ef4444';
-                    newsDescEl.innerText = newsText;
+                    newsTitleEl.innerText = newsTitle;
+                    newsTitleEl.style.color = newsScope === 'global' ? (isPositive ? '#fbbf24' : '#f43f5e') : (isPositive ? '#10b981' : '#ef4444');
+                    newsDescEl.innerText = newsBody;
                     
                     nt.classList.remove('positive', 'negative');
-                    nt.style.borderColor = isPositive ? '#10b981' : '#ef4444';
+                    nt.style.borderColor = newsScope === 'global' ? (isPositive ? '#fbbf24' : '#f43f5e') : (isPositive ? '#10b981' : '#ef4444');
                     nt.classList.add('show');
                     
-                    setTimeout(() => { nt.classList.remove('show'); }, 5000);
+                    setTimeout(() => { nt.classList.remove('show'); }, 6000);
                 }
 
-                // --- HABERİ ÇIKAN HİSSEYİ SARI YANIP SÖNDÜRME EFEKTİ ---
-                if (card) {
-                    card.animate([
-                        { boxShadow: 'none', borderColor: 'rgba(30, 41, 59, 1)' }, 
-                        { boxShadow: '0 0 30px rgba(251, 191, 36, 0.8)', borderColor: '#fbbf24' },
-                        { boxShadow: 'none', borderColor: 'rgba(30, 41, 59, 1)' }
-                    ], {
-                        duration: 800, // 0.8 saniyede bir nefes alma
-                        iterations: 6, // Toplam 6 kez tekrarla (Yaklaşık 5 saniye sürer)
-                        easing: 'ease-in-out'
-                    });
-                }
-                // -------------------------------------------------------
+                // 5. Haber Arşivine İşle
+                const now = new Date();
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                const timeStrClean = `${hours}:${minutes}`;
+                const newsType = isPositive ? 'positive' : 'negative';
 
-                // --- Haberi Arşive (Haberler Sekmesine) Ekle ---
-                const archiveBox = document.getElementById('persistent-news-list');
-                
-                if (archiveBox) {
-                    // İlk haber geldiğinde "Henüz haber yok" yazan empty-state'i bul ve sil
-                    const emptyState = archiveBox.querySelector('.empty-state');
-                    if (emptyState) {
-                        emptyState.remove();
-                    }
+                newsArchiveData.unshift({ 
+                    time: timeStrClean, 
+                    stockName: archiveSubject, 
+                    text: newsBody, 
+                    type: newsType,
+                    scope: newsScope
+                });
 
-                    // --- KUSURSUZ VE TEKİL ARŞİV EKLEME SİSTEMİ ---
-                    const now = new Date();
-                    const hours = now.getHours().toString().padStart(2, '0');
-                    const minutes = now.getMinutes().toString().padStart(2, '0');
-                    const timeStrClean = `${hours}:${minutes}`;
-                    
-                    const newsType = isPositive ? 'positive' : 'negative';
+                if (newsArchiveData.length > 30) newsArchiveData.pop();
 
-                    // 1. Haberi kalıcı hafıza dizisine ekle (displayName kullanıldı)
-                    newsArchiveData.unshift({ time: timeStrClean, stockName: displayName, text: newsText, type: newsType });
-                    if (newsArchiveData.length > 30) newsArchiveData.pop();
-
-                    // 2. Arşivi sadece renderNewsArchive fonksiyonu üzerinden güncellemeyi tetikle
-                    renderNewsArchive();
-                }
+                renderNewsArchive();
 
             }, 20000);
 
             let isToastDragging = false;
             let toastStartX = 0; let toastCurrentX = 0;
-            function toastDragStart(e) { if (!newsToast.classList.contains('show')) return; isToastDragging = true; toastStartX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX; newsToast.style.transition = 'none'; }
-            function toastDragMove(e) { if (!isToastDragging) return; toastCurrentX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX; const deltaX = toastCurrentX - toastStartX; if (deltaX > 0) { newsToast.style.transform = `translateX(calc(-50% + ${deltaX}px))`; newsToast.style.opacity = 1 - (deltaX / 300); } }
-            function toastDragEnd() { if (!isToastDragging) return; isToastDragging = false; const deltaX = toastCurrentX - toastStartX; if (deltaX > 100) { newsToast.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out'; newsToast.style.transform = `translateX(100vw)`; newsToast.style.opacity = '0'; setTimeout(() => { newsToast.style.transition = 'none'; newsToast.classList.remove('show'); newsToast.style.transform = ''; newsToast.style.opacity = ''; setTimeout(() => { newsToast.style.transition = ''; }, 50); }, 300); } else { newsToast.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out'; newsToast.style.transform = ''; newsToast.style.opacity = ''; setTimeout(() => { newsToast.style.transition = ''; }, 300); } }
-            newsToast.addEventListener('mousedown', toastDragStart); window.addEventListener('mousemove', toastDragMove); window.addEventListener('mouseup', toastDragEnd);
-            newsToast.addEventListener('touchstart', toastDragStart, {passive: true}); window.addEventListener('touchmove', toastDragMove, {passive: true}); window.addEventListener('touchend', toastDragEnd);
+            function toastDragStart(e) { if (!newsToast || !newsToast.classList.contains('show')) return; isToastDragging = true; toastStartX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX; newsToast.style.transition = 'none'; }
+            function toastDragMove(e) { if (!isToastDragging || !newsToast) return; toastCurrentX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX; const deltaX = toastCurrentX - toastStartX; if (deltaX > 0) { newsToast.style.transform = `translateX(calc(-50% + ${deltaX}px))`; newsToast.style.opacity = 1 - (deltaX / 300); } }
+            function toastDragEnd() { if (!isToastDragging || !newsToast) return; isToastDragging = false; const deltaX = toastCurrentX - toastStartX; if (deltaX > 100) { newsToast.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out'; newsToast.style.transform = `translateX(100vw)`; newsToast.style.opacity = '0'; setTimeout(() => { newsToast.style.transition = 'none'; newsToast.classList.remove('show'); newsToast.style.transform = ''; newsToast.style.opacity = ''; setTimeout(() => { newsToast.style.transition = ''; }, 50); }, 300); } else { newsToast.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out'; newsToast.style.transform = ''; newsToast.style.opacity = ''; setTimeout(() => { newsToast.style.transition = ''; }, 300); } }
+            if (newsToast) {
+                newsToast.addEventListener('mousedown', toastDragStart);
+                newsToast.addEventListener('touchstart', toastDragStart, {passive: true});
+            }
+            window.addEventListener('mousemove', toastDragMove);
+            window.addEventListener('mouseup', toastDragEnd);
+            window.addEventListener('touchmove', toastDragMove, {passive: true});
+            window.addEventListener('touchend', toastDragEnd);
 // ==========================================================================
 // 📊 KASA ANALİZİ VE VADELİ İŞLEM İSTATİSTİK SİSTEMİ
 // ==========================================================================
@@ -6226,11 +6397,19 @@ if (missedTicks > 15 && !isPremium) {
         }
 
         if (totalOfflineFee > 0) {
+            let actualDeductedFee = totalOfflineFee;
+
             if (playerBalance >= totalOfflineFee) {
                 playerBalance = Math.round((playerBalance - totalOfflineFee) * 100) / 100;
             } else {
-                totalOfflineFee = playerBalance; // Eksiye düşmemesi için
+                actualDeductedFee = playerBalance; // Eksiye düşmemesi için sadece mevcut bakiye kadar kes
+                totalOfflineFee = playerBalance;
                 playerBalance = 0;
+            }
+
+            // 🏛️ MERKEZ BANKASI HAZİNESİNE AKTAR
+            if (typeof trackTreasuryExpense === 'function' && actualDeductedFee > 0) {
+                trackTreasuryExpense('terminal', actualDeductedFee);
             }
         }
 
@@ -6317,100 +6496,207 @@ function updateBillionaireVisuals() {
         }
     }
 }
-            function loadGame() {
-                if (localStorage.getItem('cts_sound') !== null) { isSoundEnabled = localStorage.getItem('cts_sound') === 'true'; toggleSound.checked = isSoundEnabled; }
-                if (localStorage.getItem('cts_music') !== null) { isMusicEnabled = localStorage.getItem('cts_music') === 'true'; toggleMusic.checked = isMusicEnabled; }
+// ==========================================================================
+// 📈 HİSSE FİYATLARINI GERİ YÜKLEME YARDIMCISI (LOKAL & BULUT)
+// ==========================================================================
+function restoreStockPricesFromData(savedPrices) {
+    if (!savedPrices || typeof savedPrices !== 'object') return;
 
-                // İŞTE EKSİK OLAN KOD BURASI! HİSSE MALİYET ORTALAMALARINI GERİ YÜKLER:
-                if (localStorage.getItem('cts_averages') !== null) {
-                    stockAverages = JSON.parse(localStorage.getItem('cts_averages'));
-                }
-                // YENİ EKLENEN: Yaşam Alanı Eşyalarını Geri Yükle
-                if (localStorage.getItem('cts_lifestyle') !== null) {
-                    let lifestyleSave = JSON.parse(localStorage.getItem('cts_lifestyle'));
-                    if (typeof luxuryItems !== 'undefined') {
-                        luxuryItems.forEach(item => {
-                            if (lifestyleSave[item.id] !== undefined) {
-                                item.owned = lifestyleSave[item.id];
-                            }
-                        });
-                    }
-                }
-
-                if (localStorage.getItem('cts_ai_rights') !== null) { aiRights = parseInt(localStorage.getItem('cts_ai_rights')); }
-    if (localStorage.getItem('cts_ai_reset_day') !== null) { lastAiResetDay = parseInt(localStorage.getItem('cts_ai_reset_day')); }
-    if (localStorage.getItem('cts_milestones') !== null) { reachedMilestones = JSON.parse(localStorage.getItem('cts_milestones')); }
-    updateAiUI();
-                if (localStorage.getItem('cts_premium') !== null) {
-                    isPremium = localStorage.getItem('cts_premium') === 'true';
-                    if(isPremium) {
-                        categoryRequirements['vip'] = 0;
-                        
-                        const premiumBtn = document.getElementById('btn-buy-premium');
-                        premiumBtn.innerText = "TEMA DEĞİŞTİR";
-                        premiumBtn.style.background = "#1e293b";
-                        premiumBtn.style.color = "#fff";
-                        premiumBtn.style.boxShadow = "none";
-
-                        let themeActive = localStorage.getItem('cts_theme_active');
-                        if (themeActive === null || themeActive === 'true') {
-                            document.body.classList.add('premium-theme');
+    if (typeof stockCards !== 'undefined') {
+        stockCards.forEach(card => {
+            const name = card.dataset.name;
+            if (savedPrices[name]) {
+                const priceEl = card.querySelector('.stock-price');
+                if (priceEl) {
+                    priceEl.innerText = savedPrices[name];
+                    
+                    // State ve geçmiş veriyi de doldur (Grafikler düzgün açılsın)
+                    const parsed = parseFloat(savedPrices[name].replace(/[^0-9.-]+/g, ""));
+                    if (Number.isFinite(parsed) && parsed > 0) {
+                        if (typeof liveMarketPrices !== 'undefined') {
+                            liveMarketPrices[name] = parsed;
+                        }
+                        if (typeof stockHistory !== 'undefined') {
+                            if (!stockHistory[name]) stockHistory[name] = [];
+                            stockHistory[name].push(parsed);
                         }
                     }
                 }
-                if (localStorage.getItem('cts_noads') !== null) {
-                    hasAdsRemoved = localStorage.getItem('cts_noads') === 'true';
-                    if(hasAdsRemoved) {
-                        document.getElementById('btn-buy-noads').innerText = "REKLAMSIZ AKTİF";
-                        document.getElementById('btn-buy-noads').disabled = true;
-                        document.getElementById('btn-buy-noads').style.background = "#10b981";
-                    }
-                }
-
-                if (localStorage.getItem('cts_stats') !== null) { gameStats = JSON.parse(localStorage.getItem('cts_stats')); }
-                document.getElementById('dash-day').innerText = gameStats.days;
-
-                if (localStorage.getItem('cts_balance') !== null) { playerBalance = parseFloat(localStorage.getItem('cts_balance')); }
-                if (localStorage.getItem('cts_debt') !== null) { playerDebt = parseFloat(localStorage.getItem('cts_debt')); }
-                if (localStorage.getItem('cts_principal_debt') !== null) { playerPrincipalDebt = parseFloat(localStorage.getItem('cts_principal_debt')); } 
-                else { playerPrincipalDebt = playerDebt; }
-                if (localStorage.getItem('cts_tick_count') !== null) { tickCount = parseInt(localStorage.getItem('cts_tick_count')); }
-                if (localStorage.getItem('cts_daily_trades') !== null) { dailyTrades = parseInt(localStorage.getItem('cts_daily_trades')); }
-                
-                updateBalanceUI(); updateBankUI(); updateTradeLimitUI();
-                
-                if (localStorage.getItem('cts_portfolio') !== null) {
-                    const portfolio = JSON.parse(localStorage.getItem('cts_portfolio'));
-                    stockCards.forEach(card => {
-                        const name = card.dataset.name;
-                        if (portfolio[name] !== undefined) { card.querySelector('.stock-owned').innerText = "Portföy: " + portfolio[name].toLocaleString('tr-TR') + " Adet"; }
-                    });
-                }
-                if (localStorage.getItem('cts_futures') !== null) { activePositions = JSON.parse(localStorage.getItem('cts_futures')); }
-                if (localStorage.getItem('cts_start_wealth') !== null) { startOfDayWealth = parseFloat(localStorage.getItem('cts_start_wealth')); } 
-                else { startOfDayWealth = getNetWorth(); }
-                // --- YENİ EKLENEN: KAYDEDİLEN SON FİYATLARI GERİ YÜKLE ---
-                if (localStorage.getItem('cts_stock_prices') !== null) {
-                    const savedPrices = JSON.parse(localStorage.getItem('cts_stock_prices'));
-                    stockCards.forEach(card => {
-                        const name = card.dataset.name;
-                        if (savedPrices[name] !== undefined) {
-                            card.querySelector('.stock-price').innerText = savedPrices[name];
-                        }
-                    });
-                }
-                // -------------------------------------------------------
-                // YENİ EKLENEN: Oyun yüklendiğinde işlem limitini ekrana yazdır
-                updateTradeLimitUI();
-
-                renderMarketList(); 
-                
-                // YENİ EKLENEN: Çevrimdışı kesintileri hesapla
-                calculateOfflineProgress();
-                updateBillionaireVisuals();
-                // Çevrimdışı işlemler bittikten sonra iflası kontrol et
-// checkBankruptcy(true);
             }
+        });
+    }
+}
+            function loadGame() {
+    // 1. Ses ve Müzik Ayarları
+    if (localStorage.getItem('cts_sound') !== null) { 
+        isSoundEnabled = localStorage.getItem('cts_sound') === 'true'; 
+        if (typeof toggleSound !== 'undefined' && toggleSound) toggleSound.checked = isSoundEnabled; 
+    }
+    if (localStorage.getItem('cts_music') !== null) { 
+        isMusicEnabled = localStorage.getItem('cts_music') === 'true'; 
+        if (typeof toggleMusic !== 'undefined' && toggleMusic) toggleMusic.checked = isMusicEnabled; 
+    }
+
+    // 2. Hisse Maliyet Ortalamaları
+    if (localStorage.getItem('cts_averages') !== null) {
+        try {
+            stockAverages = JSON.parse(localStorage.getItem('cts_averages'));
+        } catch(e) {}
+    }
+
+    // 3. Yaşam Alanı Eşyaları
+    if (localStorage.getItem('cts_lifestyle') !== null) {
+        try {
+            let lifestyleSave = JSON.parse(localStorage.getItem('cts_lifestyle'));
+            if (typeof luxuryItems !== 'undefined' && lifestyleSave) {
+                luxuryItems.forEach(item => {
+                    if (lifestyleSave[item.id] !== undefined) {
+                        item.owned = lifestyleSave[item.id];
+                    }
+                });
+            }
+        } catch(e) {}
+    }
+
+    // 4. AI Hakları ve Başarımlar
+    if (localStorage.getItem('cts_ai_rights') !== null) { aiRights = parseInt(localStorage.getItem('cts_ai_rights')) || 0; }
+    if (localStorage.getItem('cts_ai_reset_day') !== null) { lastAiResetDay = parseInt(localStorage.getItem('cts_ai_reset_day')) || 1; }
+    if (localStorage.getItem('cts_milestones') !== null) { 
+        try {
+            reachedMilestones = JSON.parse(localStorage.getItem('cts_milestones')); 
+        } catch(e) {}
+    }
+    if (typeof updateAiUI === 'function') updateAiUI();
+
+    // 5. VIP ve Reklamsızlık Hakları
+    if (localStorage.getItem('cts_premium') !== null) {
+        isPremium = localStorage.getItem('cts_premium') === 'true';
+        if (isPremium) {
+            if (typeof categoryRequirements !== 'undefined') categoryRequirements['vip'] = 0;
+            
+            const premiumBtn = document.getElementById('btn-buy-premium');
+            if (premiumBtn) {
+                premiumBtn.innerText = "TEMA DEĞİŞTİR";
+                premiumBtn.style.background = "#1e293b";
+                premiumBtn.style.color = "#fff";
+                premiumBtn.style.boxShadow = "none";
+            }
+
+            let themeActive = localStorage.getItem('cts_theme_active');
+            if (themeActive === null || themeActive === 'true') {
+                document.body.classList.add('premium-theme');
+            }
+        }
+    }
+
+    if (localStorage.getItem('cts_noads') !== null) {
+        hasAdsRemoved = localStorage.getItem('cts_noads') === 'true';
+        if (hasAdsRemoved) {
+            const noAdsBtn = document.getElementById('btn-buy-noads');
+            if (noAdsBtn) {
+                noAdsBtn.innerText = "REKLAMSIZ AKTİF";
+                noAdsBtn.disabled = true;
+                noAdsBtn.style.background = "#10b981";
+            }
+        }
+    }
+
+    // 6. İstatistikler (Zirve Varlık, İflas, Gün, İşlem Sayısı)
+    if (localStorage.getItem('cts_stats') !== null) { 
+        try {
+            let s = JSON.parse(localStorage.getItem('cts_stats'));
+            if (s && typeof s === 'object') {
+                gameStats = {
+                    trades: Number(s.trades) || 0,
+                    maxWealth: Number(s.maxWealth) || 15000.00,
+                    bankruptcies: Number(s.bankruptcies) || 0,
+                    days: Number(s.days) || 1
+                };
+            }
+        } catch(e) {}
+    }
+
+    // Gün Göstergesi (Tekrarlayan tanımlama hatası engellendi)
+    let dDayEl = document.getElementById('dash-day');
+    if (dDayEl && typeof gameStats !== 'undefined') {
+        dDayEl.innerText = gameStats.days || 1;
+    }
+
+    // 7. Bakiye, Borç ve Sayaçlar
+    if (localStorage.getItem('cts_balance') !== null) { 
+        let b = parseFloat(localStorage.getItem('cts_balance'));
+        if (!isNaN(b)) playerBalance = b;
+    }
+    if (localStorage.getItem('cts_debt') !== null) { 
+        let d = parseFloat(localStorage.getItem('cts_debt'));
+        if (!isNaN(d)) playerDebt = d;
+    }
+    if (localStorage.getItem('cts_principal_debt') !== null) { 
+        let pd = parseFloat(localStorage.getItem('cts_principal_debt'));
+        if (!isNaN(pd)) playerPrincipalDebt = pd;
+    } else { 
+        playerPrincipalDebt = playerDebt; 
+    }
+
+    if (localStorage.getItem('cts_tick_count') !== null) { tickCount = parseInt(localStorage.getItem('cts_tick_count')) || 0; }
+    if (localStorage.getItem('cts_daily_trades') !== null) { dailyTrades = parseInt(localStorage.getItem('cts_daily_trades')) || 0; }
+    
+    // UI Güncellemeleri
+    if (typeof updateBalanceUI === 'function') updateBalanceUI(); 
+    if (typeof updateBankUI === 'function') updateBankUI(); 
+    if (typeof updateTradeLimitUI === 'function') updateTradeLimitUI();
+    
+    // 8. Portföy Hisseleri
+    if (localStorage.getItem('cts_portfolio') !== null) {
+        try {
+            const portfolio = JSON.parse(localStorage.getItem('cts_portfolio'));
+            if (typeof stockCards !== 'undefined' && portfolio) {
+                stockCards.forEach(card => {
+                    const name = card.dataset.name;
+                    if (portfolio[name] !== undefined) { 
+                        const ownedEl = card.querySelector('.stock-owned');
+                        if (ownedEl) ownedEl.innerText = "Portföy: " + Number(portfolio[name]).toLocaleString('tr-TR') + " Adet"; 
+                    }
+                });
+            }
+        } catch(e) {}
+    }
+
+    // 9. Vadeli İşlemler ve Başlangıç Varlığı
+    if (localStorage.getItem('cts_futures') !== null) { 
+        try {
+            activePositions = JSON.parse(localStorage.getItem('cts_futures')) || [];
+        } catch(e) {}
+    }
+    if (localStorage.getItem('cts_start_wealth') !== null) { 
+        startOfDayWealth = parseFloat(localStorage.getItem('cts_start_wealth')) || 15000; 
+    } else if (typeof getNetWorth === 'function') { 
+        startOfDayWealth = getNetWorth(); 
+    }
+
+    // 10. Hisse Fiyatlarını Geri Yükle (Daha önce yazdığımız yardımcı fonksiyonu kullanır)
+    if (localStorage.getItem('cts_stock_prices') !== null) {
+        try {
+            const savedPrices = JSON.parse(localStorage.getItem('cts_stock_prices'));
+            if (typeof restoreStockPricesFromData === 'function') {
+                restoreStockPricesFromData(savedPrices);
+            } else if (typeof stockCards !== 'undefined' && savedPrices) {
+                stockCards.forEach(card => {
+                    const name = card.dataset.name;
+                    if (savedPrices[name] !== undefined) {
+                        const priceEl = card.querySelector('.stock-price');
+                        if (priceEl) priceEl.innerText = savedPrices[name];
+                    }
+                });
+            }
+        } catch(e) {}
+    }
+
+    // 11. Son Arayüz ve Arka Plan Hesaplamaları
+    if (typeof renderMarketList === 'function') renderMarketList(); 
+    if (typeof calculateOfflineProgress === 'function') calculateOfflineProgress();
+    if (typeof updateBillionaireVisuals === 'function') updateBillionaireVisuals();
+}
             const chartModal = document.getElementById('chart-modal');
             const btnOpenChart = document.getElementById('btn-open-chart');
             const btnCloseChart = document.getElementById('btn-close-chart');
@@ -6790,42 +7076,47 @@ if (btnBuyAiRights) {
     { 
         icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 42px; height: 42px; display: block; margin: 0 auto; filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.6));"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>', 
         title: "1. HOŞ GELDİN!",
-        text: "CTS Stock Market Tycoon'a hoş geldin!<br><br>Başlangıç Sermayen: <strong style='color: #00f2fe;'>$15,000</strong><br><br>Amacın doğru yatırımlarla kasayı büyütüp <strong style='color: #00f2fe;'>$20 Milyon</strong> barajını aşarak <strong style='color: #a855f7;'>Gizli Borsası'yı</strong> açmak!"
+        text: "CTS Stock Market Tycoon'a hoş geldin!<br><br>Başlangıç Sermayen: <strong style='color: #00f2fe;'>$15,000</strong><br><br>Amacın doğru yatırımlarla portföyünü büyütüp <strong style='color: #00f2fe;'>$20 Milyon</strong> barajını aşarak elitlerin yarıştığı <strong style='color: #a855f7;'>Gizli Borsa'yı</strong> açmak!"
     },
     { 
         icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 42px; height: 42px; display: block; margin: 0 auto; filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.6));"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>', 
         title: '2. PİYASA VE HABERLER', 
-        text: 'Piyasa her <b>4 saniyede bir</b> güncellenir (30 güncelleme = 1 Gün).<br><br>Ekranın üstünden inen <b>Flaş Haberler</b> hisseleri anında etkiler. Sektörel krizleri ve fırsatları kaçırmamak için gözün haberlerde olsun.' 
+        text: 'Piyasa her <b>4 saniyede bir</b> güncellenir (30 güncelleme = 1 İş Günü).<br><br>Ekranın üstünden inen <b>Flaş Haberler</b> hisseleri doğrudan etkiler. Sektörel krizleri ve tavan yapacak fırsatları yakalamak için gözün haber akışında olsun.' 
     },
     { 
         icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 42px; height: 42px; display: block; margin: 0 auto; filter: drop-shadow(0 0 8px rgba(244, 63, 94, 0.6));"><path d="M12 3v18M3 7h18M6 7l-3 7a4 4 0 0 0 6 0l-3-7zM18 7l-3 7a4 4 0 0 0 6 0l-3-7z"></path></svg>', 
         title: '3. SPOT vs VADELİ', 
-        text: '<b>SPOT:</b> Güvenlidir. Aldığın hisse senindir, fiyatı düşse de elinde kalır.<br><br><span style="color:#ef4444;">VADELİ (Kaldıraç):</span> Yükselişe (LONG) veya Düşüşe (SHORT) oynayabilirsin. Ancak yön tersine giderse paran sıfırlanıp <b>LİKİDE</b> olabilirsin!' 
+        text: '<b>SPOT:</b> Güvenli limandır. Aldığın hisse senindir, fiyat düşse de elinde kalır.<br><br><span style="color:#ef4444;">VADELİ (Kaldıraç):</span> Yükselişe (LONG) veya Düşüşe (SHORT) pozisyon açabilirsin. Yön tersine dönerse teminatın sıfırlanıp <b>LİKİDE</b> olabilirsin!' 
     },
     { 
         icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 42px; height: 42px; display: block; margin: 0 auto; filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.6));"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>', 
         title: '4. HIZLI İŞLEM VE YAPAY ZEKA', 
-        text: 'Kasandaki paranın tamamıyla (%100) anında işlem yapmak için <b>AL veya SAT butonlarına basılı tut!</b><br><br>Hangi hisseyi alacağını bilemiyorsan, yukarıdaki <b>🤖 AI ANALİST</b> butonuna tıklayarak yapay zekadan tüyo alabilirsin.' 
+        text: 'Kasandaki nakdin tamamıyla (%100) anında pozisyon almak için <b>AL veya SAT butonlarına basılı tut!</b><br><br>Gidişatı kestiremiyorsan, yukarıdaki <b>🤖 AI ANALİST</b> butonuna basarak yapay zekadan anlık teknik analiz ve tüyo alabilirsin.' 
     },
     { 
         icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 42px; height: 42px; display: block; margin: 0 auto; filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.6));"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path><path d="M8 6h.01M16 6h.01M12 6h.01M12 10h.01M12 14h.01M16 10h.01M16 14h.01M8 10h.01M8 14h.01"></path></svg>', 
         title: '5. ŞİRKETİ ELE GEÇİR', 
-        text: 'Bir şirketin hisselerinin <b>%51\'ine (510.000 adet)</b> ulaştığında Yönetim Kurulu sana geçer!<br><br>Şirketi ele geçirdiğinde ona <b>kendi özel ismini ve emojini</b> verebilirsin. Ancak payın %51\'in altına düşerse şirketi kaybedersin.' 
+        text: 'Bir şirketin dolaşımdaki hisselerinin <b>%51\'ine (510.000 adet)</b> ulaştığında Yönetim Kurulu hakimiyeti sana geçer!<br><br>Şirkete <b>kendi özel ismini ve emojini</b> verebilirsin. Ancak payın %51 altına düşerse kontrolü kaybedersin.' 
     },
     { 
-        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 42px; height: 42px; display: block; margin: 0 auto; filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.6));"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></svg>', 
+        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 42px; height: 42px; display: block; margin: 0 auto; filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.6));"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></svg>', 
         title: '6. BANKA VE KUMBARALAR', 
-        text: 'Paran biterse bankadan faizli <b>Kredi</b> çekebilirsin.<br><br>Mağaza bölümündeki <b>Küresel Kumbaralara</b> katkı yapmayı unutma! Bar dolduğunda, katkı yapan herkes devasa nakit ve şirket payları kazanır.' 
+        text: 'Nakit sıkışıklığında bankadan <b>Kredi</b> çekebilirsin.<br><br>Mağaza sekmesindeki <b>Küresel Kumbaralara</b> katılmayı unutma! Hedef bar dolduğunda katkı sağlayanlar devasa nakit havuzunu ve şirket hisselerini paylaşır.' 
     },
     { 
         icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 42px; height: 42px; display: block; margin: 0 auto; filter: drop-shadow(0 0 8px rgba(0, 242, 254, 0.6));"><path d="M6 3h12l4 6-10 13L2 9z"></path><path d="M11 3L8 9l4 13 4-13-3-6"></path><line x1="2" y1="9" x2="22" y2="9"></line></svg>', 
-        title: '7. MİLYARDER KULÜBÜ', 
-        text: 'Borsada kazandığın paraları <b>Yaşam Alanı\'nda</b> (Menüde) Rezidans, Yat veya Jet alarak değerlendir.<br><br>Bu lüks varlıklar sana her gün oyunda olmasan bile <b>Pasif Gelir</b> kazandıracaktır.' 
+        title: '7. YAŞAM ALANI & PASİF GELİR', 
+        text: 'Kazançlarınla <b>Yaşam Alanı</b> menüsünden Rezidans, Lüks Villa, Yat veya Özel Jet satın al.<br><br>Bu prestij varlıkları oyunda olmasan dahi her saniye sana <b>düzenli pasif gelir</b> kazandırmaya devam eder.' 
     },
     { 
         icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 42px; height: 42px; display: block; margin: 0 auto; filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.6));"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>', 
-        title: '8. TERMİNAL ÜCRETİ', 
-        text: 'Unutma! Servetin büyüdükçe borsa ekranında kesilen <b>Terminal (Veri) Ücreti</b> artar. Paran çok diye boş durma, yatırım yapmaya devam et!<br><br>Öğreticiyi ayarlardan tekrar okuyabilirsin. Bol kazançlar!' 
+        title: '8. GİDERLER: TERMİNAL & VERGİ', 
+        text: 'Borsada işlem yaparken giderlerini iyi yönetmelisin:<br><br>• <b>Terminal Ücreti:</b> Servetin arttıkça veri akış masrafı katlanır.<br>• <b>Gelir Vergisi & Faiz:</b> Kârlı satışlardan vergi tahakkuk eder. Ödenmeyen vergiye gecikme faizi işler; net servetin $500 altına inerse <b>İFLAS</b> edersin!' 
+    },
+    { 
+        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 42px; height: 42px; display: block; margin: 0 auto; filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.8));"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>', 
+        title: '9. VIP PREMİUM AYRICALIKLARI', 
+        text: 'Zirveye oynamak isteyen trader\'lar için VIP avantajları:<br><br>• <b>Sıfır Terminal:</b> Sınırsız ücretsiz canlı veri terminali.<br>• <b>Gider Avantajı:</b> %50 indirimli komisyon & %60 indirimli vergi.<br>• <b>Özel Statü:</b> Cihazında parıldayan <b>Altın Boğa Uygulama Simgesi</b>, altın profil rozeti ve VIP hisselere erken erişim!' 
     }
 ];
 
@@ -6834,12 +7125,20 @@ let currentTutorialStep = 0;
 function renderTutorialStep() {
     const step = tutorialSteps[currentTutorialStep];
     
-    // YENİLİK: innerText yerine innerHTML kullanılarak SVG'lerin HTML olarak okunması sağlandı
+    // İkon, Başlık ve İçerik
     document.getElementById('tutorial-icon').innerHTML = step.icon;
     document.getElementById('tutorial-title').innerText = step.title;
     document.getElementById('tutorial-content').innerHTML = step.text;
 
-    // Noktaları Çiz
+    // 🚀 ADIM SAYACI GÜNCELLEMESİ (8 yerine dinamik 9 yazar)
+    const stepCounter = document.getElementById('tutorial-step-indicator') || 
+                        document.querySelector('.tutorial-step-counter') ||
+                        document.querySelector('.tutorial-step-badge');
+    if (stepCounter) {
+        stepCounter.innerText = `${currentTutorialStep + 1} / ${tutorialSteps.length}`;
+    }
+
+    // Noktaları Çiz (Tüm 9 adımı dinamik basar)
     const dotsContainer = document.getElementById('tutorial-dots');
     dotsContainer.innerHTML = '';
     tutorialSteps.forEach((_, index) => {
@@ -9754,30 +10053,44 @@ window.sendVerificationEmail = function() {
             });
     }
 };
-// 👑 VIP Altın İkon Değiştirici (Bilgilendirme Uyarısıyla Birlikte)
+// 👑 VIP Altın İkon Değiştirici
 function setAppIconToGold(isVip) {
-    if (!window.AndroidIconManager || typeof window.AndroidIconManager.setGoldIcon !== 'function') {
+    if (typeof window === 'undefined' || !window.AndroidIconManager || typeof window.AndroidIconManager.setGoldIcon !== 'function') {
         return;
     }
 
-    // Durum zaten aynıysa uygulamayı boş yere yeniden başlatma
-    const currentIcon = localStorage.getItem('cts_active_app_icon') || 'default';
+    const currentIcon = localStorage.getItem('cts_active_app_icon');
     const targetIcon = isVip ? 'gold' : 'default';
-    if (currentIcon === targetIcon) return;
+
+    // Durum zaten aynıysa doğrudan çık (Açılışta tekrar tetiklenmeyi engeller)
+    if (currentIcon === targetIcon) {
+        return;
+    }
+
+    // İlk kurulumda kullanıcı VIP değilse işlem yapmadan kaydet
+    if (!currentIcon && !isVip) {
+        localStorage.setItem('cts_active_app_icon', 'default');
+        return;
+    }
+
+    // Yeni durumu HEMEN diske yaz
+    localStorage.setItem('cts_active_app_icon', targetIcon);
 
     if (isVip) {
-        // VIP simgesine geçerken oyuncuyu uyar
-        alert("👑 TEBRİKLER! VIP Ayrıcalıklarınız Aktif Edildi.\n\nÖzel Altın Uygulama Simgesinin cihazınıza uygulanabilmesi için oyun 1 saniyeliğine yeniden başlayacaktır.");
-        
-        localStorage.setItem('cts_active_app_icon', 'gold');
-        setTimeout(() => {
-            window.AndroidIconManager.setGoldIcon(true);
-        }, 300);
+        // Sadece simge İLK KEZ değiştiğinde gösterilecek yeni metin:
+        alert("👑 TEBRİKLER! VIP Ayrıcalıklarınız Aktif Edildi.\n\nÖzel Altın Uygulama Simgeniz başarıyla güncellendi! Uygulamadan çıkıp ana ekrana döndüğünüzde parıldayan yeni simgenizi görebilirsiniz.");
 
+        try {
+            window.AndroidIconManager.setGoldIcon(true);
+        } catch (e) {
+            console.warn("Icon bridge error:", e);
+        }
     } else {
-        // Standart simgeye geri dönerken
-        localStorage.setItem('cts_active_app_icon', 'default');
-        window.AndroidIconManager.setGoldIcon(false);
+        try {
+            window.AndroidIconManager.setGoldIcon(false);
+        } catch (e) {
+            console.warn("Icon revert error:", e);
+        }
     }
 }
 
@@ -9929,8 +10242,12 @@ auth.onAuthStateChanged(async (user) => {
                 if (data.futures) localStorage.setItem('cts_futures', JSON.stringify(data.futures));
                 
                 if (data.stockPrices) {
-                    localStorage.setItem('cts_stock_prices', JSON.stringify(data.stockPrices));
-                }
+    localStorage.setItem('cts_stock_prices', JSON.stringify(data.stockPrices));
+    // 📌 EKLENEN KISIM: Buluttan gelen fiyatları anında canlı kartlara ve state'e basar
+    if (typeof restoreStockPricesFromData === 'function') {
+        restoreStockPricesFromData(data.stockPrices);
+    }
+}
                 
                 if (data.customBrands) {
                     localStorage.setItem('cts_custom_brands', JSON.stringify(data.customBrands));
@@ -9945,14 +10262,14 @@ auth.onAuthStateChanged(async (user) => {
 if (data.isPremium) {
     window.isPremium = true;
     localStorage.setItem('cts_theme_active', 'true');
-    setAppIconToGold(true); // 👑 VIP İSE ALTIN SİMGE YAP
+    // setAppIconToGold(true);  <-- BU SATIRI KALDIR (Çift tetiklemeyi önler)
 } else {
     window.isPremium = false;
-    setAppIconToGold(false); // STANDART SİMGE
+    // setAppIconToGold(false); <-- BU SATIRI KALDIR
 }
-                if (typeof updatePremiumButtonUI === 'function') {
-                    updatePremiumButtonUI();
-                }
+if (typeof updatePremiumButtonUI === 'function') {
+    updatePremiumButtonUI();
+}
 
                 if (data.aiRights !== undefined) localStorage.setItem('cts_ai_rights', data.aiRights);
                 if (data.lastAiResetDay !== undefined) localStorage.setItem('cts_ai_reset_day', data.lastAiResetDay);
@@ -9967,13 +10284,66 @@ if (data.isPremium) {
                     localStorage.setItem('cts_last_played_server', data.lastUpdated);
                 }
 
-                console.log("Eski hesap buluttan tüm detaylarıyla başarıyla yüklendi!");
+                // ==========================================================================
+                // 🚀 KRİTİK: BULUT VERİLERİNİ CANLI DEĞİŞKENLERE VE ARAYÜZE AKTAR
+                // ==========================================================================
                 
+                console.log("Eski hesap buluttan tüm detaylarıyla başarıyla yüklendi!");
+
+                // 1. Önce genel oyun yapılandırması yüklensin
                 loadGame();
+
+                // 2. 🛑 FAKAT HEMEN ARDINDAN BULUT VERİSİNİ DEĞİŞKENLERE TEKRAR ZORLA BASTIR:
+                if (data.balance !== undefined) playerBalance = parseFloat(data.balance);
+                if (data.debt !== undefined) playerDebt = parseFloat(data.debt);
+                if (data.principalDebt !== undefined) playerPrincipalDebt = parseFloat(data.principalDebt);
+                if (data.stats) {
+                    gameStats = {
+                        trades: Number(data.stats.trades) || 0,
+                        maxWealth: Number(data.stats.maxWealth) || 15000.00,
+                        bankruptcies: Number(data.stats.bankruptcies) || 0,
+                        days: Number(data.stats.days) || 1
+                    };
+                }
+                if (data.futures && Array.isArray(data.futures)) {
+                    activePositions = data.futures;
+                }
+
+                // 3. Portföyü kartlara ve belleğe kazı
+                if (data.portfolio && typeof stockCards !== 'undefined') {
+                    stockCards.forEach(card => {
+                        const name = card.dataset.name;
+                        if (data.portfolio[name] !== undefined) {
+                            const count = Number(data.portfolio[name]) || 0;
+                            const ownedEl = card.querySelector('.stock-owned');
+                            if (ownedEl) ownedEl.innerText = "Portföy: " + count.toLocaleString('tr-TR') + " Adet";
+                        }
+                    });
+                }
+
+                // 4. Profil ekranındaki metinleri anında güncelle
+                const statTradesEl = document.getElementById('stat-trades');
+                const statMaxWealthEl = document.getElementById('stat-max-wealth');
+                const statBankruptciesEl = document.getElementById('stat-bankruptcies');
+                const statDaysEl = document.getElementById('stat-days');
+                if (statTradesEl) statTradesEl.innerText = gameStats.trades;
+                if (statMaxWealthEl) statMaxWealthEl.innerText = "$" + gameStats.maxWealth.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                if (statBankruptciesEl) statBankruptciesEl.innerText = gameStats.bankruptcies;
+                if (statDaysEl) statDaysEl.innerText = gameStats.days;
+
+                // 5. Ekranları yenile
+                if (typeof restoreStockPricesFromData === 'function' && data.stockPrices) {
+                    restoreStockPricesFromData(data.stockPrices);
+                }
                 if (typeof applyCustomBrands === 'function') applyCustomBrands(); 
                 if (typeof updateBalanceUI === 'function') updateBalanceUI();
+                if (typeof updateBankUI === 'function') updateBankUI();
+                if (typeof updatePortfolioView === 'function') updatePortfolioView();
+                if (typeof renderFuturesPositions === 'function') renderFuturesPositions();
                 if (typeof updateLifestyleUI === 'function') updateLifestyleUI(); 
-                
+                if (typeof updateTradeLimitUI === 'function') updateTradeLimitUI();
+
+                // 6. En son kilidi aç:
                 isCloudSyncComplete = true;
                 if (typeof syncLeaderboardData === 'function') syncLeaderboardData();
 
@@ -10151,6 +10521,7 @@ if (btnLogin) {
             }, 500);
             window.history.replaceState({}, document.title, window.location.pathname);
         }
+    });
 
     function executeFlawlessReset(isBankruptcy) {
         // ÇİFT TIKLAMA KİLİDİ: Butona art arda basılmasını engeller
@@ -10514,7 +10885,7 @@ window.showInterstitialAd = async function() {
 // ==========================================
 // 💳 REVENUECAT SATIN ALMA & MAĞAZA YÖNETİMİ
 // ==========================================
-const RC_GOOGLE_API_KEY = ""; // Google Play / RevenueCat anahtarı gelene kadar boş kalacak
+// RC_GOOGLE_API_KEY, RevenueCat entegrasyon scriptinin üst kısmında tanımlıdır.
 window.isRevenueCatReady = false;
 
 window.initGooglePayments = async function() {
@@ -10527,7 +10898,9 @@ window.initGooglePayments = async function() {
     }
 
     try {
-        const { Purchases } = Capacitor.Plugins;
+        const Purchases = window.Capacitor?.Plugins?.Purchases;
+        if (!Purchases) return;
+
         await Purchases.configure({ apiKey: RC_GOOGLE_API_KEY });
         
         let myUid = localStorage.getItem('cts_player_uid');
@@ -10564,7 +10937,9 @@ async function executePurchase(productId, onSuccess) {
     }
 
     try {
-        const { Purchases } = Capacitor.Plugins;
+        const Purchases = window.Capacitor?.Plugins?.Purchases;
+        if (!Purchases) return;
+
         await Purchases.purchaseStoreProduct({ productIdentifier: productId });
 
         // Ödeme Google tarafından onaylandıysa ödülü ver:
@@ -10588,35 +10963,36 @@ async function executePurchase(productId, onSuccess) {
 // ==========================================
 // 📱 ANDROID GERİ TUŞU KONTROLÜ & BAŞLATMA
 // ==========================================
-if (window.Capacitor) {
-    const { App } = Capacitor.Plugins;
+if (window.Capacitor && window.Capacitor.isNativePlatform()) {
+    const App = window.Capacitor.Plugins?.App;
 
-    App.addListener('backButton', (data) => {
-        const customAlert = document.getElementById('custom-game-alert');
-        if (customAlert) {
-            customAlert.remove();
-            return; 
-        }
+    if (App && typeof App.addListener === 'function') {
+        App.addListener('backButton', (data) => {
+            const customAlert = document.getElementById('custom-game-alert');
+            if (customAlert) {
+                customAlert.remove();
+                return; 
+            }
 
-        const patchNotesModal = document.getElementById('patch-notes-modal');
-        if (patchNotesModal && patchNotesModal.style.display !== 'none') {
-            patchNotesModal.style.display = 'none';
-            return; 
-        }
+            const patchNotesModal = document.getElementById('patch-notes-modal');
+            if (patchNotesModal && patchNotesModal.style.display !== 'none') {
+                patchNotesModal.style.display = 'none';
+                return; 
+            }
 
-        if (!data.canGoBack) {
-            App.exitApp();
-        } else {
-            window.history.back();
-        }
-    });
+            if (!data.canGoBack) {
+                App.exitApp();
+            } else {
+                window.history.back();
+            }
+        });
+    }
 
     // Servisleri global pencerelerden güvenle başlat
     if (typeof setupPushNotifications === 'function') setupPushNotifications();
     if (typeof window.initAdMob === 'function') window.initAdMob();
     if (typeof window.initGooglePayments === 'function') window.initGooglePayments();
 }
-});
    // ==========================================================================
 // 🚀 TÜM HİSSE İKONLARINI NEON SVG İLE DEĞİŞTİREN DİNAMİK MOTOR (Kriptolar Hariç)
 // ==========================================================================
@@ -11428,7 +11804,7 @@ function openTreasuryModal() {
             banner.style.background = 'rgba(16, 185, 129, 0.1)';
             banner.style.borderColor = 'rgba(16, 185, 129, 0.3)';
             banner.style.color = '#6ee7b7';
-            banner.innerHTML = '👑 <strong>VIP Ayrıcalığı Aktif:</strong> Sıfır terminal ücreti, %50 düşük komisyon ve %2 indirimli vergiyle hazineye en az katkıyı siz yapıyorsunuz!';
+            banner.innerHTML = '👑 <strong>VIP Ayrıcalığı Aktif:</strong> Sıfır terminal ücreti, %50 indirimli komisyon ve %60 indirimli vergiyle daha az gideriniz var!';
         } else {
             banner.style.background = 'rgba(239, 68, 68, 0.08)';
             banner.style.borderColor = 'rgba(239, 68, 68, 0.25)';
@@ -11503,9 +11879,8 @@ function closeTreasuryModal() {
     }
 }
 
-// Global HTML onclick erişimi güvencesi
 window.openTreasuryModal = openTreasuryModal;
 window.closeTreasuryModal = closeTreasuryModal;
 </script>
-  </body>
+</body>
 </html>
