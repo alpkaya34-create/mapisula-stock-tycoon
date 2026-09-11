@@ -1058,6 +1058,15 @@ if (btnManip) {
     <path d="M11 3L8 9l4 13 4-13-3-6"></path>
     <line x1="2" y1="9" x2="22" y2="9"></line>
 </svg> YAŞAM ALANI (PREMIUM)</a>
+<button id="btn-rewards" type="button" class="mobile-btn" onclick="openRewardsPage()" style="background: rgba(245, 158, 11, 0.15); border: 2px solid #f59e0b; color: #fbbf24;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 8px; filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.8));">
+        <polyline points="20 12 20 22 4 22 4 12"></polyline>
+        <rect x="2" y="7" width="20" height="5"></rect>
+        <line x1="12" y1="22" x2="12" y2="7"></line>
+        <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path>
+        <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path>
+    </svg> ÖDÜL MERKEZİ
+</button>
             <button id="btn-settings" class="mobile-btn btn-settings">AYARLAR</button>
             <button id="btn-exit" class="mobile-btn btn-exit">ÇIKIŞ</button>
         </div>
@@ -1297,7 +1306,7 @@ if (btnManip) {
             <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path>
             <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path>
         </svg>
-        <h2 style="color: #00f2fe; font-size: 18px; font-weight: 900; margin: 0; letter-spacing: 0.5px;">YENİ SÜRÜM NOTLARI v1.0.9</h2>
+        <h2 style="color: #00f2fe; font-size: 18px; font-weight: 900; margin: 0; letter-spacing: 0.5px;">YENİ SÜRÜM NOTLARI v1.1.1</h2>
     </div>
     <div style="color: #cbd5e1; font-size: 12px; text-align: left; margin-bottom: 20px; line-height: 1.6; max-height: 220px; overflow-y: auto; padding-right: 5px;">
         
@@ -1306,19 +1315,19 @@ if (btnManip) {
             <strong style="color: #10b981; font-size: 13px;">Önemli Yenilikler & Ayrıcalıklar:</strong>
         </div>
         <ul style="margin: 5px 0 15px 15px; padding: 0;">
-            <li><strong>👑 Dinamik VIP Altın İkon:</strong> VIP üyelerimiz için özel olarak tasarlanan prestijli Altın Boğa uygulama simgesi entegre edildi. Üyeliğiniz aktifleştiğinde uygulama simgeniz otomatik olarak altın temaya bürünür.</li>
-            <li><strong>🏆 Yatırımcı Profil Rozetleri:</strong> Yatırımcı profili ekranına statünüzü yansıtan dinamik VIP ve standart üyelik rozetleri eklendi.</li>
-            <li><strong>⚡ Akıllı Mağaza Köprüsü:</strong> Profil rozeti üzerinden CTS Mağaza ve Premium ayrıcalıklar paneline tek dokunuşla doğrudan geçiş sağlandı.</li>
+            <li><strong>🎁 Ödül Merkezi ve 7 Günlük Seri:</strong> Her gece 00:00'da yenilenen giriş ödülleri sistemi eklendi. Kesintisiz giriş yaparak nakit bakiyeler, AI analist hakları ve 7. günde devasa şirket payı (%0.1 - 10.000 adet hisse) kazanabilirsiniz.</li>
+            <li><strong>⏱️ Canlı Geri Sayım Sayacı:</strong> Ödül merkezinde bir sonraki güne ve ödüle kalan süreyi sunucu saatiyle saniye saniye takip eden canlı sayaç entegre edildi.</li>
+            <li><strong>🛡️ Bulut Eşitleme & Hile Koruması:</strong> Giriş seriniz ve ödül durumlarınız Firebase sunucularıyla güvenli bir şekilde senkronize edilerek güvence altına alındı.</li>
         </ul>
 
         <div style="display: flex; align-items: center; margin-bottom: 5px; margin-top: 10px;">
             <svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px; filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.6));"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
-            <strong style="color: #fbbf24; font-size: 13px;">Sistem & Başlatıcı Optimizasyonları:</strong>
+            <strong style="color: #fbbf24; font-size: 13px;">Sistem & Optimizasyonlar:</strong>
         </div>
         <ul style="margin: 5px 0 0 15px; padding: 0;">
-            <li>Android launcher ve simge geçiş mimarisi (Activity-Alias) tamamen kararlı hale getirilerek olası çökme durumları giderildi.</li>
-            <li>Farklı cihaz çözünürlükleri için mipmap grafik kaynakları optimize edildi.</li>
-            <li>Menü ve mağaza sekmeleri arasındaki ekran geçişleri daha akıcı hale getirildi.</li>
+            <li>Ödül ve modal pencerelerinin üst üste biniş (z-index) katmanları kararlı hale getirilerek çakışma durumları giderildi.</li>
+            <li>Farklı mobil ekran çözünürlükleri için ödül kartı grid yapıları optimize edildi.</li>
+            <li>Menü ve ödül merkezi arasındaki ekran geçişleri daha akıcı hale getirildi.</li>
         </ul>
     </div>
     <button class="trade-btn" id="btn-close-patch-notes" style="width: 100%; padding: 12px; font-size: 13px; background: #00f2fe; color: #000; box-shadow: 0 5px 15px rgba(0, 242, 254, 0.4); font-weight: 900; border: none; border-radius: 8px; cursor: pointer;">HARİKA, BAŞLAYALIM!</button>
@@ -1355,17 +1364,8 @@ if (btnManip) {
 
     <!-- Özgün Neon SVG İkonlu Liste -->
     <ul style="margin: 0; padding-left: 18px; color: #94a3b8; font-size: 11.5px; line-height: 1.6;">
-        
-        <!-- 1. GÜNLÜK GÖREVLER -->
-        <li style="margin-bottom: 12px;">
-            <span style="display: inline-flex; align-items: center; gap: 6px; color: #00f2fe; font-weight: 800;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; filter: drop-shadow(0 0 4px rgba(0,242,254,0.7));"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
-                Günlük Görevler ve Ödüller:
-            </span><br>
-            Her gün yenilenen özel borsa hedefleri! (Örn: "3 Biyoteknoloji işlemi yap", "Spot'ta %10 kâr al"). Tamamlanan her görev için anında nakit ve sürpriz ödüller.
-        </li>
 
-        <!-- 2. ŞİRKET BİLGİ KARTLARI -->
+        <!-- 1. ŞİRKET BİLGİ KARTLARI -->
         <li style="margin-bottom: 12px;">
             <span style="display: inline-flex; align-items: center; gap: 6px; color: #10b981; font-weight: 800;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; filter: drop-shadow(0 0 4px rgba(16,185,129,0.7));"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
@@ -1374,7 +1374,7 @@ if (btnManip) {
             Hisse kartlarındaki yeni <strong>[i]</strong> paneli ile şirketlerin CEO geçmişi, piyasa değeri, temettü oranı ve finansal risk analizleri tek tıkla incelenebilecek.
         </li>
 
-        <!-- 3. HOLDİNG SİSTEMİ -->
+        <!-- 2. HOLDİNG SİSTEMİ -->
         <li style="margin-bottom: 12px;">
             <span style="display: inline-flex; align-items: center; gap: 6px; color: #a855f7; font-weight: 800;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; filter: drop-shadow(0 0 4px rgba(168,85,247,0.7));"><path d="M3 21h18M3 7v14M21 7v14M6 7V3h12v4"></path></svg>
@@ -1383,7 +1383,7 @@ if (btnManip) {
             Kendi anonim şirketinizi kurup borsada halka arz (IPO) yapabileceğiniz ve alt şirketler satın alabileceğiniz holding yönetim mekaniği.
         </li>
 
-        <!-- 4. TEKNİK GÖSTERGELER -->
+        <!-- 3. TEKNİK GÖSTERGELER -->
         <li style="margin-bottom: 12px;">
             <span style="display: inline-flex; align-items: center; gap: 6px; color: #38bdf8; font-weight: 800;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; filter: drop-shadow(0 0 4px rgba(56,189,248,0.7));"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
@@ -1392,7 +1392,7 @@ if (btnManip) {
             Grafik ekranına RSI, MACD ve Hareketli Ortalamalar (SMA) gibi indikatörler eklenecek; vadeli işlemlerde teknik analiz yapılabilecek.
         </li>
 
-        <!-- 5. LONCALAR -->
+        <!-- 4. LONCALAR -->
         <li style="margin-bottom: 6px;">
             <span style="display: inline-flex; align-items: center; gap: 6px; color: #ec4899; font-weight: 800;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; filter: drop-shadow(0 0 4px rgba(236,72,153,0.7));"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
@@ -5142,41 +5142,84 @@ function openFuturesPosition(type) {
             }
 
             const bankruptcyModal = document.getElementById('bankruptcy-modal');
-            const btnBankruptcyOk = document.getElementById('btn-bankruptcy-ok');
+const btnBankruptcyOk = document.getElementById('btn-bankruptcy-ok');
 
-            function triggerBankruptcy() {
-                isGamePaused = true; 
-                gameStats.bankruptcies += 1;
-                gameStats.trades = 0; 
-                gameStats.days = 1;   
-                localStorage.setItem('cts_stats', JSON.stringify(gameStats));
-                
-                localStorage.removeItem('cts_balance'); localStorage.removeItem('cts_debt');
-                localStorage.removeItem('cts_principal_debt'); localStorage.removeItem('cts_start_wealth');
-                localStorage.removeItem('cts_tick_count'); localStorage.removeItem('cts_daily_trades');
-                localStorage.removeItem('cts_portfolio'); localStorage.removeItem('cts_futures');
-                
-                // İŞTE YENİ İFLAS SESİMİZİ BURADA ÇALDIRIYORUZ!
-                playSound('bankruptcy');
-                
-                // --- İFLAS TİTREŞİMİ (Ses ile senkronize ağır darbe) ---
-                if (typeof window.navigator.vibrate === 'function') {
-                    window.navigator.vibrate([400, 200, 400, 200, 600]);
-                }
-                // ---------------------------------------------------------
-                
-                document.getElementById('summary-overlay').classList.add('active');
-                bankruptcyModal.classList.add('show');
-            }
+function triggerBankruptcy() {
+    isGamePaused = true; 
+    gameStats.bankruptcies += 1;
+    gameStats.trades = 0; 
+    gameStats.days = 1;   
+    localStorage.setItem('cts_stats', JSON.stringify(gameStats));
+    
+    // 💥 İflas: Nakit, borç ve kazanılan tüm şirket hisseleri (portföy) tamamen silinir!
+    localStorage.removeItem('cts_balance'); 
+    localStorage.removeItem('cts_debt');
+    localStorage.removeItem('cts_principal_debt'); 
+    localStorage.removeItem('cts_start_wealth');
+    localStorage.removeItem('cts_tick_count'); 
+    localStorage.removeItem('cts_daily_trades');
+    localStorage.removeItem('cts_portfolio'); 
+    localStorage.removeItem('cts_futures');
+    
+    // 🛑 DİKKAT: 'cts_daily_tasks_data' ve 'cts_daily_streak' silinmez!
+    // Bu sayede oyuncu iflas edip aynı günün görevlerini tekrar tekrar yapamaz.
 
-            const storeModal = document.getElementById('store-modal');
-            const storeModalTitle = document.getElementById('store-modal-title');
-            const storeModalDesc = document.getElementById('store-modal-desc');
+    // İflas Sesi
+    playSound('bankruptcy');
+    
+    // İflas Titreşimi
+    if (typeof window.navigator.vibrate === 'function') {
+        window.navigator.vibrate([400, 200, 400, 200, 600]);
+    }
+    
+    document.getElementById('summary-overlay').classList.add('active');
+    bankruptcyModal.classList.add('show');
+}
 
-            document.getElementById('btn-close-store-modal').addEventListener('click', () => {
-                document.getElementById('summary-overlay').classList.remove('active');
-                storeModal.classList.remove('show');
+// İflas Onay Butonuna Basıldığında (Temiz Başlangıç)
+if (btnBankruptcyOk) {
+    btnBankruptcyOk.addEventListener('click', () => {
+        document.getElementById('summary-overlay').classList.remove('active');
+        bankruptcyModal.classList.remove('show');
+        isGamePaused = false;
+
+        // 1. Sermaye ve portföyü sıfırla
+        playerBalance = 15000;
+        playerDebt = 0;
+        playerPrincipalDebt = 0;
+        portfolio = {};
+        activePositions = [];
+
+        // 2. Ekrandaki hisse kartlarının portföy adetlerini sıfırla
+        if (typeof stockCards !== 'undefined') {
+            stockCards.forEach(card => {
+                const ownedEl = card.querySelector('.stock-owned');
+                if (ownedEl) ownedEl.innerText = "Portföy: 0 Adet";
             });
+        }
+
+        // 3. Bulutta portföyü ve parayı sıfırla, ancak günlük görev ve seri verilerini koru
+        let myUid = localStorage.getItem('cts_player_uid');
+        if (myUid && typeof database !== 'undefined') {
+            database.ref('users/' + myUid).update({
+                balance: 15000,
+                debt: 0,
+                principalDebt: 0,
+                portfolio: {},
+                futures: [],
+                stats: gameStats,
+                lastUpdated: firebase.database.ServerValue.TIMESTAMP
+            });
+        }
+
+        // 4. Arayüzleri yenile
+        if (typeof updateBalanceUI === 'function') updateBalanceUI();
+        if (typeof updateBankUI === 'function') updateBankUI();
+        if (typeof updatePortfolioView === 'function') updatePortfolioView();
+        if (typeof renderFuturesPositions === 'function') renderFuturesPositions();
+        if (typeof saveGame === 'function') saveGame();
+    });
+}
 // ==========================================================================
 // 🎉 ÖZEL KONFETİ MOTORU (MOBİL & ÇERÇEVE UYUMLU)
 // ==========================================================================
@@ -7075,7 +7118,7 @@ if (btnBuyAiRights) {
         const tutorialSteps = [
     { 
         icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 42px; height: 42px; display: block; margin: 0 auto; filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.6));"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>', 
-        title: "1. HOŞ GELDİN!",
+        title: "1. HOŞ GELDİN!", 
         text: "CTS Stock Market Tycoon'a hoş geldin!<br><br>Başlangıç Sermayen: <strong style='color: #00f2fe;'>$15,000</strong><br><br>Amacın doğru yatırımlarla portföyünü büyütüp <strong style='color: #00f2fe;'>$20 Milyon</strong> barajını aşarak elitlerin yarıştığı <strong style='color: #a855f7;'>Gizli Borsa'yı</strong> açmak!"
     },
     { 
@@ -7090,17 +7133,17 @@ if (btnBuyAiRights) {
     },
     { 
         icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 42px; height: 42px; display: block; margin: 0 auto; filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.6));"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>', 
-        title: '4. HIZLI İŞLEM VE YAPAY ZEKA', 
+        title: '4. HIZLI İŞLEM & YAPAY ZEKA', 
         text: 'Kasandaki nakdin tamamıyla (%100) anında pozisyon almak için <b>AL veya SAT butonlarına basılı tut!</b><br><br>Gidişatı kestiremiyorsan, yukarıdaki <b>🤖 AI ANALİST</b> butonuna basarak yapay zekadan anlık teknik analiz ve tüyo alabilirsin.' 
     },
     { 
         icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 42px; height: 42px; display: block; margin: 0 auto; filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.6));"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path><path d="M8 6h.01M16 6h.01M12 6h.01M12 10h.01M12 14h.01M16 10h.01M16 14h.01M8 10h.01M8 14h.01"></path></svg>', 
         title: '5. ŞİRKETİ ELE GEÇİR', 
-        text: 'Bir şirketin dolaşımdaki hisselerinin <b>%51\'ine (510.000 adet)</b> ulaştığında Yönetim Kurulu hakimiyeti sana geçer!<br><br>Şirkete <b>kendi özel ismini ve emojini</b> verebilirsin. Ancak payın %51 altına düşerse kontrolü kaybedersin.' 
+        text: 'Bir şirketin dolaşımdaki hisselerinin <b>%51\'ine (510.000 adet)</b> ulaştığında Yönetim Kurulu hakimiyeti sana geçer!<br><br>Şirkete <b>kendi özel ismini ve emojini</b> verebilirsin. Payın %51 altına düşerse kontrolü kaybedersin.' 
     },
     { 
         icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 42px; height: 42px; display: block; margin: 0 auto; filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.6));"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></svg>', 
-        title: '6. BANKA VE KUMBARALAR', 
+        title: '6. BANKA & KUMBARALAR', 
         text: 'Nakit sıkışıklığında bankadan <b>Kredi</b> çekebilirsin.<br><br>Mağaza sekmesindeki <b>Küresel Kumbaralara</b> katılmayı unutma! Hedef bar dolduğunda katkı sağlayanlar devasa nakit havuzunu ve şirket hisselerini paylaşır.' 
     },
     { 
@@ -7114,9 +7157,14 @@ if (btnBuyAiRights) {
         text: 'Borsada işlem yaparken giderlerini iyi yönetmelisin:<br><br>• <b>Terminal Ücreti:</b> Servetin arttıkça veri akış masrafı katlanır.<br>• <b>Gelir Vergisi & Faiz:</b> Kârlı satışlardan vergi tahakkuk eder. Ödenmeyen vergiye gecikme faizi işler; net servetin $500 altına inerse <b>İFLAS</b> edersin!' 
     },
     { 
+        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 42px; height: 42px; display: block; margin: 0 auto; filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.6));"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>', 
+        title: '9. ÖDÜL MERKEZİ & GİRİŞ SERİSİ', 
+        text: 'Her gün oyuna girerek Ödül Merkezi&apos;nden nakit bakiye ve AI analist hakları topla.<br><br><b>7 gün kesintisiz giriş</b> yaparak 7. günde portföyüne eklenen devasa şirket payının (<strong style="color: #fbbf24;">%0.1&nbsp;Şirket&nbsp;Payı</strong>) sahibi ol!' 
+    },
+    { 
         icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 42px; height: 42px; display: block; margin: 0 auto; filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.8));"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>', 
-        title: '9. VIP PREMİUM AYRICALIKLARI', 
-        text: 'Zirveye oynamak isteyen trader\'lar için VIP avantajları:<br><br>• <b>Sıfır Terminal:</b> Sınırsız ücretsiz canlı veri terminali.<br>• <b>Gider Avantajı:</b> %50 indirimli komisyon & %60 indirimli vergi.<br>• <b>Özel Statü:</b> Cihazında parıldayan <b>Altın Boğa Uygulama Simgesi</b>, altın profil rozeti ve VIP hisselere erken erişim!' 
+        title: '10. VIP PREMİUM AYRICALIKLARI', 
+        text: 'Zirveye oynamak isteyen trader&apos;lar için VIP avantajları:<br><br>• <b>Sıfır Terminal:</b> Sınırsız ücretsiz canlı veri terminali.<br>• <b>Gider Avantajı:</b> %50 indirimli komisyon & %60 indirimli vergi.<br>• <b>Özel Statü:</b> Cihazında parıldayan <b>Altın&nbsp;Boğa&nbsp;Uygulama&nbsp;Simgesi</b>, altın profil rozeti ve VIP hisselere erken erişim!' 
     }
 ];
 
@@ -7130,7 +7178,7 @@ function renderTutorialStep() {
     document.getElementById('tutorial-title').innerText = step.title;
     document.getElementById('tutorial-content').innerHTML = step.text;
 
-    // 🚀 ADIM SAYACI GÜNCELLEMESİ (8 yerine dinamik 9 yazar)
+    // 🚀 ADIM SAYACI GÜNCELLEMESİ (Dinamik 10 yazar)
     const stepCounter = document.getElementById('tutorial-step-indicator') || 
                         document.querySelector('.tutorial-step-counter') ||
                         document.querySelector('.tutorial-step-badge');
@@ -7138,7 +7186,7 @@ function renderTutorialStep() {
         stepCounter.innerText = `${currentTutorialStep + 1} / ${tutorialSteps.length}`;
     }
 
-    // Noktaları Çiz (Tüm 9 adımı dinamik basar)
+    // Noktaları Çiz (Tüm 10 adımı dinamik basar)
     const dotsContainer = document.getElementById('tutorial-dots');
     dotsContainer.innerHTML = '';
     tutorialSteps.forEach((_, index) => {
@@ -10168,17 +10216,14 @@ auth.onAuthStateChanged(async (user) => {
         try {
             const Purchases = window.Capacitor?.Plugins?.Purchases;
             if (Purchases && user.uid) {
-                // RevenueCat'e doğrudan değişmez ve güvenli Firebase UID'sini bildir:
                 await Purchases.logIn({ appUserID: user.uid });
                 console.log("🟢 RevenueCat hesaba bağlandı (UID):", user.uid);
 
-                // Bu kullanıcının satın alma haklarını hemen çek ve UI'a yansıt:
                 const result = await Purchases.getCustomerInfo();
                 if (typeof checkUserEntitlements === 'function') {
                     checkUserEntitlements(result?.customerInfo || result);
                 }
                 
-                // 🟢 Profil rozetini hemen güncelle
                 updateProfileVipBadge();
             }
         } catch (rcErr) {
@@ -10196,11 +10241,9 @@ auth.onAuthStateChanged(async (user) => {
             }
         }
 
-        // Sahte UID yerine Firebase'in verdiği KESİN VE GERÇEK UID'yi kullan
         let myUid = user.uid;
         localStorage.setItem('cts_player_uid', myUid);
         
-        // 🟢 GERÇEK HESAPLA ÇEVRİMİÇİ SİSTEMİNİ ATEŞLE
         if (typeof initPresenceSystem === 'function') {
             initPresenceSystem();
         }
@@ -10242,12 +10285,11 @@ auth.onAuthStateChanged(async (user) => {
                 if (data.futures) localStorage.setItem('cts_futures', JSON.stringify(data.futures));
                 
                 if (data.stockPrices) {
-    localStorage.setItem('cts_stock_prices', JSON.stringify(data.stockPrices));
-    // 📌 EKLENEN KISIM: Buluttan gelen fiyatları anında canlı kartlara ve state'e basar
-    if (typeof restoreStockPricesFromData === 'function') {
-        restoreStockPricesFromData(data.stockPrices);
-    }
-}
+                    localStorage.setItem('cts_stock_prices', JSON.stringify(data.stockPrices));
+                    if (typeof restoreStockPricesFromData === 'function') {
+                        restoreStockPricesFromData(data.stockPrices);
+                    }
+                }
                 
                 if (data.customBrands) {
                     localStorage.setItem('cts_custom_brands', JSON.stringify(data.customBrands));
@@ -10258,18 +10300,15 @@ auth.onAuthStateChanged(async (user) => {
                 localStorage.setItem('cts_premium', data.isPremium || false);
                 localStorage.setItem('cts_noads', data.hasAdsRemoved || false);
 
-                // 🟢 Buluttan gelen bilgiye göre pencere ve buton durumunu eşitle
-if (data.isPremium) {
-    window.isPremium = true;
-    localStorage.setItem('cts_theme_active', 'true');
-    // setAppIconToGold(true);  <-- BU SATIRI KALDIR (Çift tetiklemeyi önler)
-} else {
-    window.isPremium = false;
-    // setAppIconToGold(false); <-- BU SATIRI KALDIR
-}
-if (typeof updatePremiumButtonUI === 'function') {
-    updatePremiumButtonUI();
-}
+                if (data.isPremium) {
+                    window.isPremium = true;
+                    localStorage.setItem('cts_theme_active', 'true');
+                } else {
+                    window.isPremium = false;
+                }
+                if (typeof updatePremiumButtonUI === 'function') {
+                    updatePremiumButtonUI();
+                }
 
                 if (data.aiRights !== undefined) localStorage.setItem('cts_ai_rights', data.aiRights);
                 if (data.lastAiResetDay !== undefined) localStorage.setItem('cts_ai_reset_day', data.lastAiResetDay);
@@ -10285,15 +10324,34 @@ if (typeof updatePremiumButtonUI === 'function') {
                 }
 
                 // ==========================================================================
+                // 🛡️ BULUTTAN GÖREV & ÖDÜL KORUMASI (HİLE ENGELLEYİCİ SENKRONİZASYON)
+                // ==========================================================================
+                const safeNow = (typeof getSafeServerDate === 'function') ? getSafeServerDate() : { dateStr: new Date().toISOString().split('T')[0] };
+
+                // 1. Günlük Görevlerin Durumu (Bugün yapılmışsa cihaz silinse bile buluttan zorla yüklenir)
+                if (data.dailyTasks) {
+                    if (data.dailyTasks.date === safeNow.dateStr) {
+                        localStorage.setItem('cts_daily_tasks_data', JSON.stringify(data.dailyTasks));
+                    }
+                }
+
+                // 2. 7 Günlük Giriş Serisi ve Son Alınan Gün
+                if (data.dailyStreak !== undefined) {
+                    localStorage.setItem('cts_daily_streak', data.dailyStreak);
+                }
+                if (data.dailyLastDate) {
+                    localStorage.setItem('cts_daily_last_date', data.dailyLastDate);
+                }
+
+                // ==========================================================================
                 // 🚀 KRİTİK: BULUT VERİLERİNİ CANLI DEĞİŞKENLERE VE ARAYÜZE AKTAR
                 // ==========================================================================
-                
                 console.log("Eski hesap buluttan tüm detaylarıyla başarıyla yüklendi!");
 
                 // 1. Önce genel oyun yapılandırması yüklensin
                 loadGame();
 
-                // 2. 🛑 FAKAT HEMEN ARDINDAN BULUT VERİSİNİ DEĞİŞKENLERE TEKRAR ZORLA BASTIR:
+                // 2. Bulut verisini canlı değişkenlere zorla bastır:
                 if (data.balance !== undefined) playerBalance = parseFloat(data.balance);
                 if (data.debt !== undefined) playerDebt = parseFloat(data.debt);
                 if (data.principalDebt !== undefined) playerPrincipalDebt = parseFloat(data.principalDebt);
@@ -10343,7 +10401,11 @@ if (typeof updatePremiumButtonUI === 'function') {
                 if (typeof updateLifestyleUI === 'function') updateLifestyleUI(); 
                 if (typeof updateTradeLimitUI === 'function') updateTradeLimitUI();
 
-                // 6. En son kilidi aç:
+                // 6. Ödül ve Görev Arayüzlerini Bulut Verisine Göre Güncelle
+                if (typeof renderDailyRewardUI === 'function') renderDailyRewardUI();
+                if (typeof renderDailyTasksUI === 'function') renderDailyTasksUI();
+
+                // 7. Kilidi aç:
                 isCloudSyncComplete = true;
                 if (typeof syncLeaderboardData === 'function') syncLeaderboardData();
 
@@ -10387,13 +10449,18 @@ if (typeof updatePremiumButtonUI === 'function') {
         localStorage.removeItem('cts_premium');
         localStorage.removeItem('cts_theme_active');
 
+        // 🛑 Görev & Ödül Çerezlerini Çıkışta Temizle (Farklı hesaba bulaşmasın)
+        localStorage.removeItem('cts_daily_tasks_data');
+        localStorage.removeItem('cts_daily_streak');
+        localStorage.removeItem('cts_daily_last_date');
+
         window.adsRemoved = false;
         window.isPremium = false;
         if (typeof hasAdsRemoved !== 'undefined') hasAdsRemoved = false;
         document.body.classList.remove('premium-theme');
 
         setAppIconToGold(false);
-        updateProfileVipBadge(); // 👈 3. BURAYA EKLİYORSUN (Çıkış Yapılınca)
+        updateProfileVipBadge();
 
         // 🔴 Reklam Butonunu Başlangıç Haline Çevir
         const btnAds = document.getElementById('btn-buy-noads') || document.getElementById('btn-buy-ads');
@@ -10413,7 +10480,7 @@ if (typeof updatePremiumButtonUI === 'function') {
         }
 
         const authModalEl = document.getElementById('auth-modal');
-        if (authModalEl) authModalEl.style.display = 'flex'; // Giriş ekranını zorla göster
+        if (authModalEl) authModalEl.style.display = 'flex';
         isCloudSyncComplete = true;
     }
 });
@@ -11872,7 +11939,6 @@ function closeTreasuryModal() {
     const modal = document.getElementById('treasury-modal');
     if (modal) modal.style.display = 'none';
 
-    // Kota tasarrufu için modal kapanınca canlı dinlemeyi durdur
     if (treasuryListener && typeof firebase !== 'undefined' && firebase.database) {
         firebase.database().ref('game_treasury').off('value', treasuryListener);
         treasuryListener = null;
@@ -11881,6 +11947,772 @@ function closeTreasuryModal() {
 
 window.openTreasuryModal = openTreasuryModal;
 window.closeTreasuryModal = closeTreasuryModal;
+
+// ==========================================================================
+// 🎁 ÖDÜL MERKEZİ & GÜNLÜK GÖREVLER MOTORU (YALNIZCA MEVCUT OYUN MEKANİKLERİ)
+// ==========================================================================
+const DAILY_REWARDS = [
+    { day: 1, type: "cash", amount: 1000, label: "$1,000" },
+    { day: 2, type: "cash", amount: 5000, label: "$5,000" },
+    { day: 3, type: "cash", amount: 10000, label: "$10,000" },
+    { day: 4, type: "cash", amount: 25000, label: "$25,000" },
+    { day: 5, type: "ai_rights", amount: 5, label: "5 AI Analiz" },
+    { day: 6, type: "cash", amount: 50000, label: "$50,000" },
+    { day: 7, type: "stock", amount: 10000, label: "10.000 Hisse (%0.1 Şirket Payı)" }
+];
+
+// Yalnızca oyunda gerçekten var olan buton ve işlemlerden oluşan temiz görev havuzu (Maksimum $5.000)
+const TASK_POOL = [
+    { id: "trade_3_diff", text: "3 Farklı hisse ile al-sat işlemi yap", target: 3, rewardType: "cash", rewardAmount: 3000, rewardLabel: "$3,000" },
+    { id: "buy_single_50", text: "Herhangi bir hisseden tek seferde 50+ adet al", target: 1, rewardType: "cash", rewardAmount: 2500, rewardLabel: "$2,500" },
+    { id: "buy_single_100", text: "Tek seferde büyük alım yap (100+ adet hisse al)", target: 1, rewardType: "cash", rewardAmount: 4500, rewardLabel: "$4,500" },
+    { id: "make_futures", text: "Herhangi bir hisseye vadeli işlem (Long/Short) aç", target: 1, rewardType: "cash", rewardAmount: 4000, rewardLabel: "$4,000" },
+    { id: "long_position", text: "Piyasa yükselişine oynayan LONG vadeli işlem aç", target: 1, rewardType: "cash", rewardAmount: 3500, rewardLabel: "$3,500" },
+    { id: "short_position", text: "Piyasa düşüşüne oynayan SHORT vadeli işlem aç", target: 1, rewardType: "cash", rewardAmount: 3500, rewardLabel: "$3,500" },
+    { id: "use_ai_analysis", text: "Yapay Zeka Analistini en az 1 kez kullan", target: 1, rewardType: "cash", rewardAmount: 2000, rewardLabel: "$2,000" },
+    { id: "trade_5_times", text: "Piyasada toplam 5 kez alım veya satım yap", target: 5, rewardType: "cash", rewardAmount: 5000, rewardLabel: "$5,000" },
+    { id: "sell_shares", text: "Portföyündeki hisselerden en az 2 kez satış yap", target: 2, rewardType: "cash", rewardAmount: 3000, rewardLabel: "$3,000" }
+];
+
+// Sabit Özel Mağaza Görevi
+const BONUS_STORE_TASK = {
+    id: "store_treasury_support",
+    text: "Mağazadan 'Kasa Destek Paketi' Satın Al",
+    target: 1,
+    rewardType: "stock",
+    rewardAmount: 10000,
+    rewardLabel: "10.000 Hisse (%0.1 Pay)",
+    isBonus: true
+};
+
+let serverTimeOffset = 0;
+let rewardCountdownTimer = null;
+
+if (typeof database !== 'undefined') {
+    database.ref(".info/serverTimeOffset").on("value", function(snap) {
+        serverTimeOffset = snap.val() || 0;
+    });
+}
+
+function getSafeServerDate() {
+    const nowServerMs = Date.now() + serverTimeOffset;
+    const d = new Date(nowServerMs);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return {
+        dateStr: `${year}-${month}-${day}`,
+        timestamp: nowServerMs
+    };
+}
+
+function getDayDiff(dateStr1, dateStr2) {
+    const d1 = new Date(dateStr1);
+    const d2 = new Date(dateStr2);
+    return Math.floor(Math.abs(d2 - d1) / (1000 * 60 * 60 * 24));
+}
+
+function getDailyTasksForToday() {
+    const safeNow = getSafeServerDate();
+    const currentTaskVersion = "v3_clean";
+    
+    // 1. Önce buluttan gelen senkronize veriyi kontrol et
+    let storedTaskData = localStorage.getItem('cts_daily_tasks_data');
+    
+    if (storedTaskData) {
+        try {
+            const parsed = JSON.parse(storedTaskData);
+            if (parsed.date === safeNow.dateStr && parsed.v === currentTaskVersion) {
+                return parsed.tasks;
+            }
+        } catch (e) {}
+    }
+
+    // 2. Yeni tohum üretimi (Tüm oyunculara o gün aynı görevler çıkar)
+    let seed = 0;
+    for (let i = 0; i < safeNow.dateStr.length; i++) {
+        seed = ((seed << 5) - seed) + safeNow.dateStr.charCodeAt(i);
+        seed |= 0;
+    }
+
+    let shuffledPool = [...TASK_POOL];
+    let selected = [];
+    for (let i = 0; i < 3; i++) {
+        const index = Math.abs(seed + i * 19) % shuffledPool.length;
+        selected.push(JSON.parse(JSON.stringify(shuffledPool[index])));
+        shuffledPool.splice(index, 1);
+    }
+
+    selected.push(JSON.parse(JSON.stringify(BONUS_STORE_TASK)));
+
+    const tasksState = selected.map(t => ({
+        id: t.id,
+        text: t.text,
+        target: t.target,
+        progress: 0,
+        completed: false,
+        claimed: false,
+        rewardType: t.rewardType,
+        rewardAmount: t.rewardAmount,
+        rewardLabel: t.rewardLabel,
+        isBonus: !!t.isBonus
+    }));
+
+    const finalPayload = {
+        v: currentTaskVersion,
+        date: safeNow.dateStr,
+        tasks: tasksState
+    };
+
+    localStorage.setItem('cts_daily_tasks_data', JSON.stringify(finalPayload));
+    return tasksState;
+}
+
+function startRewardCountdown() {
+    if (rewardCountdownTimer) clearInterval(rewardCountdownTimer);
+
+    function updateTimer() {
+        const btn = document.getElementById('btn-claim-daily');
+        const tasksTimerEl = document.getElementById('tasks-countdown-timer');
+
+        const nowServerMs = Date.now() + serverTimeOffset;
+        const now = new Date(nowServerMs);
+        const nextMidnight = new Date(nowServerMs);
+        nextMidnight.setHours(24, 0, 0, 0);
+
+        const diffMs = nextMidnight.getTime() - now.getTime();
+
+        if (diffMs <= 0) {
+            clearInterval(rewardCountdownTimer);
+            renderDailyRewardUI();
+            renderDailyTasksUI();
+            return;
+        }
+
+        const hours = String(Math.floor(diffMs / (1000 * 60 * 60))).padStart(2, '0');
+        const minutes = String(Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+        const seconds = String(Math.floor((diffMs % (1000 * 60)) / 1000)).padStart(2, '0');
+
+        if (btn && btn.disabled) {
+            btn.innerText = `SIRADAKİ ÖDÜLE: ${hours}:${minutes}:${seconds}`;
+        }
+        if (tasksTimerEl) {
+            tasksTimerEl.innerText = `Yenilenmeye: ${hours}:${minutes}:${seconds}`;
+        }
+    }
+
+    updateTimer();
+    rewardCountdownTimer = setInterval(updateTimer, 1000);
+}
+
+function openRewardsPage() {
+    const page = document.getElementById('rewards-page');
+    const menu = document.getElementById('mobile-main-menu');
+
+    if (!page) return;
+
+    if (menu) {
+        const exactWidth = menu.offsetWidth;
+        if (exactWidth > 0) {
+            page.style.maxWidth = exactWidth + 'px';
+            page.style.width = exactWidth + 'px';
+        }
+        menu.style.display = 'none';
+    }
+
+    if (page.parentElement !== document.body) {
+        document.body.appendChild(page);
+    }
+
+    page.style.display = 'flex';
+    page.style.visibility = 'visible';
+    page.style.opacity = '1';
+    page.scrollTop = 0;
+
+    switchRewardTab('daily');
+    renderDailyRewardUI();
+    renderDailyTasksUI();
+    startRewardCountdown();
+}
+
+function closeRewardsPage() {
+    if (rewardCountdownTimer) clearInterval(rewardCountdownTimer);
+    const page = document.getElementById('rewards-page');
+    const menu = document.getElementById('mobile-main-menu');
+
+    if (page) page.style.display = 'none';
+    if (menu) menu.style.display = 'flex';
+}
+
+window.openRewardsPage = openRewardsPage;
+window.closeRewardsPage = closeRewardsPage;
+
+function switchRewardTab(tabName) {
+    const dailyTab = document.getElementById('reward-tab-daily');
+    const globalTab = document.getElementById('reward-tab-global');
+    const monthlyTab = document.getElementById('reward-tab-monthly');
+    const btnDaily = document.getElementById('tab-btn-daily');
+    const btnGlobal = document.getElementById('tab-btn-global');
+    const btnMonthly = document.getElementById('tab-btn-monthly');
+
+    if (dailyTab) dailyTab.style.display = 'none';
+    if (globalTab) globalTab.style.display = 'none';
+    if (monthlyTab) monthlyTab.style.display = 'none';
+
+    // Tüm butonları önce net görünen açık griye çek
+    [btnDaily, btnGlobal, btnMonthly].forEach(b => {
+        if (b) { 
+            b.style.background = 'transparent'; 
+            b.style.color = '#cbd5e1'; 
+        }
+    });
+
+    // Seçili sekmeyi sarı yap ve yazısını siyah yap
+    if (tabName === 'daily') {
+        if (dailyTab) dailyTab.style.display = 'block';
+        if (btnDaily) { btnDaily.style.background = '#f59e0b'; btnDaily.style.color = '#000'; }
+    } else if (tabName === 'global') {
+        if (globalTab) globalTab.style.display = 'block';
+        if (btnGlobal) { btnGlobal.style.background = '#f59e0b'; btnGlobal.style.color = '#000'; }
+    } else if (tabName === 'monthly') {
+        if (monthlyTab) monthlyTab.style.display = 'block';
+        if (btnMonthly) { btnMonthly.style.background = '#f59e0b'; btnMonthly.style.color = '#000'; }
+    }
+}
+
+function renderDailyRewardUI() {
+    const safeNow = getSafeServerDate();
+    let lastClaimDate = localStorage.getItem('cts_daily_last_date') || null;
+    let streak = parseInt(localStorage.getItem('cts_daily_streak')) || 0;
+    let canClaimToday = false;
+
+    if (!lastClaimDate) {
+        canClaimToday = true;
+    } else {
+        const diff = getDayDiff(lastClaimDate, safeNow.dateStr);
+        if (diff === 0) {
+            canClaimToday = false;
+        } else if (diff === 1) {
+            canClaimToday = true;
+        } else {
+            streak = 0;
+            canClaimToday = true;
+        }
+    }
+
+    let nextDay = canClaimToday ? (streak % 7) + 1 : ((streak - 1) % 7) + 1;
+    const grid = document.getElementById('daily-reward-grid');
+    const box7 = document.getElementById('day-7-special-box');
+    if (!grid || !box7) return;
+
+    grid.innerHTML = '';
+    box7.innerHTML = '';
+
+    for (let i = 0; i < 6; i++) {
+        const r = DAILY_REWARDS[i];
+        let statusColor = "#182234";
+        let badge = "";
+
+        if (r.day < nextDay || (!canClaimToday && r.day <= nextDay)) {
+            statusColor = "rgba(16, 185, 129, 0.2); border: 1px solid #10b981";
+            badge = "<span style='color:#10b981; font-size:10px;'>✓ Alındı</span>";
+        } else if (r.day === nextDay && canClaimToday) {
+            statusColor = "rgba(245, 158, 11, 0.25); border: 1px solid #f59e0b";
+            badge = "<span style='color:#f59e0b; font-size:10px;'>● Hazır</span>";
+        }
+
+        grid.innerHTML += `
+            <div style="background:${statusColor}; border-radius:10px; padding:12px 4px; text-align:center; border:1px solid rgba(255,255,255,0.05);">
+                <div style="font-size:10px; color:#94a3b8; font-weight:bold;">GÜN ${r.day}</div>
+                <div style="font-weight:bold; font-size:12px; color:#fff; margin:4px 0;">${r.label}</div>
+                ${badge}
+            </div>
+        `;
+    }
+
+    const r7 = DAILY_REWARDS[6];
+    let r7Style = "background:#182234; border: 1px dashed #eab308";
+    let r7Badge = "<span style='color:#9ca3af; font-size:11px;'>7 Günlük Seri Tamamlama Bonusu</span>";
+
+    const crownSvg = `<svg viewBox="0 0 24 24" fill="currentColor" style="width:17px; height:17px; vertical-align:middle; margin-left:4px; color:#fbbf24; filter:drop-shadow(0 0 5px rgba(251,191,36,0.6));"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg>`;
+
+    if (nextDay === 7 && canClaimToday) {
+        r7Style = "background:linear-gradient(135deg, rgba(234, 179, 8, 0.25), rgba(245, 158, 11, 0.1)); border: 2px solid #eab308";
+        r7Badge = "<span style='color:#eab308; font-weight:bold; font-size:11px;'>● BUGÜN ALINABİLİR!</span>";
+    } else if (streak >= 7 && !canClaimToday) {
+        r7Badge = "<span style='color:#10b981; font-size:11px;'>✓ Seri Tamamlandı</span>";
+    }
+
+    box7.innerHTML = `
+        <div style="${r7Style}; border-radius:12px; padding:14px; text-align:center;">
+            <div style="font-size:11px; color:#eab308; font-weight:bold;">7. GÜN MEGA ÖDÜL</div>
+            <div style="font-size:14px; font-weight:900; color:#fbbf24; margin:4px 0; display:flex; align-items:center; justify-content:center;">
+                ${r7.label} ${crownSvg}
+            </div>
+            ${r7Badge}
+        </div>
+    `;
+
+    const btn = document.getElementById('btn-claim-daily');
+    if (btn) {
+        if (canClaimToday) {
+            btn.disabled = false;
+            btn.innerText = `GÜN ${nextDay} ÖDÜLÜNÜ AL (${DAILY_REWARDS[nextDay - 1].label})`;
+            btn.style.background = "linear-gradient(135deg, #10b981, #059669)";
+            btn.style.cursor = "pointer";
+            btn.style.opacity = "1";
+        } else {
+            btn.disabled = true;
+            btn.style.background = "#374151";
+            btn.style.cursor = "not-allowed";
+            btn.style.opacity = "0.7";
+        }
+    }
+}
+
+function renderDailyTasksUI() {
+    const tasksContainer = document.getElementById('daily-tasks-list');
+    if (!tasksContainer) return;
+
+    const tasks = getDailyTasksForToday();
+    tasksContainer.innerHTML = '';
+
+    tasks.forEach((t, idx) => {
+        const isFinished = t.progress >= t.target;
+        const pct = Math.min(100, Math.floor((t.progress / t.target) * 100));
+        
+        let cardBg = t.isBonus ? "linear-gradient(135deg, rgba(234, 179, 8, 0.12), rgba(15, 23, 42, 0.9))" : "#182234";
+        let borderStyle = t.isBonus ? "border: 1px solid rgba(245, 158, 11, 0.4);" : "border: 1px solid rgba(255,255,255,0.06);";
+        let badgeBonus = t.isBonus ? `<span style="background:#f59e0b; color:#000; font-size:9px; font-weight:900; padding:2px 6px; border-radius:4px; margin-right:5px; letter-spacing:0.3px;">ÖZEL GÖREV</span>` : ``;
+
+        let actionButton = '';
+        if (t.claimed) {
+            actionButton = `<button disabled style="padding:6px 12px; border-radius:8px; border:none; background:#1e293b; color:#10b981; font-weight:bold; font-size:11px;">✓ Alındı</button>`;
+        } else if (isFinished) {
+            actionButton = `<button type="button" onclick="claimTaskReward(${idx})" style="padding:6px 14px; border-radius:8px; border:none; background:linear-gradient(135deg, #10b981, #059669); color:#fff; font-weight:900; font-size:11px; cursor:pointer; box-shadow:0 2px 10px rgba(16,185,129,0.3);">ÖDÜLÜ AL</button>`;
+        } else {
+            actionButton = `<span style="font-size:11px; font-weight:bold; color:#94a3b8;">${t.progress}/${t.target}</span>`;
+        }
+
+        const crownSvgIcon = t.isBonus ? `<svg viewBox="0 0 24 24" fill="currentColor" style="width:14px; height:14px; vertical-align:middle; margin-left:4px; color:#fbbf24;"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg>` : '';
+
+        tasksContainer.innerHTML += `
+            <div style="background:${cardBg}; ${borderStyle} border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:8px;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
+                    <div style="flex:1;">
+                        <div style="font-size:12px; font-weight:700; color:#fff; line-height:1.3;">${badgeBonus}${t.text}</div>
+                        <div style="font-size:11px; font-weight:800; color:#fbbf24; margin-top:3px; display:flex; align-items:center;">
+                            Ödül: ${t.rewardLabel} ${crownSvgIcon}
+                        </div>
+                    </div>
+                    <div>${actionButton}</div>
+                </div>
+                <div style="width:100%; height:5px; background:#0f172a; border-radius:10px; overflow:hidden;">
+                    <div style="width:${pct}%; height:100%; background:${t.isBonus ? '#f59e0b' : '#38bdf8'}; transition:0.3s;"></div>
+                </div>
+            </div>
+        `;
+    });
+}
+
+function claimTaskReward(taskIndex) {
+    const safeNow = getSafeServerDate();
+    let storedTaskData = localStorage.getItem('cts_daily_tasks_data');
+    if (!storedTaskData) return;
+
+    let parsed = JSON.parse(storedTaskData);
+    let task = parsed.tasks[taskIndex];
+
+    if (!task || task.claimed || task.progress < task.target) return;
+
+    task.claimed = true;
+    let modalMsg = "";
+
+    if (task.rewardType === "cash") {
+        playerBalance += task.rewardAmount;
+        if (typeof updateBalanceUI === 'function') updateBalanceUI();
+        modalMsg = `Görev Tamamlandı! <span style="color:#10b981; font-weight:900;">${task.rewardLabel}</span> nakit bakiyene eklendi.`;
+    } else if (task.rewardType === "ai_rights") {
+        let currentAi = parseInt(localStorage.getItem('cts_ai_rights')) || 0;
+        currentAi += task.rewardAmount;
+        localStorage.setItem('cts_ai_rights', currentAi);
+        if (typeof aiRights !== 'undefined') aiRights = currentAi;
+        modalMsg = `Görev Tamamlandı! <span style="color:#38bdf8; font-weight:900;">${task.rewardLabel}</span> envanterine aktarıldı.`;
+    } else if (task.rewardType === "stock") {
+        let stockNames = [];
+        if (typeof stockCards !== 'undefined' && stockCards.length > 0) {
+            stockCards.forEach(c => { if (c.dataset.name) stockNames.push(c.dataset.name); });
+        } else if (typeof STOCKS !== 'undefined' && Array.isArray(STOCKS)) {
+            stockNames = STOCKS.map(s => s.name || s.id);
+        }
+
+        let randomStock = "TechCorp";
+        if (stockNames.length > 0) {
+            randomStock = stockNames[Math.floor(Math.random() * stockNames.length)];
+        }
+
+        if (typeof portfolio === 'undefined') window.portfolio = {};
+        portfolio[randomStock] = (Number(portfolio[randomStock]) || 0) + task.rewardAmount;
+        localStorage.setItem('cts_portfolio', JSON.stringify(portfolio));
+
+        if (typeof stockCards !== 'undefined') {
+            stockCards.forEach(card => {
+                if (card.dataset.name === randomStock) {
+                    const ownedEl = card.querySelector('.stock-owned');
+                    if (ownedEl) ownedEl.innerText = "Portföy: " + portfolio[randomStock].toLocaleString('tr-TR') + " Adet";
+                }
+            });
+        }
+        if (typeof updatePortfolioView === 'function') updatePortfolioView();
+        modalMsg = `ÖZEL GÖREV TAMAMLANDI! <b>${randomStock}</b> şirketinden <span style="color:#fbbf24; font-weight:900;">10.000 Adet (%0.1)</span> hisse portföyüne aktarıldı!`;
+    }
+
+    localStorage.setItem('cts_daily_tasks_data', JSON.stringify(parsed));
+
+    let myUid = localStorage.getItem('cts_player_uid');
+    if (myUid && typeof database !== 'undefined') {
+        let updatePayload = {
+            dailyTasks: parsed,
+            lastUpdated: firebase.database.ServerValue.TIMESTAMP
+        };
+        if (task.rewardType === "cash") updatePayload.balance = playerBalance;
+        if (task.rewardType === "stock") updatePayload.portfolio = portfolio;
+        if (task.rewardType === "ai_rights") updatePayload.aiRights = parseInt(localStorage.getItem('cts_ai_rights')) || 0;
+        database.ref('users/' + myUid).update(updatePayload);
+    }
+
+    if (typeof saveGame === 'function') saveGame();
+    showCustomRewardModal("Görev", modalMsg);
+    renderDailyTasksUI();
+}
+
+function triggerTaskProgress(taskId, amount = 1) {
+    const safeNow = getSafeServerDate();
+    let storedTaskData = localStorage.getItem('cts_daily_tasks_data');
+    if (!storedTaskData) {
+        getDailyTasksForToday();
+        storedTaskData = localStorage.getItem('cts_daily_tasks_data');
+    }
+
+    try {
+        let parsed = JSON.parse(storedTaskData);
+        if (parsed.date !== safeNow.dateStr) return;
+
+        let changed = false;
+        parsed.tasks.forEach(t => {
+            if (t.id === taskId && !t.completed) {
+                t.progress = Math.min(t.target, t.progress + amount);
+                if (t.progress >= t.target) {
+                    t.completed = true;
+                }
+                changed = true;
+            }
+        });
+
+        if (changed) {
+            localStorage.setItem('cts_daily_tasks_data', JSON.stringify(parsed));
+            renderDailyTasksUI();
+        }
+    } catch (e) {}
+}
+
+window.triggerTaskProgress = triggerTaskProgress;
+window.claimTaskReward = claimTaskReward;
+
+function showCustomRewardModal(title, messageHtml) {
+    let modal = document.getElementById('custom-reward-modal');
+    if (!modal) return;
+
+    if (modal.parentElement !== document.body) {
+        document.body.appendChild(modal);
+    }
+
+    const txt = document.getElementById('custom-reward-text');
+    if (txt) {
+        txt.innerHTML = messageHtml;
+    }
+
+    modal.style.display = 'flex';
+    modal.style.zIndex = '2147483647';
+}
+
+function closeCustomRewardModal() {
+    const modal = document.getElementById('custom-reward-modal');
+    if (modal) modal.style.display = 'none';
+}
+
+function claimDailyReward() {
+    const safeNow = getSafeServerDate();
+    let lastClaimDate = localStorage.getItem('cts_daily_last_date') || null;
+    let streak = parseInt(localStorage.getItem('cts_daily_streak')) || 0;
+
+    if (lastClaimDate) {
+        const diff = getDayDiff(lastClaimDate, safeNow.dateStr);
+        if (diff === 0) return;
+        if (diff > 1) streak = 0;
+    }
+
+    streak = (streak % 7) + 1;
+    const rewardObj = DAILY_REWARDS[streak - 1];
+    let modalMessage = "";
+
+    if (rewardObj.type === "cash") {
+        playerBalance += rewardObj.amount;
+        if (typeof updateBalanceUI === 'function') updateBalanceUI();
+        modalMessage = `Tebrikler! <b>Gün ${streak}</b> ödülü olan <span style="color:#10b981; font-weight:900;">${rewardObj.label}</span> nakit bakiyene eklendi.`;
+    } else if (rewardObj.type === "ai_rights") {
+        let currentAi = parseInt(localStorage.getItem('cts_ai_rights')) || 0;
+        currentAi += rewardObj.amount;
+        localStorage.setItem('cts_ai_rights', currentAi);
+        if (typeof aiRights !== 'undefined') aiRights = currentAi;
+        modalMessage = `Harika! <b>Gün ${streak}</b> ödülü olan <span style="color:#38bdf8; font-weight:900;">+5 Adet AI Analist Kullanım Hakkı</span> hesabına tanımlandı.`;
+    } else if (rewardObj.type === "stock") {
+        let stockNames = [];
+        if (typeof stockCards !== 'undefined' && stockCards.length > 0) {
+            stockCards.forEach(c => { if (c.dataset.name) stockNames.push(c.dataset.name); });
+        } else if (typeof STOCKS !== 'undefined' && Array.isArray(STOCKS)) {
+            stockNames = STOCKS.map(s => s.name || s.id);
+        }
+
+        let randomStock = "TechCorp";
+        if (stockNames.length > 0) {
+            randomStock = stockNames[Math.floor(Math.random() * stockNames.length)];
+        }
+
+        if (typeof portfolio === 'undefined') window.portfolio = {};
+        portfolio[randomStock] = (Number(portfolio[randomStock]) || 0) + rewardObj.amount;
+        localStorage.setItem('cts_portfolio', JSON.stringify(portfolio));
+
+        if (typeof stockCards !== 'undefined') {
+            stockCards.forEach(card => {
+                if (card.dataset.name === randomStock) {
+                    const ownedEl = card.querySelector('.stock-owned');
+                    if (ownedEl) ownedEl.innerText = "Portföy: " + portfolio[randomStock].toLocaleString('tr-TR') + " Adet";
+                }
+            });
+        }
+        if (typeof updatePortfolioView === 'function') updatePortfolioView();
+        modalMessage = `MEGA ÖDÜL! <b>${randomStock}</b> şirketinden <span style="color:#fbbf24; font-weight:900;">10.000 Adet (%0.1)</span> hisse portföyüne aktarıldı!`;
+    }
+
+    localStorage.setItem('cts_daily_streak', streak);
+    localStorage.setItem('cts_daily_last_date', safeNow.dateStr);
+
+    let myUid = localStorage.getItem('cts_player_uid');
+    if (myUid && typeof database !== 'undefined') {
+        let updatePayload = {
+            dailyStreak: streak,
+            dailyLastDate: safeNow.dateStr,
+            lastUpdated: firebase.database.ServerValue.TIMESTAMP
+        };
+        if (rewardObj.type === "cash") updatePayload.balance = playerBalance;
+        if (rewardObj.type === "stock") updatePayload.portfolio = portfolio;
+        if (rewardObj.type === "ai_rights") updatePayload.aiRights = parseInt(localStorage.getItem('cts_ai_rights')) || 0;
+        database.ref('users/' + myUid).update(updatePayload);
+    }
+
+    if (typeof saveGame === 'function') saveGame();
+    showCustomRewardModal(streak, modalMessage);
+    renderDailyRewardUI();
+}
+
+// Global Event Delegasyonu (Yalnızca Mevcut Butonlar)
+document.addEventListener('click', function(e) {
+    const target = e.target;
+    if (!target) return;
+
+    const btn = target.closest('button') || target;
+    const btnId = (btn.id || '').toLowerCase();
+    const btnClass = (btn.className || '').toString().toLowerCase();
+    const btnText = (btn.innerText || '').toLowerCase();
+
+    // 1. YAPAY ZEKA ANALİSTİ
+    if (
+        btnId.includes('ai') || btnId.includes('analyst') || btnId.includes('gpt') ||
+        btnClass.includes('ai') || btnClass.includes('analyst') ||
+        btnText.includes('analiz') || btnText.includes('yapay zeka') || btnText.includes('analist')
+    ) {
+        triggerTaskProgress('use_ai_analysis', 1);
+    }
+
+    // 2. SPOT AL-SAT
+    if (btnId === 'btn-buy') {
+        triggerTaskProgress('trade_3_diff', 1);
+        triggerTaskProgress('trade_5_times', 1);
+        const tradeInput = document.getElementById('trade-amount') || document.querySelector('.trade-input');
+        const qty = tradeInput ? parseInt(tradeInput.value) || 0 : 0;
+        if (qty >= 50) triggerTaskProgress('buy_single_50', 1);
+        if (qty >= 100) triggerTaskProgress('buy_single_100', 1);
+    } else if (btnId === 'btn-sell') {
+        triggerTaskProgress('trade_3_diff', 1);
+        triggerTaskProgress('trade_5_times', 1);
+        triggerTaskProgress('sell_shares', 1);
+    }
+
+    // 3. VADELİ İŞLEMLER
+    if (btnId === 'btn-long') {
+        triggerTaskProgress('make_futures', 1);
+        triggerTaskProgress('long_position', 1);
+    } else if (btnId === 'btn-short') {
+        triggerTaskProgress('make_futures', 1);
+        triggerTaskProgress('short_position', 1);
+    }
+
+    // 4. KASA DESTEK PAKETİ
+    if (btnId === 'btn-buy-money') {
+        triggerTaskProgress('store_treasury_support', 1);
+    }
+}, true);
 </script>
+
+<!-- ========================================================================== -->
+<!-- 🎁 ÖDÜL MERKEZİ (TAM MOBİL SAYFA) -->
+<!-- ========================================================================== -->
+<div id="rewards-page" style="display:none; position:fixed; top:0; left:50%; transform:translateX(-50%); width:100%; height:100vh; height:100dvh; background:#070b14; z-index:99999999; flex-direction:column; overflow-y:auto; -webkit-overflow-scrolling:touch; box-sizing:border-box; border-left:1px solid rgba(255,255,255,0.08); border-right:1px solid rgba(255,255,255,0.08);">
+  
+  <!-- Üst Bar -->
+  <div style="display:flex; align-items:center; justify-content:space-between; padding:14px 18px; background:#0e1626; border-bottom:1px solid rgba(245, 158, 11, 0.3); position:sticky; top:0; z-index:10;">
+    <button type="button" onclick="closeRewardsPage()" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:#fbbf24; border-radius:8px; padding:7px 14px; font-weight:bold; font-size:12px; cursor:pointer;">
+      ← GERİ
+    </button>
+    <div style="font-size:16px; font-weight:900; color:#fbbf24; letter-spacing:1px; display:flex; align-items:center; gap:8px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px; height:20px; filter:drop-shadow(0 0 6px rgba(251,191,36,0.7));">
+        <polyline points="20 12 20 22 4 22 4 12"></polyline>
+        <rect x="2" y="7" width="20" height="5"></rect>
+        <line x1="12" y1="22" x2="12" y2="7"></line>
+        <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path>
+        <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path>
+      </svg>
+      ÖDÜL MERKEZİ
+    </div>
+    <div style="width:65px;"></div>
+  </div>
+
+  <!-- Sayfa Gövdesi -->
+  <div style="width:100%; padding:18px 16px; box-sizing:border-box; color:#fff; display:flex; flex-direction:column; gap:14px; flex:1;">
+    
+    <!-- Sekmeler -->
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; background:#111c2e; padding:5px; border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
+      <button id="tab-btn-daily" type="button" onclick="switchRewardTab('daily')" style="padding:10px 2px; border:none; border-radius:8px; background:#f59e0b; color:#000; font-weight:800; font-size:12px; cursor:pointer; transition:0.2s;">Giriş Ödülü</button>
+      <button id="tab-btn-global" type="button" onclick="switchRewardTab('global')" style="padding:10px 2px; border:none; border-radius:8px; background:transparent; color:#cbd5e1; font-weight:800; font-size:12px; cursor:pointer; transition:0.2s;">Sıralama</button>
+      <button id="tab-btn-monthly" type="button" onclick="switchRewardTab('monthly')" style="padding:10px 2px; border:none; border-radius:8px; background:transparent; color:#cbd5e1; font-weight:800; font-size:12px; cursor:pointer; transition:0.2s;">Aylık Ödül</button>
+    </div>
+
+    <!-- 1. SEKME: GİRİŞ ÖDÜLÜ & GÜNLÜK GÖREVLER -->
+    <div id="reward-tab-daily" style="display:block;">
+      
+      <!-- Giriş Ödülü Bölümü -->
+      <div style="margin-bottom:18px;">
+        <div style="font-size:13px; font-weight:900; color:#fbbf24; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px; height:15px;">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          7 GÜNLÜK SERİ KAZANCI
+        </div>
+        <div id="daily-reward-grid" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-bottom:10px;"></div>
+        <div id="day-7-special-box" style="margin-bottom:10px;"></div>
+        <button id="btn-claim-daily" type="button" onclick="claimDailyReward()" style="width:100%; padding:13px; border-radius:12px; border:none; background:linear-gradient(135deg, #10b981, #059669); color:#fff; font-weight:900; font-size:13px; letter-spacing:0.5px; cursor:pointer; box-shadow:0 4px 15px rgba(16,185,129,0.3);">
+          ÖDÜLÜ AL
+        </button>
+      </div>
+
+      <hr style="border:0; border-top:1px dashed rgba(255,255,255,0.1); margin:18px 0;">
+
+      <!-- Günlük Görevler Bölümü -->
+      <div style="margin-bottom:10px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <div style="font-size:13px; font-weight:900; color:#38bdf8; display:flex; align-items:center; gap:6px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;">
+              <circle cx="12" cy="12" r="10"></circle>
+              <circle cx="12" cy="12" r="6"></circle>
+              <circle cx="12" cy="12" r="2"></circle>
+            </svg>
+            GÜNLÜK GÖREVLER
+          </div>
+          <span id="tasks-countdown-timer" style="font-size:10px; font-weight:bold; color:#fbbf24; background:rgba(251,191,36,0.1); padding:3px 8px; border-radius:6px; border:1px solid rgba(251,191,36,0.2);">
+            Yenilenmeye: --:--:--
+          </span>
+        </div>
+        <div id="daily-tasks-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+      </div>
+
+    </div>
+
+    <!-- 2. SEKME: KÜRESEL SIRALAMA ÖDÜLÜ -->
+    <div id="reward-tab-global" style="display:none; text-align:center; padding:15px 0;">
+      <div style="background:#111c2e; border:1px dashed rgba(245,158,11,0.3); border-radius:14px; padding:22px 14px; margin-bottom:14px;">
+        <div style="display:flex; justify-content:center; margin-bottom:8px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:40px; height:40px; filter:drop-shadow(0 0 8px rgba(251,191,36,0.6));">
+            <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+            <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+            <path d="M4 22h16"></path>
+            <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+            <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+            <path d="M18 2H6v7a6 6 0 0 0 12 0V2z"></path>
+          </svg>
+        </div>
+        <div style="font-size:15px; font-weight:bold; color:#fbbf24; margin-bottom:4px;">Küresel Sıralama Ödülü</div>
+        <p style="font-size:12px; color:#94a3b8; margin-bottom:14px; line-height:1.4;">
+          Aylık küresel zenginlik tablosunda dereceye giren elit yatırımcılar ödüllerini buradan tahsil eder.
+        </p>
+        <div id="global-reward-status" style="background:#070b14; padding:12px; border-radius:8px; font-size:12px; color:#64748b;">
+          Henüz tahsil edilmemiş aktif bir sıralama ödülün bulunmuyor.
+        </div>
+      </div>
+      <button id="btn-claim-global" type="button" disabled style="width:100%; padding:13px; border-radius:12px; border:none; background:#1e293b; color:#64748b; font-weight:bold; font-size:13px; cursor:not-allowed;">
+        SIRALAMA ÖDÜLÜ YOK
+      </button>
+    </div>
+
+    <!-- 3. SEKME: AYLIK ÖDÜL -->
+    <div id="reward-tab-monthly" style="display:none; text-align:center; padding:20px 0;">
+      <div style="background:rgba(147, 51, 234, 0.08); border:1px solid rgba(168, 85, 247, 0.3); border-radius:14px; padding:25px 14px;">
+        <div style="display:flex; justify-content:center; margin-bottom:10px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:42px; height:42px; filter:drop-shadow(0 0 10px rgba(192,132,252,0.6));">
+            <path d="M6 3h12l4 6-10 13L2 9z"></path>
+            <path d="M11 3L8 9l4 13 4-13-3-6"></path>
+            <line x1="2" y1="9" x2="22" y2="9"></line>
+          </svg>
+        </div>
+        <div style="font-size:16px; font-weight:900; color:#c084fc; letter-spacing:1px; margin-bottom:6px;">
+          YAKINDA!
+        </div>
+        <p style="font-size:12px; color:#94a3b8; line-height:1.4; margin:0 auto;">
+          Aylık ticaret hedefleri, elit yatırımcı görevleri ve sürpriz ödüller bir sonraki güncellemede burada açılacak!
+        </p>
+      </div>
+    </div>
+
+    <!-- Sayfa Kapat Butonu -->
+    <button type="button" class="mobile-btn" onclick="closeRewardsPage()" style="margin-top:auto; padding:13px; font-size:13px;">
+      ANA MENÜYE DÖN
+    </button>
+
+  </div>
+</div>
+
+<!-- ========================================================================== -->
+<!-- 🏆 ÖZEL OYUN İÇİ TEBRİK MODALI (HER ZAMAN EN ÜSTTE) -->
+<!-- ========================================================================== -->
+<div id="custom-reward-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.88); z-index:2147483647; justify-content:center; align-items:center; backdrop-filter:blur(8px); padding:20px; box-sizing:border-box;">
+  <div style="background:linear-gradient(145deg, #0e1626, #111c2e); border:1px solid #10b981; border-radius:18px; width:100%; max-width:320px; padding:22px 18px; text-align:center; color:#fff; box-shadow:0 10px 35px rgba(16,185,129,0.35); display:flex; flex-direction:column; align-items:center;">
+    <div style="width:52px; height:52px; border-radius:50%; background:rgba(16,185,129,0.15); border:1px solid #10b981; display:flex; align-items:center; justify-content:center; margin-bottom:12px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:26px; height:26px; filter:drop-shadow(0 0 6px rgba(16,185,129,0.8));">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+    </div>
+    <div style="font-size:17px; font-weight:900; color:#10b981; letter-spacing:0.5px; margin-bottom:8px;">
+      TEBRİKLER!
+    </div>
+    <div id="custom-reward-text" style="font-size:13px; color:#cbd5e1; line-height:1.5; margin-bottom:18px;"></div>
+    <button type="button" onclick="closeCustomRewardModal()" style="width:100%; padding:12px; border-radius:10px; border:none; background:linear-gradient(135deg, #10b981, #059669); color:#fff; font-weight:bold; font-size:13px; cursor:pointer; box-shadow:0 4px 12px rgba(16,185,129,0.3);">
+      HARİKA!
+    </button>
+  </div>
+</div>
+
 </body>
 </html>
