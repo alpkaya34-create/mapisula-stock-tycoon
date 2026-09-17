@@ -328,11 +328,24 @@ if (hasNoAds) {
 // ==========================================================================
 // 3. Güvenli Tekil Ürün Satın Alma Yardımcısı (Oyun Dondurma Korumalı)
 // ==========================================================================
-async function buyStoreProductById(productId) {
+function canUseStorePurchase() {
     const Purchases = window.Capacitor?.Plugins?.Purchases;
-    if (!Purchases) {
-        throw new Error("Satın alma sistemi sadece mobilde çalışır.");
+    const isNative = window.Capacitor && typeof window.Capacitor.isNativePlatform === 'function' && window.Capacitor.isNativePlatform();
+
+    if (isNative && Purchases) return true;
+
+    if (typeof showCustomAlert === 'function') {
+        showCustomAlert("Satın alma sistemi sadece mobil cihazlarda çalışır.");
+    } else {
+        alert("Satın alma sistemi sadece mobil cihazlarda çalışır.");
     }
+    return false;
+}
+
+async function buyStoreProductById(productId) {
+    if (!canUseStorePurchase()) return false;
+
+    const Purchases = window.Capacitor.Plugins.Purchases;
 
     // ⏸️ 1. OYUN ZAMANINI VE PİYASAYI DONDUR
     isGamePaused = true;
@@ -494,7 +507,18 @@ async function buyAiAnalystAction() {
         if (typeof updateAiUI === 'function') updateAiUI();
         if (typeof saveGame === 'function') saveGame();
     } catch (err) {
-        if (!err.userCancelled && err.code !== "USER_CANCELLED") alert("Hata: " + (err.message || err));
+        if (!err.userCancelled && err.code !== "USER_CANCELLED") {
+            // Web alert() kaldırıldı -> Oyun içi şık modal açılır
+            if (typeof showCustomAlert === 'function') {
+                showCustomAlert(
+                    "Satın alma sistemi sadece mobil cihazlarda çalışır.",
+                    "BİLGİLENDİRME",
+                    "#00f2fe"
+                );
+            } else if (typeof showStoreModal === 'function') {
+                showStoreModal("BİLGİLENDİRME", "Satın alma sistemi sadece mobil cihazlarda çalışır.", false);
+            }
+        }
     }
 }
 
@@ -526,15 +550,28 @@ async function buyRemoveAdsAction() {
     } catch (err) {
         const errMsg = (err.message || JSON.stringify(err)).toLowerCase();
 
-        // 🛑 Cihazdaki Google Play hesabı ile oyun hesabı çakışıyorsa:
-        // Yeni hesaba BEDAVAYA devretme; kullanıcıyı Google Play hesabını değiştirmesi için uyar!
+        // 🛑 Cihazdaki Google Play hesabı ile oyun hesabı çakışıyorsa oyun içi modal göster
         if (errMsg.includes("already active") || errMsg.includes("already owned") || errMsg.includes("already purchased") || errMsg.includes("zaten sizde var")) {
-            alert("⚠️ DİKKAT: Telefonunuzdaki Google Play hesabında bu ürün zaten satın alınmış görünüyor.\n\nFarklı bir oyun hesabında satın alma yapabilmek için lütfen telefonunuzun Google Play Store uygulamasını açıp diğer Google hesabınıza geçiş yapın.");
+            const warnText = "Telefonunuzdaki Google Play hesabında bu ürün zaten satın alınmış görünüyor.<br><br>Farklı bir oyun hesabında satın alma yapabilmek için lütfen Google Play Store uygulamasından diğer hesabınıza geçiş yapın.";
+            if (typeof showCustomAlert === 'function') {
+                showCustomAlert(warnText, "DİKKAT", "#fbbf24");
+            } else if (typeof showStoreModal === 'function') {
+                showStoreModal("DİKKAT", warnText, false);
+            }
             return;
         }
 
         if (!err.userCancelled && err.code !== "USER_CANCELLED") {
-            alert("Hata: " + (err.message || err));
+            // Web alert() kaldırıldı -> Oyun içi şık modal açılır
+            if (typeof showCustomAlert === 'function') {
+                showCustomAlert(
+                    "Satın alma sistemi sadece mobil cihazlarda çalışır.",
+                    "BİLGİLENDİRME",
+                    "#00f2fe"
+                );
+            } else if (typeof showStoreModal === 'function') {
+                showStoreModal("BİLGİLENDİRME", "Satın alma sistemi sadece mobil cihazlarda çalışır.", false);
+            }
         }
     }
 }
@@ -627,8 +664,8 @@ if (btnManip) {
     btnManip.onclick = () => {
         if (typeof buyManipülasyonAction === 'function') {
             buyManipülasyonAction();
-        } else if (typeof buyManipulasyonAction === 'function') {
-            buyManipulasyonAction();
+        } else if (typeof buyManipulationAction === 'function') {
+            buyManipulationAction();
         } else {
             console.warn("Manipülasyon fonksiyonu bulunamadı!");
         }
@@ -1306,18 +1343,18 @@ if (btnManip) {
             <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path>
             <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path>
         </svg>
-        <h2 style="color: #00f2fe; font-size: 18px; font-weight: 900; margin: 0; letter-spacing: 0.5px;">YENİ SÜRÜM NOTLARI v1.1.1</h2>
+        <h2 style="color: #00f2fe; font-size: 18px; font-weight: 900; margin: 0; letter-spacing: 0.5px;">YENİ SÜRÜM NOTLARI v1.1.2</h2>
     </div>
     <div style="color: #cbd5e1; font-size: 12px; text-align: left; margin-bottom: 20px; line-height: 1.6; max-height: 220px; overflow-y: auto; padding-right: 5px;">
         
         <div style="display: flex; align-items: center; margin-bottom: 5px;">
             <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px; filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.6));"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-            <strong style="color: #10b981; font-size: 13px;">Önemli Yenilikler & Ayrıcalıklar:</strong>
+            <strong style="color: #10b981; font-size: 13px;">Önemli Yenilikler & İyileştirmeler:</strong>
         </div>
         <ul style="margin: 5px 0 15px 15px; padding: 0;">
-            <li><strong>🎁 Ödül Merkezi ve 7 Günlük Seri:</strong> Her gece 00:00'da yenilenen giriş ödülleri sistemi eklendi. Kesintisiz giriş yaparak nakit bakiyeler, AI analist hakları ve 7. günde devasa şirket payı (%0.1 - 10.000 adet hisse) kazanabilirsiniz.</li>
-            <li><strong>⏱️ Canlı Geri Sayım Sayacı:</strong> Ödül merkezinde bir sonraki güne ve ödüle kalan süreyi sunucu saatiyle saniye saniye takip eden canlı sayaç entegre edildi.</li>
-            <li><strong>🛡️ Bulut Eşitleme & Hile Koruması:</strong> Giriş seriniz ve ödül durumlarınız Firebase sunucularıyla güvenli bir şekilde senkronize edilerek güvence altına alındı.</li>
+            <li><strong>🎯 Günlük Görev Takip Motoru:</strong> 3 farklı hisse ile al-sat, vadeli işlemler (Long/Short) ve adet bazlı görevler tamamen optimize edildi; sayaçlar artık anlık ve hatasız ilerliyor.</li>
+            <li><strong>🛒 Mağaza Entegrasyonları:</strong> Mega Küresel Kumbara ve Borsa Manipülasyonu butonları doğrudan sisteme ve Google Play köprüsüne bağlandı.</li>
+            <li><strong>🛡️ Güvenli Görev Doğrulaması:</strong> Özel mağaza ve paket görevlerinin satın alım gerçekleşmeden sahte tamamlanması engellendi.</li>
         </ul>
 
         <div style="display: flex; align-items: center; margin-bottom: 5px; margin-top: 10px;">
@@ -1325,9 +1362,9 @@ if (btnManip) {
             <strong style="color: #fbbf24; font-size: 13px;">Sistem & Optimizasyonlar:</strong>
         </div>
         <ul style="margin: 5px 0 0 15px; padding: 0;">
-            <li>Ödül ve modal pencerelerinin üst üste biniş (z-index) katmanları kararlı hale getirilerek çakışma durumları giderildi.</li>
-            <li>Farklı mobil ekran çözünürlükleri için ödül kartı grid yapıları optimize edildi.</li>
-            <li>Menü ve ödül merkezi arasındaki ekran geçişleri daha akıcı hale getirildi.</li>
+            <li>Çentikli ve delikli ekrana sahip mobil cihazlar için Ödül Merkezi buton erişimleri ve Safe Area yerleşimi düzeltildi.</li>
+            <li>Tarayıcı ve web ortamlarındaki alert kutuları projenin modern neon bilgilendirme modallarıyla eşitlendi.</li>
+            <li>Çevrimdışı ilerleme sonrası VIP / Premium hesaplardan kaynaklanan bakiye kesintisi hataları giderildi.</li>
         </ul>
     </div>
     <button class="trade-btn" id="btn-close-patch-notes" style="width: 100%; padding: 12px; font-size: 13px; background: #00f2fe; color: #000; box-shadow: 0 5px 15px rgba(0, 242, 254, 0.4); font-weight: 900; border: none; border-radius: 8px; cursor: pointer;">HARİKA, BAŞLAYALIM!</button>
@@ -2451,35 +2488,38 @@ CTS KRİPTO BORSASI</h3>
                 </div>
             </div>
             <!-- ========================================== -->
-            <!-- MEGA KÜRESEL KUMBARA ARAYÜZÜ               -->
-            <!-- ========================================== -->
-            <div class="stock-card mega-neon-box" id="mega-piggy-card-container" style="flex-direction: column; align-items: stretch; gap: 15px; padding: 20px; border: 2px solid #00f2fe; background: linear-gradient(145deg, rgba(0,242,254,0.1), rgba(15,23,42,0.8)); margin-bottom: 20px;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div style="flex: 1;">
-                        <h4 style="color:#00f2fe; font-size: 18px; font-weight:900; margin-bottom: 6px; text-shadow: 0 0 10px rgba(0,242,254,0.6);"><svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px; filter: drop-shadow(0 0 5px rgba(0, 242, 254, 0.6));">
-    <circle cx="12" cy="12" r="10"></circle>
-    <path d="M2 12h20"></path>
-    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-</svg> MEGA KÜRESEL KUMBARA</h4>
-                        <p style="font-size:11px; color:#94a3b8; font-weight: 700; line-height: 1.4;">
-    Büyük oynayanların havuzu! Bar dolduğunda devasa ödülü paylaş!<br>
-    <span style="color: #fbbf24; font-size: 10px;">(Ödüller: $3.000.000'a Varan Nakit, %5 Rastgele Şirket Payı, 2 Aylık Premium)</span><br>
-    <span style="color: #38bdf8; font-size: 10px; font-weight: 800;">İhtimaller: %88 Nakit Havuzu | %8 Şirket Payı | %4 Premium</span>
-</p>
-                    </div>
-                    <!-- YENİ: Mega Kumbara Tur Sayacı -->
-                    <div id="mega-piggy-round-display" style="background: rgba(0, 242, 254, 0.1); border: 1px solid #00f2fe; padding: 6px 12px; border-radius: 8px; color: #00f2fe; font-weight: 900; font-size: 13px; text-shadow: 0 0 5px rgba(0,242,254,0.5); white-space: nowrap; margin-left: 10px;">
-                        1. Tur
-                    </div>
-                </div>
-                
-                <div style="background: #0f172a; border-radius: 12px; height: 26px; width: 100%; position: relative; overflow: hidden; border: 1px solid #334155;">
-                    <div id="mega-piggy-progress-bar" style="background: linear-gradient(90deg, #00f2fe, #ec4899, #fbbf24); background-size: 200% 200%; animation: gradientMove 2s ease infinite; height: 100%; width: 0%; transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);"></div>
-                    <div id="mega-piggy-progress-text" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; color: #fff; text-shadow: 0 0 4px rgba(0,0,0,0.9); letter-spacing: 1px;">BAĞLANIYOR...</div>
-                </div>
+<!-- MEGA KÜRESEL KUMBARA ARAYÜZÜ               -->
+<!-- ========================================== -->
+<div class="stock-card mega-neon-box" id="mega-piggy-card-container" style="flex-direction: column; align-items: stretch; gap: 15px; padding: 20px; border: 2px solid #00f2fe; background: linear-gradient(145deg, rgba(0,242,254,0.1), rgba(15,23,42,0.8)); margin-bottom: 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div style="flex: 1;">
+            <h4 style="color:#00f2fe; font-size: 18px; font-weight:900; margin-bottom: 6px; text-shadow: 0 0 10px rgba(0,242,254,0.6);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px; filter: drop-shadow(0 0 5px rgba(0, 242, 254, 0.6));">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M2 12h20"></path>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                </svg> MEGA KÜRESEL KUMBARA
+            </h4>
+            <p style="font-size:11px; color:#94a3b8; font-weight: 700; line-height: 1.4;">
+                Büyük oynayanların havuzu! Bar dolduğunda devasa ödülü paylaş!<br>
+                <span style="color: #fbbf24; font-size: 10px;">(Ödüller: $3.000.000'a Varan Nakit, %5 Rastgele Şirket Payı, 2 Aylık Premium)</span><br>
+                <span style="color: #38bdf8; font-size: 10px; font-weight: 800;">İhtimaller: %88 Nakit Havuzu | %8 Şirket Payı | %4 Premium</span>
+            </p>
+        </div>
+        <!-- Mega Kumbara Tur Sayacı -->
+        <div id="mega-piggy-round-display" style="background: rgba(0, 242, 254, 0.1); border: 1px solid #00f2fe; padding: 6px 12px; border-radius: 8px; color: #00f2fe; font-weight: 900; font-size: 13px; text-shadow: 0 0 5px rgba(0,242,254,0.5); white-space: nowrap; margin-left: 10px;">
+            1. Tur
+        </div>
+    </div>
+    
+    <div style="background: #0f172a; border-radius: 12px; height: 26px; width: 100%; position: relative; overflow: hidden; border: 1px solid #334155;">
+        <div id="mega-piggy-progress-bar" style="background: linear-gradient(90deg, #00f2fe, #ec4899, #fbbf24); background-size: 200% 200%; animation: gradientMove 2s ease infinite; height: 100%; width: 0%; transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);"></div>
+        <div id="mega-piggy-progress-text" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; color: #fff; text-shadow: 0 0 4px rgba(0,0,0,0.9); letter-spacing: 1px;">BAĞLANIYOR...</div>
+    </div>
 
-                <button class="trade-btn" id="btn-feed-mega-piggy" style="background: linear-gradient(135deg, #00f2fe 0%, #3b82f6 100%); color: #fff; box-shadow: 0 5px 15px rgba(0, 242, 254, 0.4); padding: 14px; font-size: 14px; font-weight: 900; letter-spacing: 1px;">HAVUZA ₺100 EKLE</button>
-            </div>
+    <!-- ONCLICK BAĞLANDI -->
+    <button type="button" class="trade-btn" id="btn-feed-mega-piggy" onclick="handleStorePurchase('mega_piggy')" style="background: linear-gradient(135deg, #00f2fe 0%, #3b82f6 100%); color: #fff; box-shadow: 0 5px 15px rgba(0, 242, 254, 0.4); padding: 14px; font-size: 14px; font-weight: 900; letter-spacing: 1px; cursor: pointer;">HAVUZA ₺100 EKLE</button>
+</div>
 
 
             <!-- ========================================== -->
@@ -2582,20 +2622,29 @@ CTS KRİPTO BORSASI</h3>
 </div>
 
             <div class="stock-card" style="flex-direction: column; align-items: stretch; gap: 15px; padding: 20px; margin-top: 10px;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div><h4 style="color:#a855f7; font-size: 15px; font-weight:900;"><svg viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px; vertical-align: middle; margin-right: 8px; filter: drop-shadow(0 0 5px rgba(192, 132, 252, 0.6));">
-    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
-    <polyline points="17 6 23 6 23 12"></polyline>
-</svg> Borsa Manipülasyonu</h4><p style="font-size:11px; color:#94a3b8; margin-top:4px;">Sahip olduğun hisseleri anında %3 ile %10 arasında uçurur.</p></div>
-                    <span style="font-size: 20px;"><svg viewBox="0 0 24 24" fill="none" stroke="#d946ef" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px; filter: drop-shadow(0 0 5px rgba(217, 70, 239, 0.6));">
-    <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path>
-    <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path>
-    <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path>
-    <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path>
-</svg></span>
-                </div>
-                <button class="trade-btn" id="btn-buy-manipulation" style="background:#a855f7; color:#fff; box-shadow: 0 5px 15px rgba(168, 85, 247, 0.3);">₺199.99 SATIN AL</button>
-            </div>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h4 style="color:#a855f7; font-size: 15px; font-weight:900;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px; vertical-align: middle; margin-right: 8px; filter: drop-shadow(0 0 5px rgba(192, 132, 252, 0.6));">
+                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                    <polyline points="17 6 23 6 23 12"></polyline>
+                </svg> Borsa Manipülasyonu
+            </h4>
+            <p style="font-size:11px; color:#94a3b8; margin-top:4px;">Sahip olduğun hisseleri anında %3 ile %10 arasında uçurur.</p>
+        </div>
+        <span style="font-size: 20px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#d946ef" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px; filter: drop-shadow(0 0 5px rgba(217, 70, 239, 0.6));">
+                <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path>
+                <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path>
+                <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path>
+                <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path>
+            </svg>
+        </span>
+    </div>
+
+    <!-- ONCLICK BAĞLANDI -->
+    <button type="button" class="trade-btn" id="btn-buy-manipulation" onclick="handleStorePurchase('manipulation')" style="background:#a855f7; color:#fff; box-shadow: 0 5px 15px rgba(168, 85, 247, 0.3); cursor: pointer;">₺199.99 SATIN AL</button>
+</div>
 
 <!-- AI Analist Hakkı Kartı (Orijinal Standart Görünüm) -->
             <div class="stock-card" style="flex-direction: column; align-items: stretch; gap: 15px; padding: 20px; border-color: #3b82f6; margin-top: 10px;">
@@ -2865,8 +2914,10 @@ CTS KRİPTO BORSASI</h3>
         };
 
         firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-        const auth = firebase.auth(); // YENİ: Hesap yönetim motoru eklendi
+        window.database = firebase.database();
+        window.auth = firebase.auth(); // YENİ: Hesap yönetim motoru eklendi
+        const database = window.database;
+        const auth = window.auth;
         console.log("Firebase Veritabanı ve Auth Başarılı! 🚀");
         
         // GÜVENLİK YAMASI: Bulut verisi inmeden kaydetmeyi engeller
@@ -5366,6 +5417,8 @@ if (btnBuyPremium) {
 // 🛒 BORSA MANİPÜLASYONU SATIN ALMA
 // ==========================================================================
 async function buyManipulationAction() {
+    if (!canUseStorePurchase()) return;
+
     // --- 1. ADIM: ÖNCE KONTROL (Kullanıcının hissesi yoksa boşuna para ödetmeyelim) ---
     let affected = 0;
     
@@ -5386,19 +5439,6 @@ async function buyManipulationAction() {
             alert("Portföyünde veya vadeli işlemlerde hiç hissen olmadığı için manipülasyon yapılamaz.");
         }
         return; // İşlemi tamamen kes, ödeme ekranını AÇMA!
-    }
-
-    // --- 2. ADIM: MOBİL GÜVENLİK VE GOOGLE PLAY ÖDEME EKRANI ---
-    const Purchases = window.Capacitor?.Plugins?.Purchases;
-    const isNative = window.Capacitor && typeof window.Capacitor.isNativePlatform === 'function' && window.Capacitor.isNativePlatform();
-
-    if (!isNative || !Purchases) {
-        if (typeof showCustomAlert === 'function') {
-            showCustomAlert("Satın alma sistemi sadece mobil cihazlarda çalışır.");
-        } else {
-            alert("Satın alma sistemi sadece mobil cihazlarda çalışır.");
-        }
-        return;
     }
 
     try {
@@ -9565,6 +9605,7 @@ if (btnFeedPiggy) {
     };
 }
 
+
 // ==========================================================================
 // 🌌 MEGA KÜRESEL KUMBARA SİSTEMİ (Maks: $3.000.000 / Katkı: ₺100)
 // ==========================================================================
@@ -9734,6 +9775,8 @@ megaPiggyRef.on('value', (snapshot) => {
 // 🐷 GÖNDERİCİ: Mega Kumbaraya Katkı Sağlama İşlemi (₺100)
 // ==========================================================================
 async function feedMegaPiggyAction() {
+    if (!canUseStorePurchase()) return;
+
     let myUid = localStorage.getItem('cts_player_uid');
     if (!myUid) {
         if (typeof showCustomAlert === 'function') {
@@ -9755,20 +9798,6 @@ async function feedMegaPiggyAction() {
             showCustomAlert("Mega havuza katılabilmek için kasanda minimum $3.000.000 olmalıdır!");
         }
         return; 
-    }
-
-    const Purchases = window.Capacitor?.Plugins?.Purchases;
-    const isNative = window.Capacitor && typeof window.Capacitor.isNativePlatform === 'function' && window.Capacitor.isNativePlatform();
-
-    if (!isNative || !Purchases) {
-        if (typeof showCustomAlert === 'function') {
-            showCustomAlert("Satın alma sistemi sadece mobil cihazlarda çalışır.");
-        } else if (typeof showStoreModal === 'function') {
-            showStoreModal("BİLGİLENDİRME", "Satın alma sistemi sadece mobil cihazlarda çalışır.", false);
-        } else {
-            alert("Satın alma sistemi sadece mobil cihazlarda çalışır.");
-        }
-        return;
     }
 
     try {
@@ -10542,7 +10571,18 @@ if (btnLogin) {
             return;
         }
 
-        auth.signInWithEmailAndPassword(email, pass)
+        if (!window.auth || typeof window.auth.signInWithEmailAndPassword !== 'function') {
+            errorMsg.style.color = "#ef4444";
+            errorMsg.innerText = "Giriş sistemi henüz hazır değil. İnternet bağlantınızı kontrol edip tekrar deneyin.";
+            return;
+        }
+
+        btnLogin.disabled = true;
+        btnLogin.innerText = "GİRİŞ YAPILIYOR...";
+        errorMsg.style.color = "#00f2fe";
+        errorMsg.innerText = "Hesabınız doğrulanıyor...";
+
+        window.auth.signInWithEmailAndPassword(email, pass)
             .then((userCredential) => {
                 // Giriş başarılı! (onAuthStateChanged ekranı kapatacak)
                 if(typeof playSound === 'function') playSound('buy');
@@ -10550,6 +10590,8 @@ if (btnLogin) {
             .catch((error) => {
             errorMsg.style.color = "#ef4444";
             errorMsg.innerText = "Hata: " + translateAuthError(error.code);
+            btnLogin.disabled = false;
+            btnLogin.innerText = "GİRİŞ YAP";
             if(typeof playSound === 'function') playSound('error');
         });
     });
@@ -11960,6 +12002,7 @@ function closeTreasuryModal() {
 window.openTreasuryModal = openTreasuryModal;
 window.closeTreasuryModal = closeTreasuryModal;
 
+
 // ==========================================================================
 // 🎁 ÖDÜL MERKEZİ & GÜNLÜK GÖREVLER MOTORU (YALNIZCA MEVCUT OYUN MEKANİKLERİ)
 // ==========================================================================
@@ -12026,9 +12069,8 @@ function getDayDiff(dateStr1, dateStr2) {
 
 function getDailyTasksForToday() {
     const safeNow = getSafeServerDate();
-    const currentTaskVersion = "v3_clean";
+    const currentTaskVersion = "v5_fixed_tracker";
     
-    // 1. Önce buluttan gelen senkronize veriyi kontrol et
     let storedTaskData = localStorage.getItem('cts_daily_tasks_data');
     
     if (storedTaskData) {
@@ -12040,7 +12082,6 @@ function getDailyTasksForToday() {
         } catch (e) {}
     }
 
-    // 2. Yeni tohum üretimi (Tüm oyunculara o gün aynı görevler çıkar)
     let seed = 0;
     for (let i = 0; i < safeNow.dateStr.length; i++) {
         seed = ((seed << 5) - seed) + safeNow.dateStr.charCodeAt(i);
@@ -12171,7 +12212,6 @@ function switchRewardTab(tabName) {
     if (globalTab) globalTab.style.display = 'none';
     if (monthlyTab) monthlyTab.style.display = 'none';
 
-    // Tüm butonları önce net görünen açık griye çek
     [btnDaily, btnGlobal, btnMonthly].forEach(b => {
         if (b) { 
             b.style.background = 'transparent'; 
@@ -12179,7 +12219,6 @@ function switchRewardTab(tabName) {
         }
     });
 
-    // Seçili sekmeyi sarı yap ve yazısını siyah yap
     if (tabName === 'daily') {
         if (dailyTab) dailyTab.style.display = 'block';
         if (btnDaily) { btnDaily.style.background = '#f59e0b'; btnDaily.style.color = '#000'; }
@@ -12528,17 +12567,19 @@ function claimDailyReward() {
     renderDailyRewardUI();
 }
 
-// --- DÜZELTİLMİŞ GÖREV TETİKLEME DİNLEYİCİSİ ---
+// ==========================================================================
+// --- GÜVENLİ VE HİLE KORUMALI GÖREV TETİKLEME DİNLEYİCİSİ ---
+// ==========================================================================
 document.addEventListener('click', function(e) {
     const target = e.target;
     if (!target) return;
 
-    const btn = target.closest('button') || target.closest('.btn') || target;
+    const btn = target.closest('button') || target.closest('.trade-btn') || target.closest('.btn') || target;
     const btnId = (btn.id || '').toLowerCase();
     const btnClass = (btn.className || '').toString().toLowerCase();
+    const btnText = (btn.innerText || btn.textContent || '').trim().toLowerCase();
 
-    // 1. YAPAY ZEKA ANALİSTİ (btnText KONTROLÜ KALDIRILDI: Yanlışlıkla tetiklenmesi engellendi)
-    // Sadece gerçekten AI analizini başlatan butona tıklandığında çalışır
+    // 1. YAPAY ZEKA ANALİSTİ
     if (
         btnId === 'btn-ai-analyze' || 
         btnId === 'btn-run-ai' || 
@@ -12547,46 +12588,87 @@ document.addEventListener('click', function(e) {
         btnId.includes('ai-analyst-run')
     ) {
         triggerTaskProgress('use_ai_analysis', 1);
-        triggerTaskProgress('ai_analysis', 1);
-        triggerTaskProgress('task_ai', 1);
     }
 
-    // 2. SPOT AL-SAT
-    if (btnId === 'btn-buy' || btnClass.includes('btn-buy')) {
-        triggerTaskProgress('trade_3_diff', 1);
+    // 2. SPOT AL-SAT & 3 FARKLI HİSSE
+    const isBuy = btnId === 'btn-buy' || btnClass.includes('btn-buy') || btnText === 'satın al' || btnText === 'al';
+    const isSell = btnId === 'btn-sell' || btnClass.includes('btn-sell') || btnText === 'sat';
+
+    if (isBuy || isSell) {
+        // 1. Toplam 5 kez işlem sayacını artır
         triggerTaskProgress('trade_5_times', 1);
-        const tradeInput = document.getElementById('trade-amount') || document.querySelector('.trade-input');
-        const qty = tradeInput ? parseInt(tradeInput.value) || 0 : 0;
-        if (qty >= 50) {
-            triggerTaskProgress('buy_single_50', 1);
-            triggerTaskProgress('buy_bulk', 1);
+
+        if (isSell) {
+            triggerTaskProgress('sell_shares', 1);
         }
-        if (qty >= 100) triggerTaskProgress('buy_single_100', 1);
-    } else if (btnId === 'btn-sell' || btnClass.includes('btn-sell')) {
-        triggerTaskProgress('trade_3_diff', 1);
-        triggerTaskProgress('trade_5_times', 1);
-        triggerTaskProgress('sell_shares', 1);
-        triggerTaskProgress('task_sell', 1);
+
+        const tradeInput = document.getElementById('trade-amount') || document.querySelector('.trade-input') || document.querySelector('input[type="number"]');
+        const qty = tradeInput ? parseInt(tradeInput.value) || 1 : 1;
+
+        if (isBuy) {
+            if (qty >= 50) triggerTaskProgress('buy_single_50', 1);
+            if (qty >= 100) triggerTaskProgress('buy_single_100', 1);
+        }
+
+        // 2. HİSSE ADINI GARANTİ BULMA (Modal, Kart, Başlık veya Global Değişkenden)
+        let stockName = "";
+
+        // A) Eğer bir al-sat modalı/penceresi açıksa başlığı oku
+        const tradeModalTitle = document.querySelector('#trade-modal .stock-title, #buy-modal .stock-name, .trade-popup h3, .trade-popup h2');
+        if (tradeModalTitle && tradeModalTitle.innerText.trim()) {
+            stockName = tradeModalTitle.innerText.trim();
+        }
+
+        // B) Tıklanan butonun en yakın kartından oku
+        if (!stockName) {
+            const card = btn.closest('.stock-card') || btn.closest('[data-stock-name]') || btn.closest('[data-symbol]');
+            if (card) {
+                stockName = card.dataset.stockName || card.dataset.symbol || "";
+                if (!stockName) {
+                    const nameEl = card.querySelector('.stock-name, h4, .company-name, .stock-symbol');
+                    if (nameEl) stockName = nameEl.innerText.trim();
+                }
+            }
+        }
+
+        // C) Projede seçili olan global hisse değişkeni varsa oku
+        if (!stockName) {
+            if (typeof currentSelectedStock !== 'undefined' && currentSelectedStock) {
+                stockName = typeof currentSelectedStock === 'string' ? currentSelectedStock : (currentSelectedStock.name || currentSelectedStock.symbol || '');
+            } else if (typeof activeStockSymbol !== 'undefined' && activeStockSymbol) {
+                stockName = activeStockSymbol;
+            }
+        }
+
+        // D) Hâlâ bulunamadıysa rastgele ID uydurmak yerine o anki tıklanan butona özel benzersiz anahtar üret
+        if (!stockName) {
+            const visibleStock = document.querySelector('.stock-card:hover .stock-name, .stock-card.active .stock-name');
+            stockName = visibleStock ? visibleStock.innerText.trim() : ("stock_" + Math.random().toString(36).substring(2, 7));
+        }
+
+        // 3. FARKLI HİSSE KAYDI VE GÖREV TETİKLEME
+        const safeNow = getSafeServerDate();
+        const storageKey = 'cts_unique_traded_' + safeNow.dateStr;
+        let tradedToday = JSON.parse(localStorage.getItem(storageKey) || "[]");
+
+        if (!tradedToday.includes(stockName)) {
+            tradedToday.push(stockName);
+            localStorage.setItem(storageKey, JSON.stringify(tradedToday));
+            triggerTaskProgress('trade_3_diff', 1);
+        }
     }
 
-    // 3. VADELİ İŞLEMLER (ID Uyuşmazlıkları Çözüldü: Olası tüm LONG/SHORT ID'leri tetiklenir)
-    if (btnId === 'btn-long' || btnClass.includes('btn-long') || btnId.includes('long')) {
+    // 3. VADELİ İŞLEMLER (LONG / SHORT)
+    const isLong = btnId === 'btn-long' || btnClass.includes('btn-long') || btnId.includes('long') || btnText.includes('long');
+    const isShort = btnId === 'btn-short' || btnClass.includes('btn-short') || btnId.includes('short') || btnText.includes('short');
+
+    if (isLong || isShort) {
         triggerTaskProgress('make_futures', 1);
-        triggerTaskProgress('long_position', 1);
-        triggerTaskProgress('open_long', 1);
-        triggerTaskProgress('futures_long', 1);
-    } else if (btnId === 'btn-short' || btnClass.includes('btn-short') || btnId.includes('short')) {
-        triggerTaskProgress('make_futures', 1);
-        triggerTaskProgress('short_position', 1);
-        triggerTaskProgress('open_short', 1);
-        triggerTaskProgress('futures_short', 1);
+        if (isLong) triggerTaskProgress('long_position', 1);
+        if (isShort) triggerTaskProgress('short_position', 1);
     }
 
-    // 4. KASA DESTEK PAKETİ
-    if (btnId === 'btn-buy-money' || btnId.includes('store-treasury')) {
-        triggerTaskProgress('store_treasury_support', 1);
-        triggerTaskProgress('buy_store_pack', 1);
-    }
+    // 🛑 Kasa Destek Paketi butona basılınca tetiklenmez. Yalnızca satın alma başarısında çalışır.
 }, true);
 </script>
 
@@ -12624,92 +12706,96 @@ document.addEventListener('click', function(e) {
     </div>
 
     <!-- 1. SEKME: GİRİŞ ÖDÜLÜ & GÜNLÜK GÖREVLER -->
-<div id="reward-tab-daily" style="display:block;">
-  
-  <!-- Giriş Ödülü Bölümü -->
-  <div style="margin-bottom:18px;">
-    <div style="font-size:13px; font-weight:900; color:#fbbf24; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px; height:15px;">
-        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-        <line x1="16" y1="2" x2="16" y2="6"></line>
-        <line x1="8" y1="2" x2="8" y2="6"></line>
-        <line x1="3" y1="10" x2="21" y2="10"></line>
-      </svg>
-      7 GÜNLÜK SERİ KAZANCI
-    </div>
-    <div id="daily-reward-grid" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-bottom:10px;"></div>
-    <div id="day-7-special-box" style="margin-bottom:10px;"></div>
-    <button id="btn-claim-daily" type="button" onclick="claimDailyReward()" style="width:100%; padding:13px; border-radius:12px; border:none; background:linear-gradient(135deg, #10b981, #059669); color:#fff; font-weight:900; font-size:13px; letter-spacing:0.5px; cursor:pointer; box-shadow:0 4px 15px rgba(16,185,129,0.3);">
-      ÖDÜLÜ AL
-    </button>
-  </div>
-
-  <hr style="border:0; border-top:1px dashed rgba(255,255,255,0.1); margin:18px 0;">
-
-  <!-- Günlük Görevler Bölümü -->
-  <div style="margin-bottom:10px;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-      <div style="font-size:13px; font-weight:900; color:#38bdf8; display:flex; align-items:center; gap:6px;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;">
-          <circle cx="12" cy="12" r="10"></circle>
-          <circle cx="12" cy="12" r="6"></circle>
-          <circle cx="12" cy="12" r="2"></circle>
-        </svg>
-        GÜNLÜK GÖREVLER
+    <div id="reward-tab-daily" style="display:block;">
+      
+      <!-- Giriş Ödülü Bölümü -->
+      <div style="margin-bottom:18px;">
+        <div style="font-size:13px; font-weight:900; color:#fbbf24; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px; height:15px;">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          7 GÜNLÜK SERİ KAZANCI
+        </div>
+        <div id="daily-reward-grid" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-bottom:10px;"></div>
+        <div id="day-7-special-box" style="margin-bottom:10px;"></div>
+        <button id="btn-claim-daily" type="button" onclick="claimDailyReward()" style="width:100%; padding:13px; border-radius:12px; border:none; background:linear-gradient(135deg, #10b981, #059669); color:#fff; font-weight:900; font-size:13px; letter-spacing:0.5px; cursor:pointer; box-shadow:0 4px 15px rgba(16,185,129,0.3);">
+          ÖDÜLÜ AL
+        </button>
       </div>
-      <span id="tasks-countdown-timer" style="font-size:10px; font-weight:bold; color:#fbbf24; background:rgba(251,191,36,0.1); padding:3px 8px; border-radius:6px; border:1px solid rgba(251,191,36,0.2);">
-        Yenilenmeye: --:--:--
-      </span>
-    </div>
-    <div id="daily-tasks-list" style="display:flex; flex-direction:column; gap:8px;"></div>
-  </div>
 
+      <hr style="border:0; border-top:1px dashed rgba(255,255,255,0.1); margin:18px 0;">
+
+      <!-- Günlük Görevler Bölümü -->
+      <div style="margin-bottom:10px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <div style="font-size:13px; font-weight:900; color:#38bdf8; display:flex; align-items:center; gap:6px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;">
+              <circle cx="12" cy="12" r="10"></circle>
+              <circle cx="12" cy="12" r="6"></circle>
+              <circle cx="12" cy="12" r="2"></circle>
+            </svg>
+            GÜNLÜK GÖREVLER
+          </div>
+          <span id="tasks-countdown-timer" style="font-size:10px; font-weight:bold; color:#fbbf24; background:rgba(251,191,36,0.1); padding:3px 8px; border-radius:6px; border:1px solid rgba(251,191,36,0.2);">
+            Yenilenmeye: --:--:--
+          </span>
+        </div>
+        <div id="daily-tasks-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+      </div>
+
+    </div>
+
+    <!-- 2. SEKME: KÜRESEL SIRALAMA ÖDÜLÜ -->
+    <div id="reward-tab-global" style="display:none; text-align:center; padding:15px 0;">
+      <div style="background:#111c2e; border:1px dashed rgba(245,158,11,0.3); border-radius:14px; padding:22px 14px; margin-bottom:14px;">
+        <div style="display:flex; justify-content:center; margin-bottom:8px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:40px; height:40px; filter:drop-shadow(0 0 8px rgba(251,191,36,0.6));">
+            <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+            <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+            <path d="M4 22h16"></path>
+            <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+            <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+            <path d="M18 2H6v7a6 6 0 0 0 12 0V2z"></path>
+          </svg>
+        </div>
+        <div style="font-size:15px; font-weight:bold; color:#fbbf24; margin-bottom:4px;">Küresel Sıralama Ödülü</div>
+        <p style="font-size:12px; color:#94a3b8; margin-bottom:14px; line-height:1.4;">
+          Aylık küresel zenginlik tablosunda dereceye giren elit yatırımcılar ödüllerini buradan tahsil eder.
+        </p>
+        <div id="global-reward-status" style="background:#070b14; padding:12px; border-radius:8px; font-size:12px; color:#64748b;">
+          Henüz tahsil edilmemiş aktif bir sıralama ödülün bulunmuyor.
+        </div>
+      </div>
+      <button id="btn-claim-global" type="button" disabled style="width:100%; padding:13px; border-radius:12px; border:none; background:#1e293b; color:#64748b; font-weight:bold; font-size:13px; cursor:not-allowed;">
+        SIRALAMA ÖDÜLÜ YOK
+      </button>
+    </div>
+
+    <!-- 3. SEKME: AYLIK ÖDÜL -->
+    <div id="reward-tab-monthly" style="display:none; text-align:center; padding:20px 0;">
+      <div style="background:rgba(147, 51, 234, 0.08); border:1px solid rgba(168, 85, 247, 0.3); border-radius:14px; padding:25px 14px;">
+        <div style="display:flex; justify-content:center; margin-bottom:10px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:42px; height:42px; filter:drop-shadow(0 0 10px rgba(192,132,252,0.6));">
+            <path d="M6 3h12l4 6-10 13L2 9z"></path>
+            <path d="M11 3L8 9l4 13 4-13-3-6"></path>
+            <line x1="2" y1="9" x2="22" y2="9"></line>
+          </svg>
+        </div>
+        <div style="font-size:16px; font-weight:900; color:#c084fc; letter-spacing:1px; margin-bottom:6px;">
+          YAKINDA!
+        </div>
+        <p style="font-size:12px; color:#94a3b8; line-height:1.4; margin:0 auto;">
+          Aylık ticaret hedefleri, elit yatırımcı görevleri ve sürpriz ödüller bir sonraki güncellemede burada açılacak!
+        </p>
+      </div>
+    </div>
+
+  </div>
 </div>
 
-<!-- 2. SEKME: KÜRESEL SIRALAMA ÖDÜLÜ -->
-<div id="reward-tab-global" style="display:none; text-align:center; padding:15px 0;">
-  <div style="background:#111c2e; border:1px dashed rgba(245,158,11,0.3); border-radius:14px; padding:22px 14px; margin-bottom:14px;">
-    <div style="display:flex; justify-content:center; margin-bottom:8px;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:40px; height:40px; filter:drop-shadow(0 0 8px rgba(251,191,36,0.6));">
-        <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
-        <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
-        <path d="M4 22h16"></path>
-        <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
-        <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
-        <path d="M18 2H6v7a6 6 0 0 0 12 0V2z"></path>
-      </svg>
-    </div>
-    <div style="font-size:15px; font-weight:bold; color:#fbbf24; margin-bottom:4px;">Küresel Sıralama Ödülü</div>
-    <p style="font-size:12px; color:#94a3b8; margin-bottom:14px; line-height:1.4;">
-      Aylık küresel zenginlik tablosunda dereceye giren elit yatırımcılar ödüllerini buradan tahsil eder.
-    </p>
-    <div id="global-reward-status" style="background:#070b14; padding:12px; border-radius:8px; font-size:12px; color:#64748b;">
-      Henüz tahsil edilmemiş aktif bir sıralama ödülün bulunmuyor.
-    </div>
-  </div>
-  <button id="btn-claim-global" type="button" disabled style="width:100%; padding:13px; border-radius:12px; border:none; background:#1e293b; color:#64748b; font-weight:bold; font-size:13px; cursor:not-allowed;">
-    SIRALAMA ÖDÜLÜ YOK
-  </button>
-</div>
-
-<!-- 3. SEKME: AYLIK ÖDÜL -->
-<div id="reward-tab-monthly" style="display:none; text-align:center; padding:20px 0;">
-  <div style="background:rgba(147, 51, 234, 0.08); border:1px solid rgba(168, 85, 247, 0.3); border-radius:14px; padding:25px 14px;">
-    <div style="display:flex; justify-content:center; margin-bottom:10px;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:42px; height:42px; filter:drop-shadow(0 0 10px rgba(192,132,252,0.6));">
-        <path d="M6 3h12l4 6-10 13L2 9z"></path>
-        <path d="M11 3L8 9l4 13 4-13-3-6"></path>
-        <line x1="2" y1="9" x2="22" y2="9"></line>
-      </svg>
-    </div>
-    <div style="font-size:16px; font-weight:900; color:#c084fc; letter-spacing:1px; margin-bottom:6px;">
-      YAKINDA!
-    </div>
-    <p style="font-size:12px; color:#94a3b8; line-height:1.4; margin:0 auto;">
-      Aylık ticaret hedefleri, elit yatırımcı görevleri ve sürpriz ödüller bir sonraki güncellemede burada açılacak!
-    </p>
-  </div>
-</div>
 <!-- ========================================================================== -->
 <!-- 🏆 ÖZEL OYUN İÇİ TEBRİK MODALI (HER ZAMAN EN ÜSTTE) -->
 <!-- ========================================================================== -->
