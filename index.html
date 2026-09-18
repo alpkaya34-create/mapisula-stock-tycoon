@@ -1343,7 +1343,7 @@ if (btnManip) {
             <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path>
             <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path>
         </svg>
-        <h2 style="color: #00f2fe; font-size: 18px; font-weight: 900; margin: 0; letter-spacing: 0.5px;">YENİ SÜRÜM NOTLARI v1.1.2</h2>
+        <h2 style="color: #00f2fe; font-size: 18px; font-weight: 900; margin: 0; letter-spacing: 0.5px;">YENİ SÜRÜM NOTLARI v1.1.3</h2>
     </div>
     <div style="color: #cbd5e1; font-size: 12px; text-align: left; margin-bottom: 20px; line-height: 1.6; max-height: 220px; overflow-y: auto; padding-right: 5px;">
         
@@ -1352,9 +1352,9 @@ if (btnManip) {
             <strong style="color: #10b981; font-size: 13px;">Önemli Yenilikler & İyileştirmeler:</strong>
         </div>
         <ul style="margin: 5px 0 15px 15px; padding: 0;">
-            <li><strong>🎯 Günlük Görev Takip Motoru:</strong> 3 farklı hisse ile al-sat, vadeli işlemler (Long/Short) ve adet bazlı görevler tamamen optimize edildi; sayaçlar artık anlık ve hatasız ilerliyor.</li>
-            <li><strong>🛒 Mağaza Entegrasyonları:</strong> Mega Küresel Kumbara ve Borsa Manipülasyonu butonları doğrudan sisteme ve Google Play köprüsüne bağlandı.</li>
-            <li><strong>🛡️ Güvenli Görev Doğrulaması:</strong> Özel mağaza ve paket görevlerinin satın alım gerçekleşmeden sahte tamamlanması engellendi.</li>
+            <li><strong>🔔 Akıllı Yerel Bildirimler:</strong> Gece 00:00 Günlük Giriş Ödülü, saat 14:00 Piyasa Dalgalanması ve 24 saatlik Küresel Kumbara hatırlatıcıları eklendi.</li>
+            <li><strong>📡 Firebase Canlı Duyuru Altyapısı:</strong> Özel etkinlikler, ralli günleri ve önemli piyasa duyuruları için bulut bildirim desteği entegre edildi.</li>
+            <li><strong>🎯 Görev & Takip Doğrulaması:</strong> Vadeli işlemler (Long/Short), 3 farklı hissede al-sat ve mağaza görev sayaçları senkronize çalışır hale getirildi.</li>
         </ul>
 
         <div style="display: flex; align-items: center; margin-bottom: 5px; margin-top: 10px;">
@@ -1362,9 +1362,9 @@ if (btnManip) {
             <strong style="color: #fbbf24; font-size: 13px;">Sistem & Optimizasyonlar:</strong>
         </div>
         <ul style="margin: 5px 0 0 15px; padding: 0;">
-            <li>Çentikli ve delikli ekrana sahip mobil cihazlar için Ödül Merkezi buton erişimleri ve Safe Area yerleşimi düzeltildi.</li>
-            <li>Tarayıcı ve web ortamlarındaki alert kutuları projenin modern neon bilgilendirme modallarıyla eşitlendi.</li>
-            <li>Çevrimdışı ilerleme sonrası VIP / Premium hesaplardan kaynaklanan bakiye kesintisi hataları giderildi.</li>
+            <li>Capacitor 8 arka plan servisleri ve Android 13+ bildirim izin akışları optimize edildi.</li>
+            <li>Çentikli ve delikli ekrana sahip cihazlarda Ödül Merkezi Safe Area yerleşimi kararlı hale getirildi.</li>
+            <li>Uygulama arka plana alındığında pil tüketimini optimize eden zamanlayıcı mekanizması devreye alındı.</li>
         </ul>
     </div>
     <button class="trade-btn" id="btn-close-patch-notes" style="width: 100%; padding: 12px; font-size: 13px; background: #00f2fe; color: #000; box-shadow: 0 5px 15px rgba(0, 242, 254, 0.4); font-weight: 900; border: none; border-radius: 8px; cursor: pointer;">HARİKA, BAŞLAYALIM!</button>
@@ -3199,8 +3199,48 @@ function handleBGM() {
             let isPremium = false;
             let hasAdsRemoved = false;
 
-            let aiRights = 5; // Başlangıç ücretsiz hak
-    let lastAiResetDay = 1; // Premium günlük hak sıfırlama takibi için
+            let aiRights = 5;
+let lastAiResetTime = parseInt(localStorage.getItem('cts_last_ai_time')) || 0;
+serverTimeOffset = 0;
+
+// 1. Firebase sunucu saat farkını dinleme (Eklediğin yer)
+if (typeof firebase !== 'undefined' && firebase.database) {
+    firebase.database().ref('.info/serverTimeOffset').on('value', (snap) => {
+        serverTimeOffset = snap.val() || 0;
+    });
+}
+
+function getTrueServerTime() {
+    return Date.now() + serverTimeOffset;
+}
+
+// 2. ADIM: Fonksiyonu tam buraya ekle
+function checkRealTimeAiRights() {
+    if (!isPremium) return;
+
+    const trueNow = getTrueServerTime();
+    const oneDayMs = 24 * 60 * 60 * 1000; // 24 saat
+
+    // İlk başlangıç kaydı
+    if (lastAiResetTime === 0) {
+        lastAiResetTime = trueNow;
+        localStorage.setItem('cts_last_ai_time', lastAiResetTime);
+        return;
+    }
+
+    // Telefon tarihi ileri alınsa bile gerçek sunucu saatine göre 24 saat kontrolü
+    if (trueNow - lastAiResetTime >= oneDayMs) {
+        const passedDays = Math.floor((trueNow - lastAiResetTime) / oneDayMs);
+        aiRights += passedDays * 2;
+        lastAiResetTime = trueNow;
+
+        localStorage.setItem('cts_last_ai_time', lastAiResetTime);
+        localStorage.setItem('cts_ai_rights', aiRights);
+        
+        if (typeof saveGame === 'function') saveGame();
+        updateAiUI();
+    }
+}
 
             const categoryRequirements = { 
     'ai': 0, 
@@ -3652,7 +3692,7 @@ function checkLiquidations() {
                 showDaySummary(false); 
                 // Eğer Premium varsa ve yeni güne geçildiyse günlük +2 hak ver
                 if (isPremium && gameStats.days !== lastAiResetDay) {
-                    aiRights += 2;
+                    checkRealTimeAiRights();
                     lastAiResetDay = gameStats.days;
                     updateAiUI();
                 }
@@ -10393,7 +10433,13 @@ auth.onAuthStateChanged(async (user) => {
                 }
 
                 if (data.aiRights !== undefined) localStorage.setItem('cts_ai_rights', data.aiRights);
-                if (data.lastAiResetDay !== undefined) localStorage.setItem('cts_ai_reset_day', data.lastAiResetDay);
+                if (data.lastAiResetTime !== undefined) {
+    lastAiResetTime = parseInt(data.lastAiResetTime) || 0;
+    localStorage.setItem('cts_last_ai_time', data.lastAiResetTime);
+} else if (data.lastAiResetDay !== undefined) {
+    // Eski kayıtlardan geçiş yapan oyuncular için geriye dönük uyumluluk
+    localStorage.removeItem('cts_ai_reset_day');
+}
                 if (data.milestones) localStorage.setItem('cts_milestones', JSON.stringify(data.milestones));
                 
                 // Oyun Döngüsü Durumu
@@ -12711,6 +12757,103 @@ document.addEventListener('click', function(e) {
 
     // 🛑 Kasa Destek Paketi butona basılınca tetiklenmez. Yalnızca satın alma başarısında çalışır.
 }, true);
+// ================= BİLDİRİM SİSTEMİ =================
+async function initNotifications() {
+    if (!window.Capacitor) return;
+
+    const { PushNotifications, LocalNotifications, App } = Capacitor.Plugins;
+
+    // A. Firebase Push Bildirimleri (Toplu Duyurular İçin)
+    if (Capacitor.isPluginAvailable('PushNotifications')) {
+        try {
+            let pStatus = await PushNotifications.checkPermissions();
+            if (pStatus.receive !== 'granted') {
+                pStatus = await PushNotifications.requestPermissions();
+            }
+            if (pStatus.receive === 'granted') {
+                await PushNotifications.register();
+            }
+        } catch (e) {
+            console.warn('Push izin hatası:', e);
+        }
+    }
+
+    // B. Yerel Bildirim İzni İsteme
+    if (Capacitor.isPluginAvailable('LocalNotifications')) {
+        try {
+            let lStatus = await LocalNotifications.checkPermissions();
+            if (lStatus.display !== 'granted') {
+                await LocalNotifications.requestPermissions();
+            }
+        } catch (e) {
+            console.warn('Local izin hatası:', e);
+        }
+    }
+
+    // C. Oyuncu oyundan çıktığında veya arka plana attığında bildirimleri kur
+    if (Capacitor.isPluginAvailable('App')) {
+        App.addListener('appStateChange', (state) => {
+            if (!state.isActive) {
+                scheduleGameNotifications();
+            }
+        });
+    }
+}
+
+// 3 Özel Bildirimi Zamanlayan Fonksiyon
+async function scheduleGameNotifications() {
+    if (!window.Capacitor || !Capacitor.isPluginAvailable('LocalNotifications')) return;
+
+    const { LocalNotifications } = Capacitor.Plugins;
+
+    try {
+        // Eski planlanmış bildirimleri temizle
+        const pending = await LocalNotifications.getPending();
+        if (pending.notifications && pending.notifications.length > 0) {
+            await LocalNotifications.cancel(pending);
+        }
+
+        const now = new Date();
+
+        await LocalNotifications.schedule({
+            notifications: [
+                // 1. Gece 00:00 - Günlük Ödül Bildirimi (Her gün tekrarlanır)
+                {
+                    id: 1,
+                    title: "🎁 Günlük Ödül Hazır!",
+                    body: "Yeni gün başladı! Giriş ödülünü ve bonuslarını almak için hemen giriş yap.",
+                    schedule: {
+                        on: { hour: 0, minute: 0 },
+                        repeats: true
+                    }
+                },
+                // 2. Gün İçi Saat 14:00 - Piyasa Hareketlilik Bildirimi (Her gün tekrarlanır)
+                {
+                    id: 2,
+                    title: "📈 Piyasa Hareketli!",
+                    body: "Hisselerde sert fiyat dalgalanmaları yaşanıyor. Hemen gir, portföyünü kontrol et!",
+                    schedule: {
+                        on: { hour: 14, minute: 0 },
+                        repeats: true
+                    }
+                },
+                // 3. Oyundan Çıktıktan 24 Saat Sonra - Küresel Kumbara Bildirimi
+                {
+                    id: 3,
+                    title: "🏆 Küresel Kumbara'yı Kontrol Et!",
+                    body: "Havuza katıl, diğer oyuncularla büyük ödülü paylaş!",
+                    schedule: {
+                        at: new Date(now.getTime() + 24 * 60 * 60 * 1000)
+                    }
+                }
+            ]
+        });
+    } catch (e) {
+        console.warn('Bildirimler zamanlanamadı:', e);
+    }
+}
+// Sayfa/Oyun yüklendiğinde bildirim sistemini ve izinleri başlat
+initNotifications();
 </script>
 
 <!-- ========================================================================== -->
