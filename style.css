@@ -2082,3 +2082,57 @@ body.premium-theme .section-title { color: #fbbf24 !important; }
     pointer-events: auto !important;
     visibility: visible !important;
 }
+/* 1. Sadece ana ekran kapsayıcılarını alt menünün sıcak siyahına (#0b0904) eşitle */
+body.premium-theme,
+body.premium-theme #game-screen,
+body.premium-theme .mobile-screen,
+body.premium-theme .screen-container,
+body.premium-theme .tab-content,
+body.premium-theme main {
+    background: #0b0904 !important;
+    background-color: #0b0904 !important;
+}
+
+/* 2. Kartların ve kutuların arka planını koyu obsidyen yap (içerideki yazılara ASLA dokunmaz) */
+body.premium-theme .card,
+body.premium-theme .portfolio-box,
+body.premium-theme .position-card,
+body.premium-theme .trade-panel,
+body.premium-theme .balance-card {
+    background: #141008 !important;
+    border-color: rgba(234, 179, 8, 0.2) !important;
+}
+/* 1. Tüm Açılır Pencerelerin (Modalların) Gövdesi ve Kenarlıkları */
+body.premium-theme .modal,
+body.premium-theme [id$="-modal"],
+body.premium-theme .modal-content,
+body.premium-theme .popup-box,
+body.premium-theme #summary-modal,
+body.premium-theme #ai-modal,
+body.premium-theme #chart-modal,
+body.premium-theme #treasury-modal,
+body.premium-theme #wealth-modal {
+    background: #120e07 !important;
+    background-color: #120e07 !important;
+    border: 1px solid rgba(234, 179, 8, 0.35) !important;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.9), 0 0 15px rgba(234, 179, 8, 0.08) !important;
+}
+
+/* 2. Modal İçindeki Liste Öğeleri, Seçim Kartları ve İstatistik Kutuları */
+body.premium-theme #ai-stock-list > div,
+body.premium-theme .ai-stock-item,
+body.premium-theme .summary-stat-box,
+body.premium-theme .wealth-stat-box,
+body.premium-theme .chart-container-box,
+body.premium-theme [class*="stat-box"],
+body.premium-theme [class*="list-item"] {
+    background: #18130a !important;
+    border: 1px solid rgba(234, 179, 8, 0.2) !important;
+}
+
+/* 4. Merkez Bankası Tablosu ve Alt Bilgi Kutusu */
+body.premium-theme .treasury-table,
+body.premium-theme .treasury-info-box,
+body.premium-theme [class*="treasury"] {
+    border-color: rgba(234, 179, 8, 0.25) !important;
+}
