@@ -3200,45 +3200,54 @@ function handleBGM() {
             let hasAdsRemoved = false;
 
             let aiRights = 5;
-let lastAiResetTime = parseInt(localStorage.getItem('cts_last_ai_time')) || 0;
-serverTimeOffset = 0;
+            let lastAiResetTime = parseInt(localStorage.getItem('cts_last_ai_time')) || 0;
+            let lastAiResetDay = lastAiResetTime; 
+            serverTimeOffset = 0;
 
-// 1. Firebase sunucu saat farkını dinleme (Eklediğin yer)
+// 1. Firebase sunucu saat farkını dinleme
 if (typeof firebase !== 'undefined' && firebase.database) {
-    firebase.database().ref('.info/serverTimeOffset').on('value', (snap) => {
-        serverTimeOffset = snap.val() || 0;
-    });
+    try {
+        firebase.database().ref('.info/serverTimeOffset').on('value', (snap) => {
+            serverTimeOffset = snap.val() || 0;
+        });
+    } catch (e) {
+        console.warn("Firebase time offset hatası:", e);
+    }
 }
 
 function getTrueServerTime() {
-    return Date.now() + serverTimeOffset;
+    return Date.now() + (serverTimeOffset || 0);
 }
 
-// 2. ADIM: Fonksiyonu tam buraya ekle
+// 2. ADIM: Güvenli Hak Kontrolü
 function checkRealTimeAiRights() {
-    if (!isPremium) return;
+    try {
+        if (!isPremium) return;
 
-    const trueNow = getTrueServerTime();
-    const oneDayMs = 24 * 60 * 60 * 1000; // 24 saat
+        const trueNow = getTrueServerTime();
+        const oneDayMs = 24 * 60 * 60 * 1000;
 
-    // İlk başlangıç kaydı
-    if (lastAiResetTime === 0) {
-        lastAiResetTime = trueNow;
-        localStorage.setItem('cts_last_ai_time', lastAiResetTime);
-        return;
-    }
+        if (!lastAiResetTime || lastAiResetTime === 0) {
+            lastAiResetTime = trueNow;
+            lastAiResetDay = trueNow;
+            localStorage.setItem('cts_last_ai_time', lastAiResetTime);
+            return;
+        }
 
-    // Telefon tarihi ileri alınsa bile gerçek sunucu saatine göre 24 saat kontrolü
-    if (trueNow - lastAiResetTime >= oneDayMs) {
-        const passedDays = Math.floor((trueNow - lastAiResetTime) / oneDayMs);
-        aiRights += passedDays * 2;
-        lastAiResetTime = trueNow;
+        if (trueNow - lastAiResetTime >= oneDayMs) {
+            const passedDays = Math.floor((trueNow - lastAiResetTime) / oneDayMs);
+            aiRights += passedDays * 2;
+            lastAiResetTime = trueNow;
+            lastAiResetDay = trueNow;
 
-        localStorage.setItem('cts_last_ai_time', lastAiResetTime);
-        localStorage.setItem('cts_ai_rights', aiRights);
-        
-        if (typeof saveGame === 'function') saveGame();
-        updateAiUI();
+            localStorage.setItem('cts_last_ai_time', lastAiResetTime);
+            localStorage.setItem('cts_ai_rights', aiRights);
+            
+            if (typeof saveGame === 'function') saveGame();
+            if (typeof updateAiUI === 'function') updateAiUI();
+        }
+    } catch (err) {
+        console.warn("checkRealTimeAiRights hatası:", err);
     }
 }
 
@@ -12758,7 +12767,7 @@ document.addEventListener('click', function(e) {
     // 🛑 Kasa Destek Paketi butona basılınca tetiklenmez. Yalnızca satın alma başarısında çalışır.
 }, true);
 // ================= BİLDİRİM SİSTEMİ (TAM İZOLE) =================
-/*
+
 async function initNotifications() {
     if (!window.Capacitor) return;
 
@@ -12844,7 +12853,6 @@ async function scheduleGameNotifications() {
 setTimeout(() => {
     initNotifications();
 }, 3000);
-*/
 </script>
 
 <!-- ========================================================================== -->
