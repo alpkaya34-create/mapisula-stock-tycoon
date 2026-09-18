@@ -12757,103 +12757,92 @@ document.addEventListener('click', function(e) {
 
     // 🛑 Kasa Destek Paketi butona basılınca tetiklenmez. Yalnızca satın alma başarısında çalışır.
 }, true);
-// ================= BİLDİRİM SİSTEMİ =================
+// ================= BİLDİRİM SİSTEMİ (TAM İZOLE) =================
 async function initNotifications() {
     if (!window.Capacitor) return;
 
-    const { PushNotifications, LocalNotifications, App } = Capacitor.Plugins;
+    try {
+        const Plugins = window.Capacitor.Plugins || {};
+        const { PushNotifications, LocalNotifications, App } = Plugins;
 
-    // A. Firebase Push Bildirimleri (Toplu Duyurular İçin)
-    if (Capacitor.isPluginAvailable('PushNotifications')) {
-        try {
-            let pStatus = await PushNotifications.checkPermissions();
-            if (pStatus.receive !== 'granted') {
-                pStatus = await PushNotifications.requestPermissions();
-            }
-            if (pStatus.receive === 'granted') {
-                await PushNotifications.register();
-            }
-        } catch (e) {
-            console.warn('Push izin hatası:', e);
+        // 1. Push Bildirimleri (Hata fırlatmaz, sessizce register olur)
+        if (PushNotifications && typeof PushNotifications.checkPermissions === 'function') {
+            PushNotifications.checkPermissions().then(pStatus => {
+                if (pStatus.receive !== 'granted') {
+                    PushNotifications.requestPermissions().catch(() => {});
+                } else {
+                    PushNotifications.register().catch(() => {});
+                }
+            }).catch(e => console.warn('Push izin:', e));
         }
-    }
 
-    // B. Yerel Bildirim İzni İsteme
-    if (Capacitor.isPluginAvailable('LocalNotifications')) {
-        try {
-            let lStatus = await LocalNotifications.checkPermissions();
-            if (lStatus.display !== 'granted') {
-                await LocalNotifications.requestPermissions();
-            }
-        } catch (e) {
-            console.warn('Local izin hatası:', e);
+        // 2. Yerel Bildirim İzni
+        if (LocalNotifications && typeof LocalNotifications.checkPermissions === 'function') {
+            LocalNotifications.checkPermissions().then(lStatus => {
+                if (lStatus.display !== 'granted') {
+                    LocalNotifications.requestPermissions().catch(() => {});
+                }
+            }).catch(e => console.warn('Local izin:', e));
         }
-    }
 
-    // C. Oyuncu oyundan çıktığında veya arka plana attığında bildirimleri kur
-    if (Capacitor.isPluginAvailable('App')) {
-        App.addListener('appStateChange', (state) => {
-            if (!state.isActive) {
-                scheduleGameNotifications();
-            }
-        });
+        // 3. Arka Plana Geçiş Dinleyicisi
+        if (App && typeof App.addListener === 'function') {
+            App.addListener('appStateChange', (state) => {
+                if (state && !state.isActive) {
+                    scheduleGameNotifications();
+                }
+            });
+        }
+    } catch (err) {
+        console.warn('Bildirim servisi hatası:', err);
     }
 }
 
-// 3 Özel Bildirimi Zamanlayan Fonksiyon
 async function scheduleGameNotifications() {
-    if (!window.Capacitor || !Capacitor.isPluginAvailable('LocalNotifications')) return;
-
-    const { LocalNotifications } = Capacitor.Plugins;
-
     try {
-        // Eski planlanmış bildirimleri temizle
-        const pending = await LocalNotifications.getPending();
-        if (pending.notifications && pending.notifications.length > 0) {
-            await LocalNotifications.cancel(pending);
+        if (!window.Capacitor || !window.Capacitor.Plugins || !window.Capacitor.Plugins.LocalNotifications) return;
+
+        const { LocalNotifications } = window.Capacitor.Plugins;
+        const pending = await LocalNotifications.getPending().catch(() => ({ notifications: [] }));
+
+        if (pending && pending.notifications && pending.notifications.length > 0) {
+            await LocalNotifications.cancel(pending).catch(() => {});
         }
 
         const now = new Date();
 
         await LocalNotifications.schedule({
             notifications: [
-                // 1. Gece 00:00 - Günlük Ödül Bildirimi (Her gün tekrarlanır)
                 {
                     id: 1,
                     title: "🎁 Günlük Ödül Hazır!",
                     body: "Yeni gün başladı! Giriş ödülünü ve bonuslarını almak için hemen giriş yap.",
-                    schedule: {
-                        on: { hour: 0, minute: 0 },
-                        repeats: true
-                    }
+                    schedule: { on: { hour: 0, minute: 0 }, repeats: true }
                 },
-                // 2. Gün İçi Saat 14:00 - Piyasa Hareketlilik Bildirimi (Her gün tekrarlanır)
                 {
                     id: 2,
                     title: "📈 Piyasa Hareketli!",
                     body: "Hisselerde sert fiyat dalgalanmaları yaşanıyor. Hemen gir, portföyünü kontrol et!",
-                    schedule: {
-                        on: { hour: 14, minute: 0 },
-                        repeats: true
-                    }
+                    schedule: { on: { hour: 14, minute: 0 }, repeats: true }
                 },
-                // 3. Oyundan Çıktıktan 24 Saat Sonra - Küresel Kumbara Bildirimi
                 {
                     id: 3,
                     title: "🏆 Küresel Kumbara'yı Kontrol Et!",
                     body: "Havuza katıl, diğer oyuncularla büyük ödülü paylaş!",
-                    schedule: {
-                        at: new Date(now.getTime() + 24 * 60 * 60 * 1000)
-                    }
+                    schedule: { at: new Date(now.getTime() + 24 * 60 * 60 * 1000) }
                 }
             ]
-        });
+        }).catch(e => console.warn('Schedule hatası:', e));
     } catch (e) {
-        console.warn('Bildirimler zamanlanamadı:', e);
+        console.warn('scheduleGameNotifications hatası:', e);
     }
 }
-// Sayfa/Oyun yüklendiğinde bildirim sistemini ve izinleri başlat
-initNotifications();
+
+// ⚠️ KRİTİK DÜZELTME: Doğrudan çağırmıyoruz!
+// Oyun açılıp borsa döngüsü, haberler ve grafikler oturduktan 3 saniye sonra sessizce başlar:
+setTimeout(() => {
+    initNotifications();
+}, 3000);
 </script>
 
 <!-- ========================================================================== -->
