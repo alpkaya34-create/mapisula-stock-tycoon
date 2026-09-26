@@ -246,40 +246,43 @@ function checkUserEntitlements(customerInfo) {
     const activeEntitlements = customerInfo.entitlements.active || {};
 
     // A) VIP ABONELİK KONTROLÜ
-const isVIP = activeEntitlements['premium'] !== undefined || 
-              activeEntitlements['premium_abonelik'] !== undefined ||
-              activeEntitlements['cts_premium_monthly'] !== undefined ||
-              activeEntitlements['cts_premium_monthly:monthly'] !== undefined;
+    const isVIP = activeEntitlements['premium'] !== undefined || 
+                  activeEntitlements['premium_abonelik'] !== undefined ||
+                  activeEntitlements['cts_premium_monthly'] !== undefined ||
+                  activeEntitlements['cts_premium_monthly:monthly'] !== undefined;
 
-if (isVIP) {
-    window.isPremium = true;
-    try { if (typeof isPremium !== 'undefined') isPremium = true; } catch(e){}
-    localStorage.setItem('cts_premium', 'true');
-    localStorage.setItem('cts_theme_active', 'true');
-    localStorage.setItem('cts_has_used_premium_intro', 'true');
-    document.body.classList.add('premium-theme');
-    
-    // 👑 VIP AKTİF: Eğer simge zaten altın DEĞİLSE değiştir (Açılışta tekrar eden alert'i keser!)
-    if (localStorage.getItem('cts_active_app_icon') !== 'gold') {
-        setAppIconToGold(true);
+    if (isVIP) {
+        window.isPremium = true;
+        try { if (typeof isPremium !== 'undefined') isPremium = true; } catch(e){}
+        localStorage.setItem('cts_premium', 'true');
+        localStorage.setItem('cts_theme_active', 'true');
+        localStorage.setItem('cts_has_used_premium_intro', 'true');
+        document.body.classList.add('premium-theme');
+        
+        // 👑 VIP AKTİF: Eğer simge zaten altın DEĞİLSE değiştir (Açılışta tekrar eden alert'i keser!)
+        if (localStorage.getItem('cts_active_app_icon') !== 'gold') {
+            setAppIconToGold(true);
+        }
+        
+        updatePremiumButtonUI();
+        updateProfileVipBadge();
+        if (typeof updateMarketCapUI === 'function') updateMarketCapUI(); // 📌 EKLENDİ (Açılışta anında Altın yap)
+    } else {
+        window.isPremium = false;
+        try { if (typeof isPremium !== 'undefined') isPremium = false; } catch(e){}
+        localStorage.removeItem('cts_premium');
+        localStorage.removeItem('cts_theme_active');
+        document.body.classList.remove('premium-theme');
+
+        // 🔄 VIP DEĞİL: Eğer simge altın kalmışsa standart ikona dön
+        if (localStorage.getItem('cts_active_app_icon') === 'gold') {
+            setAppIconToGold(false);
+        }
+
+        updatePremiumButtonUI();
+        updateProfileVipBadge();
+        if (typeof updateMarketCapUI === 'function') updateMarketCapUI(); // 📌 EKLENDİ (Açılışta anında Mavi yap)
     }
-    
-    updatePremiumButtonUI();
-    updateProfileVipBadge();
-} else {
-    window.isPremium = false;
-    try { if (typeof isPremium !== 'undefined') isPremium = false; } catch(e){}
-    localStorage.removeItem('cts_premium');
-    localStorage.removeItem('cts_theme_active');
-    document.body.classList.remove('premium-theme');
-
-    // 🔄 VIP DEĞİL: Eğer simge altın kalmışsa standart ikona dön
-    if (localStorage.getItem('cts_active_app_icon') === 'gold') {
-        setAppIconToGold(false);
-    }
-
-    updatePremiumButtonUI();
-    updateProfileVipBadge();
 }
 
     // B) 🛡️ REKLAMLARI KALDIR KONTROLÜ (Geri Yükleme Mantığı)
@@ -323,7 +326,7 @@ if (hasNoAds) {
         btnNoAds.onclick = buyRemoveAdsAction;
     }
 }
-}
+
 
 // ==========================================================================
 // 3. Güvenli Tekil Ürün Satın Alma Yardımcısı (Oyun Dondurma Korumalı)
@@ -402,6 +405,11 @@ async function purchasePremiumSubscription(e) {
         const active = document.body.classList.contains('premium-theme');
         localStorage.setItem('cts_theme_active', active ? 'true' : 'false');
 
+        // 📌 İŞTE BURAYA EKLİYORUZ: TEMA DEĞİŞTİĞİ AN ENDEKS ŞERİDİNİ TETİKLE
+        if (typeof updateMarketCapUI === 'function') {
+            updateMarketCapUI();
+        }
+
         if (active) {
             if (typeof showComicThemePopup === 'function') showComicThemePopup('premium');
             if (typeof playSound === 'function') playSound('milestone');
@@ -465,6 +473,7 @@ async function purchasePremiumSubscription(e) {
 
             document.body.classList.add('premium-theme');
             updatePremiumButtonUI();
+            if (typeof updateMarketCapUI === 'function') updateMarketCapUI(); // 📌 SATIN ALINCA DA ANINDA ALTIN OLSUN
 
             alert("Tebrikler! VIP Aboneliğiniz başarıyla aktif edildi! 👑");
         } else {
@@ -2037,6 +2046,29 @@ if (btnManip) {
 </svg> VIP</button>
         </div>
 
+        <!-- CTS 100 ENDEKS ŞERİDİ (SVG LOGOLU & TAM SAYI) -->
+<div id="market-index-bar" class="market-index-bar">
+    <div class="index-left">
+        <span class="index-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9"></circle>
+                <path d="M7 13.5l3-3 2.5 2.5 4.5-4.5"></path>
+                <polyline points="14 8.5 17 8.5 17 11.5"></polyline>
+            </svg>
+        </span>
+        <span class="index-title">CTS 100</span>
+        <span id="market-cap-value" class="index-val">$0</span>
+    </div>
+
+    <div class="index-center">
+        <span class="stat-item bull"><span id="market-up-count">0</span> Artan</span>
+        <span class="stat-divider">•</span>
+        <span class="stat-item bear"><span id="market-down-count">0</span> Düşen</span>
+    </div>
+
+    <div id="market-cap-change" class="index-badge neutral">%0.00</div>
+</div>
+
         <div id="news-toast" class="news-toast">
             <div id="news-icon" class="news-icon">📰</div>
             <div class="news-content">
@@ -3203,7 +3235,7 @@ function handleBGM() {
             let lastAiResetTime = parseInt(localStorage.getItem('cts_last_ai_time')) || 0;
             let lastAiResetDay = lastAiResetTime; 
             serverTimeOffset = 0;
-
+            
 // 1. Firebase sunucu saat farkını dinleme
 if (typeof firebase !== 'undefined' && firebase.database) {
     try {
@@ -4027,36 +4059,129 @@ function updateInterestRate() {
             });
 
             function renderMarketList() {
-    const cardsArray = Array.from(stockCards);
-    // YENİ: 'quantum' kategorisi 7. sıraya eklendi
-    const categoryOrder = { 'ai': 1, 'bio': 2, 'energy': 3, 'ecom': 4, 'cyber': 5, 'defense': 6, 'quantum': 7, 'vip': 8 };
-    cardsArray.sort((a, b) => (categoryOrder[a.dataset.cat] || 99) - (categoryOrder[b.dataset.cat] || 99));
-    
-    marketContainer.innerHTML = '';
-    cardsArray.forEach(card => {
-        if (card.dataset.cat === 'crypto') return; // Kriptoları ana borsaya karıştırma
-        if(currentCategoryFilter === 'all' || card.dataset.cat === currentCategoryFilter) {
-            marketContainer.appendChild(card);
+                const cardsArray = Array.from(stockCards);
+                // YENİ: 'quantum' kategorisi 7. sıraya eklendi
+                const categoryOrder = { 'ai': 1, 'bio': 2, 'energy': 3, 'ecom': 4, 'cyber': 5, 'defense': 6, 'quantum': 7, 'vip': 8 };
+                cardsArray.sort((a, b) => (categoryOrder[a.dataset.cat] || 99) - (categoryOrder[b.dataset.cat] || 99));
+                
+                marketContainer.innerHTML = '';
+                cardsArray.forEach(card => {
+                    if (card.dataset.cat === 'crypto') return; // Kriptoları ana borsaya karıştırma
+                    if(currentCategoryFilter === 'all' || card.dataset.cat === currentCategoryFilter) {
+                        marketContainer.appendChild(card);
+                    }
+                });
+
+                // Liste render edildiğinde endeksi güncelle
+                updateMarketCapUI();
+            }
+
+            // --- CTS 100 ENDEKSİ HESAPLAMA ---
+function updateMarketCapUI() {
+    try {
+        let totalUnitSum = 0;
+        let upCount = 0;
+        let downCount = 0;
+        let sumTickPercents = 0;
+        let countedStocks = 0;
+        const SHARES_PER_STOCK = 1000000; // 1 Milyon lot arz
+
+        // 1. Hisse kartlarındaki fiyatları ve anlık yüzdeleri topla
+        if (typeof stockCards !== 'undefined' && stockCards) {
+            stockCards.forEach(card => {
+                if (card.dataset && card.dataset.cat === 'crypto') return;
+                
+                const priceEl = card.querySelector('.stock-price, h4, .price');
+                if (priceEl) {
+                    const num = parseFloat(priceEl.innerText.replace(/[^0-9.-]+/g, '')) || 0;
+                    totalUnitSum += num;
+                }
+
+                const changeEl = card.querySelector('.stock-change');
+                if (changeEl) {
+                    const txt = changeEl.innerText;
+                    let cleanNum = parseFloat(txt.replace(/[^0-9.-]+/g, '')) || 0;
+                    let isNegative = txt.includes('-') || txt.includes('▼');
+                    let signedPercent = isNegative ? -Math.abs(cleanNum) : Math.abs(cleanNum);
+
+                    sumTickPercents += signedPercent;
+                    countedStocks++;
+
+                    if (signedPercent >= 0) {
+                        upCount++;
+                    } else {
+                        downCount++;
+                    }
+                }
+            });
         }
-    });
+
+        if (totalUnitSum === 0) return;
+
+        // Gerçek Toplam Değer (Örn: $46,054,790,000)
+        const totalMarketCap = Math.round(totalUnitSum * SHARES_PER_STOCK);
+
+        // Anlık piyasa ortalama yüzdelik değişimi
+        const instantMarketPercent = countedStocks > 0 ? (sumTickPercents / countedStocks) : 0;
+
+        const barEl = document.getElementById('market-index-bar');
+        const valEl = document.getElementById('market-cap-value');
+        const badgeEl = document.getElementById('market-cap-change');
+        const upCountEl = document.getElementById('market-up-count');
+        const downCountEl = document.getElementById('market-down-count');
+
+        // 🎨 AKTİF SEÇİLİ TEMA KONTROLÜ (Oyunun Anahtarlarıyla Tam Senkron)
+        const isGoldThemeActive = document.body.classList.contains('premium-theme') || 
+                                  localStorage.getItem('cts_theme_active') === 'true';
+
+        if (barEl) {
+            if (isGoldThemeActive) {
+                barEl.classList.add('premium-theme');
+            } else {
+                barEl.classList.remove('premium-theme');
+            }
+        }
+
+        // Toplam Piyasa Değerini Tam Sayı Olarak Bas
+        if (valEl) {
+            valEl.innerText = '$' + totalMarketCap.toLocaleString('en-US');
+        }
+
+        // Ortadaki Artan / Düşen Sayacı
+        if (upCountEl) upCountEl.innerText = upCount;
+        if (downCountEl) downCountEl.innerText = downCount;
+
+        // Anlık Yüzdelik Rozet
+        if (badgeEl) {
+            const isUp = instantMarketPercent >= 0;
+            const sign = isUp ? '+' : '';
+            badgeEl.innerText = `${sign}%${instantMarketPercent.toFixed(2)}`;
+            badgeEl.className = `index-badge ${instantMarketPercent > 0.001 ? 'up' : instantMarketPercent < -0.001 ? 'down' : 'neutral'}`;
+        }
+    } catch (e) {
+        console.warn("CTS Endeks hatası:", e);
+    }
 }
 
             function updateBalanceUI() {
-    displayPlayerBalance.innerText = formatMoney(playerBalance);
-    
-    // --- PREMIUM TEMA KONTROLÜ ---
-    if (isPremium) {
-        displayPlayerBalance.style.color = "#fbbf24"; // Canlı altın sarısı
-        displayPlayerBalance.style.textShadow = "0 0 20px rgba(251, 191, 36, 0.8)"; // Daha yoğun sarı parlaklık
-    } else {
-        displayPlayerBalance.style.color = "#ffffff"; // Premium değilse tertemiz beyaz
-        displayPlayerBalance.style.textShadow = "none"; // Parlaklık tamamen kapalı
-    }
-    
-    checkCategoryUnlocks(); 
-    updateInterestRate(); 
-    updateStoreUI();
-    checkMilestones();
+                if (displayPlayerBalance) {
+                    displayPlayerBalance.innerText = formatMoney(playerBalance);
+                    
+                    // --- PREMIUM TEMA KONTROLÜ ---
+                    if (isPremium) {
+                        displayPlayerBalance.style.color = "#fbbf24"; // Canlı altın sarısı
+                        displayPlayerBalance.style.textShadow = "0 0 20px rgba(251, 191, 36, 0.8)"; // Daha yoğun sarı parlaklık
+                    } else {
+                        displayPlayerBalance.style.color = "#ffffff"; // Premium değilse tertemiz beyaz
+                        displayPlayerBalance.style.textShadow = "none"; // Parlaklık tamamen kapalı
+                    }
+                }
+                
+                if (typeof checkCategoryUnlocks === 'function') checkCategoryUnlocks(); 
+                if (typeof updateInterestRate === 'function') updateInterestRate(); 
+                if (typeof updateStoreUI === 'function') updateStoreUI();
+                if (typeof checkMilestones === 'function') checkMilestones();
+            }
                 
     // YENİ EKLENEN: Terminal ücreti yazısını Premium durumuna göre değiştirme
     const feeDisplay = document.getElementById('terminal-fee-display');
@@ -4101,7 +4226,7 @@ function updateInterestRate() {
     if (typeof updateCashSupportUI === 'function') {
         updateCashSupportUI();
     }
-}
+
 
 // Kasa Destek paketinin butonunu ve fiyatını her para değişiminde güncelleyen ana fonksiyon
 function updateCashSupportUI() {
@@ -5851,6 +5976,7 @@ priceElement.innerText = "$" + newPrice.toLocaleString('en-US', { minimumFractio
                 // TEK MERKEZDEN CANLI UI GÜNCELLEMESİ
                 // Portföy, vadeli işlemler, kasa ve kasa grafiği sekmeden bağımsız güncellenir.
                 refreshLiveUI(true);
+                if (typeof updateMarketCapUI === 'function') { updateMarketCapUI(); } // 📌 CTS 100 ENDEKSİNİ CANLI GÜNCELLE
                 if (tickCount >= 45) { showDaySummary(true); } else { saveGame(); }
             }, 4000);
             // ==========================================================================
@@ -5948,6 +6074,7 @@ priceElement.innerText = "$" + newPrice.toLocaleString('en-US', { minimumFractio
                     displayTradeStockPrice.innerText = priceElement.innerText;
                     if (typeof updateTotalCost === "function") updateTotalCost();
                 }
+                if (typeof updateMarketCapUI === 'function') { updateMarketCapUI(); } // 📌 HABER ŞOKUNDA ENDEKSİ ANINDA GÜNCELLE
             }
 
             setInterval(() => {
