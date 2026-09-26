@@ -378,52 +378,71 @@ async function buyStoreProductById(productId) {
     }
 }
 
-let lastThemeToggleTime = 0;
+// Sayfa başına (veya fonksiyonun hemen üstüne) zaman değişkenini garantiye al
+if (typeof window.lastThemeToggleTime === 'undefined') {
+    window.lastThemeToggleTime = 0;
+}
 
 async function purchasePremiumSubscription(e) {
     if (e) {
         if (e.preventDefault) e.preventDefault();
         if (e.stopPropagation) e.stopPropagation();
-        if (e.stopImmediatePropagation) e.stopImmediatePropagation();
     }
 
     const now = Date.now();
-    if (now - lastThemeToggleTime < 800) return;
-    lastThemeToggleTime = now;
+    if (now - window.lastThemeToggleTime < 400) return; // Çift tıklama koruması (400ms)
+    window.lastThemeToggleTime = now;
 
     const buyBtn = document.getElementById('btn-premium-toggle-final');
-    const buttonText = buyBtn ? buyBtn.innerText.trim().toUpperCase() : "";
+    const buttonText = buyBtn ? (buyBtn.innerText || buyBtn.textContent || "").trim().toUpperCase() : "";
 
-    // Zaten aboneyse sadece tema değiştirir
-    const isAlreadySubscribed = buttonText.includes("TEMA DEĞİŞTİR") || 
-                                document.body.classList.contains('premium-theme') || 
-                                localStorage.getItem('cts_theme_active') === 'true' ||
-                                (typeof window.isPremium !== 'undefined' && window.isPremium);
+    // Kullanıcı abone mi kontrolü
+    const isUserVip = (typeof window.isPremium !== 'undefined' && window.isPremium) ||
+                      (typeof isPremium !== 'undefined' && isPremium) ||
+                      localStorage.getItem('cts_premium') === 'true' ||
+                      buttonText.includes("TEMA DEĞİŞTİR");
 
-    if (isAlreadySubscribed) {
+    // 🎨 EĞER ZATEN ABONEYSE: DOĞRUDAN TEMAYI DEĞİŞTİR
+    if (isUserVip) {
+        // 1. Body sınıfını değiştir
         document.body.classList.toggle('premium-theme');
-        const active = document.body.classList.contains('premium-theme');
-        localStorage.setItem('cts_theme_active', active ? 'true' : 'false');
+        const isNowGold = document.body.classList.contains('premium-theme');
+        
+        // 2. Hafızayı güncelle
+        localStorage.setItem('cts_theme_active', isNowGold ? 'true' : 'false');
 
-        // 📌 İŞTE BURAYA EKLİYORUZ: TEMA DEĞİŞTİĞİ AN ENDEKS ŞERİDİNİ TETİKLE
+        // 3. CTS 100 Endeks Şeridini Anında Güncelle
+        const barEl = document.getElementById('market-index-bar');
+        if (barEl) {
+            if (isNowGold) {
+                barEl.classList.add('premium-theme');
+            } else {
+                barEl.classList.remove('premium-theme');
+            }
+        }
         if (typeof updateMarketCapUI === 'function') {
             updateMarketCapUI();
         }
 
-        if (active) {
+        // 4. Kasa Bakiyesi ve Buton Renklerini Anında Güncelle
+        if (typeof updateBalanceUI === 'function') {
+            updateBalanceUI();
+        }
+
+        // 5. Pop-up ve Ses efektleri
+        if (isNowGold) {
             if (typeof showComicThemePopup === 'function') showComicThemePopup('premium');
             if (typeof playSound === 'function') playSound('milestone');
         } else {
             if (typeof showComicThemePopup === 'function') showComicThemePopup('standard');
             if (typeof playSound === 'function') playSound('tick');
         }
-        return;
+
+        return; // Satın alma akışına geçmeden bitir
     }
 
-    // ⏸️ 1. İLK KEZ / YENİDEN ABONE OLACAK: Google Play açılmadan önce piyasayı dondur
+    // --- BURADAN SONRASI İLK KEZ SATIN ALMA AKIŞI (Aynı kalacak) ---
     isGamePaused = true;
-    console.log("⏸️ VIP Abonelik penceresi açıldı, isGamePaused = true yapıldı.");
-
     try {
         const Purchases = window.Capacitor?.Plugins?.Purchases;
         if (!Purchases) {
@@ -432,18 +451,13 @@ async function purchasePremiumSubscription(e) {
         }
 
         const offerings = await Purchases.getOfferings();
-        
         if (offerings.current !== null && offerings.current.monthly !== null) {
             const packageToBuy = offerings.current.monthly;
-            
-            // 🎯 GOOGLE PLAY TEKLİFİNİ (₺99.99 OFFER) ÖNCELİKLENDİR
             let purchaseParams = { aPackage: packageToBuy };
             const hasUsedIntro = localStorage.getItem('cts_has_used_premium_intro') === 'true';
 
-            // Pakete bağlı abonelik seçenekleri (subscriptionOptions) varsa tara:
             const subOptions = packageToBuy.product?.subscriptionOptions || packageToBuy.subscriptionOptions;
             if (!hasUsedIntro && Array.isArray(subOptions) && subOptions.length > 0) {
-                // Teklif kimliğinde 'intro' geçen veya taban fiyattan (₺199) daha düşük olan teklifi bul
                 const promoOption = subOptions.find(opt => 
                     (opt.id && opt.id.toLowerCase().includes('intro')) ||
                     (opt.pricingPhases && opt.pricingPhases.some(p => p.price && p.price.amountMicros < 150000000))
@@ -454,12 +468,10 @@ async function purchasePremiumSubscription(e) {
                         aPackage: packageToBuy,
                         subscriptionOption: promoOption
                     };
-                    console.log("🎯 İndirimli Teklif (₺99.99) Google Play'e zorlandı:", promoOption.id);
                 }
             }
 
             const res = await Purchases.purchasePackage(purchaseParams);
-
             const customerData = res?.customerInfo || res;
             if (typeof checkUserEntitlements === 'function') {
                 checkUserEntitlements(customerData);
@@ -468,36 +480,25 @@ async function purchasePremiumSubscription(e) {
             window.isPremium = true;
             localStorage.setItem('cts_theme_active', 'true');
             localStorage.setItem('cts_premium', 'true');
-            // 📌 Tanıtım teklifini kullandı olarak işaretle
             localStorage.setItem('cts_has_used_premium_intro', 'true');
 
             document.body.classList.add('premium-theme');
             updatePremiumButtonUI();
-            if (typeof updateMarketCapUI === 'function') updateMarketCapUI(); // 📌 SATIN ALINCA DA ANINDA ALTIN OLSUN
+            if (typeof updateMarketCapUI === 'function') updateMarketCapUI();
+            if (typeof updateBalanceUI === 'function') updateBalanceUI();
 
             alert("Tebrikler! VIP Aboneliğiniz başarıyla aktif edildi! 👑");
         } else {
             alert("Abonelik paketi yüklenemedi. Lütfen internet bağlantınızı kontrol edin.");
         }
     } catch (error) {
-        const errMsg = (error.message || JSON.stringify(error)).toLowerCase();
-
-        // 🛑 Farklı hesap çakışması uyarısı
-        if (errMsg.includes("already active") || errMsg.includes("already owned") || errMsg.includes("already purchased") || errMsg.includes("zaten sizde var")) {
-            alert("⚠️ DİKKAT: Telefonunuzdaki Google Play hesabında aktif bir abonelik zaten mevcut.\n\nFarklı bir hesapla abone olmak için Google Play Store uygulamasından diğer Google hesabınıza geçiş yapmanız gerekmektedir.");
-            return;
-        }
-
         if (!error.userCancelled && error.code !== "USER_CANCELLED") {
             console.error("Satın alma hatası:", error);
-            alert("Satın alma sırasında bir sorun oluştu: " + (error.message || error));
         }
     } finally {
-        // ▶️ 2. Pencere kapandığında gün sonu özeti açık değilse oyunu devam ettir
         const isSummaryOpen = typeof summaryModal !== 'undefined' && summaryModal && summaryModal.classList.contains('show');
         if (!isSummaryOpen) {
             isGamePaused = false;
-            console.log("▶️ VIP Abonelik kapandı, isGamePaused = false yapıldı.");
         }
     }
 }
