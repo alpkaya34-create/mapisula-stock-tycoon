@@ -750,12 +750,13 @@ if (btnManip) {
         .profile-stat-label { font-size: 13px; color: #94a3b8; font-weight: 800; text-transform: uppercase; }
         .profile-stat-value { font-size: 18px; color: #fff; font-weight: 900; }
 
-        #summary-modal, #reset-confirm-modal, #bankruptcy-modal, #store-modal, #ai-modal, #chart-modal, #beta-warning-modal, #milestone-modal, #achievements-modal, #patch-notes-modal {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 90%; max-width: 350px; background: #0b1126; border: 1px solid #1e293b; border-radius: 20px; padding: 24px; z-index: 1000; opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
-        }
-        #summary-modal.show, #reset-confirm-modal.show, #bankruptcy-modal.show, #store-modal.show, #ai-modal.show, #chart-modal.show, #beta-warning-modal.show, #milestone-modal.show, #achievements-modal.show, #patch-notes-modal.show { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
-        #summary-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
-        #summary-overlay.active { opacity: 1; pointer-events: auto; }
+        #summary-modal, #reset-confirm-modal, #bankruptcy-modal, #store-modal, #ai-modal, #chart-modal, #milestone-modal, #achievements-modal, #patch-notes-modal {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 90%; max-width: 350px; background: #0b1126; border: 1px solid #1e293b; border-radius: 20px; padding: 24px; z-index: 1000; opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+#summary-modal.show, #reset-confirm-modal.show, #bankruptcy-modal.show, #store-modal.show, #ai-modal.show, #chart-modal.show, #milestone-modal.show, #achievements-modal.show, #patch-notes-modal.show { 
+    opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); 
+}
         #summary-modal {
     z-index: 99999 !important;
 }
@@ -1330,22 +1331,7 @@ if (btnManip) {
         </p>
         <button class="trade-btn" id="btn-close-milestone" style="width: 100%; padding: 12px; font-size: 14px; background: #fbbf24; color: #000; box-shadow: 0 5px 15px rgba(251, 191, 36, 0.4);">HARİKA!</button>
     </div>
-    <!-- BETA UYARI MODALI -->
-<div id="beta-warning-modal">
-    <div style="text-align: center; border-bottom: 1px solid #1e293b; padding-bottom: 15px; margin-bottom: 15px;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 36px; height: 36px; display: block; margin: 0 auto 10px auto; filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.6));">
-            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-            <line x1="12" y1="22.08" x2="12" y2="12"></line>
-        </svg>
-        <h2 style="color: #fbbf24; font-size: 18px; font-weight: 900; margin: 0; letter-spacing: 0.5px;">KAPALI BETA SÜRÜMÜ</h2>
-    </div>
-    <p style="color: #94a3b8; font-size: 13px; text-align: center; margin-bottom: 20px; line-height: 1.6;">
-        CTS Stock Market Tycoon şu anda <strong style="color: #fff;">Kapalı Test (Beta)</strong> sürecindedir.<br><br>
-        Oyun deneyiminiz sırasında karşılaştığınız teknik aksaklıkları veya geri bildirimlerinizi bizimle paylaşarak geliştirmemize katkıda bulunabilirsiniz. Katılımınız ve desteğiniz için teşekkür ederiz!
-    </p>
-    <button class="trade-btn" id="btn-close-beta-warning" style="width: 100%; padding: 12px; font-size: 13px; background: #fbbf24; color: #000; box-shadow: 0 5px 15px rgba(251, 191, 36, 0.3); border: none; border-radius: 8px; font-weight: 900; cursor: pointer;">ANLADIM, BAŞLA</button>
-</div>
+    
     <!-- SÜRÜM NOTLARI (GÜNCELLEMELER) MODALI -->
 <div id="patch-notes-modal" class="modal">
     <div style="text-align: center; border-bottom: 1px solid #1e293b; padding-bottom: 15px; margin-bottom: 15px;">
@@ -1353,7 +1339,7 @@ if (btnManip) {
             <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path>
             <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path>
         </svg>
-        <h2 style="color: #00f2fe; font-size: 18px; font-weight: 900; margin: 0; letter-spacing: 0.5px;">YENİ SÜRÜM NOTLARI v1.1.3</h2>
+        <h2 style="color: #00f2fe; font-size: 18px; font-weight: 900; margin: 0; letter-spacing: 0.5px;">YENİ SÜRÜM NOTLARI v1.1.4</h2>
     </div>
     <div style="color: #cbd5e1; font-size: 12px; text-align: left; margin-bottom: 20px; line-height: 1.6; max-height: 220px; overflow-y: auto; padding-right: 5px;">
         
@@ -1362,9 +1348,9 @@ if (btnManip) {
             <strong style="color: #10b981; font-size: 13px;">Önemli Yenilikler & İyileştirmeler:</strong>
         </div>
         <ul style="margin: 5px 0 15px 15px; padding: 0;">
-            <li><strong>🔔 Akıllı Yerel Bildirimler:</strong> Gece 00:00 Günlük Giriş Ödülü, saat 14:00 Piyasa Dalgalanması ve 24 saatlik Küresel Kumbara hatırlatıcıları eklendi.</li>
-            <li><strong>📡 Firebase Canlı Duyuru Altyapısı:</strong> Özel etkinlikler, ralli günleri ve önemli piyasa duyuruları için bulut bildirim desteği entegre edildi.</li>
-            <li><strong>🎯 Görev & Takip Doğrulaması:</strong> Vadeli işlemler (Long/Short), 3 farklı hissede al-sat ve mağaza görev sayaçları senkronize çalışır hale getirildi.</li>
+            <li><strong>🎯 Canlı Günlük Görevler & Ödül Motoru:</strong> Alım-satım, vadeli işlemler (Long/Short), AI analist ve mağaza destek paketi sayaçları anlık takip edilecek şekilde sıfırdan yapılandırıldı; şartlar sağlandığında ödüllerin anında talep edilebilmesi sağlandı.</li>
+            <li><strong>🐷 Küresel Kumbara Limit Artışı:</strong> Global Kumbara ödül tavanı $2.000.000'a, Mega Global Kumbara ödül limiti ise $5.000.000'a yükseltilerek oyun ekonomisi güçlendirildi.</li>
+            <li><strong>📈 Çizgi & Mum Grafik Sabitlemesi:</strong> Teknik analiz penceresinde Çizgi ve Mum grafikleri arasında geçiş yaparken alttaki hisse işlem panelinin kapanma sorunu giderildi.</li>
         </ul>
 
         <div style="display: flex; align-items: center; margin-bottom: 5px; margin-top: 10px;">
@@ -1372,9 +1358,9 @@ if (btnManip) {
             <strong style="color: #fbbf24; font-size: 13px;">Sistem & Optimizasyonlar:</strong>
         </div>
         <ul style="margin: 5px 0 0 15px; padding: 0;">
-            <li>Capacitor 8 arka plan servisleri ve Android 13+ bildirim izin akışları optimize edildi.</li>
-            <li>Çentikli ve delikli ekrana sahip cihazlarda Ödül Merkezi Safe Area yerleşimi kararlı hale getirildi.</li>
-            <li>Uygulama arka plana alındığında pil tüketimini optimize eden zamanlayıcı mekanizması devreye alındı.</li>
+            <li>Kategori ve sektör filtrelemeleri sonrası hisse kartlarının tıklanamaz hale gelmesine neden olan DOM dinleyici sorunları Event Delegation ile kalıcı olarak çözüldü.</li>
+            <li>Görev ödülleri talep edilirken art arda tıklamalara karşı çift ödül koruması (anti-duplication) ve Firebase sunucu zamanı senkronizasyonu entegre edildi.</li>
+            <li>İşlem paneli açılış ve kapanışlarındaki gecikmeler kaldırılarak arayüz dokunma tepkisi maksimum seviyeye çıkarıldı.</li>
         </ul>
     </div>
     <button class="trade-btn" id="btn-close-patch-notes" style="width: 100%; padding: 12px; font-size: 13px; background: #00f2fe; color: #000; box-shadow: 0 5px 15px rgba(0, 242, 254, 0.4); font-weight: 900; border: none; border-radius: 8px; cursor: pointer;">HARİKA, BAŞLAYALIM!</button>
@@ -2535,7 +2521,7 @@ CTS KRİPTO BORSASI</h3>
             </h4>
             <p style="font-size:11px; color:#94a3b8; font-weight: 700; line-height: 1.4;">
                 Büyük oynayanların havuzu! Bar dolduğunda devasa ödülü paylaş!<br>
-                <span style="color: #fbbf24; font-size: 10px;">(Ödüller: $3.000.000'a Varan Nakit, %5 Rastgele Şirket Payı, 2 Aylık Premium)</span><br>
+                <span style="color: #fbbf24; font-size: 10px;">(Ödüller: $5.000.000'a Varan Nakit, %5 Rastgele Şirket Payı, 2 Aylık Premium)</span><br>
                 <span style="color: #38bdf8; font-size: 10px; font-weight: 800;">İhtimaller: %88 Nakit Havuzu | %8 Şirket Payı | %4 Premium</span>
             </p>
         </div>
@@ -2568,7 +2554,7 @@ CTS KRİPTO BORSASI</h3>
 </svg> KÜRESEL KUMBARA</h4>
                         <p style="font-size:11px; color:#94a3b8; font-weight: 700; line-height: 1.4;">
     Bar dolduğunda katkı sağlayanlar büyük ödülü paylaşır! <br>
-    <span style="color: #fbbf24; font-size: 10px;">(Ödüller: $1.000.000'a Varan Nakit, %2 Rastgele Şirket Payı, 1 Aylık Premium)</span><br>
+    <span style="color: #fbbf24; font-size: 10px;">(Ödüller: $2.000.000'a Varan Nakit, %2 Rastgele Şirket Payı, 1 Aylık Premium)</span><br>
     <span style="color: #38bdf8; font-size: 10px; font-weight: 800;">İhtimaller: %90 Nakit Havuzu | %7 Şirket Payı | %3 Premium</span>
 </p>
                     </div>
@@ -3688,23 +3674,27 @@ function checkLiquidations() {
                     document.getElementById('news-title').style.color = "#ef4444";
                     
                     newsToast.classList.remove('positive');
-                    newsToast.classList.add('negative', 'show');
+                    newsToast.classList.remove('positive');
+                    newsToast.classList.add('negative');
                     newsToast.style.borderColor = '#ef4444'; 
                     
-                    // --- TİTREŞİM KODU BURAYA EKLENİYOR ---
+                    // --- TİTREŞİM KODU ---
                     if (typeof window.navigator.vibrate === 'function') {
                         window.navigator.vibrate([200, 100, 200]); // Kritik uyarı: uzun, bekle, uzun
                     }
-                    // --------------------------------------
+                    // ---------------------
 
-                    setTimeout(() => { 
-                        newsToast.classList.remove('show'); 
-                        newsToast.style.borderColor = ''; 
-                        setTimeout(() => {
-                        document.getElementById('news-title').innerText = "FLAŞ HABER"; 
-                        document.getElementById('news-title').style.color = ""; 
-                    }, 300);
-                }, 4000);
+                    // 📌 GÜVENLİ AÇILIŞ VE SİLİNME (4 saniye sonra yukarı çıkıp display:none olur)
+                    triggerNewsToastShow(4000);
+
+                    // Başlığı eski haline döndür
+                    setTimeout(() => {
+                        const titleEl = document.getElementById('news-title');
+                        if (titleEl) {
+                            titleEl.innerText = "FLAŞ HABER"; 
+                            titleEl.style.color = ""; 
+                        }
+                    }, 4400);
             }
 
             recordFuturesResult(false);
@@ -4051,6 +4041,7 @@ function updateInterestRate() {
             catBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
                     if(btn.classList.contains('locked')) return;
+                    isTradePanelLocked = false;
                     
                     catBtns.forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
@@ -4252,7 +4243,7 @@ function updateCashSupportUI() {
     btnBuyCash.innerText = `₺${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} SATIN AL`;
 }
 
-            // --- HAYALET TIKLAMA (GHOST CLICK) KORUMASI SİSTEMİ ---
+            // --- HAYALET TIKLAMA KORUMASI (HAFİFLETİLMİŞ) ---
 let isTradePanelLocked = false;
 let tradePanelUnlockTimer = null;
 
@@ -4261,8 +4252,6 @@ function closeTradePanelSafely() {
 
     isTradePanelLocked = true;
 
-    // iOS/WebKit'te sadece class kaldırmak bazen görsel durumu bir frame geciktirebilir.
-    // Bu yüzden paneli hem class hem inline state ile deterministik kapatıyoruz.
     tradePanel.classList.remove('open');
     tradeOverlay.classList.remove('active');
     tradePanel.setAttribute('aria-hidden', 'true');
@@ -4273,123 +4262,153 @@ function closeTradePanelSafely() {
         tradePanel.style.pointerEvents = 'auto';
         isTradePanelLocked = false;
         tradePanelUnlockTimer = null;
-    }, 450);
+    }, 150); // 450ms yerine 150ms yaparak arayüzü seri hale getiriyoruz
 }
 
-// ARADIĞIN O DOĞRU DÖNGÜ BURASI:
-stockCards.forEach(card => {
-    card.addEventListener('click', () => {
+// ==========================================================================
+// 📌 KOPMAZ HİSSE KARTI TIKLAMA VE İŞLEM PANELİ YÖNETİCİSİ (EVENT DELEGATION)
+// ==========================================================================
+function openTradePanelForCard(card) {
+    if (!card) return;
+
+    // YENİ: Panel daha yeni kapandıysa gelen hayalet tıklamaları yok say
+    if (typeof isTradePanelLocked !== 'undefined' && isTradePanelLocked) return; 
+
+    // Kilitli kartlara tıklanırsa işlem panelini açma
+    if (card.classList.contains('locked-card') || card.classList.contains('locked')) return;
+
+    currentStockCard = card;
+    const name = card.dataset.name;
+    const priceEl = card.querySelector('.stock-price');
+    const ownedEl = card.querySelector('.stock-owned');
+    if (!priceEl || !ownedEl) return;
+
+    const priceText = priceEl.innerText; 
+    const ownedText = ownedEl.innerText; 
+    
+    currentStockPrice = parseFloat(priceText.replace(/[^0-9.-]+/g, ""));
+    const ownedCount = parseInt(ownedText.replace(/[^0-9]/g, "")) || 0; 
+
+    // Eğer şirket markalanmışsa yeni adını yaz, yoksa orijinalini yaz
+    if (typeof displayTradeStockName !== 'undefined' && displayTradeStockName) {
+        displayTradeStockName.innerText = (typeof customBrands !== 'undefined' && customBrands[name]) ? customBrands[name].name : name;
+    }
+    
+    // --- %51 KONTROLÜ (YÖNETİM KURULU BUTONU) ---
+    const takeoverBtn = document.getElementById('btn-open-takeover');
+    if (takeoverBtn) {
+        takeoverBtn.style.display = (ownedCount >= 510000) ? 'block' : 'none';
+    }
+    
+    if (typeof displayTradeStockPrice !== 'undefined' && displayTradeStockPrice) {
+        displayTradeStockPrice.innerText = priceText;
+    }
+    if (typeof displayTradeOwned !== 'undefined' && displayTradeOwned) {
+        displayTradeOwned.innerText = ownedCount.toLocaleString('tr-TR');
+    }
+
+    // --- ŞİRKET PAYI YÜZDESİ HESAPLAMA ---
+    let ownershipPercent = (ownedCount / 1000000) * 100;
+    const ownershipPercentEl = document.getElementById('trade-ownership-percent');
+    if (ownershipPercentEl) {
+        ownershipPercentEl.innerText = "Şirket Payı: %" + ownershipPercent.toFixed(4);
+    }
+    
+    // --- YÜZDELİK ROZET KODU ---
+    const changeEl = card.querySelector('.stock-change');
+    if (changeEl && typeof tradeChangeEl !== 'undefined' && tradeChangeEl) {
+        tradeChangeEl.innerText = changeEl.innerText;
+        if (card.classList.contains('trend-up')) {
+            tradeChangeEl.className = 'trade-change trend-up';
+        } else {
+            tradeChangeEl.className = 'trade-change trend-down';
+        }
+    }
+    
+    if (typeof inputQty !== 'undefined' && inputQty) inputQty.value = 1;
+    if (typeof updateTotalCost === 'function') updateTotalCost();
+
+    if (typeof tradeOverlay !== 'undefined' && tradeOverlay) tradeOverlay.classList.add('active');
+
+    // --- KESİN VE HATASIZ KRİPTO / HİSSE KONTROLÜ ---
+    try {
+        let isCryptoCheck = false;
+        const catAttr = currentStockCard ? currentStockCard.dataset.cat : null;
+        const stockNameData = currentStockCard ? currentStockCard.dataset.name : null;
         
-        // YENİ: Panel daha yeni kapandıysa, gelen hayalet tıklamaları yok say!
-        if (isTradePanelLocked) return; 
+        if (catAttr && (catAttr.toLowerCase() === 'crypto' || catAttr.toLowerCase().includes('kripto'))) {
+            isCryptoCheck = true;
+        }
         
-        currentStockCard = card;
-        const name = card.dataset.name;
-        const priceText = card.querySelector('.stock-price').innerText; 
-        const ownedText = card.querySelector('.stock-owned').innerText; 
+        if (stockNameData && stockNameData.includes('(') && stockNameData.includes(')')) {
+            isCryptoCheck = true;
+        }
+
+        if (currentStockCard) {
+            currentStockCard.dataset.isCrypto = isCryptoCheck ? "true" : "false";
+        }
         
-        currentStockPrice = parseFloat(priceText.replace(/[^0-9.-]+/g,""));
-        const ownedCount = parseInt(ownedText.replace(/[^0-9]/g, "")) || 0; 
+        const ownershipEl = document.getElementById('trade-ownership-pattern') || document.getElementById('trade-ownership-percent');
+        
+        if (isCryptoCheck) {
+            if (ownershipEl) ownershipEl.style.display = 'none'; 
+            if (takeoverBtn) takeoverBtn.style.display = 'none'; 
+        } else {
+            if (ownershipEl) {
+                ownershipEl.style.display = 'block'; 
+                let currentOwnedAmount = parseInt(displayTradeOwned.innerText.replace(/[^0-9]/g, "")) || 0;
+                let calcOwnership = (currentOwnedAmount / 1000000) * 100;
+                ownershipEl.innerText = "Şirket Payı: %" + calcOwnership.toFixed(4);
+            }
+            if (takeoverBtn) {
+                let currentOwnedAmount = parseInt(displayTradeOwned.innerText.replace(/[^0-9]/g, "")) || 0;
+                takeoverBtn.style.display = (currentOwnedAmount >= 510000) ? 'block' : 'none';
+            }
+        }
+    } catch(err) {
+        console.log("Kripto kontrolü hatası:", err);
+    }
+    
+    // --- KALDIRAÇ SINIRINI VE YAZISINI AÇILIŞTA GÜNCELLE ---
+    let currentMaxLeverage = typeof getMaxLeverage === 'function' ? getMaxLeverage() : 5;
+    const leverageSlider = document.getElementById('leverage'); 
+    const leverageDisplay = document.getElementById('leverage-val'); 
 
-        // Eğer şirket markalanmışsa yeni adını yaz, yoksa orijinalini yaz
-        displayTradeStockName.innerText = customBrands[name] ? customBrands[name].name : name;
-                    
-                    // --- %51 KONTROLÜ (YÖNETİM KURULU BUTONU) ---
-                    const takeoverBtn = document.getElementById('btn-open-takeover');
-                    if (takeoverBtn) {
-                        takeoverBtn.style.display = (ownedCount >= 510000) ? 'block' : 'none';
-                    }
-                    // ---------------------------------------------
-                    displayTradeStockPrice.innerText = priceText;
-                    displayTradeOwned.innerText = ownedCount.toLocaleString('tr-TR');
-                    // --- YENİ: ŞİRKET PAYI YÜZDESİ HESAPLAMA ---
-                    let ownershipPercent = (ownedCount / 1000000) * 100;
-                    document.getElementById('trade-ownership-percent').innerText = "Şirket Payı: %" + ownershipPercent.toFixed(4);
-                    
-                    // --- YENİ EKLENEN YÜZDELİK ROZET KODU ---
-                    const changeText = card.querySelector('.stock-change').innerText;
-                    tradeChangeEl.innerText = changeText;
-                    
-                    if (card.classList.contains('trend-up')) {
-                        tradeChangeEl.className = 'trade-change trend-up';
-                    } else {
-                        tradeChangeEl.className = 'trade-change trend-down';
-                    }
-                    // ----------------------------------------
-                    
-                    inputQty.value = 1;
-                    updateTotalCost();
+    if (leverageSlider) {
+        leverageSlider.max = currentMaxLeverage;
+        leverageSlider.value = 1;
+        if (leverageDisplay) leverageDisplay.innerText = "1x";
+    }
 
-                    tradeOverlay.classList.add('active');
-                    // --- KESİN VE HATASIZ KRİPTO / HİSSE KONTROLÜ ---
-                    try {
-                        let isCryptoCheck = false;
-                        
-                        // HATA BURADAYDI: HTML'de "data-cat" yazıyor ama kod "data-category" arıyordu. Düzeltildi!
-                        const catAttr = currentStockCard ? currentStockCard.dataset.cat : null;
-                        const stockNameData = currentStockCard ? currentStockCard.dataset.name : null;
-                        
-                        // 1. Kategori 'crypto' ise direkt onayla (Artık TÜM kriptoları kusursuz tanıyacak)
-                        if (catAttr && (catAttr.toLowerCase() === 'crypto' || catAttr.toLowerCase().includes('kripto'))) {
-                            isCryptoCheck = true;
-                        }
-                        
-                        // 2. İsimde parantez kontrolü (Ekstra güvenlik: Sadece kriptoların isminde parantez var)
-                        if (stockNameData && stockNameData.includes('(') && stockNameData.includes(')')) {
-                            isCryptoCheck = true;
-                        }
+    if (typeof updateLeverageLimitsUI === 'function') updateLeverageLimitsUI();
+    
+    if (typeof tradePanel !== 'undefined' && tradePanel) {
+        tradePanel.style.pointerEvents = 'auto';
+        tradePanel.setAttribute('aria-hidden', 'false');
+        setTimeout(() => { tradePanel.classList.add('open'); }, 10); 
+    }
+}
 
-                        // Durumu karta işle (Burası %100 alım sınırını kaldıracak olan yer)
-                        if (currentStockCard) {
-                            currentStockCard.dataset.isCrypto = isCryptoCheck ? "true" : "false";
-                        }
-                        
-                        const ownershipEl = document.getElementById('trade-ownership-pattern') || document.getElementById('trade-ownership-percent');
-                        const takeoverBtn = document.getElementById('btn-open-takeover');
-                        
-                        if (isCryptoCheck) {
-                            // Kripto ise Şirket Payı ve Yönetim Kurulunu gizle
-                            if (ownershipEl) ownershipEl.style.display = 'none'; 
-                            if (takeoverBtn) takeoverBtn.style.display = 'none'; 
-                        } else {
-                            // Normal hisse ise Şirket Payını göster
-                            if (ownershipEl) {
-                                ownershipEl.style.display = 'block'; 
-                                let currentOwnedAmount = parseInt(displayTradeOwned.innerText.replace(/[^0-9]/g, "")) || 0;
-                                let ownershipPercent = (currentOwnedAmount / 1000000) * 100;
-                                ownershipEl.innerText = "Şirket Payı: %" + ownershipPercent.toFixed(4);
-                            }
-                            if (takeoverBtn) {
-                                let currentOwnedAmount = parseInt(displayTradeOwned.innerText.replace(/[^0-9]/g, "")) || 0;
-                                takeoverBtn.style.display = (currentOwnedAmount >= 510000) ? 'block' : 'none';
-                            }
-                        }
-                    } catch(err) {
-                        console.log("Kripto kontrolü hatası:", err);
-                    }
-                    // ---------------------------------------------------
-                    
-                    // --- KALDIRAÇ SINIRINI VE YAZISINI AÇILIŞTA GÜNCELLE ---
-                    let currentMaxLeverage = typeof getMaxLeverage === 'function' ? getMaxLeverage() : 5;
-                    
-                    // DİKKAT: HTML'indeki range (kaydırıcı) ve yazı ID'lerine göre burayı düzenle. 
-                    // Örn: 'leverage-input' veya 'leverage-value' olabilir.
-                    const leverageSlider = document.getElementById('leverage'); 
-                    const leverageDisplay = document.getElementById('leverage-val'); 
+// 📌 MARKET İÇİNDEKİ TÜM KARTLARI KAPSAYICIDAN DİNLE (Kategoriler değişse bile asla kopmaz!)
+if (typeof marketContainer !== 'undefined' && marketContainer) {
+    marketContainer.addEventListener('click', (e) => {
+        const card = e.target.closest('.stock-card');
+        if (card && marketContainer.contains(card)) {
+            openTradePanelForCard(card);
+        }
+    });
+}
 
-                    if (leverageSlider) {
-                        leverageSlider.max = currentMaxLeverage;
-                        leverageSlider.value = 1; // Hatalı yüksek kalmaması için her açılışta 1x'e sıfırla
-                        
-                        if (leverageDisplay) {
-                            leverageDisplay.innerText = "1x";
-                        }
-                    }
-                    // ---------------------------------------------------
-                    updateLeverageLimitsUI(); // <--- BURAYA EKLENDİ
-                    setTimeout(() => { tradePanel.classList.add('open'); }, 10); 
-                });
-            });
+// 📌 AYNI ZAMANDA KRİPTO KONTEYNERİ VARSA ORASI İÇİN DE AKTİF ET
+const cryptoContainerEl = document.getElementById('crypto-container');
+if (cryptoContainerEl) {
+    cryptoContainerEl.addEventListener('click', (e) => {
+        const card = e.target.closest('.stock-card');
+        if (card && cryptoContainerEl.contains(card)) {
+            openTradePanelForCard(card);
+        }
+    });
+}
 
             tradeOverlay.addEventListener('click', () => {
                 closeTradePanelSafely();
@@ -4594,6 +4613,29 @@ const executeBuyAction = () => {
 
         gameStats.trades++;
         dailyTrades++;
+
+        // 📋 --- GÜNLÜK GÖREV TETİKLEYİCİLERİ (ALIŞ) ---
+        if (typeof triggerTaskProgress === 'function') {
+            triggerTaskProgress('trade_5_times', 1);
+
+            if (qty >= 100) {
+                triggerTaskProgress('buy_single_100', 1);
+                triggerTaskProgress('buy_single_50', 1);
+            } else if (qty >= 50) {
+                triggerTaskProgress('buy_single_50', 1);
+            }
+
+            try {
+                let tradedStocksToday = JSON.parse(localStorage.getItem('cts_traded_stocks_today') || '[]');
+                if (!tradedStocksToday.includes(stockName)) {
+                    tradedStocksToday.push(stockName);
+                    localStorage.setItem('cts_traded_stocks_today', JSON.stringify(tradedStocksToday));
+                    triggerTaskProgress('trade_3_diff', 1);
+                }
+            } catch(e) {}
+        }
+        // ----------------------------------------------
+
         tradePanel.style.pointerEvents = 'none';
         tradePanel.classList.remove('open');
         tradeOverlay.classList.remove('active');
@@ -4642,9 +4684,10 @@ const executeSellAction = () => {
     let currentOwned = parseInt(displayTradeOwned.innerText.replace(/[^0-9]/g, "")) || 0;
 
     if (currentOwned >= qty) {
+        const stockName = currentStockCard.dataset.name;
+
         // ⚖️ DİNAMİK GELİR VERGİSİ HESABI (Maliyetin üstündeki kâr için)
-        if (currentStockCard && currentStockCard.dataset && currentStockCard.dataset.name) {
-            const stockName = currentStockCard.dataset.name;
+        if (stockName) {
             if (typeof stockAverages !== 'undefined' && stockAverages[stockName]) {
                 const avgCost = stockAverages[stockName];
                 const profitPerShare = currentStockPrice - avgCost;
@@ -4687,7 +4730,6 @@ const executeSellAction = () => {
                 // YENİ: YÖNETİM KURULU DÜŞERSE ŞİRKETİ YENİ YATIRIMCILAR DEVRALIR!
                 const sName = currentStockCard.dataset.name;
                 
-                // KRİTİK DÜZELTME: İsim değiştirilmişse VE henüz "isLost" (kaybedildi) olarak işaretlenmemişse çalışır!
                 if (customBrands[sName] && customBrands[sName].isLost !== true) {
                     const lostNames = [
                         "Apex Finans", "Global Yatırım", "Atlas Sermaye", "Zirve Holding", 
@@ -4725,6 +4767,23 @@ const executeSellAction = () => {
 
         gameStats.trades++;
         dailyTrades++;
+
+        // 📋 --- GÜNLÜK GÖREV TETİKLEYİCİLERİ (SATIŞ) ---
+        if (typeof triggerTaskProgress === 'function') {
+            triggerTaskProgress('trade_5_times', 1);
+            triggerTaskProgress('sell_shares', 1);
+
+            try {
+                let tradedStocksToday = JSON.parse(localStorage.getItem('cts_traded_stocks_today') || '[]');
+                if (!tradedStocksToday.includes(stockName)) {
+                    tradedStocksToday.push(stockName);
+                    localStorage.setItem('cts_traded_stocks_today', JSON.stringify(tradedStocksToday));
+                    triggerTaskProgress('trade_3_diff', 1);
+                }
+            } catch(e) {}
+        }
+        // ----------------------------------------------
+
         tradePanel.style.pointerEvents = 'none';
         tradePanel.classList.remove('open');
         tradeOverlay.classList.remove('active');
@@ -4836,6 +4895,28 @@ function openFuturesPosition(type) {
         gameStats.trades++;
         dailyTrades++;
 
+        // 📋 --- GÜNLÜK GÖREV TETİKLEYİCİLERİ (VADELİ) ---
+        if (typeof triggerTaskProgress === 'function') {
+            triggerTaskProgress('make_futures', 1);
+            triggerTaskProgress('trade_5_times', 1);
+
+            if (positionType === 'LONG') {
+                triggerTaskProgress('long_position', 1);
+            } else if (positionType === 'SHORT') {
+                triggerTaskProgress('short_position', 1);
+            }
+
+            try {
+                let tradedStocksToday = JSON.parse(localStorage.getItem('cts_traded_stocks_today') || '[]');
+                if (!tradedStocksToday.includes(stockName)) {
+                    tradedStocksToday.push(stockName);
+                    localStorage.setItem('cts_traded_stocks_today', JSON.stringify(tradedStocksToday));
+                    triggerTaskProgress('trade_3_diff', 1);
+                }
+            } catch(e) {}
+        }
+        // ------------------------------------------------
+
         playSound('buy');
         closeTradePanelSafely();
 
@@ -4919,15 +5000,25 @@ function openFuturesPosition(type) {
                             catTabsContainer.style.display = 'flex';
                         }
                     } else {
-                        // Parası henüz yetmiyorsa oyuncuya uyarı göster (Merak uyandır)
+// Parası henüz yetmiyorsa oyuncuya uyarı göster (Merak uyandır)
                         document.getElementById('news-title').innerText = "KİLİTLİ BÖLÜM";
                         document.getElementById('news-title').style.color = "#f59e0b";
                         document.getElementById('news-desc').innerHTML = "Gizli <strong>Borsaya</strong> geçiş yapmak için en az <strong>$20 Milyon</strong> kasa bakiyesine ulaşmalısın!";
                         const nt = document.getElementById('news-toast');
-                        nt.classList.remove('positive', 'negative');
-                        nt.style.borderColor = '#f59e0b';
-                        nt.classList.add('show');
-                        setTimeout(() => { nt.classList.remove('show'); nt.style.borderColor=''; }, 4000);
+                        if (nt) {
+                            nt.classList.remove('positive', 'negative');
+                            nt.style.borderColor = '#f59e0b';
+                            triggerNewsToastShow(4000); // 📌 GÜVENLİ AÇILIŞ VE SİLİNME
+
+                            // 4.4 saniye sonra başlığı eski haline sıfırla
+                            setTimeout(() => {
+                                const titleEl = document.getElementById('news-title');
+                                if (titleEl) {
+                                    titleEl.innerText = "FLAŞ HABER";
+                                    titleEl.style.color = "";
+                                }
+                            }, 4400);
+                        }
                     }
                 } else {
                     // Başka bir sekmeden (Portföy vb.) Borsa'ya ilk kez dönülüyorsa
@@ -6035,7 +6126,44 @@ priceElement.innerText = "$" + newPrice.toLocaleString('en-US', { minimumFractio
             };
 
             const newsToast = document.getElementById('news-toast');
-            let lastNewsText = "";
+
+// --- 📌 2. ADIM: GÜVENLİ HABER TOAST YARDIMCILARI BURAYA GELİYOR ---
+let newsToastTimer = null;
+
+function triggerNewsToastShow(duration = 5000) {
+    const nt = document.getElementById('news-toast');
+    if (!nt) return;
+
+    if (newsToastTimer) clearTimeout(newsToastTimer);
+
+    nt.style.display = 'flex';
+    requestAnimationFrame(() => {
+        nt.classList.add('show');
+    });
+
+    newsToastTimer = setTimeout(() => {
+        triggerNewsToastHide();
+    }, duration);
+}
+
+function triggerNewsToastHide() {
+    const nt = document.getElementById('news-toast');
+    if (!nt) return;
+
+    nt.classList.remove('show');
+    nt.style.borderColor = '';
+
+    setTimeout(() => {
+        if (!nt.classList.contains('show')) {
+            nt.style.display = 'none';
+            nt.style.transform = '';
+            nt.style.opacity = '';
+        }
+    }, 420);
+}
+// -------------------------------------------------------------------
+
+let lastNewsText = "";
 
             // Sarı Yanıp Sönme Animasyon Yardımcısı (Kartlar ve Kategori Butonları İçin)
             function flashElementYellow(element) {
@@ -6239,45 +6367,92 @@ priceElement.innerText = "$" + newPrice.toLocaleString('en-US', { minimumFractio
                     
                     nt.classList.remove('positive', 'negative');
                     nt.style.borderColor = newsScope === 'global' ? (isPositive ? '#fbbf24' : '#f43f5e') : (isPositive ? '#10b981' : '#ef4444');
-                    nt.classList.add('show');
                     
-                    setTimeout(() => { nt.classList.remove('show'); }, 6000);
+                    // 📌 GÜVENLİ AÇILIŞ VE SİLİNME (6 saniye sonra yukarı çıkıp display:none olur)
+                    triggerNewsToastShow(6000);
                 }
 
                 // 5. Haber Arşivine İşle
-                const now = new Date();
-                const hours = now.getHours().toString().padStart(2, '0');
-                const minutes = now.getMinutes().toString().padStart(2, '0');
-                const timeStrClean = `${hours}:${minutes}`;
-                const newsType = isPositive ? 'positive' : 'negative';
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const timeStrClean = `${hours}:${minutes}`;
+            const newsType = isPositive ? 'positive' : 'negative';
 
-                newsArchiveData.unshift({ 
-                    time: timeStrClean, 
-                    stockName: archiveSubject, 
-                    text: newsBody, 
-                    type: newsType,
-                    scope: newsScope
-                });
+            newsArchiveData.unshift({ 
+                time: timeStrClean, 
+                stockName: archiveSubject, 
+                text: newsBody, 
+                type: newsType, 
+                scope: newsScope 
+            });
 
-                if (newsArchiveData.length > 30) newsArchiveData.pop();
+            if (newsArchiveData.length > 30) newsArchiveData.pop();
 
-                renderNewsArchive();
+            renderNewsArchive();
 
-            }, 20000);
+        }, 20000);
 
-            let isToastDragging = false;
-            let toastStartX = 0; let toastCurrentX = 0;
-            function toastDragStart(e) { if (!newsToast || !newsToast.classList.contains('show')) return; isToastDragging = true; toastStartX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX; newsToast.style.transition = 'none'; }
-            function toastDragMove(e) { if (!isToastDragging || !newsToast) return; toastCurrentX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX; const deltaX = toastCurrentX - toastStartX; if (deltaX > 0) { newsToast.style.transform = `translateX(calc(-50% + ${deltaX}px))`; newsToast.style.opacity = 1 - (deltaX / 300); } }
-            function toastDragEnd() { if (!isToastDragging || !newsToast) return; isToastDragging = false; const deltaX = toastCurrentX - toastStartX; if (deltaX > 100) { newsToast.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out'; newsToast.style.transform = `translateX(100vw)`; newsToast.style.opacity = '0'; setTimeout(() => { newsToast.style.transition = 'none'; newsToast.classList.remove('show'); newsToast.style.transform = ''; newsToast.style.opacity = ''; setTimeout(() => { newsToast.style.transition = ''; }, 50); }, 300); } else { newsToast.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out'; newsToast.style.transform = ''; newsToast.style.opacity = ''; setTimeout(() => { newsToast.style.transition = ''; }, 300); } }
-            if (newsToast) {
-                newsToast.addEventListener('mousedown', toastDragStart);
-                newsToast.addEventListener('touchstart', toastDragStart, {passive: true});
-            }
-            window.addEventListener('mousemove', toastDragMove);
-            window.addEventListener('mouseup', toastDragEnd);
-            window.addEventListener('touchmove', toastDragMove, {passive: true});
-            window.addEventListener('touchend', toastDragEnd);
+        // --- PARMAKLARLA SAĞA KAYDIRIP ATMA SİSTEMİ (SWIPE-TO-DISMISS) ---
+        let isToastDragging = false;
+        let toastStartX = 0; 
+        let toastCurrentX = 0;
+
+        function toastDragStart(e) { 
+            const nt = document.getElementById('news-toast');
+            if (!nt || !nt.classList.contains('show')) return; 
+            isToastDragging = true; 
+            toastStartX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX; 
+            nt.style.transition = 'none'; 
+        }
+
+        function toastDragMove(e) { 
+            const nt = document.getElementById('news-toast');
+            if (!isToastDragging || !nt) return; 
+            toastCurrentX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX; 
+            const deltaX = toastCurrentX - toastStartX; 
+            if (deltaX > 0) { 
+                nt.style.transform = `translateX(calc(-50% + ${deltaX}px))`; 
+                nt.style.opacity = Math.max(0, 1 - (deltaX / 300)); 
+            } 
+        }
+
+        function toastDragEnd() { 
+            const nt = document.getElementById('news-toast');
+            if (!isToastDragging || !nt) return; 
+            isToastDragging = false; 
+            const deltaX = toastCurrentX - toastStartX; 
+
+            if (deltaX > 100) { 
+                // Ekranda sağa fırlatıldı: kaybolma animasyonu
+                nt.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out'; 
+                nt.style.transform = 'translateX(100vw)'; 
+                nt.style.opacity = '0'; 
+
+                // 📌 EKRANDAN GİDİNCE DISPLAY: NONE YAPIP SIFIRLA
+                setTimeout(() => { 
+                    triggerNewsToastHide(); 
+                }, 300); 
+            } else { 
+                // Yeterince çekilmediyse yerine geri yaylansın
+                nt.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out'; 
+                nt.style.transform = ''; 
+                nt.style.opacity = ''; 
+                setTimeout(() => { 
+                    if (nt) nt.style.transition = ''; 
+                }, 300); 
+            } 
+        }
+
+        const toastTarget = document.getElementById('news-toast');
+        if (toastTarget) {
+            toastTarget.addEventListener('mousedown', toastDragStart);
+            toastTarget.addEventListener('touchstart', toastDragStart, { passive: true });
+        }
+        window.addEventListener('mousemove', toastDragMove);
+        window.addEventListener('mouseup', toastDragEnd);
+        window.addEventListener('touchmove', toastDragMove, { passive: true });
+        window.addEventListener('touchend', toastDragEnd);
 // ==========================================================================
 // 📊 KASA ANALİZİ VE VADELİ İŞLEM İSTATİSTİK SİSTEMİ
 // ==========================================================================
@@ -7022,20 +7197,30 @@ function restoreStockPricesFromData(savedPrices) {
             const candleGroup = document.getElementById('candle-group');
 
             // --- SEKME GEÇİŞ MANTIĞI ---
-            const btnTabLine = document.getElementById('btn-tab-line');
-            const btnTabCandle = document.getElementById('btn-tab-candle');
-            const wrapperLine = document.getElementById('canvas-wrapper-line');
-            const wrapperCandle = document.getElementById('canvas-wrapper-candle');
+const btnTabLine = document.getElementById('btn-tab-line');
+const btnTabCandle = document.getElementById('btn-tab-candle');
+const wrapperLine = document.getElementById('canvas-wrapper-line');
+const wrapperCandle = document.getElementById('canvas-wrapper-candle');
 
-            btnTabLine.addEventListener('click', () => {
-                btnTabLine.classList.add('active'); btnTabCandle.classList.remove('active');
-                wrapperLine.style.display = 'block'; wrapperCandle.style.display = 'none';
-            });
+if (btnTabLine) {
+    btnTabLine.addEventListener('click', (e) => {
+        e.stopPropagation(); // 🛑 Arkadaki hisse panelinin kapanmasını engeller
+        btnTabLine.classList.add('active'); 
+        if (btnTabCandle) btnTabCandle.classList.remove('active');
+        if (wrapperLine) wrapperLine.style.display = 'block'; 
+        if (wrapperCandle) wrapperCandle.style.display = 'none';
+    });
+}
 
-            btnTabCandle.addEventListener('click', () => {
-                btnTabCandle.classList.add('active'); btnTabLine.classList.remove('active');
-                wrapperCandle.style.display = 'block'; wrapperLine.style.display = 'none';
-            });
+if (btnTabCandle) {
+    btnTabCandle.addEventListener('click', (e) => {
+        e.stopPropagation(); // 🛑 Arkadaki hisse panelinin kapanmasını engeller
+        btnTabCandle.classList.add('active'); 
+        if (btnTabLine) btnTabLine.classList.remove('active');
+        if (wrapperCandle) wrapperCandle.style.display = 'block'; 
+        if (wrapperLine) wrapperLine.style.display = 'none';
+    });
+}
 
             // Grafikleri çizen ortak fonksiyon
 function drawCharts(history, minPrice, maxPrice, spread) {
@@ -7375,8 +7560,6 @@ if (btnBuyAiRights) {
             // ==========================================================================
         // 🎓 ÖĞRETİCİ VE AKILLI AÇILIŞ (POP-UP QUEUE) SİSTEMİ
         // ==========================================================================
-        const betaModal = document.getElementById('beta-warning-modal');
-        const btnCloseBeta = document.getElementById('btn-close-beta-warning');
         const patchModal = document.getElementById('patch-notes-modal');
         const btnClosePatch = document.getElementById('btn-close-patch-notes');
         
@@ -7526,17 +7709,13 @@ if (btnShowPatchNotes) {
     });
 }
 
-        // AKILLI AÇILIŞ YÖNETİCİSİ (Sadece 1 Kere Gösterir)
+        // AKILLI AÇILIŞ YÖNETİCİSİ (Beta Uyarısı Kaldırıldı)
         function showNextStartupPopup() {
             if (!localStorage.getItem('cts_tutorial_seen')) {
                 document.getElementById('summary-overlay').classList.add('active');
                 currentTutorialStep = 0;
                 renderTutorialStep();
                 tutorialModal.classList.add('show');
-            } 
-            else if (!localStorage.getItem('cts_beta_seen')) {
-                document.getElementById('summary-overlay').classList.add('active');
-                betaModal.classList.add('show');
             } 
             else if (!localStorage.getItem('cts_patch_1_4_seen')) {
                 document.getElementById('summary-overlay').classList.add('active');
@@ -7547,15 +7726,7 @@ if (btnShowPatchNotes) {
             }
         }
 
-        // Pop-up Kapatma Butonlarına Kayıt Mantığı Eklendi
-        if (btnCloseBeta) {
-            btnCloseBeta.addEventListener('click', () => {
-                localStorage.setItem('cts_beta_seen', 'true');
-                betaModal.classList.remove('show');
-                showNextStartupPopup();
-            });
-        }
-
+        // Pop-up Kapatma Butonlarına Kayıt Mantığı
         if (btnClosePatch) {
             btnClosePatch.addEventListener('click', () => {
                 localStorage.setItem('cts_patch_1_4_seen', 'true');
@@ -8456,6 +8627,12 @@ async function buyCashSupportAction() {
         if (typeof playerBalance !== 'undefined') {
             playerBalance += supportAmount;
         }
+
+        // 📋 --- ÖZEL MAĞAZA GÖREVİ TETİKLEYİCİSİ (GARANTİLİ ENTEGRASYON) ---
+        if (typeof triggerTaskProgress === 'function') {
+            triggerTaskProgress('store_treasury_support', 1);
+        }
+        // ------------------------------------------------------------------
         
         if (typeof playSound === 'function') playSound('buy');
         
@@ -9524,7 +9701,7 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 })();
 // ==========================================================================
-// 🐷 KÜRESEL KUMBARA - SENKRONİZE VE ORANTILI ÖDÜL SİSTEMİ (Maks: $1.000.000)
+// 🐷 KÜRESEL KUMBARA - SENKRONİZE VE ORANTILI ÖDÜL SİSTEMİ (Maks: $2.000.000)
 // ==========================================================================
 const piggyRef = database.ref('global/piggyBank');
 let isPiggyExploding = false; 
@@ -9534,9 +9711,9 @@ function generateNextReward() {
     let roll = Math.random();
     
     if (roll < 0.90) {
-        // 0.00 - 0.90 arası: %90 İHTİMALLE NAKİT PARA (Maksimum $1.000.000)
-        // $100.000 ile $1.000.000 arası rastgele havuz
-        return { type: 'cash', pool: Math.floor(100000 + Math.random() * 900000) };
+        // 0.00 - 0.90 arası: %90 İHTİMALLE NAKİT PARA (Maksimum $2.000.000)
+        // $200.000 ile $2.000.000 arası rastgele havuz ($200.000 + maks $1.800.000)
+        return { type: 'cash', pool: Math.floor(200000 + Math.random() * 1800000) };
         
     } else if (roll < 0.97) {
         // 0.90 - 0.97 arası: %7 İHTİMALLE ŞİRKET PAYI
@@ -9564,7 +9741,7 @@ piggyRef.on('value', (snapshot) => {
     let current = data.currentAmount || 0;
     let target = data.target || 5000;
     let contributors = data.contributors || {}; 
-    let rewardDestiny = data.rewardDestiny || { type: 'cash', pool: 350000 }; // Sunucudaki ortak kader
+    let rewardDestiny = data.rewardDestiny || { type: 'cash', pool: 750000 }; // 📌 Güncellendi: Sunucudaki yedek kader $750.000'a çekildi
     
     let percent = (current / target) * 100;
     if (percent > 100) percent = 100;
@@ -9615,7 +9792,7 @@ piggyRef.on('value', (snapshot) => {
             let prizeTitle = "";
             let prizeDesc = "";
 
-            // 1. HERKES AYNI NAKİT HAVUZUNU PAYLAŞIR ($1.000.000 Tavanlı)
+            // 1. HERKES AYNI NAKİT HAVUZUNU PAYLAŞIR ($2.000.000 Tavanlı)
             if (rewardDestiny.type === 'cash') {
                 let myCashPrize = Math.floor(rewardDestiny.pool * myShareRatio);
                 playerBalance += myCashPrize;
@@ -9825,7 +10002,7 @@ if (btnFeedPiggy) {
 
 
 // ==========================================================================
-// 🌌 MEGA KÜRESEL KUMBARA SİSTEMİ (Maks: $3.000.000 / Katkı: ₺100)
+// 🌌 MEGA KÜRESEL KUMBARA SİSTEMİ (Maks: $5.000.000 / Katkı: ₺100)
 // ==========================================================================
 const megaPiggyRef = database.ref('global/megaPiggyBank');
 let isMegaPiggyExploding = false; 
@@ -9835,8 +10012,8 @@ function generateNextMegaReward() {
     
     if (roll < 0.88) {
         // 0.00 - 0.88 arası: %88 İHTİMALLE MEGA NAKİT
-        // Mega Nakit: $500.000 ile $3.000.000 arası devasa havuz
-        return { type: 'cash', pool: Math.floor(500000 + Math.random() * 2500000) };
+        // 📌 Güncellendi: Mega Nakit: $1.000.000 ile $5.000.000 arası devasa havuz
+        return { type: 'cash', pool: Math.floor(1000000 + Math.random() * 4000000) };
         
     } else if (roll < 0.96) {
         // 0.88 - 0.96 arası: %8 İHTİMALLE ŞİRKET PAYI
@@ -9862,7 +10039,7 @@ megaPiggyRef.on('value', (snapshot) => {
     let current = data.currentAmount || 0;
     let target = data.target || 10000;
     let contributors = data.contributors || {}; 
-    let rewardDestiny = data.rewardDestiny || { type: 'cash', pool: 1200000 }; 
+    let rewardDestiny = data.rewardDestiny || { type: 'cash', pool: 2500000 }; // 📌 Güncellendi: Sunucudaki yedek havuz $2.500.000'a çekildi
     
     let percent = (current / target) * 100;
     if (percent > 100) percent = 100;
@@ -9922,6 +10099,7 @@ megaPiggyRef.on('value', (snapshot) => {
                     
                     let myShareCount = 50000; // %5 Mega Hisse
                     let currentOwned = parseInt(targetCard.querySelector('.stock-owned').textContent.replace(/[^0-9]/g, "")) || 0;
+                    
                     let priceText = targetCard.querySelector('.stock-price').textContent;
                     let currentPrice = parseFloat(priceText.replace(/[^0-9.]/g, "")) || 0; 
                     
@@ -12545,6 +12723,10 @@ function renderDailyRewardUI() {
     }
 }
 
+// ==========================================================================
+// 📋 GÜNLÜK GÖREVLER - CANLI TAKİP VE ANINDA ÖDÜL TALEP SİSTEMİ
+// ==========================================================================
+
 function renderDailyTasksUI() {
     const tasksContainer = document.getElementById('daily-tasks-list');
     if (!tasksContainer) return;
@@ -12553,7 +12735,8 @@ function renderDailyTasksUI() {
     tasksContainer.innerHTML = '';
 
     tasks.forEach((t, idx) => {
-        const isFinished = t.progress >= t.target;
+        // Hedefe ulaşıldıysa tamamlandı kabul et
+        const isFinished = (t.progress >= t.target) || t.completed;
         const pct = Math.min(100, Math.floor((t.progress / t.target) * 100));
         
         let cardBg = t.isBonus ? "linear-gradient(135deg, rgba(234, 179, 8, 0.12), rgba(15, 23, 42, 0.9))" : "#182234";
@@ -12562,11 +12745,11 @@ function renderDailyTasksUI() {
 
         let actionButton = '';
         if (t.claimed) {
-            actionButton = `<button disabled style="padding:6px 12px; border-radius:8px; border:none; background:#1e293b; color:#10b981; font-weight:bold; font-size:11px;">✓ Alındı</button>`;
+            actionButton = `<button disabled style="padding:7px 12px; border-radius:8px; border:none; background:#1e293b; color:#10b981; font-weight:bold; font-size:11px; cursor:default;">✓ Alındı</button>`;
         } else if (isFinished) {
-            actionButton = `<button type="button" onclick="claimTaskReward(${idx})" style="padding:6px 14px; border-radius:8px; border:none; background:linear-gradient(135deg, #10b981, #059669); color:#fff; font-weight:900; font-size:11px; cursor:pointer; box-shadow:0 2px 10px rgba(16,185,129,0.3);">ÖDÜLÜ AL</button>`;
+            actionButton = `<button type="button" class="btn-claim-task-action" data-task-idx="${idx}" style="padding:7px 14px; border-radius:8px; border:none; background:linear-gradient(135deg, #10b981, #059669); color:#fff; font-weight:900; font-size:11px; cursor:pointer; box-shadow:0 3px 12px rgba(16,185,129,0.4); animation: pulse 1.5s infinite;">ÖDÜLÜ AL</button>`;
         } else {
-            actionButton = `<span style="font-size:11px; font-weight:bold; color:#94a3b8;">${t.progress}/${t.target}</span>`;
+            actionButton = `<span style="font-size:12px; font-weight:800; color:#94a3b8; background:rgba(255,255,255,0.05); padding:4px 8px; border-radius:6px;">${t.progress}/${t.target}</span>`;
         }
 
         const crownSvgIcon = t.isBonus ? `<svg viewBox="0 0 24 24" fill="currentColor" style="width:14px; height:14px; vertical-align:middle; margin-left:4px; color:#fbbf24;"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg>` : '';
@@ -12582,27 +12765,50 @@ function renderDailyTasksUI() {
                     </div>
                     <div>${actionButton}</div>
                 </div>
-                <div style="width:100%; height:5px; background:#0f172a; border-radius:10px; overflow:hidden;">
-                    <div style="width:${pct}%; height:100%; background:${t.isBonus ? '#f59e0b' : '#38bdf8'}; transition:0.3s;"></div>
+                <div style="width:100%; height:6px; background:#0f172a; border-radius:10px; overflow:hidden;">
+                    <div style="width:${pct}%; height:100%; background:${isFinished ? '#10b981' : (t.isBonus ? '#f59e0b' : '#38bdf8')}; transition:width 0.3s ease;"></div>
                 </div>
             </div>
         `;
     });
+
+    // Event Delegation: Buton tıklamalarını doğrudan container üzerinden dinle (Kopmayı önler)
+    tasksContainer.querySelectorAll('.btn-claim-task-action').forEach(btn => {
+        btn.onclick = (e) => {
+            e.stopPropagation();
+            const taskIdx = parseInt(btn.getAttribute('data-task-idx'), 10);
+            claimTaskReward(taskIdx);
+        };
+    });
 }
 
+// 📌 ÖDÜL TALEP ETME FONKSİYONU
+let isClaimingTask = false;
 function claimTaskReward(taskIndex) {
-    const safeNow = getSafeServerDate();
+    if (isClaimingTask) return; // Çift tıklama engeli
+    
     let storedTaskData = localStorage.getItem('cts_daily_tasks_data');
     if (!storedTaskData) return;
 
-    let parsed = JSON.parse(storedTaskData);
+    let parsed;
+    try {
+        parsed = JSON.parse(storedTaskData);
+    } catch(e) {
+        return;
+    }
+
     let task = parsed.tasks[taskIndex];
+    if (!task || task.claimed) return;
+    
+    // Güvenlik: Hedefe ulaşmadıysa ödül verme
+    if (task.progress < task.target && !task.completed) return;
 
-    if (!task || task.claimed || task.progress < task.target) return;
-
+    isClaimingTask = true;
     task.claimed = true;
+    task.completed = true;
     let modalMsg = "";
 
+    // 1. Ödülü Kullanıcıya Tanımla
     if (task.rewardType === "cash") {
         playerBalance += task.rewardAmount;
         if (typeof updateBalanceUI === 'function') updateBalanceUI();
@@ -12642,8 +12848,10 @@ function claimTaskReward(taskIndex) {
         modalMsg = `ÖZEL GÖREV TAMAMLANDI! <b>${randomStock}</b> şirketinden <span style="color:#fbbf24; font-weight:900;">10.000 Adet (%0.1)</span> hisse portföyüne aktarıldı!`;
     }
 
+    // 2. Durumu localStorage'a Kaydet
     localStorage.setItem('cts_daily_tasks_data', JSON.stringify(parsed));
 
+    // 3. Sunucu / Firebase Senkronizasyonu
     let myUid = localStorage.getItem('cts_player_uid');
     if (myUid && typeof database !== 'undefined') {
         let updatePayload = {
@@ -12657,12 +12865,18 @@ function claimTaskReward(taskIndex) {
     }
 
     if (typeof saveGame === 'function') saveGame();
+    if (typeof playSound === 'function') playSound('milestone');
+    
     showCustomRewardModal("Görev", modalMsg);
     renderDailyTasksUI();
+
+    setTimeout(() => {
+        isClaimingTask = false;
+    }, 500);
 }
 
+// 📌 GÖREV İLERLEMESİNİ ARTTIRAN TETİKLEYİCİ
 function triggerTaskProgress(taskId, amount = 1) {
-    const safeNow = getSafeServerDate();
     let storedTaskData = localStorage.getItem('cts_daily_tasks_data');
     if (!storedTaskData) {
         getDailyTasksForToday();
@@ -12671,24 +12885,34 @@ function triggerTaskProgress(taskId, amount = 1) {
 
     try {
         let parsed = JSON.parse(storedTaskData);
-        if (parsed.date !== safeNow.dateStr) return;
-
         let changed = false;
+
         parsed.tasks.forEach(t => {
-            if (t.id === taskId && !t.completed) {
+            if (t.id === taskId && !t.claimed) {
+                let prevProgress = t.progress;
                 t.progress = Math.min(t.target, t.progress + amount);
+                
                 if (t.progress >= t.target) {
                     t.completed = true;
                 }
-                changed = true;
+                
+                if (t.progress !== prevProgress) {
+                    changed = true;
+                }
             }
         });
 
         if (changed) {
             localStorage.setItem('cts_daily_tasks_data', JSON.stringify(parsed));
-            renderDailyTasksUI();
+            // Eğer görevler sekmesi o an ekranda açıksa anında yeniden çiz
+            const tasksContainer = document.getElementById('daily-tasks-list');
+            if (tasksContainer && tasksContainer.offsetParent !== null) {
+                renderDailyTasksUI();
+            }
         }
-    } catch (e) {}
+    } catch (e) {
+        console.error("Task progress error:", e);
+    }
 }
 
 window.triggerTaskProgress = triggerTaskProgress;
@@ -12798,20 +13022,24 @@ document.addEventListener('click', function(e) {
     const target = e.target;
     if (!target) return;
 
-    const btn = target.closest('button') || target.closest('.trade-btn') || target.closest('.btn') || target;
+    const btn = target.closest('button') || target.closest('.trade-btn') || target.closest('.btn') || target.closest('.store-item') || target;
     const btnId = (btn.id || '').toLowerCase();
     const btnClass = (btn.className || '').toString().toLowerCase();
     const btnText = (btn.innerText || btn.textContent || '').trim().toLowerCase();
 
-    // 1. YAPAY ZEKA ANALİSTİ
+    // 1. YAPAY ZEKA ANALİSTİ KULLANIMI
     if (
         btnId === 'btn-ai-analyze' || 
         btnId === 'btn-run-ai' || 
         btnId === 'btn-ai-analyst' ||
-        btnClass.includes('btn-ai-analyze') ||
-        btnId.includes('ai-analyst-run')
+        btnId.includes('ai') ||
+        btnClass.includes('btn-ai') ||
+        btnText.includes('ai analist') ||
+        btnText.includes('analiz et')
     ) {
-        triggerTaskProgress('use_ai_analysis', 1);
+        if (typeof triggerTaskProgress === 'function') {
+            triggerTaskProgress('use_ai_analysis', 1);
+        }
     }
 
     // 2. SPOT AL-SAT & 3 FARKLI HİSSE
