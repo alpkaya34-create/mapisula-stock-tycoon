@@ -539,11 +539,11 @@ html, body {
 .btn-buy { background: linear-gradient(135deg, #00f2fe, #10b981); box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3); }
 .btn-sell { background: linear-gradient(135deg, #ef4444, #b91c1c); color: #fff; box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3); }
 /* ==========================================================================
-   📱 FLAŞ HABER SİSTEMİ (TOAST BİLDİRİMİ)
+   📱 FLAŞ HABER SİSTEMİ (TOAST BİLDİRİMİ - KESİN TAŞMA ENGELLEMELİ)
    ========================================================================== */
 .news-toast {
     position: fixed;
-    top: -120px; /* Başlangıçta ekranın üstünde gizli */
+    top: -140px; /* Güvenli yukarı çekme */
     left: 50%;
     transform: translateX(-50%);
     width: 90%;
@@ -553,17 +553,22 @@ html, body {
     border: 1px solid #334155;
     border-radius: 12px;
     padding: 14px 16px;
-    display: flex;
+    display: none; /* 🛑 Ekranda yokken DOM'da sıfır yer kaplar, kesinlikle taşmaz! */
     align-items: center;
     z-index: 1000;
     box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-    /* Yaylanarak inme efekti */
-    transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none; /* 🛑 Ekranda yokken tıklamaları asla engellemez */
+    opacity: 0;
+    /* Yaylanarak inme efekti korunuyor */
+    transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
 }
 
 /* Bildirim geldiğinde devreye girecek sınıf */
 .news-toast.show {
-    top: calc(20px + env(safe-area-inset-top)); /* Telefonun çentik (kamera) boşluğunu hesaba katar */
+    display: flex !important;
+    pointer-events: auto; /* Açılınca dokunulabilir olsun */
+    opacity: 1;
+    top: calc(20px + env(safe-area-inset-top)); /* Çentik boşluğu */
 }
 
 /* Haberin türüne göre renklenen neon çerçeveler */
