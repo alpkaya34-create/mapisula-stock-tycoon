@@ -2465,3 +2465,22 @@ body.premium-theme [class*="treasury"] {
     border: none;
     box-shadow: 0 2px 10px rgba(234, 179, 8, 0.4);
 }
+/* Standart avantaj rozeti hizası (Tümü için geçerli) */
+.badge-discount {
+    position: absolute;
+    top: -8px;
+    right: 95px;
+    font-size: 8px;
+    font-weight: 900;
+    padding: 2px 7px;
+    border-radius: 4px;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    z-index: 2;
+}
+
+/* 500 GEM kartında EN POPÜLER rozeti sağda olduğu için avantaj rozetini biraz daha sola alır */
+.gem-tier-card.featured .badge-discount {
+    right: 105px;
+}
