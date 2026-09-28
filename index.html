@@ -1947,49 +1947,62 @@ if (btnManip) {
     <div id="game-screen" class="mobile-screen" style="display: none;">
         
         <div class="top-dashboard">
-            <div style="display: flex; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 4px;">
                 <button id="btn-in-game-menu" class="btn-menu-back" style="display: flex; align-items: center; gap: 6px;">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-top: -1px;">
-        <path d="M11 17l-5-5 5-5"></path>
-        <path d="M18 17l-5-5 5-5" opacity="0.5"></path>
-    </svg>
-    MENÜ
-</button>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-top: -1px;">
+                        <path d="M11 17l-5-5 5-5"></path>
+                        <path d="M18 17l-5-5 5-5" opacity="0.5"></path>
+                    </svg>
+                    MENÜ
+                </button>
                 <div class="dashboard-box" id="btn-open-wallet-stats" style="margin-left: 0; cursor: pointer;" title="Kasa Analizi İçin Tıkla">
-                <span class="dash-label">KASA <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; vertical-align: middle; margin-left: 4px; filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.6));">
-    <line x1="18" y1="20" x2="18" y2="10"></line>
-    <line x1="12" y1="20" x2="12" y2="4"></line>
-    <line x1="6" y1="20" x2="6" y2="14"></line>
-</svg></span>
-                <span class="dash-value text-gold">$15,000.00</span>
-                <!-- KÜÇÜLTÜLMÜŞ TERMINAL -->
-                <span id="terminal-fee-display" style="font-size: 8px; color: #ef4444; font-weight: 800; margin-top: 2px; white-space: nowrap; transition: all 0.3s;"><svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 11px; height: 11px; vertical-align: middle; margin-right: 1px; filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.6));">
-    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-</svg> Terminal: -$1</span>
-            </div>
+                    <span class="dash-label">KASA <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; vertical-align: middle; margin-left: 4px; filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.6));">
+                        <line x1="18" y1="20" x2="18" y2="10"></line>
+                        <line x1="12" y1="20" x2="12" y2="4"></line>
+                        <line x1="6" y1="20" x2="6" y2="14"></line>
+                    </svg></span>
+                    <span class="dash-value text-gold">$15,000.00</span>
+                    <!-- KÜÇÜLTÜLMÜŞ TERMINAL -->
+                    <span id="terminal-fee-display" style="font-size: 8px; color: #ef4444; font-weight: 800; margin-top: 2px; white-space: nowrap; transition: all 0.3s;"><svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 11px; height: 11px; vertical-align: middle; margin-right: 1px; filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.6));">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    </svg> Terminal: -$1</span>
+                </div>
+
+                <!-- 💎 YENİ: GEM (ELMAS) ROZETİ VE ÖZEL MAĞAZA TETİKLEYİCİSİ -->
+                <div id="btn-open-gem-lounge" class="dashboard-box" style="margin-left: 2px; cursor: pointer; padding: 4px 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(168, 85, 247, 0.12); border: 1px solid rgba(168, 85, 247, 0.4); border-radius: 8px;" title="CTS Private Lounge">
+                    <span style="font-size: 8px; font-weight: 900; color: #c084fc; display: flex; align-items: center; gap: 3px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px; filter: drop-shadow(0 0 5px rgba(168, 85, 247, 0.8));">
+                            <path d="M6 3h12l4 6-10 12L2 9z"></path>
+                            <path d="M11 3L8 9l4 12 4-12-3-6"></path>
+                            <path d="M2 9h20"></path>
+                        </svg>
+                        GEM
+                    </span>
+                    <span id="top-gem-count" style="font-size: 11px; font-weight: 900; color: #f3e8ff; margin-top: 1px;">0</span>
+                </div>
             </div>
 
             <!-- YENİ: Kasa ile Gün arasına Yapay Zeka Butonu -->
             <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
                 <button id="btn-open-ai" class="btn-ai-nav">
                     <span><svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 6px; filter: drop-shadow(0 0 5px rgba(0, 242, 254, 0.6));">
-    <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
-    <rect x="9" y="9" width="6" height="6"></rect>
-    <line x1="9" y1="1" x2="9" y2="4"></line>
-    <line x1="15" y1="1" x2="15" y2="4"></line>
-    <line x1="9" y1="20" x2="9" y2="23"></line>
-    <line x1="15" y1="20" x2="15" y2="23"></line>
-</svg> AI ANALİST</span>
+                        <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
+                        <rect x="9" y="9" width="6" height="6"></rect>
+                        <line x1="9" y1="1" x2="9" y2="4"></line>
+                        <line x1="15" y1="1" x2="15" y2="4"></line>
+                        <line x1="9" y1="20" x2="9" y2="23"></line>
+                        <line x1="15" y1="20" x2="15" y2="23"></line>
+                    </svg> AI ANALİST</span>
                 </button>
                 <span id="ai-rights-counter" style="font-size: 9px; color: #94a3b8; font-weight: 800; margin-top: 3px;">Hak: 5 / 5</span>
             </div>
 
             <div class="dashboard-box right-align" id="btn-day-summary" style="cursor: pointer; display: flex; flex-direction: column; align-items: flex-end;">
-    <span class="dash-label">GÜN</span>
-    <span class="dash-value" id="dash-day">1</span>
-    <!-- KÜÇÜLTÜLMÜŞ İŞLEM -->
-    <span id="trade-limit-text" style="font-size: 8px; color: #10b981; font-weight: 800; margin-top: 3px; white-space: nowrap;">İşlem: 5/5</span>
-</div>
+                <span class="dash-label">GÜN</span>
+                <span class="dash-value" id="dash-day">1</span>
+                <!-- KÜÇÜLTÜLMÜŞ İŞLEM -->
+                <span id="trade-limit-text" style="font-size: 8px; color: #10b981; font-weight: 800; margin-top: 3px; white-space: nowrap;">İşlem: 5/5</span>
+            </div>
         </div>
 
         <div class="category-tabs" id="category-tabs">
@@ -2033,7 +2046,7 @@ if (btnManip) {
 </svg> VIP</button>
         </div>
 
-        <!-- CTS 100 ENDEKS ŞERİDİ (SVG LOGOLU & TAM SAYI) -->
+        <!-- CTS 32 ENDEKS ŞERİDİ (SVG LOGOLU & TAM SAYI) -->
 <div id="market-index-bar" class="market-index-bar">
     <div class="index-left">
         <span class="index-icon">
@@ -2043,7 +2056,7 @@ if (btnManip) {
                 <polyline points="14 8.5 17 8.5 17 11.5"></polyline>
             </svg>
         </span>
-        <span class="index-title">CTS 100</span>
+        <span class="index-title">CTS 32</span>
         <span id="market-cap-value" class="index-val">$0</span>
     </div>
 
@@ -2453,6 +2466,7 @@ CTS KRİPTO BORSASI</h3>
         </button>
     </div>
 
+    <!-- BORÇ KARTI -->
     <div id="debt-summary-card" class="portfolio-summary-card neon-debt-box">
         <span class="summary-label">TOPLAM BORÇ (FAİZLİ)</span>
         <strong id="bank-total-debt" class="summary-value" style="color: #ef4444;">$0.00</strong>
@@ -2461,38 +2475,84 @@ CTS KRİPTO BORSASI</h3>
         </div>
     </div>
 
-            <div class="stock-card" style="flex-direction: column; align-items: stretch; gap: 15px; padding: 20px;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <h4 style="font-size: 15px; font-weight: 900; color: #fff;">Acil Nakit Kredisi</h4>
-                        <p id="loan-info-text" style="font-size: 11px; color: #94a3b8; margin-top: 2px;">Tutar: $5,000 | 4 Saniyede %2.0 Faiz</p>
-                    </div>
-                    <span style="font-size: 20px;"><svg viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px; filter: drop-shadow(0 0 5px rgba(192, 132, 252, 0.6));">
-    <line x1="3" y1="21" x2="21" y2="21"></line>
-    <line x1="3" y1="10" x2="21" y2="10"></line>
-    <path d="M5 6l7-3 7 3"></path>
-    <line x1="6" y1="10" x2="6" y2="21"></line>
-    <line x1="10" y1="10" x2="10" y2="21"></line>
-    <line x1="14" y1="10" x2="14" y2="21"></line>
-    <line x1="18" y1="10" x2="18" y2="21"></line>
-</svg></span>
+    <!-- 💎 YENİ: CTS ÖZEL VARLIK FONU (GEM SERBEST BAKİYE FAİZİ) -->
+    <div class="stock-card" style="flex-direction: column; align-items: stretch; gap: 12px; padding: 18px; margin-top: 10px; background: linear-gradient(135deg, rgba(30, 27, 75, 0.6), rgba(15, 23, 42, 0.8)); border: 1px solid rgba(168, 85, 247, 0.35); border-radius: 14px; box-shadow: 0 4px 20px rgba(168, 85, 247, 0.15);">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 10px; background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.4);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; filter: drop-shadow(0 0 5px rgba(192, 132, 252, 0.8));">
+                        <path d="M6 3h12l4 6-10 12L2 9z"></path>
+                        <path d="M11 3L8 9l4 12 4-12-3-6"></path>
+                        <path d="M2 9h20"></path>
+                    </svg>
+                </span>
+                <div>
+                    <h4 style="font-size: 14px; font-weight: 900; color: #f3e8ff; margin: 0;">CTS Özel Varlık Fonu</h4>
+                    <p style="font-size: 10.5px; color: #c084fc; margin-top: 2px; font-weight: 700;">Serbest Bakiye Likit Getirisi</p>
                 </div>
-                <button class="trade-btn btn-buy" id="btn-take-loan" style="width: 100%; text-align: center;">$5,000 KREDİ ÇEK</button>
             </div>
-            <div class="stock-card" style="flex-direction: column; align-items: stretch; gap: 15px; padding: 20px; margin-top: 10px;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div><h4 style="font-size: 15px; font-weight: 900; color: #fff;">Borç Ödeme</h4><p style="font-size: 11px; color: #94a3b8; margin-top: 2px;">Kasadan borç kapat</p></div>
-                    <span style="font-size: 20px;"><svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px; filter: drop-shadow(0 0 5px rgba(0, 242, 254, 0.6));">
-    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-    <line x1="1" y1="10" x2="23" y2="10"></line>
-</svg></span>
-                </div>
-                <div style="display: flex; gap: 10px;">
-                    <button class="trade-btn btn-sell" id="btn-pay-loan" style="flex: 1; padding: 14px; font-size: 13px;">$5,000 ÖDE</button>
-                    <button class="trade-btn" id="btn-pay-all" style="flex: 1; padding: 14px; font-size: 13px; background: #3b82f6; color: #fff; box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);">TÜMÜNÜ KAPAT</button>
-                </div>
+            <button id="btn-bank-open-gem-shop" style="background: rgba(168, 85, 247, 0.2); border: 1px solid #a855f7; color: #f3e8ff; padding: 5px 10px; border-radius: 8px; font-size: 10px; font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s;">
+                <span>💎 GEM AL</span>
+            </button>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.7); padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.05);">
+            <div>
+                <span style="font-size: 10px; color: #94a3b8; font-weight: 700; display: block;">Cüzdandaki Varlık</span>
+                <span id="bank-gem-balance" style="font-size: 13px; font-weight: 900; color: #c084fc;">💎 0 GEM</span>
+            </div>
+            <div style="text-align: right;">
+                <span style="font-size: 10px; color: #94a3b8; font-weight: 700; display: block;">Periyot Başı Getiri</span>
+                <span id="bank-gem-interest-income" style="font-size: 13px; font-weight: 900; color: #10b981;">+$0.00 / döngü</span>
             </div>
         </div>
+        <p style="font-size: 9.5px; color: #64748b; margin: 0; line-height: 1.3;">
+            * Gem'lerinizi harcamayıp cüzdanınızda tuttukça banka her piyasa döngüsünde kasanıza otomatik net dolar öder.
+        </p>
+    </div>
+
+    <!-- KREDİ ÇEKME -->
+    <div class="stock-card" style="flex-direction: column; align-items: stretch; gap: 15px; padding: 20px; margin-top: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h4 style="font-size: 15px; font-weight: 900; color: #fff;">Acil Nakit Kredisi</h4>
+                <p id="loan-info-text" style="font-size: 11px; color: #94a3b8; margin-top: 2px;">Tutar: $5,000 | 4 Saniyede %2.0 Faiz</p>
+            </div>
+            <span style="font-size: 20px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px; filter: drop-shadow(0 0 5px rgba(192, 132, 252, 0.6));">
+                    <line x1="3" y1="21" x2="21" y2="21"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                    <path d="M5 6l7-3 7 3"></path>
+                    <line x1="6" y1="10" x2="6" y2="21"></line>
+                    <line x1="10" y1="10" x2="10" y2="21"></line>
+                    <line x1="14" y1="10" x2="14" y2="21"></line>
+                    <line x1="18" y1="10" x2="18" y2="21"></line>
+                </svg>
+            </span>
+        </div>
+        <button class="trade-btn btn-buy" id="btn-take-loan" style="width: 100%; text-align: center;">$5,000 KREDİ ÇEK</button>
+    </div>
+
+    <!-- BORÇ ÖDEME -->
+    <div class="stock-card" style="flex-direction: column; align-items: stretch; gap: 15px; padding: 20px; margin-top: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h4 style="font-size: 15px; font-weight: 900; color: #fff;">Borç Ödeme</h4>
+                <p style="font-size: 11px; color: #94a3b8; margin-top: 2px;">Kasadan borç kapat</p>
+            </div>
+            <span style="font-size: 20px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px; filter: drop-shadow(0 0 5px rgba(0, 242, 254, 0.6));">
+                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                    <line x1="1" y1="10" x2="23" y2="10"></line>
+                </svg>
+            </span>
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button class="trade-btn btn-sell" id="btn-pay-loan" style="flex: 1; padding: 14px; font-size: 13px;">$5,000 ÖDE</button>
+            <button class="trade-btn" id="btn-pay-all" style="flex: 1; padding: 14px; font-size: 13px; background: #3b82f6; color: #fff; box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);">TÜMÜNÜ KAPAT</button>
+        </div>
+    </div>
+</div>
 
         <div id="store-container" class="market-container" style="display: none;">
             
@@ -3219,6 +3279,9 @@ function handleBGM() {
             let hasAdsRemoved = false;
 
             let aiRights = 5;
+            // --- 💎 GEM & VIP VARLIK FONU DEĞİŞKENLERİ ---
+let playerGems = parseInt(localStorage.getItem('cts_player_gems')) || 0;
+let gemDailyInterestRate = 0.05; // Her Gem başına günlük pasif dolar getirisi çarpanı (Örn: 200 Gem = Günlük +$2,000)
             let lastAiResetTime = parseInt(localStorage.getItem('cts_last_ai_time')) || 0;
             let lastAiResetDay = lastAiResetTime; 
             serverTimeOffset = 0;
@@ -3379,6 +3442,14 @@ function performHardReset(isBankruptcy) {
     let userNoAds = localStorage.getItem('cts_noads') === 'true';
     let aiRights = localStorage.getItem('cts_ai_rights') || 3;
 
+    // 💎 KORUMA: Satın alınan Gem bakiyesini hafızada tut
+    let safeGems = 0;
+    if (typeof playerGems !== 'undefined') {
+        safeGems = playerGems;
+    } else {
+        safeGems = parseInt(localStorage.getItem('cts_player_gems')) || 0;
+    }
+
     // ==========================================================
     // 4. LOKAL HAFIZAYI (CİHAZI) KUSURSUZ SIFIRLA
     // ==========================================================
@@ -3391,6 +3462,9 @@ function performHardReset(isBankruptcy) {
     localStorage.setItem('cts_premium', userIsPremium);
     localStorage.setItem('cts_noads', userNoAds);
     localStorage.setItem('cts_ai_rights', aiRights);
+
+    // 💎 Gem'leri lokale geri yaz
+    localStorage.setItem('cts_player_gems', safeGems);
     
     // Temel başlangıç ekonomisi
     localStorage.setItem('cts_balance', '15000');
@@ -3405,31 +3479,30 @@ function performHardReset(isBankruptcy) {
     localStorage.setItem('cts_stats', JSON.stringify(newStats));
     
     // Oyunun hata vermemesi için boş şablonlar (Eski eşya ve hisseler yok edildi)
-    localStorage.setItem('cts_lifestyle', "{}"); // saveGame'deki gibi stringified boş obje
+    localStorage.setItem('cts_lifestyle', "{}");
     localStorage.setItem('cts_portfolio', "{}");
     localStorage.setItem('cts_averages', "{}");
     localStorage.setItem('cts_futures', "[]");
     localStorage.setItem('cts_milestones', JSON.stringify({ k50: false, k250: false, m1: false, m5: false, m15: false, m20: false }));
-    // DİKKAT: cts_stock_prices ve cts_custom_brands bilerek yazılmadı ki oyun sıfırdan üretsin!
 
     // ==========================================================
     // 5. BULUTU (FIREBASE) KUSURSUZ SIFIRLA
     // ==========================================================
     if (uid && typeof database !== 'undefined') {
-        // saveGame'in kullandığı .set() yapısını kullanarak tüm bulut düğümünü eziyoruz
         let resetCloudData = {
             name: pName,
             nameChanged: hasChangedName,
             balance: 15000,
+            gems: safeGems, // 💎 KORUMA: Buluttaki Gem bakiyesi ezilmez, korunur!
             debt: 0,
             principalDebt: 0,
-            stats: newStats, // Korunan istatistikler
-            lifestyle: "{}", // Eşyalar buluttan silindi
+            stats: newStats,
+            lifestyle: "{}",
             averages: {},
             portfolio: {},
             futures: [],
-            customBrands: null, // Özel isimler silindi
-            stockPrices: null, // Hisse fiyatları silindi
+            customBrands: null,
+            stockPrices: null,
             isPremium: userIsPremium,
             hasAdsRemoved: userNoAds,
             aiRights: parseInt(aiRights),
@@ -3441,7 +3514,6 @@ function performHardReset(isBankruptcy) {
             lastUpdated: firebase.database.ServerValue.TIMESTAMP
         };
 
-        // .update yerine .set kullanıyoruz ki arta kalan hiçbir eski veri yaşamasın
         database.ref('users/' + uid).set(resetCloudData).then(() => {
             window.location.reload();
         }).catch((err) => {
@@ -4068,36 +4140,35 @@ function updateInterestRate() {
                 updateMarketCapUI();
             }
 
-            // --- CTS 100 ENDEKSİ HESAPLAMA ---
+            // --- CTS 32 ENDEKSİ HESAPLAMA ---
 function updateMarketCapUI() {
     try {
-        let totalUnitSum = 0;
+        let currentTotalUnitSum = 0;
+        let previousTotalUnitSum = 0;
         let upCount = 0;
         let downCount = 0;
-        let sumTickPercents = 0;
-        let countedStocks = 0;
         const SHARES_PER_STOCK = 1000000; // 1 Milyon lot arz
 
-        // 1. Hisse kartlarındaki fiyatları ve anlık yüzdeleri topla
+        // 1. Hisse kartlarındaki güncel fiyatları ve önceki taban fiyatları topla
         if (typeof stockCards !== 'undefined' && stockCards) {
             stockCards.forEach(card => {
                 if (card.dataset && card.dataset.cat === 'crypto') return;
-                
+
+                // Fiyatı Çek
                 const priceEl = card.querySelector('.stock-price, h4, .price');
+                let currentPrice = 0;
                 if (priceEl) {
-                    const num = parseFloat(priceEl.innerText.replace(/[^0-9.-]+/g, '')) || 0;
-                    totalUnitSum += num;
+                    currentPrice = parseFloat(priceEl.innerText.replace(/[^0-9.-]+/g, '')) || 0;
                 }
 
+                // Yüzdelik Değişimi Çek
                 const changeEl = card.querySelector('.stock-change');
+                let signedPercent = 0;
                 if (changeEl) {
                     const txt = changeEl.innerText;
                     let cleanNum = parseFloat(txt.replace(/[^0-9.-]+/g, '')) || 0;
                     let isNegative = txt.includes('-') || txt.includes('▼');
-                    let signedPercent = isNegative ? -Math.abs(cleanNum) : Math.abs(cleanNum);
-
-                    sumTickPercents += signedPercent;
-                    countedStocks++;
+                    signedPercent = isNegative ? -Math.abs(cleanNum) : Math.abs(cleanNum);
 
                     if (signedPercent >= 0) {
                         upCount++;
@@ -4105,24 +4176,41 @@ function updateMarketCapUI() {
                         downCount++;
                     }
                 }
+
+                if (currentPrice > 0) {
+                    currentTotalUnitSum += currentPrice;
+
+                    // Bu hissenin değişim öncesi taban fiyatı: P_eski = P_yeni / (1 + r)
+                    const prevPrice = currentPrice / (1 + (signedPercent / 100));
+                    previousTotalUnitSum += prevPrice;
+                }
             });
         }
 
-        if (totalUnitSum === 0) return;
+        if (currentTotalUnitSum === 0) return;
 
-        // Gerçek Toplam Değer (Örn: $46,054,790,000)
-        const totalMarketCap = Math.round(totalUnitSum * SHARES_PER_STOCK);
+        // Gerçek Toplam Değer (Örn: $48,849,750,000)
+        const totalMarketCap = Math.round(currentTotalUnitSum * SHARES_PER_STOCK);
 
-        // Anlık piyasa ortalama yüzdelik değişimi
-        const instantMarketPercent = countedStocks > 0 ? (sumTickPercents / countedStocks) : 0;
+        // Ağırlıklı Gerçek Piyasa Yüzdelik Değişimi
+        let weightedMarketPercent = 0;
+        if (previousTotalUnitSum > 0) {
+            weightedMarketPercent = ((currentTotalUnitSum - previousTotalUnitSum) / previousTotalUnitSum) * 100;
+        }
 
         const barEl = document.getElementById('market-index-bar');
         const valEl = document.getElementById('market-cap-value');
         const badgeEl = document.getElementById('market-cap-change');
         const upCountEl = document.getElementById('market-up-count');
         const downCountEl = document.getElementById('market-down-count');
+        const titleEl = barEl ? barEl.querySelector('.index-title') : null;
 
-        // 🎨 AKTİF SEÇİLİ TEMA KONTROLÜ (Oyunun Anahtarlarıyla Tam Senkron)
+        // CTS 100 -> CTS 32 Başlık Kontrolü
+        if (titleEl && titleEl.innerText !== 'CTS 32') {
+            titleEl.innerText = 'CTS 32';
+        }
+
+        // 🎨 AKTİF SEÇİLİ TEMA KONTROLÜ
         const isGoldThemeActive = document.body.classList.contains('premium-theme') || 
                                   localStorage.getItem('cts_theme_active') === 'true';
 
@@ -4143,12 +4231,14 @@ function updateMarketCapUI() {
         if (upCountEl) upCountEl.innerText = upCount;
         if (downCountEl) downCountEl.innerText = downCount;
 
-        // Anlık Yüzdelik Rozet
+        // Doğru Ağırlıklı Yüzdelik Rozet (+%0.00 veya -%0.00)
         if (badgeEl) {
-            const isUp = instantMarketPercent >= 0;
-            const sign = isUp ? '+' : '';
-            badgeEl.innerText = `${sign}%${instantMarketPercent.toFixed(2)}`;
-            badgeEl.className = `index-badge ${instantMarketPercent > 0.001 ? 'up' : instantMarketPercent < -0.001 ? 'down' : 'neutral'}`;
+            const isNegative = weightedMarketPercent < 0;
+            const sign = isNegative ? '-' : '+';
+            const formattedVal = Math.abs(weightedMarketPercent).toFixed(2);
+            
+            badgeEl.innerText = `${sign}%${formattedVal}`;
+            badgeEl.className = `index-badge ${weightedMarketPercent > 0.001 ? 'up' : weightedMarketPercent < -0.001 ? 'down' : 'neutral'}`;
         }
     } catch (e) {
         console.warn("CTS Endeks hatası:", e);
@@ -5401,8 +5491,19 @@ function openFuturesPosition(type) {
 }
 
             const bankTotalDebt = document.getElementById('bank-total-debt');
-            
-            document.getElementById('btn-take-loan').addEventListener('click', () => {
+
+// 💎 GEM SERBEST BAKİYE FAİZ ÇARPANI (Her Gem başına döngüde $1.50 nakit getiri)
+const GEM_INTEREST_PER_UNIT = 1.50; 
+
+// Banka içindeki "GEM AL" butonuna tıklandığında Gem Lounge Pop-up'ını aç
+const btnBankOpenGem = document.getElementById('btn-bank-open-gem-shop');
+if (btnBankOpenGem) {
+    btnBankOpenGem.addEventListener('click', () => {
+        if (typeof openGemLoungeModal === 'function') openGemLoungeModal();
+    });
+}
+
+document.getElementById('btn-take-loan').addEventListener('click', () => {
     let loanAmount = getDynamicLoanAmount();
     playerBalance += loanAmount;
     playerDebt += loanAmount; 
@@ -5410,7 +5511,7 @@ function openFuturesPosition(type) {
     updateBalanceUI(); updateBankUI(); saveGame();
 });
 
-            document.getElementById('btn-pay-loan').addEventListener('click', () => {
+document.getElementById('btn-pay-loan').addEventListener('click', () => {
     if (playerDebt <= 0) return; 
     let loanAmount = getDynamicLoanAmount();
     let amountToPay = playerDebt < loanAmount ? playerDebt : loanAmount;
@@ -5429,34 +5530,64 @@ function openFuturesPosition(type) {
     }
 });
 
-            document.getElementById('btn-pay-all').addEventListener('click', () => {
-                if (playerDebt <= 0) return; 
-                if (playerBalance >= playerDebt) {
-                    playerBalance -= playerDebt;
-                    playerDebt = 0; playerPrincipalDebt = 0;
-                    updateBalanceUI(); updateBankUI(); saveGame();
-                } else {
-                    bankTotalDebt.style.color = '#ef4444';
-                    setTimeout(() => { bankTotalDebt.style.color = '#ef4444'; }, 600);
-                }
-            });
+document.getElementById('btn-pay-all').addEventListener('click', () => {
+    if (playerDebt <= 0) return; 
+    if (playerBalance >= playerDebt) {
+        playerBalance -= playerDebt;
+        playerDebt = 0; playerPrincipalDebt = 0;
+        updateBalanceUI(); updateBankUI(); saveGame();
+    } else {
+        bankTotalDebt.style.color = '#ef4444';
+        setTimeout(() => { bankTotalDebt.style.color = '#ef4444'; }, 600);
+    }
+});
 
-            function updateBankUI() {
-                bankTotalDebt.innerText = "$" + playerDebt.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                let accruedInterest = playerDebt - playerPrincipalDebt;
-                if (accruedInterest < 0) accruedInterest = 0;
-                document.getElementById('bank-accrued-interest').innerText = "$" + accruedInterest.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                
-                // Borç varsa alt menüdeki Banka butonunu kırmızı yap ve nefes aldır
-                const tabBank = document.getElementById('tab-bank');
-                if (playerDebt > 0) {
-                    tabBank.classList.add('debt-alert');
-                } else {
-                    tabBank.classList.remove('debt-alert');
-                }
-                
-                updateInterestRate(); 
-            }
+function updateBankUI() {
+    bankTotalDebt.innerText = "$" + playerDebt.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    let accruedInterest = playerDebt - playerPrincipalDebt;
+    if (accruedInterest < 0) accruedInterest = 0;
+    document.getElementById('bank-accrued-interest').innerText = "$" + accruedInterest.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    
+    // 💎 CTS ÖZEL VARLIK FONU (GEM FAİZ KARTI) GÜNCELLEMESİ
+    const bankGemBalEl = document.getElementById('bank-gem-balance');
+    const bankGemIncEl = document.getElementById('bank-gem-interest-income');
+    const topGemCountEl = document.getElementById('top-gem-count');
+
+    const currentGems = typeof playerGems !== 'undefined' ? playerGems : 0;
+    const cycleIncome = currentGems * GEM_INTEREST_PER_UNIT;
+
+    if (bankGemBalEl) {
+        bankGemBalEl.innerText = `💎 ${currentGems.toLocaleString('en-US')} GEM`;
+    }
+    if (bankGemIncEl) {
+        bankGemIncEl.innerText = `+$${cycleIncome.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} / döngü`;
+    }
+    if (topGemCountEl) {
+        topGemCountEl.innerText = currentGems.toLocaleString('en-US');
+    }
+
+    // Borç varsa alt menüdeki Banka butonunu kırmızı yap ve nefes aldır
+    const tabBank = document.getElementById('tab-bank');
+    if (playerDebt > 0) {
+        tabBank.classList.add('debt-alert');
+    } else {
+        tabBank.classList.remove('debt-alert');
+    }
+    
+    updateInterestRate(); 
+}
+
+// 💎 GEM FAİZİNİ KASAYA EKLEYEN FONKSİYON
+function processGemPassiveIncome() {
+    if (typeof playerGems === 'undefined' || playerGems <= 0) return;
+
+    const payout = playerGems * GEM_INTEREST_PER_UNIT;
+    if (payout > 0) {
+        playerBalance += payout;
+        if (typeof updateBalanceUI === 'function') updateBalanceUI();
+        if (typeof saveGame === 'function') saveGame();
+    }
+}
 
             const bankruptcyModal = document.getElementById('bankruptcy-modal');
 const btnBankruptcyOk = document.getElementById('btn-bankruptcy-ok');
@@ -6035,17 +6166,25 @@ priceElement.innerText = "$" + newPrice.toLocaleString('en-US', { minimumFractio
                 try { updateBalanceUI(); } catch (e) { console.warn('Balance live update:', e); }
                 try { updateWalletChartModal(); } catch (e) { console.warn('Wallet live update:', e); }
 
-                if (playerDebt > 0) {
+                // --- 1. KREDİ BORÇ FAİZİ İŞLEME DÖNGÜSÜ ---
+if (playerDebt > 0) {
     let multiplier = 1 + (currentInterestRate / 100);
     playerDebt = playerDebt * multiplier; 
     
-    // --- FAİZ TİTREŞİMİ BURAYA EKLENİYOR ---
+    // --- FAİZ TİTREŞİMİ ---
     if (typeof window.navigator.vibrate === 'function') {
-        window.navigator.vibrate(30); // Android cihazlarda her faiz kesildiğinde minik bir tık hissi verir
+        window.navigator.vibrate(30); 
     }
-    // --------------------------------------
+}
 
-    if (bankContainer.style.display === 'block') { updateBankUI(); }
+// --- 2. 💎 GEM LİKİT FAİZİ (HER PERİYOTTA KASAYA PASİF GELİR) ---
+if (typeof processGemPassiveIncome === 'function') {
+    processGemPassiveIncome();
+}
+
+// Banka sekmesi açıksa arayüzü güncelle
+if (typeof bankContainer !== 'undefined' && bankContainer && bankContainer.style.display === 'block') { 
+    updateBankUI(); 
 }
 
                 // Likidasyon fiyat değişikliğinin hemen ardından yukarıda kontrol edildi.
@@ -6612,6 +6751,11 @@ if (btnCloseWalletStats) {
     localStorage.setItem('cts_principal_debt', playerPrincipalDebt);
     localStorage.setItem('cts_stats', JSON.stringify(gameStats));
     
+    // 💎 YENİ EKLENEN: Gem Miktarını Lokale Kaydet
+    if (typeof playerGems !== 'undefined') {
+        localStorage.setItem('cts_player_gems', playerGems);
+    }
+    
     if (typeof luxuryItems !== 'undefined') {
         let lifestyleSave = {};
         luxuryItems.forEach(item => {
@@ -6659,7 +6803,6 @@ if (btnCloseWalletStats) {
     // ==========================================================================
     let uid = localStorage.getItem('cts_player_uid');
     if (uid) {
-        // İsmi ve değiştirme hakkını güncel local'den güvenle alıyoruz
         let pName = localStorage.getItem('cts_player_name') || "CTS TRADER";
         let hasChangedName = localStorage.getItem('cts_name_changed_once') === 'true';
         
@@ -6667,6 +6810,7 @@ if (btnCloseWalletStats) {
             name: pName,
             nameChanged: hasChangedName,
             balance: playerBalance,
+            gems: (typeof playerGems !== 'undefined' ? playerGems : 0), // 💎 BULUT GEM DESTEĞİ
             debt: playerDebt,
             principalDebt: playerPrincipalDebt,
             stats: gameStats,
@@ -6675,7 +6819,7 @@ if (btnCloseWalletStats) {
             portfolio: portfolio,
             futures: activePositions, 
             customBrands: customBrands, 
-            stockPrices: stockPrices, // TÜM BORSANIN O ANKİ FİYATLARI BULUTA GİDER
+            stockPrices: stockPrices,
             isPremium: isPremium,
             hasAdsRemoved: hasAdsRemoved, 
             aiRights: aiRights, 
@@ -8667,6 +8811,268 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnBuyCash) {
         btnBuyCash.onclick = buyCashSupportAction;
     }
+});
+// ==========================================================================
+// 💎 CTS PRIVATE LOUNGE KONTROL MERKEZİ & SATIN ALMALAR
+// ==========================================================================
+
+// 1. Pop-Up Açma / Kapatma & Sekme Yönetimi
+function openGemLoungeModal() {
+    const modal = document.getElementById('gem-lounge-modal');
+    if (modal) {
+        updateLoungeUI();
+        modal.style.display = 'flex';
+    }
+}
+
+function closeGemLoungeModal() {
+    const modal = document.getElementById('gem-lounge-modal');
+    if (modal) modal.style.display = 'none';
+}
+
+function updateLoungeUI() {
+    const gemBal = typeof playerGems !== 'undefined' ? playerGems : 0;
+    const loungeBalEl = document.getElementById('lounge-gem-balance-display');
+    if (loungeBalEl) {
+        loungeBalEl.innerText = `💎 ${gemBal.toLocaleString('en-US')} GEM`;
+    }
+
+    // Mega Kasa Desteği Canlı Tutar Güncellemesi (%60 Hibe)
+    const cashDescEl = document.getElementById('gem-cash-support-desc');
+    if (cashDescEl) {
+        let currentBal = typeof playerBalance !== 'undefined' ? playerBalance : 0;
+        let grantAmount = Math.floor(currentBal * 0.6);
+        if (grantAmount < 15000) grantAmount = 15000;
+        cashDescEl.innerHTML = `Mevcut kasanın %60'ı kadar anında hibe: <strong style="color: #10b981;">+$${grantAmount.toLocaleString('en-US')}</strong>`;
+    }
+}
+
+// 2. ⚡ MEGA BORSA MANİPÜLASYONU (%5 - %15 TAVAN)
+function buyMegaManipulationWithGems() {
+    const GEM_COST = 200;
+
+    if (playerGems < GEM_COST) {
+        if (typeof showCustomAlert === 'function') {
+            showCustomAlert(`Yetersiz Gem! Mega Manipülasyon için ${GEM_COST} Gem gerekiyor.`);
+        } else {
+            alert(`Yetersiz Gem! Mega Manipülasyon için ${GEM_COST} Gem gerekiyor.`);
+        }
+        return;
+    }
+
+    // Portföy hisse kontrolü
+    let affected = 0;
+    if (typeof stockCards !== 'undefined') {
+        stockCards.forEach(card => {
+            let owned = parseInt(card.querySelector('.stock-owned')?.textContent.replace(/[^0-9]/g, "")) || 0;
+            let isFutures = (typeof activePositions !== 'undefined') && activePositions.some(p => p.name === card.dataset.name);
+            if (owned > 0 || isFutures) affected++;
+        });
+    }
+
+    if (affected === 0) {
+        if (typeof showStoreModal === 'function') {
+            showStoreModal("BAŞARISIZ", "Portföyünde veya vadeli işlemlerde hiç hissen olmadığı için manipülasyon yapılamaz. Gem harcanmadı.", false);
+        } else {
+            alert("Portföyünde veya vadeli işlemlerde hiç hissen olmadığı için manipülasyon yapılamaz.");
+        }
+        return;
+    }
+
+    // Gem Kesimi
+    playerGems -= GEM_COST;
+
+    // Şans Algoritması: %5 ile %15 arası artış
+    let roll = Math.random();
+    let increasePercent = 0;
+    if (roll < 0.60) {
+        increasePercent = (Math.random() * 3.5) + 5; // %5 ile %8.5
+    } else if (roll < 0.90) {
+        increasePercent = (Math.random() * 3.5) + 8.5; // %8.5 ile %12
+    } else {
+        increasePercent = (Math.random() * 3) + 12; // %12 ile %15 (Efsanevi Tavan)
+    }
+
+    let multiplier = 1 + (increasePercent / 100);
+
+    if (typeof stockCards !== 'undefined') {
+        stockCards.forEach(card => {
+            let owned = parseInt(card.querySelector('.stock-owned')?.textContent.replace(/[^0-9]/g, "")) || 0;
+            let isFutures = (typeof activePositions !== 'undefined') && activePositions.some(p => p.name === card.dataset.name);
+            
+            if (owned > 0 || isFutures) {
+                const priceEl = card.querySelector('.stock-price');
+                if (priceEl) {
+                    let price = parseFloat(priceEl.textContent.replace(/[^0-9.-]+/g, "")) || 0;
+                    price = price * multiplier;
+                    priceEl.innerText = "$" + price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                }
+
+                const changeEl = card.querySelector('.stock-change');
+                if (changeEl) {
+                    changeEl.innerText = "▲ +" + increasePercent.toFixed(1) + "%";
+                    changeEl.style.color = "#10b981";
+                }
+            }
+        });
+    }
+
+    if (typeof playSound === 'function') playSound('buy');
+    if (typeof showStoreModal === 'function') {
+        showStoreModal("MEGA MANİPÜLASYON BAŞARILI", `💎 200 Gem kullanıldı.<br><br>Portföyündeki ${affected} şirketin hisseleri anında <strong style="color:#10b981;">+%${increasePercent.toFixed(1)}</strong> tavan yaptı!`, true);
+    }
+
+    updateLoungeUI();
+    if (typeof updateBankUI === 'function') updateBankUI();
+    if (typeof saveGame === 'function') saveGame();
+}
+
+// 3. 🧠 KIDEMLİ AI ANALİST PAKETİ (+10 HAK)
+function buyAiRightsWithGems() {
+    const GEM_COST = 150;
+
+    if (playerGems < GEM_COST) {
+        if (typeof showCustomAlert === 'function') {
+            showCustomAlert(`Yetersiz Gem! +10 AI Analiz hakkı için ${GEM_COST} Gem gerekiyor.`);
+        } else {
+            alert(`Yetersiz Gem! +10 AI Analiz hakkı için ${GEM_COST} Gem gerekiyor.`);
+        }
+        return;
+    }
+
+    playerGems -= GEM_COST;
+    if (typeof aiRights !== 'undefined') {
+        aiRights += 10;
+    }
+
+    const aiCounterEl = document.getElementById('ai-rights-counter');
+    if (aiCounterEl) {
+        aiCounterEl.innerText = `Hak: ${aiRights} / 5`;
+    }
+
+    if (typeof playSound === 'function') playSound('buy');
+    if (typeof showStoreModal === 'function') {
+        showStoreModal("AI HAKKI EKLENDİ", `💎 150 Gem karşılığında hesabınıza <strong style="color:#00f2fe;">+10 Yapay Zeka Analiz Hakkı</strong> tanımlandı!`, true);
+    }
+
+    updateLoungeUI();
+    if (typeof updateBankUI === 'function') updateBankUI();
+    if (typeof saveGame === 'function') saveGame();
+}
+
+// 4. 💰 MEGA LİKİDİTE DESTEĞİ (%60 KASA HİBESİ)
+function buyMegaCashSupportWithGems() {
+    const GEM_COST = 250;
+
+    if (playerGems < GEM_COST) {
+        if (typeof showCustomAlert === 'function') {
+            showCustomAlert(`Yetersiz Gem! Mega Likidite Desteği için ${GEM_COST} Gem gerekiyor.`);
+        } else {
+            alert(`Yetersiz Gem! Mega Likidite Desteği için ${GEM_COST} Gem gerekiyor.`);
+        }
+        return;
+    }
+
+    let currentBal = typeof playerBalance !== 'undefined' ? playerBalance : 0;
+    let grantAmount = Math.floor(currentBal * 0.6);
+    if (grantAmount < 15000) grantAmount = 15000;
+
+    playerGems -= GEM_COST;
+    playerBalance += grantAmount;
+
+    if (typeof playSound === 'function') playSound('buy');
+    if (typeof showStoreModal === 'function') {
+        showStoreModal("LİKİDİTE ENJEKSİYONU", `💎 250 Gem karşılığında kasanıza anında <strong style="color:#10b981;">+$${grantAmount.toLocaleString('en-US')}</strong> nakit hibe aktarıldı!`, true);
+    }
+
+    updateLoungeUI();
+    if (typeof updateBalanceUI === 'function') updateBalanceUI();
+    if (typeof updateBankUI === 'function') updateBankUI();
+    if (typeof saveGame === 'function') saveGame();
+}
+
+// 5. 🛒 GOOGLE PLAY / CAPACITOR 5'Lİ GEM PAKETİ SATIN ALMA
+async function buyGemPackAction(productId, gemReward, priceTRY) {
+    const Purchases = window.Capacitor?.Plugins?.Purchases;
+    const isNative = window.Capacitor && typeof window.Capacitor.isNativePlatform === 'function' && window.Capacitor.isNativePlatform();
+
+    if (!isNative || !Purchases) {
+        if (typeof showCustomAlert === 'function') {
+            showCustomAlert("Satın alma sistemi sadece mobil cihazlarda çalışır.");
+        } else {
+            alert("Satın alma sistemi sadece mobil cihazlarda çalışır.");
+        }
+        return;
+    }
+
+    try {
+        await buyStoreProductById(productId);
+
+        playerGems += gemReward;
+
+        if (typeof playSound === 'function') playSound('buy');
+        if (typeof showStoreModal === 'function') {
+            showStoreModal("ÖDEME BAŞARILI", `₺${priceTRY} tutarındaki ödemeniz onaylandı.<br><br>Cüzdanınıza <strong style="color:#c084fc;">+${gemReward.toLocaleString('en-US')} GEM</strong> eklendi!`, true);
+        }
+
+        updateLoungeUI();
+        if (typeof updateBankUI === 'function') updateBankUI();
+        if (typeof saveGame === 'function') saveGame();
+
+    } catch (error) {
+        if (!error.userCancelled && error.code !== "USER_CANCELLED") {
+            console.error("Gem satın alma hatası:", error);
+            if (typeof showCustomAlert === 'function') {
+                showCustomAlert("Ödeme sırasında bir hata oluştu: " + (error.message || error));
+            } else {
+                alert("Ödeme sırasında bir hata oluştu: " + (error.message || error));
+            }
+        }
+    }
+}
+
+// ==========================================================================
+// 🔌 BUTON VE ETKİNLİK DİNLEYİCİLERİ
+// ==========================================================================
+document.addEventListener('DOMContentLoaded', () => {
+    // Üst bardaki GEM kutusuna tıklama
+    const btnTopGem = document.getElementById('btn-open-gem-lounge');
+    if (btnTopGem) btnTopGem.onclick = openGemLoungeModal;
+
+    // Pop-Up Kapat butonu
+    const btnCloseLounge = document.getElementById('btn-close-gem-lounge');
+    if (btnCloseLounge) btnCloseLounge.onclick = closeGemLoungeModal;
+
+    // Sekmeler arası geçiş
+    const tabPriv = document.getElementById('btn-gem-tab-privileges');
+    const tabBuy = document.getElementById('btn-gem-tab-buy');
+    const contentPriv = document.getElementById('gem-tab-content-privileges');
+    const contentBuy = document.getElementById('gem-tab-content-buy');
+
+    if (tabPriv && tabBuy) {
+        tabPriv.onclick = () => {
+            tabPriv.classList.add('active');
+            tabBuy.classList.remove('active');
+            contentPriv.style.display = 'block';
+            contentBuy.style.display = 'none';
+        };
+        tabBuy.onclick = () => {
+            tabBuy.classList.add('active');
+            tabPriv.classList.remove('active');
+            contentBuy.style.display = 'block';
+            contentPriv.style.display = 'none';
+        };
+    }
+
+    // Ürün Satın Alma Butonları
+    const btnManip = document.getElementById('btn-gem-buy-manip');
+    if (btnManip) btnManip.onclick = buyMegaManipulationWithGems;
+
+    const btnAi = document.getElementById('btn-gem-buy-ai');
+    if (btnAi) btnAi.onclick = buyAiRightsWithGems;
+
+    const btnCash = document.getElementById('btn-gem-buy-cash');
+    if (btnCash) btnCash.onclick = buyMegaCashSupportWithGems;
 });
 </script>
 <style id="lifestyle-mobile-safe-styles">
@@ -13354,6 +13760,154 @@ setTimeout(() => {
     </button>
   </div>
 </div>
+<!-- 💎 CTS PRIVATE LOUNGE (ÖZEL GEM KULÜBÜ & VIP MAĞAZA) MODAL -->
+<div id="gem-lounge-modal" class="gem-modal-backdrop" style="display: none;">
+    <div class="gem-modal-box">
+        <!-- Başlık & Kapat Butonu -->
+        <div class="gem-modal-header">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="gem-pulse-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px; filter: drop-shadow(0 0 6px #c084fc);">
+                        <path d="M6 3h12l4 6-10 12L2 9z"></path>
+                        <path d="M11 3L8 9l4 12 4-12-3-6"></path>
+                        <path d="M2 9h20"></path>
+                    </svg>
+                </span>
+                <div>
+                    <h3 style="margin: 0; font-size: 15px; font-weight: 900; color: #f3e8ff; letter-spacing: 0.5px;">CTS PRIVATE LOUNGE</h3>
+                    <p style="margin: 2px 0 0 0; font-size: 10px; color: #a855f7; font-weight: 700;">Ayrıcalıklı Yatırımcı Kulübü</p>
+                </div>
+            </div>
+            <button id="btn-close-gem-lounge" class="gem-modal-close-btn">✕</button>
+        </div>
 
+        <!-- Bilgilendirme Bandı (Pasif Faiz Hatırlatıcısı) -->
+        <div class="gem-info-ticker">
+            <span>💎 Cüzdandaki her Gem, CTS Bankası'nda serbest likit faizi işleterek her döngüde kasana düzenli Dolar kazandırır!</span>
+        </div>
+
+        <!-- Cüzdan & Sekme Butonları -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin: 10px 0 12px 0;">
+            <div class="gem-wallet-badge">
+                <span style="font-size: 10px; color: #94a3b8; font-weight: 700;">BAKİYENİZ:</span>
+                <span id="lounge-gem-balance-display" style="font-size: 13px; font-weight: 900; color: #f3e8ff; margin-left: 4px;">💎 0 GEM</span>
+            </div>
+            <div class="gem-tab-buttons">
+                <button id="btn-gem-tab-privileges" class="gem-tab-btn active">AYRICALIKLAR</button>
+                <button id="btn-gem-tab-buy" class="gem-tab-btn">GEM AL</button>
+            </div>
+        </div>
+
+        <!-- 1. SEKME: GEM İLE ALINAN AYRICALIKLAR -->
+        <div id="gem-tab-content-privileges" class="gem-tab-content">
+            <!-- 1. Mega Manipülasyon -->
+            <div class="gem-product-card">
+                <div class="gem-product-top">
+                    <div>
+                        <h4 style="font-size: 13.5px; font-weight: 900; color: #f3e8ff; margin: 0; display: flex; align-items: center; gap: 6px;">
+                            <span style="color: #a855f7;">⚡</span> Mega Borsa Manipülasyonu
+                        </h4>
+                        <p style="font-size: 10px; color: #94a3b8; margin-top: 3px;">Portföyündeki tüm hisseleri anında <strong style="color: #10b981;">%5 ile %15</strong> arasında tavan yaptırır.</p>
+                    </div>
+                </div>
+                <button id="btn-gem-buy-manip" class="gem-action-btn">
+                    <span>💎 200 GEM</span>
+                </button>
+            </div>
+
+            <!-- 2. AI Analist (+10 Hak) -->
+            <div class="gem-product-card">
+                <div class="gem-product-top">
+                    <div>
+                        <h4 style="font-size: 13.5px; font-weight: 900; color: #f3e8ff; margin: 0; display: flex; align-items: center; gap: 6px;">
+                            <span style="color: #00f2fe;">🧠</span> Kıdemli AI Analist Paketi
+                        </h4>
+                        <p style="font-size: 10px; color: #94a3b8; margin-top: 3px;">Yapay zekaya anında <strong style="color: #00f2fe;">+10 soru sorma hakkı</strong> ekler.</p>
+                    </div>
+                </div>
+                <button id="btn-gem-buy-ai" class="gem-action-btn">
+                    <span>💎 150 GEM</span>
+                </button>
+            </div>
+
+            <!-- 3. Mega Likidite Desteği (%60 Hibe) -->
+            <div class="gem-product-card">
+                <div class="gem-product-top">
+                    <div>
+                        <h4 style="font-size: 13.5px; font-weight: 900; color: #f3e8ff; margin: 0; display: flex; align-items: center; gap: 6px;">
+                            <span style="color: #10b981;">💰</span> Mega Likidite Enjeksiyonu
+                        </h4>
+                        <p id="gem-cash-support-desc" style="font-size: 10px; color: #94a3b8; margin-top: 3px;">Mevcut kasanın <strong style="color: #10b981;">%60'ı kadar</strong> anında hibe nakit sağlar.</p>
+                    </div>
+                </div>
+                <button id="btn-gem-buy-cash" class="gem-action-btn">
+                    <span>💎 250 GEM</span>
+                </button>
+            </div>
+
+            <!-- 4. Gizemli Borsa (Teaser) -->
+            <div class="gem-product-card locked">
+                <div class="gem-product-top">
+                    <div>
+                        <h4 style="font-size: 13.5px; font-weight: 900; color: #cbd5e1; margin: 0; display: flex; align-items: center; gap: 6px;">
+                            <span>🔒</span> Gizemli Borsa Lisansı
+                        </h4>
+                        <p style="font-size: 10px; color: #64748b; margin-top: 3px;">Yalnızca Gem sahiplerine açık özel borsa lisansı. (Çok Yakında)</p>
+                    </div>
+                </div>
+                <button class="gem-action-btn disabled" disabled>YAKINDA</button>
+            </div>
+        </div>
+
+        <!-- 2. SEKME: 5 KADEMELİ GEM SATIN ALMA PAKETLERİ -->
+        <div id="gem-tab-content-buy" class="gem-tab-content" style="display: none;">
+            <!-- Paket 1 -->
+            <div class="gem-tier-card">
+                <div>
+                    <strong style="color: #f3e8ff; font-size: 13px;">80 GEM</strong>
+                    <span style="font-size: 10px; color: #94a3b8; display: block;">Çırak Fonu</span>
+                </div>
+                <button onclick="buyGemPackAction('gem_pack_80', 80, 49.99)" class="gem-buy-cash-btn">₺49.99</button>
+            </div>
+
+            <!-- Paket 2 -->
+            <div class="gem-tier-card">
+                <div>
+                    <strong style="color: #f3e8ff; font-size: 13px;">200 GEM</strong>
+                    <span style="font-size: 10px; color: #c084fc; display: block;">180 + 20 Bonus Gem</span>
+                </div>
+                <button onclick="buyGemPackAction('gem_pack_200', 200, 99.99)" class="gem-buy-cash-btn">₺99.99</button>
+            </div>
+
+            <!-- Paket 3 (En Popüler) -->
+            <div class="gem-tier-card featured">
+                <div class="popular-ribbon">EN POPÜLER</div>
+                <div>
+                    <strong style="color: #f3e8ff; font-size: 13px;">500 GEM</strong>
+                    <span style="font-size: 10px; color: #38bdf8; display: block;">400 + 100 Bonus Gem</span>
+                </div>
+                <button onclick="buyGemPackAction('gem_pack_500', 500, 199.99)" class="gem-buy-cash-btn highlight">₺199.99</button>
+            </div>
+
+            <!-- Paket 4 -->
+            <div class="gem-tier-card">
+                <div>
+                    <strong style="color: #f3e8ff; font-size: 13px;">1,200 GEM</strong>
+                    <span style="font-size: 10px; color: #c084fc; display: block;">900 + 300 Bonus Gem</span>
+                </div>
+                <button onclick="buyGemPackAction('gem_pack_1200', 1200, 399.99)" class="gem-buy-cash-btn">₺399.99</button>
+            </div>
+
+            <!-- Paket 5 (Balina) -->
+            <div class="gem-tier-card whale">
+                <div>
+                    <strong style="color: #fde047; font-size: 13px;">3,000 GEM</strong>
+                    <span style="font-size: 10px; color: #facc15; display: block;">2,200 + 800 Dev Bonus</span>
+                </div>
+                <button onclick="buyGemPackAction('gem_pack_3000', 3000, 799.99)" class="gem-buy-cash-btn gold">₺799.99</button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
