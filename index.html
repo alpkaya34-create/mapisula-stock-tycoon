@@ -601,6 +601,23 @@ async function buyManipulationAction() {
 }
 
 async function contributeKumbaraAction(isMega = false) {
+    // 🛑 3 MİLYON DOLAR KASA KONTROLÜ
+    if (isMega) {
+        const currentWealth = typeof getNetWorth === 'function' ? getNetWorth() : playerBalance;
+        if (currentWealth < 3000000) {
+            const warnDesc = "Mega Küresel Kumbara devasa hacimli yatırımcılar içindir.<br><br>Bu havuza katılabilmek için toplam portföy değerinizin en az <strong style='color:#00f2fe;'>$3.000.000</strong> olması gerekmektedir.";
+            if (typeof showStoreModal === 'function') {
+                showStoreModal("ERİŞİM KISITLI 🔒", warnDesc, false);
+            } else if (typeof showCustomAlert === 'function') {
+                showCustomAlert(warnDesc, "ERİŞİM KISITLI", "#00f2fe");
+            } else {
+                alert("Mega Kumbara için en az $3.000.000 kasa gereklidir.");
+            }
+            if (typeof playSound === 'function') playSound('error');
+            return; // ⛔ 3M altındaysa satın alma ekranını açmadan işlemi kes
+        }
+    }
+
     const productId = isMega ? 'cts_mega_kumbara_100' : 'cts_kumbara_50';
     try {
         await buyStoreProductById(productId);
@@ -669,18 +686,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 4. Manipülasyon Butonu
-const btnManip = document.getElementById('btn-buy-manipulation');
-if (btnManip) {
-    btnManip.onclick = () => {
-        if (typeof buyManipülasyonAction === 'function') {
-            buyManipülasyonAction();
-        } else if (typeof buyManipulationAction === 'function') {
-            buyManipulationAction();
-        } else {
-            console.warn("Manipülasyon fonksiyonu bulunamadı!");
-        }
-    };
-}
+    const btnManip = document.getElementById('btn-buy-manipulation');
+    if (btnManip) {
+        btnManip.onclick = () => {
+            if (typeof buyManipulationAction === 'function') {
+                buyManipulationAction();
+            }
+        };
+    }
 
     // 5. Standart Kumbara (₺50)
     const btnPiggy = document.getElementById('btn-feed-piggy') || document.getElementById('btn-kumbara-50');
@@ -697,10 +710,8 @@ if (btnManip) {
     // 6. Mega Kumbara (₺100)
     const btnMegaPiggy = document.getElementById('btn-feed-mega-piggy') || document.getElementById('btn-kumbara-100');
     if (btnMegaPiggy) {
-        btnMegaPiggy.onclick = (e) => {
-            if (typeof feedMegaPiggyAction === 'function') {
-                feedMegaPiggyAction();
-            } else if (typeof contributeKumbaraAction === 'function') {
+        btnMegaPiggy.onclick = () => {
+            if (typeof contributeKumbaraAction === 'function') {
                 contributeKumbaraAction(true);
             }
         };
@@ -1377,37 +1388,60 @@ async function buyGemPackAction(productId, gemReward, priceTRY) {
         <button class="trade-btn" id="btn-close-milestone" style="width: 100%; padding: 12px; font-size: 14px; background: #fbbf24; color: #000; box-shadow: 0 5px 15px rgba(251, 191, 36, 0.4);">HARİKA!</button>
     </div>
     
-    <!-- SÜRÜM NOTLARI (GÜNCELLEMELER) MODALI -->
+    <!-- SÜRÜM NOTLARI (GÜNCELLEMELER) MODALI v1.1.6 -->
 <div id="patch-notes-modal" class="modal">
     <div style="text-align: center; border-bottom: 1px solid #1e293b; padding-bottom: 15px; margin-bottom: 15px;">
         <svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 36px; height: 36px; display: block; margin: 0 auto 10px auto; filter: drop-shadow(0 0 8px rgba(0, 242, 254, 0.6));">
             <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path>
             <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path>
         </svg>
-        <h2 style="color: #00f2fe; font-size: 18px; font-weight: 900; margin: 0; letter-spacing: 0.5px;">YENİ SÜRÜM NOTLARI v1.1.4</h2>
+        <h2 style="color: #00f2fe; font-size: 18px; font-weight: 900; margin: 0; letter-spacing: 0.5px;">YENİ SÜRÜM NOTLARI v1.1.6</h2>
     </div>
+    
     <div style="color: #cbd5e1; font-size: 12px; text-align: left; margin-bottom: 20px; line-height: 1.6; max-height: 220px; overflow-y: auto; padding-right: 5px;">
         
-        <div style="display: flex; align-items: center; margin-bottom: 5px;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px; filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.6));"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        <!-- Önemli Yenilikler Başlığı -->
+        <div style="display: flex; align-items: center; margin-bottom: 8px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px; filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.6));">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
             <strong style="color: #10b981; font-size: 13px;">Önemli Yenilikler & İyileştirmeler:</strong>
         </div>
-        <ul style="margin: 5px 0 15px 15px; padding: 0;">
-            <li><strong>🎯 Canlı Günlük Görevler & Ödül Motoru:</strong> Alım-satım, vadeli işlemler (Long/Short), AI analist ve mağaza destek paketi sayaçları anlık takip edilecek şekilde sıfırdan yapılandırıldı; şartlar sağlandığında ödüllerin anında talep edilebilmesi sağlandı.</li>
-            <li><strong>🐷 Küresel Kumbara Limit Artışı:</strong> Global Kumbara ödül tavanı $2.000.000'a, Mega Global Kumbara ödül limiti ise $5.000.000'a yükseltilerek oyun ekonomisi güçlendirildi.</li>
-            <li><strong>📈 Çizgi & Mum Grafik Sabitlemesi:</strong> Teknik analiz penceresinde Çizgi ve Mum grafikleri arasında geçiş yaparken alttaki hisse işlem panelinin kapanma sorunu giderildi.</li>
+
+        <ul style="margin: 0 0 15px 18px; padding: 0; list-style-type: disc;">
+            <li style="margin-bottom: 8px;">
+                <strong style="color: #6ee7b7;">Gün Sonu Ödüllü Geçiş & %1 Nakit Bonusu:</strong> Gün kapanışlarında tam izlenen reklamlar için kasa değerinin %1'i anında nakit ödül olarak hesaba aktarılır ve bildirim haber bandına düşer.
+            </li>
+            <li style="margin-bottom: 8px;">
+                <strong style="color: #6ee7b7;">Akıllı Reklamsız Mod Entegrasyonu:</strong> Reklamları Kaldır paketine sahip veya VIP oyuncular için gün sonundaki ödül kutusu ve tüm geçiş reklamları tamamen devre dışı bırakıldı.
+            </li>
+            <li style="margin-bottom: 8px;">
+                <strong style="color: #6ee7b7;">Canlı Haber & Flaş Bildirim Toast Akışı:</strong> Ödül ve piyasa şokları ekranın üstünden kayan dinamik bildirim kartı ve sağa kaydırarak kapatma (swipe-to-dismiss) desteğiyle zenginleştirildi.
+            </li>
         </ul>
 
-        <div style="display: flex; align-items: center; margin-bottom: 5px; margin-top: 10px;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px; filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.6));"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+        <!-- Sistem & Optimizasyon Başlığı -->
+        <div style="display: flex; align-items: center; margin-bottom: 8px; margin-top: 10px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; margin-right: 6px; filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.6));">
+                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+            </svg>
             <strong style="color: #fbbf24; font-size: 13px;">Sistem & Optimizasyonlar:</strong>
         </div>
-        <ul style="margin: 5px 0 0 15px; padding: 0;">
-            <li>Kategori ve sektör filtrelemeleri sonrası hisse kartlarının tıklanamaz hale gelmesine neden olan DOM dinleyici sorunları Event Delegation ile kalıcı olarak çözüldü.</li>
-            <li>Görev ödülleri talep edilirken art arda tıklamalara karşı çift ödül koruması (anti-duplication) ve Firebase sunucu zamanı senkronizasyonu entegre edildi.</li>
-            <li>İşlem paneli açılış ve kapanışlarındaki gecikmeler kaldırılarak arayüz dokunma tepkisi maksimum seviyeye çıkarıldı.</li>
+
+        <ul style="margin: 0 0 0 18px; padding: 0; list-style-type: disc;">
+            <li style="margin-bottom: 8px;">
+                Google AdMob canlı SDK entegrasyonu tamamlandı, test modları devre dışı bırakılarak optimize edilmiş gerçek reklam dağıtımı etkinleştirildi.
+            </li>
+            <li style="margin-bottom: 8px;">
+                Gün geçişi ve seans kapanışlarında bakiye ile portföy net değeri hesaplama motoru daha kararlı ve hızlı hale getirildi.
+            </li>
+            <li style="margin-bottom: 8px;">
+                Önbellek optimizasyonu yapılarak arka planda gereksiz veri tüketimi engellendi ve genel arayüz kare hızları (FPS) artırıldı.
+            </li>
         </ul>
+
     </div>
+
     <button class="trade-btn" id="btn-close-patch-notes" style="width: 100%; padding: 12px; font-size: 13px; background: #00f2fe; color: #000; box-shadow: 0 5px 15px rgba(0, 242, 254, 0.4); font-weight: 900; border: none; border-radius: 8px; cursor: pointer;">HARİKA, BAŞLAYALIM!</button>
 </div>
 <!-- GELECEK GÜNCELLEMELER MODALI -->
@@ -1544,6 +1578,18 @@ async function buyGemPackAction(productId, gemReward, priceTRY) {
             <span class="profile-stat-label">KÂR / ZARAR (PNL)</span>
             <span class="profile-stat-value" id="summary-pnl">$0.00</span>
         </div>
+
+        <!-- 🎁 YENİ: ÖDÜLLÜ REKLAM BİLGİLENDİRME KUTUSU -->
+        <div id="summary-ad-reward-box" style="background: rgba(16, 185, 129, 0.1); border: 1px dashed #10b981; border-radius: 10px; padding: 10px 12px; margin-top: 10px; display: flex; align-items: center; gap: 8px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; flex-shrink: 0; filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.6));">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 6v12M15 9.5a3.5 3.5 0 0 0-5 0c0 2 5 2 5 4a3.5 3.5 0 0 1-5 0"></path>
+            </svg>
+            <span style="color: #6ee7b7; font-size: 11px; font-weight: 800; line-height: 1.4;">
+                Reklamın tamamını izle, Kasanın %1'i kadar nakit kazan!
+            </span>
+        </div>
+
         <button class="trade-btn btn-buy" id="btn-close-summary" style="width: 100%; margin-top: 15px;">DEVAM ET</button>
     </div>
 
@@ -2642,8 +2688,7 @@ CTS KRİPTO BORSASI</h3>
     </div>
 
     <!-- ONCLICK BAĞLANDI -->
-    <button type="button" class="trade-btn" id="btn-feed-mega-piggy" onclick="handleStorePurchase('mega_piggy')" style="background: linear-gradient(135deg, #00f2fe 0%, #3b82f6 100%); color: #fff; box-shadow: 0 5px 15px rgba(0, 242, 254, 0.4); padding: 14px; font-size: 14px; font-weight: 900; letter-spacing: 1px; cursor: pointer;">HAVUZA ₺100 EKLE</button>
-</div>
+<button type="button" class="trade-btn" id="btn-feed-mega-piggy" onclick="contributeKumbaraAction(true)" style="background: linear-gradient(135deg, #00f2fe 0%, #3b82f6 100%); color: #fff; box-shadow: 0 5px 15px rgba(0, 242, 254, 0.4); padding: 14px; font-size: 14px; font-weight: 900; letter-spacing: 1px; cursor: pointer;">HAVUZA ₺100 EKLE</button></div>
 
 
             <!-- ========================================== -->
@@ -2767,8 +2812,7 @@ CTS KRİPTO BORSASI</h3>
     </div>
 
     <!-- ONCLICK BAĞLANDI -->
-    <button type="button" class="trade-btn" id="btn-buy-manipulation" onclick="handleStorePurchase('manipulation')" style="background:#a855f7; color:#fff; box-shadow: 0 5px 15px rgba(168, 85, 247, 0.3); cursor: pointer;">₺199.99 SATIN AL</button>
-</div>
+<button type="button" class="trade-btn" id="btn-buy-manipulation" onclick="buyManipulationAction()" style="background:#a855f7; color:#fff; box-shadow: 0 5px 15px rgba(168, 85, 247, 0.3); cursor: pointer;">₺199.99 SATIN AL</button></div>
 
 <!-- AI Analist Hakkı Kartı (Orijinal Standart Görünüm) -->
             <div class="stock-card" style="flex-direction: column; align-items: stretch; gap: 15px; padding: 20px; border-color: #3b82f6; margin-top: 10px;">
@@ -3977,8 +4021,6 @@ function checkLiquidations() {
                 // --- KÂR/ZARAR KISALTMA ENTEGRASYONU ---
                 let formattedPnl = formatMoney(pnl);
                 
-                // Eğer kâr sıfır veya daha büyükse, başına "+" ekleyelim (+$1.50M gibi)
-                // formatMoney zaten negatifler için "-$" koyuyor, pozitiflere biz "+" ekliyoruz.
                 if (pnl >= 0) {
                     formattedPnl = "+" + formattedPnl;
                 }
@@ -3986,6 +4028,21 @@ function checkLiquidations() {
                 summaryPnl.innerText = formattedPnl;
                 summaryPnl.style.color = pnl >= 0 ? '#10b981' : '#ef4444';
                 // ---------------------------------------
+                
+                // 🛑 REKLAMLARI KALDIR KONTROLÜ (YAZI KUTUSU)
+                const isNoAds = (typeof hasAdsRemoved !== 'undefined' && hasAdsRemoved) ||
+                                (typeof window.adsRemoved !== 'undefined' && window.adsRemoved) ||
+                                localStorage.getItem('cts_ads_removed') === 'true' ||
+                                localStorage.getItem('cts_noads') === 'true';
+
+                const rewardNotice = document.getElementById('summary-ad-reward-box');
+                if (rewardNotice) {
+                    if (isNoAds || !isEOD) {
+                        rewardNotice.style.display = 'none';
+                    } else {
+                        rewardNotice.style.display = 'flex';
+                    }
+                }
                 
                 summaryOverlay.classList.add('active');
                 summaryModal.classList.add('show');
@@ -4002,6 +4059,16 @@ function checkLiquidations() {
         
         dailyTrades = 0;
         if (typeof updateTradeLimitUI === 'function') updateTradeLimitUI();
+
+        // 💎 GEM LİKİT FAİZ GELİRİ ENTEGRASYONU
+        if (typeof calculateGemPassiveIncome === 'function') {
+            const gemProfit = calculateGemPassiveIncome();
+            if (gemProfit > 0) {
+                playerBalance += gemProfit;
+                localStorage.setItem('cts_balance', playerBalance.toString());
+                if (typeof updateBalanceUI === 'function') updateBalanceUI();
+            }
+        }
         
         startOfDayWealth = getNetWorth(); 
         isEODPending = false;
@@ -4010,9 +4077,19 @@ function checkLiquidations() {
 
     isGamePaused = false; 
 
-    // 🎯 window üzerinden doğrudan çağırıyoruz:
-    if (typeof window.showInterstitialAd === 'function') {
-        window.showInterstitialAd();
+    // 🛡️ REKLAMLARI KALDIR KONTROLÜ
+    const isNoAds = (typeof hasAdsRemoved !== 'undefined' && hasAdsRemoved) ||
+                    (typeof window.adsRemoved !== 'undefined' && window.adsRemoved) ||
+                    localStorage.getItem('cts_ads_removed') === 'true' ||
+                    localStorage.getItem('cts_noads') === 'true';
+
+    // Kullanıcıda reklamsız paket yoksa ödüllü geçiş reklamını çağır
+    if (!isNoAds) {
+        if (typeof window.showRewardedInterstitialAd === 'function') {
+            window.showRewardedInterstitialAd();
+        } else if (typeof window.showInterstitialAd === 'function') {
+            window.showInterstitialAd();
+        }
     }
 });
 
@@ -6790,6 +6867,11 @@ if (btnCloseWalletStats) {
     if (!isCloudSyncComplete) return; 
     
     if (typeof syncLeaderboardData === 'function') syncLeaderboardData();
+    // 🎮 GOOGLE PLAY GAMES BAŞARIM VE LİDERLİK TABLOSU SENKRONİZASYONU
+    if (typeof syncGameProgress === 'function') {
+        const currentNW = typeof getNetWorth === 'function' ? getNetWorth() : playerBalance;
+        syncGameProgress(currentNW);
+    }
     
     // 1. Senin mevcut localStorage kayıtların (Aynen kalıyor)
     localStorage.setItem('cts_balance', playerBalance);
@@ -7002,6 +7084,10 @@ function checkMilestones() {
         
         if (typeof saveGame === 'function') saveGame();
         if (typeof playSound === 'function') playSound('milestone');
+    }
+    // 🏆 Eğer yeni bir baraj aşıldıysa Google Play Games'e anında bildir
+    if (triggered && typeof syncGameProgress === 'function') {
+        syncGameProgress(currentCash);
     }
 }
 
@@ -8859,10 +8945,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 // ==========================================================================
-// 💎 CTS PRIVATE LOUNGE KONTROL MERKEZİ & SATIN ALMALAR
+// 💎 CTS PRIVATE LOUNGE KONTROL MERKEZİ & SATIN ALMALAR (TAM VE EKSİKSİZ BLOK)
 // ==========================================================================
 
-// 1. Pop-Up Açma / Kapatma & Sekme Yönetimi
+// 1. Pop-Up Açma / Kapatma
 function openGemLoungeModal() {
     const modal = document.getElementById('gem-lounge-modal');
     if (modal) {
@@ -8875,38 +8961,116 @@ function closeGemLoungeModal() {
     const modal = document.getElementById('gem-lounge-modal');
     if (modal) modal.style.display = 'none';
 }
+// 💎 KASAYA ORANTILI KADEMELİ GEM FAİZİ HESAPLAMA (%1 - %3 ARASI)
+function calculateGemPassiveIncome() {
+    const gems = typeof playerGems !== 'undefined' ? playerGems : 0;
+    const balance = typeof playerBalance !== 'undefined' ? playerBalance : 0;
 
+    if (gems <= 0 || balance <= 0) return 0;
+
+    let rate = 0.01; // 1 - 199 Gem arası (%1.0)
+
+    if (gems >= 3000) {
+        rate = 0.03;   // 3,000+ Gem (%3.0)
+    } else if (gems >= 1200) {
+        rate = 0.025;  // 1,200 - 2,999 Gem (%2.5)
+    } else if (gems >= 500) {
+        rate = 0.02;   // 500 - 1,199 Gem (%2.0)
+    } else if (gems >= 200) {
+        rate = 0.015;  // 200 - 499 Gem (%1.5)
+    }
+
+    // Güncel kasa bakiyesi üzerinden faiz hesapla
+    let earned = Math.floor(balance * rate);
+
+    // Kasa çok küçükken de fark edilsin diye taban $25 getiri
+    if (earned < 25 && balance > 0) earned = 25;
+
+    return earned;
+}
+// 2. Dinamik Kasa Desteği Hesaplama Yardımcısı
+function getMegaCashSupportInfo() {
+    let currentBal = typeof playerBalance !== 'undefined' ? playerBalance : 15000;
+    
+    // Kasanın %60'ı kadar destek, taban $15,000
+    let supportAmount = Math.floor(currentBal * 0.6);
+    if (supportAmount < 15000) supportAmount = 15000;
+
+    // Normal mağaza TL baremlerine yakın, hafif avantajlı Gem maliyetleri
+    let gemCost = 80; // Taban
+    if (currentBal >= 20000000) {
+        gemCost = 6500;
+    } else if (currentBal >= 10000000) {
+        gemCost = 3000;
+    } else if (currentBal >= 2000000) {
+        gemCost = 1200;
+    } else if (currentBal >= 200000) {
+        gemCost = 500;
+    }
+
+    return { supportAmount, gemCost };
+}
+
+// 3. Lounge Arayüzünü ve Dinamik Kartları Güncelleme
 function updateLoungeUI() {
     const gemBal = typeof playerGems !== 'undefined' ? playerGems : 0;
     const loungeBalEl = document.getElementById('lounge-gem-balance-display');
     if (loungeBalEl) {
-        loungeBalEl.innerText = `💎 ${gemBal.toLocaleString('en-US')} GEM`;
+        loungeBalEl.innerHTML = `
+            <svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 13px; height: 13px; filter: drop-shadow(0 0 4px rgba(0, 242, 254, 0.7));">
+                <path d="M6 3h12l4 6-10 12L2 9z"></path>
+                <path d="M11 3L8 9l4 12 4-12-3-6"></path>
+                <path d="M2 9h20"></path>
+            </svg>
+            ${gemBal.toLocaleString('en-US')} GEM
+        `;
     }
 
-    // Mega Kasa Desteği Canlı Tutar Güncellemesi (%60 Hibe)
-    const cashDescEl = document.getElementById('gem-cash-support-desc');
-    if (cashDescEl) {
-        let currentBal = typeof playerBalance !== 'undefined' ? playerBalance : 0;
-        let grantAmount = Math.floor(currentBal * 0.6);
-        if (grantAmount < 15000) grantAmount = 15000;
-        cashDescEl.innerHTML = `Mevcut kasanın %60'ı kadar anında hibe: <strong style="color: #10b981;">+$${grantAmount.toLocaleString('en-US')}</strong>`;
+    // Üst bardaki elmas sayacını da güncelle
+    const topGemEl = document.getElementById('top-gem-count');
+    if (topGemEl) {
+        topGemEl.innerText = gemBal.toLocaleString('en-US');
+    }
+
+    // Mega Likidite Desteği Kartını ve Butonunu Dinamik Yap
+    const { supportAmount, gemCost } = getMegaCashSupportInfo();
+    const descText = document.getElementById('gem-cash-support-desc');
+    const btnBuyCash = document.getElementById('btn-gem-buy-cash');
+
+    if (descText) {
+        descText.innerHTML = `Mevcut kasanın <strong style="color: #10b981;">%60'ı kadar</strong> anında hibe: <strong style="color: #10b981;">+$${supportAmount.toLocaleString('en-US')}</strong>`;
+    }
+
+    if (btnBuyCash) {
+        btnBuyCash.innerHTML = `
+            <span style="display: flex; align-items: center; justify-content: center; gap: 5px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 13px; height: 13px;">
+                    <path d="M6 3h12l4 6-10 12L2 9z"></path>
+                    <path d="M11 3L8 9l4 12 4-12-3-6"></path>
+                    <path d="M2 9h20"></path>
+                </svg>
+                ${gemCost.toLocaleString('en-US')} GEM
+            </span>
+        `;
     }
 }
 
-// 2. ⚡ MEGA BORSA MANİPÜLASYONU (%5 - %15 TAVAN)
+// 4. ⚡ MEGA BORSA MANİPÜLASYONU (300 GEM, %5 - %15 TAVAN)
 function buyMegaManipulationWithGems() {
     const GEM_COST = 300;
 
+    if (typeof playerGems === 'undefined') playerGems = 0;
+
     if (playerGems < GEM_COST) {
         if (typeof showCustomAlert === 'function') {
-            showCustomAlert(`Yetersiz Gem! Mega Manipülasyon için ${GEM_COST} Gem gerekiyor.`);
+            showCustomAlert(`Yetersiz Gem! Mega Manipülasyon için ${GEM_COST} Gem gerekiyor.`, "YETERSİZ GEM", "#c084fc");
         } else {
             alert(`Yetersiz Gem! Mega Manipülasyon için ${GEM_COST} Gem gerekiyor.`);
         }
         return;
     }
 
-    // Portföy hisse kontrolü
+    // Portföy kontrolü
     let affected = 0;
     if (typeof stockCards !== 'undefined') {
         stockCards.forEach(card => {
@@ -8925,18 +9089,19 @@ function buyMegaManipulationWithGems() {
         return;
     }
 
-    // Gem Kesimi
+    // Gem Harca
     playerGems -= GEM_COST;
+    localStorage.setItem('cts_player_gems', playerGems);
 
-    // Şans Algoritması: %5 ile %15 arası artış
+    // %5 ile %15 arası artış hesapla
     let roll = Math.random();
     let increasePercent = 0;
     if (roll < 0.60) {
-        increasePercent = (Math.random() * 3.5) + 5; // %5 ile %8.5
+        increasePercent = (Math.random() * 3.5) + 5; // %5 - %8.5
     } else if (roll < 0.90) {
-        increasePercent = (Math.random() * 3.5) + 8.5; // %8.5 ile %12
+        increasePercent = (Math.random() * 3.5) + 8.5; // %8.5 - %12
     } else {
-        increasePercent = (Math.random() * 3) + 12; // %12 ile %15 (Efsanevi Tavan)
+        increasePercent = (Math.random() * 3) + 12; // %12 - %15 (Efsanevi)
     }
 
     let multiplier = 1 + (increasePercent / 100);
@@ -8965,7 +9130,7 @@ function buyMegaManipulationWithGems() {
 
     if (typeof playSound === 'function') playSound('buy');
     if (typeof showStoreModal === 'function') {
-        showStoreModal("MEGA MANİPÜLASYON BAŞARILI", `💎 200 Gem kullanıldı.<br><br>Portföyündeki ${affected} şirketin hisseleri anında <strong style="color:#10b981;">+%${increasePercent.toFixed(1)}</strong> tavan yaptı!`, true);
+        showStoreModal("MEGA MANİPÜLASYON BAŞARILI", `💎 300 Gem kullanıldı.<br><br>Portföyündeki ${affected} şirketin hisseleri anında <strong style="color:#10b981;">+%${increasePercent.toFixed(1)}</strong> tavan yaptı!`, true);
     }
 
     updateLoungeUI();
@@ -8973,13 +9138,15 @@ function buyMegaManipulationWithGems() {
     if (typeof saveGame === 'function') saveGame();
 }
 
-// 3. 🧠 KIDEMLİ AI ANALİST PAKETİ (+10 HAK)
+// 5. 🧠 KIDEMLİ AI ANALİST PAKETİ (150 GEM, +10 HAK)
 function buyAiRightsWithGems() {
     const GEM_COST = 150;
 
+    if (typeof playerGems === 'undefined') playerGems = 0;
+
     if (playerGems < GEM_COST) {
         if (typeof showCustomAlert === 'function') {
-            showCustomAlert(`Yetersiz Gem! +10 AI Analiz hakkı için ${GEM_COST} Gem gerekiyor.`);
+            showCustomAlert(`Yetersiz Gem! +10 AI Analiz hakkı için ${GEM_COST} Gem gerekiyor.`, "YETERSİZ GEM", "#c084fc");
         } else {
             alert(`Yetersiz Gem! +10 AI Analiz hakkı için ${GEM_COST} Gem gerekiyor.`);
         }
@@ -8987,8 +9154,11 @@ function buyAiRightsWithGems() {
     }
 
     playerGems -= GEM_COST;
+    localStorage.setItem('cts_player_gems', playerGems);
+
     if (typeof aiRights !== 'undefined') {
         aiRights += 10;
+        localStorage.setItem('cts_ai_rights', aiRights);
     }
 
     const aiCounterEl = document.getElementById('ai-rights-counter');
@@ -9006,29 +9176,35 @@ function buyAiRightsWithGems() {
     if (typeof saveGame === 'function') saveGame();
 }
 
-// 4. 💰 MEGA LİKİDİTE DESTEĞİ (%60 KASA HİBESİ)
+// 6. 💰 MEGA LİKİDİTE DESTEĞİ (%60 KASA HİBESİ - DİNAMİK GEM)
 function buyMegaCashSupportWithGems() {
-    const GEM_COST = 250;
+    const { supportAmount, gemCost } = getMegaCashSupportInfo();
 
-    if (playerGems < GEM_COST) {
+    if (typeof playerGems === 'undefined') playerGems = 0;
+
+    if (playerGems < gemCost) {
+        const msg = `Yetersiz Gem! Bu işlem için ${gemCost.toLocaleString('en-US')} Gem gerekiyor.`;
         if (typeof showCustomAlert === 'function') {
-            showCustomAlert(`Yetersiz Gem! Mega Likidite Desteği için ${GEM_COST} Gem gerekiyor.`);
+            showCustomAlert(msg, "YETERSİZ GEM", "#c084fc");
         } else {
-            alert(`Yetersiz Gem! Mega Likidite Desteği için ${GEM_COST} Gem gerekiyor.`);
+            alert(msg);
         }
         return;
     }
 
-    let currentBal = typeof playerBalance !== 'undefined' ? playerBalance : 0;
-    let grantAmount = Math.floor(currentBal * 0.6);
-    if (grantAmount < 15000) grantAmount = 15000;
+    playerGems -= gemCost;
+    playerBalance += supportAmount;
 
-    playerGems -= GEM_COST;
-    playerBalance += grantAmount;
+    localStorage.setItem('cts_player_gems', playerGems);
+    localStorage.setItem('cts_balance', playerBalance.toString());
 
-    if (typeof playSound === 'function') playSound('buy');
+    if (typeof playSound === 'function') playSound('cash');
     if (typeof showStoreModal === 'function') {
-        showStoreModal("LİKİDİTE ENJEKSİYONU", `💎 250 Gem karşılığında kasanıza anında <strong style="color:#10b981;">+$${grantAmount.toLocaleString('en-US')}</strong> nakit hibe aktarıldı!`, true);
+        showStoreModal(
+            "LİKİDİTE AKTARILDI", 
+            `Kasana başarıyla <strong style="color: #10b981;">+$${supportAmount.toLocaleString('en-US')}</strong> nakit hibe aktarıldı!<br><br>Kullanılan: <strong style="color: #c084fc;">-${gemCost.toLocaleString('en-US')} Gem</strong>`, 
+            true
+        );
     }
 
     updateLoungeUI();
@@ -9037,28 +9213,25 @@ function buyMegaCashSupportWithGems() {
     if (typeof saveGame === 'function') saveGame();
 }
 
-// 5. 🛒 GOOGLE PLAY / CAPACITOR 5'Lİ GEM PAKETİ SATIN ALMA
+// 7. 🛒 GOOGLE PLAY / REVENUECAT GEM PAKETİ SATIN ALMA
 async function buyGemPackAction(productId, gemReward, priceTRY) {
-    const Purchases = window.Capacitor?.Plugins?.Purchases;
-    const isNative = window.Capacitor && typeof window.Capacitor.isNativePlatform === 'function' && window.Capacitor.isNativePlatform();
-
-    if (!isNative || !Purchases) {
-        if (typeof showCustomAlert === 'function') {
-            showCustomAlert("Satın alma sistemi sadece mobil cihazlarda çalışır.");
-        } else {
-            alert("Satın alma sistemi sadece mobil cihazlarda çalışır.");
-        }
-        return;
-    }
+    if (!canUseStorePurchase()) return;
 
     try {
         await buyStoreProductById(productId);
 
+        if (typeof playerGems === 'undefined') playerGems = 0;
         playerGems += gemReward;
+
+        localStorage.setItem('cts_player_gems', playerGems);
 
         if (typeof playSound === 'function') playSound('buy');
         if (typeof showStoreModal === 'function') {
-            showStoreModal("ÖDEME BAŞARILI", `₺${priceTRY} tutarındaki ödemeniz onaylandı.<br><br>Cüzdanınıza <strong style="color:#c084fc;">+${gemReward.toLocaleString('en-US')} GEM</strong> eklendi!`, true);
+            showStoreModal(
+                "ÖDEME BAŞARILI", 
+                `₺${priceTRY} tutarındaki ödemeniz onaylandı.<br><br>Cüzdanınıza <strong style="color:#c084fc;">+${gemReward.toLocaleString('en-US')} GEM</strong> eklendi!`, 
+                true
+            );
         }
 
         updateLoungeUI();
@@ -9070,32 +9243,31 @@ async function buyGemPackAction(productId, gemReward, priceTRY) {
             console.error("Gem satın alma hatası:", error);
             if (typeof showCustomAlert === 'function') {
                 showCustomAlert("Ödeme sırasında bir hata oluştu: " + (error.message || error));
-            } else {
-                alert("Ödeme sırasında bir hata oluştu: " + (error.message || error));
+            } else if (typeof showStoreModal === 'function') {
+                showStoreModal("HATA", "Ödeme sırasında bir hata oluştu: " + (error.message || error), false);
             }
         }
     }
 }
 
 // ==========================================================================
-// 🔌 BUTON VE ETKİNLİK DİNLEYİCİLERİ
+// 🔌 BUTON VE ETKİNLİK DİNLEYİCİLERİ (LOUNGE İÇİN)
 // ==========================================================================
 document.addEventListener('DOMContentLoaded', () => {
-    // Üst bardaki GEM kutusuna tıklama
+    // Üst bardaki ve bankadaki Gem butonları
     const btnTopGem = document.getElementById('btn-open-gem-lounge');
     if (btnTopGem) btnTopGem.onclick = openGemLoungeModal;
 
-    // Pop-Up Kapat butonu
     const btnCloseLounge = document.getElementById('btn-close-gem-lounge');
     if (btnCloseLounge) btnCloseLounge.onclick = closeGemLoungeModal;
 
-    // Sekmeler arası geçiş
+    // Sekmeler (Ayrıcalıklar / Gem Al)
     const tabPriv = document.getElementById('btn-gem-tab-privileges');
     const tabBuy = document.getElementById('btn-gem-tab-buy');
     const contentPriv = document.getElementById('gem-tab-content-privileges');
     const contentBuy = document.getElementById('gem-tab-content-buy');
 
-    if (tabPriv && tabBuy) {
+    if (tabPriv && tabBuy && contentPriv && contentBuy) {
         tabPriv.onclick = () => {
             tabPriv.classList.add('active');
             tabBuy.classList.remove('active');
@@ -9110,15 +9282,15 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // Ürün Satın Alma Butonları
-    const btnManip = document.getElementById('btn-gem-buy-manip');
-    if (btnManip) btnManip.onclick = buyMegaManipulationWithGems;
+    // Lounge İçindeki Satın Alma Butonları
+    const btnGemManip = document.getElementById('btn-gem-buy-manip');
+    if (btnGemManip) btnGemManip.onclick = buyMegaManipulationWithGems;
 
-    const btnAi = document.getElementById('btn-gem-buy-ai');
-    if (btnAi) btnAi.onclick = buyAiRightsWithGems;
+    const btnGemAi = document.getElementById('btn-gem-buy-ai');
+    if (btnGemAi) btnGemAi.onclick = buyAiRightsWithGems;
 
-    const btnCash = document.getElementById('btn-gem-buy-cash');
-    if (btnCash) btnCash.onclick = buyMegaCashSupportWithGems;
+    const btnGemCash = document.getElementById('btn-gem-buy-cash');
+    if (btnGemCash) btnGemCash.onclick = buyMegaCashSupportWithGems;
 });
 </script>
 <style id="lifestyle-mobile-safe-styles">
@@ -11682,10 +11854,13 @@ async function setupPushNotifications() {
 // 📢 ADMOB REKLAM YÖNETİMİ (GLOBAL KAPSAM)
 // ==========================================
 window.isAdMobReady = false;
-window.isInterstitialLoaded = false;
-window.isInterstitialLoading = false;
+window.isRewardedInterstitialLoaded = false;
+window.isRewardedInterstitialLoading = false;
 window.lastInterstitialTime = 0;
-const INTERSTITIAL_INTERVAL_MS = 3 * 60 * 1000;
+const INTERSTITIAL_INTERVAL_MS = 3 * 60 * 1000; // 3 Dakika bekleme süresi
+
+// 🎯 CANLI ÖDÜLLÜ GEÇİŞ REKLAM KİMLİĞİ
+const ADMOB_REWARDED_INTERSTITIAL_ID = 'ca-app-pub-2726900479316564/4954129494';
 
 // 🛡️ MERKEZİ REKLAMSIZ MOD VE PREMİUM DOĞRULAYICI
 function isUserAdsRemoved() {
@@ -11704,11 +11879,71 @@ function getAdMobPlugin() {
     }
     return null;
 }
+// 🎁 REKLAM ÖDÜLÜ HABER BİLDİRİMİ
+function showRewardNewsNotification(bonusAmount) {
+    const nt = document.getElementById('news-toast');
+    const newsTitleEl = document.getElementById('news-title');
+    const newsDescEl = document.getElementById('news-desc');
+    if (!nt || !newsTitleEl || !newsDescEl) return;
 
+    const formattedAmount = (typeof formatMoney === 'function') 
+        ? formatMoney(bonusAmount) 
+        : `$${bonusAmount.toLocaleString('en-US')}`;
+
+    // 1. Kart Başlık ve Açıklamasını Doldur
+    newsTitleEl.innerText = "TEBRİKLER! GÜNLÜK ÖDÜL KAZANDIN!";
+    newsTitleEl.style.color = '#10b981'; // Parlak Yeşil
+    newsDescEl.innerText = `Reklamı tamamladın: Kasanın %1'i nakit ödül olarak hesabına aktarıldı! (+${formattedAmount})`;
+
+    // 2. Çerçeve ve Stil
+    nt.classList.remove('negative');
+    nt.classList.add('positive');
+    nt.style.borderColor = '#10b981';
+
+    // 3. Yukarıdan Açılışı Tetikle (6 saniye ekranda kalsın)
+    triggerNewsToastShow(6000);
+
+    // 4. Haber Arşivine Kaydet
+    try {
+        if (typeof newsArchiveData !== 'undefined' && Array.isArray(newsArchiveData)) {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            
+            newsArchiveData.unshift({ 
+                time: `${hours}:${minutes}`, 
+                stockName: "ÖDÜLLÜ REKLAM", 
+                text: `Kasanın %1'i nakit ödül olarak hesabına aktarıldı! (+${formattedAmount})`, 
+                type: 'positive', 
+                scope: 'reward' 
+            });
+
+            if (newsArchiveData.length > 30) newsArchiveData.pop();
+            if (typeof renderNewsArchive === 'function') renderNewsArchive();
+        }
+    } catch (e) {
+        console.warn("Haber arşivi güncellenemedi:", e);
+    }
+}
+// 🎁 REKLAM TAM İZLENDİĞİNDE %1 ÖDÜL VEREN FONKSİYON
+function grantRewardedBonus() {
+    const currentWealth = typeof getNetWorth === 'function' ? getNetWorth() : playerBalance;
+    const bonusAmount = Math.max(100, Math.floor(currentWealth * 0.01));
+
+    playerBalance += bonusAmount;
+    if (typeof updateBalanceUI === 'function') updateBalanceUI();
+    if (typeof saveGame === 'function') saveGame();
+
+    if (typeof playSound === 'function') playSound('milestone');
+    
+    // 📰 Artık pop-up yerine doğrudan yukarıdan haber bandı düşer
+    showRewardNewsNotification(bonusAmount);
+}
+
+// 🚀 ADMOB BAŞLATMA
 window.initAdMob = async function() {
     if (!window.Capacitor || !Capacitor.isNativePlatform()) return;
 
-    // Satın almışsa hiç başlatma ve arka planda reklam indirme
     if (isUserAdsRemoved()) {
         console.log("🛡️ Kullanıcı reklamsız sürüme sahip, AdMob devre dışı.");
         return;
@@ -11721,91 +11956,67 @@ window.initAdMob = async function() {
             return;
         }
 
+        // CANLI REKLAM MODU
         await AdMob.initialize({
-            initializeForTesting: true
+            initializeForTesting: false
         });
         window.isAdMobReady = true;
-        console.log("🟢 AdMob başarıyla hazırlandı.");
+        console.log("🟢 AdMob canlı modda hazırlandı.");
 
-        // 🎯 REKLAM KAPANMA DİNLEYİCİSİ
+        // Dinleyiciler
         try {
-            AdMob.addListener('interstitialAdDismissed', () => {
-                console.log("📺 Reklam kapatıldı, sıradaki reklam hazırlanıyor...");
-                window.isInterstitialLoaded = false;
-                window.loadNextInterstitial();
+            AdMob.addListener('onRewardedVideoAdClosed', () => {
+                window.isRewardedInterstitialLoaded = false;
+                window.loadNextRewardedInterstitial();
             });
-            AdMob.addListener('interstitialAdFailedToLoad', (err) => {
-                console.warn("Geçiş reklamı yüklenemedi:", err);
-                window.isInterstitialLoaded = false;
-                window.isInterstitialLoading = false;
+            AdMob.addListener('onRewardedVideoAdFailedToLoad', (err) => {
+                console.warn("Reklam yüklenemedi:", err);
+                window.isRewardedInterstitialLoaded = false;
+                window.isRewardedInterstitialLoading = false;
             });
         } catch (e) {
-            console.warn("Event listener eklenemedi:", e);
+            console.warn("Event listener hatası:", e);
         }
 
-        // İlk reklamı belleğe indir
-        window.loadNextInterstitial();
+        // İlk reklamı arka planda hazırla
+        window.loadNextRewardedInterstitial();
     } catch (error) {
         console.error("🔴 AdMob başlatma hatası:", error);
     }
 };
 
-// Reklamı arka planda hazır tutan fonksiyon (Preload)
-window.loadNextInterstitial = async function() {
+// 🔄 ARKA PLANDA REKLAM HAZIRLAMA (PRELOAD)
+window.loadNextRewardedInterstitial = async function() {
     if (!window.Capacitor || !Capacitor.isNativePlatform()) return;
-    
-    // Satın alınmışsa hafızaya da reklam indirme (veri tasarrufu)
     if (isUserAdsRemoved()) return;
-    if (window.isInterstitialLoading || window.isInterstitialLoaded) return;
+    if (window.isRewardedInterstitialLoading || window.isRewardedInterstitialLoaded) return;
 
-    window.isInterstitialLoading = true;
+    window.isRewardedInterstitialLoading = true;
 
     try {
         const AdMob = getAdMobPlugin();
         if (!AdMob) {
-            window.isInterstitialLoading = false;
+            window.isRewardedInterstitialLoading = false;
             return;
         }
 
-        await AdMob.prepareInterstitial({
-            adId: 'ca-app-pub-3940256099942544/1033173712' // Google test geçiş reklamı
-        });
-        window.isInterstitialLoaded = true;
-        window.isInterstitialLoading = false;
-        console.log("🟢 Geçiş reklamı belleğe yüklendi, hazır.");
-    } catch (err) {
-        console.warn("Geçiş reklamı ön yükleme başarısız:", err);
-        window.isInterstitialLoaded = false;
-        window.isInterstitialLoading = false;
-    }
-};
-
-// 🎁 Ödüllü Reklam (Global)
-window.showRewardAd = async function(onSuccess) {
-    if (!window.Capacitor || !Capacitor.isNativePlatform()) {
-        if (onSuccess) onSuccess();
-        return;
-    }
-
-    try {
-        const AdMob = getAdMobPlugin();
-        if (!AdMob) throw new Error("AdMob eklentisi bulunamadı");
-
         await AdMob.prepareRewardVideoAd({
-            adId: 'ca-app-pub-3940256099942544/5224354917'
+            adId: ADMOB_REWARDED_INTERSTITIAL_ID
         });
-        await AdMob.showRewardVideoAd();
-        if (onSuccess) onSuccess();
+        window.isRewardedInterstitialLoaded = true;
+        window.isRewardedInterstitialLoading = false;
+        console.log("🟢 Ödüllü geçiş reklamı belleğe yüklendi, hazır.");
     } catch (err) {
-        console.error("Ödüllü reklam hatası:", err);
+        console.warn("Ödüllü geçiş reklamı ön yükleme başarısız:", err);
+        window.isRewardedInterstitialLoaded = false;
+        window.isRewardedInterstitialLoading = false;
     }
 };
 
-// 📺 Geçiş Reklamı (Global)
-window.showInterstitialAd = async function() {
-    // 🛡️ 1. TÜM KAYNAKLARDAN KESİN REKLAMSIZ MOD KONTROLÜ
+// 🎬 GÜN SONUNDA TETİKLENEN ÖDÜLLÜ GEÇİŞ REKLAMI
+window.showRewardedInterstitialAd = async function() {
     if (isUserAdsRemoved()) {
-        console.log("🛡️ Reklamsız mod aktif: Geçiş reklamı engellendi.");
+        console.log("🛡️ Reklamsız mod aktif: Reklam gösterilmedi.");
         return;
     }
 
@@ -11817,45 +12028,50 @@ window.showInterstitialAd = async function() {
     const AdMob = getAdMobPlugin();
     if (!AdMob) return;
 
-    // Başlatılmadıysa başlat
     if (!window.isAdMobReady) {
         try {
-            await AdMob.initialize({ initializeForTesting: true });
+            await AdMob.initialize({ initializeForTesting: false });
             window.isAdMobReady = true;
         } catch (e) {
             return;
         }
     }
 
-    // 3 Dakika Süre Kontrolü
-    const now = Date.now();
-    if (window.lastInterstitialTime !== 0 && (now - window.lastInterstitialTime < INTERSTITIAL_INTERVAL_MS)) {
-        console.log("⏳ Geçiş reklamı için 3 dakika henüz dolmadı.");
-        return;
-    }
-
     try {
-        // Eğer reklam hazır değilse, önce yüklemeyi BEKLE
-        if (!window.isInterstitialLoaded) {
-            console.log("Reklam hazır değildi, gösterilmeden önce yükleniyor...");
-            await AdMob.prepareInterstitial({
-                adId: 'ca-app-pub-3940256099942544/1033173712'
+        // Ödül dinleyicisini ekle (reklam sonuna kadar izlenirse ödülü ver)
+        let rewardHandled = false;
+        const rewardSub = await AdMob.addListener('onRewardedVideoAdRewarded', (reward) => {
+            if (!rewardHandled) {
+                rewardHandled = true;
+                grantRewardedBonus();
+            }
+            if (rewardSub && rewardSub.remove) rewardSub.remove();
+        });
+
+        // Reklam bellekte yoksa önce yükle
+        if (!window.isRewardedInterstitialLoaded) {
+            console.log("Reklam hazır değildi, yükleniyor...");
+            await AdMob.prepareRewardVideoAd({
+                adId: ADMOB_REWARDED_INTERSTITIAL_ID
             });
-            window.isInterstitialLoaded = true;
+            window.isRewardedInterstitialLoaded = true;
         }
 
-        // Reklamı Patlat
-        await AdMob.showInterstitial();
+        // Reklamı Göster
+        await AdMob.showRewardVideoAd();
         window.lastInterstitialTime = Date.now();
-        window.isInterstitialLoaded = false;
-        console.log("🟢 Geçiş reklamı ekranda gösterildi.");
+        window.isRewardedInterstitialLoaded = false;
+        console.log("🟢 Ödüllü geçiş reklamı gösterildi.");
 
     } catch (err) {
-        console.warn("Geçiş reklamı gösterilemedi, bir sonraki için hazırlanıyor:", err);
-        window.isInterstitialLoaded = false;
-        window.loadNextInterstitial();
+        console.warn("Reklam gösterilemedi:", err);
+        window.isRewardedInterstitialLoaded = false;
+        window.loadNextRewardedInterstitial();
     }
 };
+
+// Eski standart geçiş çağrısı yapılırsa da ödüllü fonksiyonuna yönlendir
+window.showInterstitialAd = window.showRewardedInterstitialAd;
 
 // ==========================================
 // 💳 REVENUECAT SATIN ALMA & MAĞAZA YÖNETİMİ
@@ -13827,15 +14043,20 @@ setTimeout(() => {
             <button id="btn-close-gem-lounge" class="gem-modal-close-btn">✕</button>
         </div>
 
-        <!-- Bilgilendirme Bandı (Pasif Faiz Hatırlatıcısı) -->
-        <div class="gem-info-ticker" style="display: flex; align-items: flex-start; gap: 8px;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; min-width: 16px; margin-top: 1px; filter: drop-shadow(0 0 4px #c084fc);">
-                <path d="M6 3h12l4 6-10 12L2 9z"></path>
-                <path d="M11 3L8 9l4 12 4-12-3-6"></path>
-                <path d="M2 9h20"></path>
-            </svg>
-            <span>Cüzdandaki her Gem, CTS Bankası'nda serbest likit faizi işleterek her döngüde kasana düzenli Dolar kazandırır!</span>
+        <!-- Bilgilendirme Bandı (Kasa Yüzdesi Bazlı Pasif Faiz) -->
+<div class="gem-info-ticker" style="display: flex; align-items: flex-start; gap: 8px; font-size: 10px; line-height: 1.4;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; min-width: 16px; margin-top: 2px; filter: drop-shadow(0 0 4px #c084fc);">
+        <path d="M6 3h12l4 6-10 12L2 9z"></path>
+        <path d="M11 3L8 9l4 12 4-12-3-6"></path>
+        <path d="M2 9h20"></path>
+    </svg>
+    <div>
+        <span>Cüzdandaki her Gem, CTS Bankası'nda işletilerek her döngüde güncel kasan üzerinden nakit faiz kazandırır!</span>
+        <div style="margin-top: 4px; color: #a855f7; font-weight: 800;">
+            Örn: <span style="color: #f3e8ff;">200 Gem</span> ile kasanın <strong style="color: #10b981;">%1.5'i</strong> (örn: $50,000 kasada <strong style="color: #10b981;">+$750</strong>) her gün hesabına yatar.
         </div>
+    </div>
+</div>
 
         <!-- Cüzdan & Sekme Butonları -->
         <div style="display: flex; justify-content: space-between; align-items: center; margin: 10px 0 12px 0;">
