@@ -1207,6 +1207,7 @@ body.premium-theme .section-title { color: #fbbf24 !important; }
 /* Premium Yazılar ve Vurgular (Canlı Altın/Platin Geçişli) */
 .text-gold, .premium-text {
     background: linear-gradient(135deg, #ffd700 0%, #ffaa00 50%, #ffdf73 100%);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.4));
@@ -2483,4 +2484,83 @@ body.premium-theme [class*="treasury"] {
 /* 500 GEM kartında EN POPÜLER rozeti sağda olduğu için avantaj rozetini biraz daha sola alır */
 .gem-tier-card.featured .badge-discount {
     right: 105px;
+}
+/* ==========================================================================
+   🧭 ÇOKLU PİYASA & KAYAR PENCERE (BOTTOM SHEET)
+   ========================================================================== */
+.market-selector-overlay {
+    position: fixed; inset: 0; background: rgba(3, 7, 18, 0.82);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    z-index: 9998; display: none; opacity: 0; transition: opacity 0.3s ease;
+}
+.market-selector-overlay.active { display: block; opacity: 1; }
+
+.market-selector-sheet {
+    position: fixed; bottom: 0; left: 50%; transform: translate(-50%, 105%);
+    width: 100%; max-width: 450px; background: #0b1126;
+    border-top: 2px solid #00f2fe; border-radius: 26px 26px 0 0;
+    padding: 16px 20px calc(25px + env(safe-area-inset-bottom, 20px)) 20px;
+    box-sizing: border-box; z-index: 9999;
+    box-shadow: 0 -10px 40px rgba(0, 242, 254, 0.2), 0 -20px 60px rgba(0, 0, 0, 0.9);
+    transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.25);
+    pointer-events: none; max-height: 85vh; overflow-y: auto;
+}
+.market-selector-sheet.open { transform: translate(-50%, 0); pointer-events: auto; }
+
+.sheet-handle-bar { width: 44px; height: 5px; background: #334155; border-radius: 10px; margin: 0 auto 14px auto; }
+.sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+.sheet-title-group { display: flex; flex-direction: column; gap: 2px; }
+.sheet-badge { font-size: 9.5px; font-weight: 900; color: #00f2fe; letter-spacing: 1.5px; text-transform: uppercase; }
+.sheet-title { font-size: 19px; font-weight: 900; color: #ffffff; margin: 0; }
+.sheet-close-btn { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12); color: #94a3b8; width: 32px; height: 32px; border-radius: 50%; font-size: 14px; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+.sheet-market-list { display: flex; flex-direction: column; gap: 10px; }
+.sheet-market-card { display: flex; align-items: center; gap: 14px; background: #0f172a; border: 1px solid #1e293b; border-radius: 16px; padding: 13px 16px; cursor: pointer; transition: all 0.2s ease; }
+.sheet-market-card:active { transform: scale(0.97); background: #1e293b; }
+.sheet-market-card.active { border-color: #00f2fe; background: rgba(0, 242, 254, 0.08); box-shadow: 0 0 15px rgba(0, 242, 254, 0.12); }
+.sheet-market-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 20px; }
+
+.icon-borsa { background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); }
+.icon-crypto { background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3); }
+.icon-company { background: rgba(192, 132, 252, 0.15); border: 1px solid rgba(192, 132, 252, 0.3); }
+.icon-estate { background: rgba(0, 242, 254, 0.15); border: 1px solid rgba(0, 242, 254, 0.3); }
+.icon-metals { background: rgba(251, 191, 36, 0.15); border: 1px solid rgba(251, 191, 36, 0.3); }
+
+.sheet-market-info { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.sheet-market-title-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 3px; }
+.sheet-market-title-row h4 { font-size: 15px; font-weight: 900; color: #ffffff; margin: 0; }
+.sheet-market-info p { font-size: 11px; color: #94a3b8; font-weight: 600; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sheet-arrow { font-size: 20px; color: #64748b; font-weight: 900; }
+
+.market-status-pill { font-size: 9px; font-weight: 900; padding: 2px 7px; border-radius: 6px; letter-spacing: 0.5px; text-transform: uppercase; }
+.pill-live { background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.4); }
+.pill-crypto { background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.4); }
+.pill-company { background: rgba(192, 132, 252, 0.2); color: #c084fc; border: 1px solid rgba(192, 132, 252, 0.4); }
+.pill-estate { background: rgba(0, 242, 254, 0.2); color: #00f2fe; border: 1px solid rgba(0, 242, 254, 0.4); }
+.pill-metals { background: rgba(251, 191, 36, 0.2); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.4); }
+.pill-locked { background: rgba(239, 68, 68, 0.2) !important; color: #ef4444 !important; border: 1px solid rgba(239, 68, 68, 0.4) !important; }
+
+/* Şirket ve Emlak Ekranı Ek Stilleri */
+.custom-form-input {
+    width: 100%; padding: 12px 14px; background: #050814; border: 1px solid #334155;
+    color: #fff; border-radius: 10px; font-size: 13px; font-weight: 700; outline: none; margin-bottom: 12px;
+}
+.custom-form-input:focus { border-color: #c084fc; box-shadow: 0 0 10px rgba(192, 132, 252, 0.3); }
+
+.estate-city-badge {
+    font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 4px; background: rgba(0, 242, 254, 0.15); color: #00f2fe; border: 1px solid rgba(0, 242, 254, 0.3); margin-right: 6px;
+}
+/* ==========================================================================
+   🏛️ ŞİRKET BAŞLANGIÇ FİYATI INPUT STİLİ (OKLARSIZ TEMİZ GÖRÜNÜM)
+   ========================================================================== */
+#setup-company-initial-price {
+    -webkit-appearance: none;
+    -moz-appearance: textfield;
+    appearance: none;
+}
+
+#setup-company-initial-price::-webkit-outer-spin-button,
+#setup-company-initial-price::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
