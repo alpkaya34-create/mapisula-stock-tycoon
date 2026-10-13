@@ -586,53 +586,59 @@ async function buyRemoveAdsAction() {
     }
 }
 
-async function buyManipulationAction() {
-    try {
-        await buyStoreProductById('cts_manipulasyon');
-        if (typeof manipulationCards !== 'undefined') manipulationCards += 1;
-        if (typeof playSound === 'function') playSound('buy');
-        if (typeof showStoreModal === 'function') {
-            showStoreModal("ÖDEME BAŞARILI", "Borsa Manipülasyon Kartı tanımlandı!", true);
-        }
-        if (typeof saveGame === 'function') saveGame();
-    } catch (err) {
-        if (!err.userCancelled && err.code !== "USER_CANCELLED") alert("Hata: " + (err.message || err));
-    }
-}
-
-async function contributeKumbaraAction(isMega = false) {
+// ==========================================
+// 🐖 MEGA KÜRESEL KUMBARA SATIN ALMA (WINDOW'A BAĞLANDI)
+// ==========================================
+window.contributeKumbaraAction = async function(isMega = false) {
     // 🛑 3 MİLYON DOLAR KASA KONTROLÜ
     if (isMega) {
         const currentWealth = typeof getNetWorth === 'function' ? getNetWorth() : playerBalance;
         if (currentWealth < 3000000) {
             const warnDesc = "Mega Küresel Kumbara devasa hacimli yatırımcılar içindir.<br><br>Bu havuza katılabilmek için toplam portföy değerinizin en az <strong style='color:#00f2fe;'>$3.000.000</strong> olması gerekmektedir.";
-            if (typeof showStoreModal === 'function') {
-                showStoreModal("ERİŞİM KISITLI 🔒", warnDesc, false);
-            } else if (typeof showCustomAlert === 'function') {
+            if (typeof showCustomAlert === 'function') {
                 showCustomAlert(warnDesc, "ERİŞİM KISITLI", "#00f2fe");
+            } else if (typeof showStoreModal === 'function') {
+                showStoreModal("ERİŞİM KISITLI 🔒", warnDesc, false);
             } else {
                 alert("Mega Kumbara için en az $3.000.000 kasa gereklidir.");
             }
             if (typeof playSound === 'function') playSound('error');
-            return; // ⛔ 3M altındaysa satın alma ekranını açmadan işlemi kes
+            return;
         }
     }
 
     const productId = isMega ? 'cts_mega_kumbara_100' : 'cts_kumbara_50';
+
     try {
-        await buyStoreProductById(productId);
+        if (typeof buyStoreProductById === 'function') {
+            await buyStoreProductById(productId);
+        } else {
+            throw new Error("Satın alma sistemi sadece mobil cihazlarda çalışır.");
+        }
+
         if (typeof addKumbaraContribution === 'function') {
             addKumbaraContribution(isMega ? 100 : 50);
         }
         if (typeof playSound === 'function') playSound('buy');
+        
         if (typeof showStoreModal === 'function') {
             showStoreModal("KATKI BAŞARILI", "Kumbara havuzuna katkınız eklendi!", true);
+        } else if (typeof showCustomAlert === 'function') {
+            showCustomAlert("Kumbara havuzuna katkınız eklendi!", "KATKI BAŞARILI", "#10b981");
         }
+        
         if (typeof saveGame === 'function') saveGame();
     } catch (err) {
-        if (!err.userCancelled && err.code !== "USER_CANCELLED") alert("Hata: " + (err.message || err));
+        if (!err.userCancelled && err.code !== "USER_CANCELLED") {
+            const infoMsg = "Satın alma sistemi sadece mobil cihazlarda çalışır.";
+            if (typeof showCustomAlert === 'function') {
+                showCustomAlert(infoMsg, "BİLGİLENDİRME", "#00f2fe");
+            } else if (typeof showStoreModal === 'function') {
+                showStoreModal("BİLGİLENDİRME", infoMsg, false);
+            }
+        }
     }
-}
+};
 
 // ==========================================================================
 // 6. Sayfa Yüklendiğinde Butonları Tekil Bağla
@@ -1388,14 +1394,14 @@ async function buyGemPackAction(productId, gemReward, priceTRY) {
         <button class="trade-btn" id="btn-close-milestone" style="width: 100%; padding: 12px; font-size: 14px; background: #fbbf24; color: #000; box-shadow: 0 5px 15px rgba(251, 191, 36, 0.4);">HARİKA!</button>
     </div>
     
-    <!-- SÜRÜM NOTLARI (GÜNCELLEMELER) MODALI v1.1.6 -->
+    <!-- SÜRÜM NOTLARI (GÜNCELLEMELER) MODALI v1.2.1 -->
 <div id="patch-notes-modal" class="modal">
     <div style="text-align: center; border-bottom: 1px solid #1e293b; padding-bottom: 15px; margin-bottom: 15px;">
         <svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 36px; height: 36px; display: block; margin: 0 auto 10px auto; filter: drop-shadow(0 0 8px rgba(0, 242, 254, 0.6));">
             <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path>
             <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path>
         </svg>
-        <h2 style="color: #00f2fe; font-size: 18px; font-weight: 900; margin: 0; letter-spacing: 0.5px;">YENİ SÜRÜM NOTLARI v1.1.6</h2>
+        <h2 style="color: #00f2fe; font-size: 18px; font-weight: 900; margin: 0; letter-spacing: 0.5px;">YENİ SÜRÜM NOTLARI v1.2.1</h2>
     </div>
     
     <div style="color: #cbd5e1; font-size: 12px; text-align: left; margin-bottom: 20px; line-height: 1.6; max-height: 220px; overflow-y: auto; padding-right: 5px;">
@@ -2147,7 +2153,7 @@ async function buyGemPackAction(productId, gemReward, priceTRY) {
                 <polyline points="14 8.5 17 8.5 17 11.5"></polyline>
             </svg>
         </span>
-        <span class="index-title">CTS 32</span>
+        <span class="index-title">CTS BORSASI</span>
         <span id="market-cap-value" class="index-val">$0</span>
     </div>
 
@@ -2451,7 +2457,511 @@ CTS KRİPTO BORSASI</h3>
                 <div class="stock-price-data"><span class="stock-price">$7.80</span><span class="stock-change">▲ +0.0%</span></div>
             </div>
         </div>
+<!-- ========================================== -->
+        <!-- 3. ŞİRKET KURMA & HALKA ARZ (IPO) EKRANI  -->
+        <!-- ========================================== -->
+        <div id="company-container" class="market-container" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h3 class="section-title" style="color: #c084fc; margin: 0; display: flex; align-items: center; gap: 8px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px;">
+                        <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
+                        <line x1="9" y1="6" x2="15" y2="6"></line>
+                        <line x1="9" y1="10" x2="15" y2="10"></line>
+                    </svg>
+                    ŞİRKETİM & HALKA ARZ
+                </h3>
+                <span id="company-status-badge" style="font-size: 10px; color: #c084fc; font-weight: 800; background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.3); padding: 4px 8px; border-radius: 8px;">
+                    KURULMADI
+                </span>
+            </div>
 
+            <!-- DURUM A: ŞİRKET HENÜZ KURULMADIYSA GÖRÜNEN FORM -->
+            <div id="company-setup-box" class="stock-card" style="flex-direction: column; align-items: stretch; gap: 14px; padding: 20px; border-color: #a855f7;">
+                <div>
+                    <h4 style="font-size: 16px; font-weight: 900; color: #fff; margin-bottom: 4px;">Anonim Şirketini Kur</h4>
+                    <p style="font-size: 11px; color: #94a3b8; line-height: 1.4; margin: 0;">
+Şirketini kur, 1 Milyon lot sermayeni ve halka arz oranını belirle. Borsada kendi hisseni yönet, özel basın bültenleriyle fiyatı yönlendir!                    </p>
+                </div>
+
+                <div>
+                    <label style="font-size: 10px; color: #c084fc; font-weight: 800; display: block; margin-bottom: 4px;">ŞİRKET ADI</label>
+                    <input type="text" id="setup-company-name" class="custom-form-input" placeholder="Örn: Apex Dynamic Corp" maxlength="20">
+<!-- BAŞLANGIÇ HİSSE FİYATI (OKLARSIZ TEMİZ ÖZEL KONTROL) -->
+                    <label style="font-size: 10px; color: #c084fc; font-weight: 800; display: block; margin-top: 10px; margin-bottom: 4px;">BAŞLANGIÇ HİSSE FİYATI ($)</label>
+                    <div style="display: flex; align-items: center; background: #050814; border: 1.5px solid rgba(168, 85, 247, 0.4); border-radius: 10px; overflow: hidden; margin-bottom: 12px; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);">
+                        <button type="button" onclick="adjustCompanyPrice(-1)" style="background: #1e293b; color: #c084fc; border: none; width: 45px; height: 44px; font-size: 18px; font-weight: 900; cursor: pointer; transition: background 0.2s;">-</button>
+                        <input type="number" id="setup-company-initial-price" value="10" min="1" max="1000" step="1" oninput="calculateCompanySetupCost()" style="flex: 1; background: transparent; border: none; color: #fbbf24; font-weight: 900; font-size: 16px; text-align: center; outline: none; -webkit-appearance: none; -moz-appearance: textfield; appearance: none;">
+                        <button type="button" onclick="adjustCompanyPrice(1)" style="background: #1e293b; color: #c084fc; border: none; width: 45px; height: 44px; font-size: 18px; font-weight: 900; cursor: pointer; transition: background 0.2s;">+</button>
+                    </div>
+
+        <div style="background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 10px; padding: 10px 12px; margin-bottom: 14px; font-size: 11px; color: #cbd5e1;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                <span>Sermaye Değeri (1M Lot):</span>
+                <strong id="setup-calc-capital" style="color: #fbbf24;">$10,000,000</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <span>Komisyon (%1):</span>
+                <strong id="setup-calc-commission" style="color: #ef4444;">$100,000</strong>
+            </div>
+            <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 6px 0;"></div>
+            <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                <strong style="color: #00f2fe;">TOPLAM GEREKLİ NAKİT:</strong>
+                <strong id="setup-calc-total" style="color: #10b981;">$10,100,000</strong>
+            </div>
+        </div>
+                    <!-- 🟢 İSTEDİĞİN AÇILIR KAPANIR SEKTÖR LİSTESİ (ACCORDION) -->
+                    <label style="font-size: 10px; color: #c084fc; font-weight: 800; display: block; margin-bottom: 4px;">SEKTÖR</label>
+                    <div id="sector-dropdown-box" onclick="toggleSectorDropdown()" class="custom-form-input" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: #050814; border: 1px solid rgba(168, 85, 247, 0.4); border-radius: 8px; padding: 12px; margin-bottom: 4px;">
+                        <span id="selected-sector-display" style="display: flex; align-items: center; gap: 8px; color: #fff; font-size: 13px; font-weight: 800;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2" style="width: 16px; height: 16px;"><rect x="4" y="4" width="16" height="16" rx="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line></svg>
+                            Yapay Zeka (AI)
+                        </span>
+                        <span id="sector-arrow" style="color: #c084fc; font-size: 11px; font-weight: 900; transition: transform 0.3s;">▼</span>
+                    </div>
+                    <input type="hidden" id="setup-company-sector" value="ai">
+
+                    <!-- Altına açılan şık liste (Accordion) -->
+                    <div id="sector-dropdown-list" style="display: none; background: #0b1329; border: 1.5px solid #a855f7; border-radius: 12px; margin-bottom: 14px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.8);">
+                        <div onclick="selectInlineSector('ai', 'Yapay Zeka (AI)', this)" style="padding: 11px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #1e293b; cursor: pointer; background: rgba(168, 85, 247, 0.15);">
+                            <span style="color: #fff; font-size: 12px; font-weight: 800;">Yapay Zeka (AI)</span>
+                            <span style="font-size: 9px; color: #c084fc; font-weight: 900;">YÜKSEK BÜYÜME</span>
+                        </div>
+                        <div onclick="selectInlineSector('bio', 'Biyoteknoloji', this)" style="padding: 11px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #1e293b; cursor: pointer;">
+                            <span style="color: #fff; font-size: 12px; font-weight: 800;">Biyoteknoloji</span>
+                            <span style="font-size: 9px; color: #10b981; font-weight: 900;">AR-GE</span>
+                        </div>
+                        <div onclick="selectInlineSector('energy', 'Enerji', this)" style="padding: 11px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #1e293b; cursor: pointer;">
+                            <span style="color: #fff; font-size: 12px; font-weight: 800;">Enerji</span>
+                            <span style="font-size: 9px; color: #f59e0b; font-weight: 900;">STRATEJİK</span>
+                        </div>
+                        <div onclick="selectInlineSector('ecom', 'E-Ticaret', this)" style="padding: 11px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #1e293b; cursor: pointer;">
+                            <span style="color: #fff; font-size: 12px; font-weight: 800;">E-Ticaret</span>
+                            <span style="font-size: 9px; color: #00f2fe; font-weight: 900;">GLOBAL</span>
+                        </div>
+                        <div onclick="selectInlineSector('cyber', 'Siber Güvenlik', this)" style="padding: 11px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #1e293b; cursor: pointer;">
+                            <span style="color: #fff; font-size: 12px; font-weight: 800;">Siber Güvenlik</span>
+                            <span style="font-size: 9px; color: #3b82f6; font-weight: 900;">GÜVENLİK</span>
+                        </div>
+                        <div onclick="selectInlineSector('defense', 'Savunma Sanayii', this)" style="padding: 11px 14px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                            <span style="color: #fff; font-size: 12px; font-weight: 800;">Savunma Sanayii</span>
+                            <span style="font-size: 9px; color: #fbbf24; font-weight: 900;">YÜKSEK HACİM</span>
+                        </div>
+                    </div>
+
+                    <!-- 6 ADET ÖZGÜN ŞİRKET AMBLEMİ -->
+                    <label style="font-size: 10px; color: #c084fc; font-weight: 800; display: block; margin-bottom: 4px;">ŞİRKET AMBLEMİ</label>
+                    <div style="display: flex; gap: 6px; margin-bottom: 15px; justify-content: space-between;">
+                        <!-- 1. Şimşek -->
+                        <span class="company-emoji-btn active" data-emoji="bolt" style="flex: 1; padding: 10px 0; background: #1e293b; border-radius: 10px; cursor: pointer; border: 1.5px solid #a855f7; display: flex; align-items: center; justify-content: center;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 19px; height: 19px; filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.7));"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                        </span>
+                        <!-- 2. Roket -->
+                        <span class="company-emoji-btn" data-emoji="rocket" style="flex: 1; padding: 10px 0; background: #1e293b; border-radius: 10px; cursor: pointer; border: 1.5px solid #334155; display: flex; align-items: center; justify-content: center;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 19px; height: 19px; filter: drop-shadow(0 0 5px rgba(0, 242, 254, 0.7));"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path></svg>
+                        </span>
+                        <!-- 3. Elmas -->
+                        <span class="company-emoji-btn" data-emoji="diamond" style="flex: 1; padding: 10px 0; background: #1e293b; border-radius: 10px; cursor: pointer; border: 1.5px solid #334155; display: flex; align-items: center; justify-content: center;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 19px; height: 19px; filter: drop-shadow(0 0 5px rgba(56, 189, 248, 0.7));"><path d="M6 3h12l4 6-10 13L2 9z"></path><path d="M11 3L8 9l4 13 4-13-3-6"></path><line x1="2" y1="9" x2="22" y2="9"></line></svg>
+                        </span>
+                        <!-- 4. Çip -->
+                        <span class="company-emoji-btn" data-emoji="chip" style="flex: 1; padding: 10px 0; background: #1e293b; border-radius: 10px; cursor: pointer; border: 1.5px solid #334155; display: flex; align-items: center; justify-content: center;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 19px; height: 19px; filter: drop-shadow(0 0 5px rgba(192, 132, 252, 0.7));"><rect x="4" y="4" width="16" height="16" rx="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line></svg>
+                        </span>
+                        <!-- 5. Küre -->
+                        <span class="company-emoji-btn" data-emoji="globe" style="flex: 1; padding: 10px 0; background: #1e293b; border-radius: 10px; cursor: pointer; border: 1.5px solid #334155; display: flex; align-items: center; justify-content: center;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 19px; height: 19px; filter: drop-shadow(0 0 5px rgba(16, 185, 129, 0.7));"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                        </span>
+                        <!-- 👑 6. TAÇ AMBLEMİ -->
+                        <span class="company-emoji-btn" data-emoji="crown" style="flex: 1; padding: 10px 0; background: #1e293b; border-radius: 10px; cursor: pointer; border: 1.5px solid #334155; display: flex; align-items: center; justify-content: center;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 19px; height: 19px; filter: drop-shadow(0 0 5px rgba(251, 191, 36, 0.8));"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7z"></path><path d="M2 20h20"></path></svg>
+                        </span>
+                    </div>
+                </div>
+
+                <button type="button" onclick="foundPlayerCompany()" class="trade-btn" style="background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%); color: #fff; font-weight: 900; padding: 14px; font-size: 13px; border-radius: 10px; border: none; cursor: pointer; box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);">
+                    ŞİRKETİ KUR VE SERMAYEYİ YATIR 🏛️
+                </button>
+            </div>
+
+            <!-- DURUM B: ŞİRKET KURULDUKTAN SONRA AÇILAN KONTROL MERKEZİ -->
+            <div id="company-mgmt-box" style="display: none; flex-direction: column; gap: 12px;">
+                <div class="portfolio-summary-card" style="background: linear-gradient(135deg, rgba(30, 27, 75, 0.8) 0%, rgba(15, 23, 42, 0.95) 100%); border-color: #a855f7; margin-bottom: 0;">
+                    <span class="summary-label" style="color: #d8b4fe;" id="mgmt-company-name">ŞİRKETİNİZ</span>
+                    <strong id="mgmt-company-price" class="summary-value" style="color: #f3e8ff;">$50.00</strong>
+                    <div style="font-size: 11px; color: #10b981; margin-top: 6px; font-weight: 800;" id="mgmt-company-change">▲ +0.0%</div>
+                    <div style="font-size: 10.5px; color: #94a3b8; margin-top: 8px;">
+                        Kasa Payınız: <span id="mgmt-company-shares" style="color: #fbbf24; font-weight: 800;">510.000 Adet (%51)</span>
+                    </div>
+                </div>
+                <div class="stock-card" style="flex-direction: column; align-items: stretch; gap: 12px; padding: 16px; border-color: #fbbf24; background: rgba(251, 191, 36, 0.05);">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h4 style="font-size: 14px; font-weight: 900; color: #fbbf24; margin: 0;">Halka Arz (IPO) Yönetimi 🏛️</h4>
+                    <p style="font-size: 10.5px; color: #94a3b8; margin: 2px 0 0 0;">Şirketinin hisselerini borsada halka açarak nakit elde et.</p>
+                </div>
+                <span id="mgmt-ipo-status" style="font-size: 10px; color: #fbbf24; font-weight: 900; background: rgba(251, 191, 36, 0.15); padding: 4px 8px; border-radius: 6px;">ÖZEL ŞİRKET</span>
+            </div>
+
+            <div id="ipo-slider-container" style="display: flex; flex-direction: column; gap: 6px; margin-top: 4px;">
+                <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 800; color: #cbd5e1;">
+                    <span>Halka Arz Edilecek Oran:</span>
+                    <strong id="ipo-percent-display" style="color: #00f2fe;">%20 (200.000 Lot)</strong>
+                </div>
+                <input type="range" id="ipo-slider" min="1" max="49" value="20" oninput="updateIpoSliderUI()" style="width: 100%; accent-color: #fbbf24;">
+                <div style="display: flex; justify-content: space-between; font-size: 10px; color: #94a3b8;">
+                    <span>Elde Edilecek Nakit: <strong id="ipo-revenue-preview" style="color: #10b981;">$0</strong></span>
+                    <span>Kalan Şirket Payın: <strong id="ipo-remaining-share" style="color: #fbbf24;">%80</strong></span>
+                </div>
+                <button type="button" onclick="executePublicOffering()" class="trade-btn" style="background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); color: #000; font-weight: 900; padding: 12px; font-size: 12px; border-radius: 8px; border: none; cursor: pointer; margin-top: 6px;">
+                    SEÇİLEN ORANDA HALKA ARZ ET
+                </button>
+            </div>
+        </div>
+
+                <!-- Basın Bülteni / Haber Çıkarma Kartı -->
+                <div class="stock-card" style="flex-direction: column; align-items: stretch; gap: 12px; padding: 16px; border-color: #3b82f6;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4 style="font-size: 14px; font-weight: 900; color: #60a5fa; margin: 0;">Basın Bülteni Yayınla 📢</h4>
+                            <p style="font-size: 10.5px; color: #94a3b8; margin: 2px 0 0 0;">Medyaya haber servis et ve piyasayı dalgalandır.</p>
+                        </div>
+                        <span style="font-size: 10px; color: #fbbf24; font-weight: 900; background: rgba(251, 191, 36, 0.1); padding: 4px 8px; border-radius: 6px;">Maliyet: $25.000</span>
+                    </div>
+                    
+                    <button type="button" id="btn-publish-pr" onclick="publishCompanyPRNews()" class="trade-btn" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: #fff; font-weight: 900; padding: 12px; font-size: 12px; border-radius: 8px; border: none; cursor: pointer;">
+                        FLAŞ HABER SERVİS ET (PİYASAYI SALLA)
+                    </button>
+                    <span id="pr-cooldown-text" style="font-size: 9.5px; color: #64748b; text-align: center; display: none;">Sonraki bülten için bekleme süresi: <strong id="pr-cooldown-sec">30</strong>s</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 4. DİNAMİK EMLAK & GAYRİMENKUL EKRANI      -->
+        <!-- ========================================== -->
+        <div id="realestate-container" class="market-container" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h3 class="section-title" style="color: #00f2fe; margin: 0; display: flex; align-items: center; gap: 8px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px;">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    KÜRESEL EMLAK PİYASASI
+                </h3>
+                <span style="font-size: 10px; color: #10b981; font-weight: 800; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); padding: 4px 8px; border-radius: 8px;">
+                    DİNAMİK FİYAT & KİRA
+                </span>
+            </div>
+
+            <div class="portfolio-summary-card" style="background: linear-gradient(135deg, rgba(8, 28, 48, 0.8) 0%, rgba(15, 23, 42, 0.95) 100%); border-color: #00f2fe; margin-bottom: 16px;">
+                <span class="summary-label" style="color: #67e8f9;">TOPLAM DÖNGÜ BAŞI KİRA GELİRİ</span>
+                <strong id="estate-total-passive-val" class="summary-value" style="color: #10b981;">+$0.00 / 4sn</strong>
+                <div style="font-size: 11px; color: #94a3b8; margin-top: 8px; font-weight: 800;">
+                    Portföy Gayrimenkul Değeri: <span id="estate-total-asset-val" style="color: #fbbf24;">$0.00</span>
+                </div>
+            </div>
+
+            <div id="realestate-items-list" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px;"></div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 5. DEĞERLİ MADENLER & EMTİA EKRANI         -->
+        <!-- ========================================== -->
+        <div id="metals-container" class="market-container" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h3 class="section-title" style="color: #fbbf24; margin: 0; display: flex; align-items: center; gap: 8px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px; filter: drop-shadow(0 0 5px rgba(251, 191, 36, 0.8));">
+                        <polygon points="4 18 20 18 22 11 2 11" fill="#fbbf24" fill-opacity="0.2"></polygon>
+                        <polygon points="2 11 6 5 18 5 22 11" fill="#fbbf24" fill-opacity="0.35"></polygon>
+                        <polygon points="7 10 9 7 15 7 17 10"></polygon>
+                        <line x1="10" y1="14.5" x2="14" y2="14.5"></line>
+                    </svg>
+                    DEĞERLİ MADENLER & EMTİA
+                </h3>
+                <span style="font-size: 10px; color: #fbbf24; font-weight: 800; background: rgba(251, 191, 36, 0.15); border: 1px solid rgba(251, 191, 36, 0.3); padding: 4px 8px; border-radius: 8px;">
+                    GÜVENLİ LİMAN
+                </span>
+            </div>
+
+            <!-- 1. ONS ALTIN (XAU) - ALTIN KÜLÇE -->
+            <div class="stock-card trend-up" data-cat="metals" data-name="Ons Altın (XAU)">
+                <div class="stock-icon" style="background: rgba(251, 191, 36, 0.15);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px; filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.8));">
+                        <polygon points="4 18 20 18 22 11 2 11" fill="#fbbf24" fill-opacity="0.25"></polygon>
+                        <polygon points="2 11 6 5 18 5 22 11" fill="#fbbf24" fill-opacity="0.45"></polygon>
+                        <polygon points="7 10 9 7 15 7 17 10"></polygon>
+                        <line x1="9.5" y1="14.5" x2="14.5" y2="14.5" stroke-width="1.5"></line>
+                    </svg>
+                </div>
+                <div class="stock-info">
+                    <span class="stock-name" style="color: #fde047;">Ons Altın (XAU)</span>
+                    <span class="stock-owned">Portföy: 0 Adet</span>
+                </div>
+                <div class="stock-price-data">
+                    <span class="stock-price">$2650.00</span>
+                    <span class="stock-change" style="color: #10b981;">▲ +0.5%</span>
+                </div>
+            </div>
+
+            <!-- 2. ONS GÜMÜŞ (XAG) - GÜMÜŞ KÜLÇE -->
+            <div class="stock-card trend-up" data-cat="metals" data-name="Ons Gümüş (XAG)">
+                <div class="stock-icon" style="background: rgba(226, 232, 240, 0.15);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#e2e8f0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px; filter: drop-shadow(0 0 6px rgba(226, 232, 240, 0.8));">
+                        <polygon points="4 18 20 18 22 11 2 11" fill="#e2e8f0" fill-opacity="0.2"></polygon>
+                        <polygon points="2 11 6 5 18 5 22 11" fill="#e2e8f0" fill-opacity="0.4"></polygon>
+                        <polygon points="7 10 9 7 15 7 17 10"></polygon>
+                        <line x1="9.5" y1="14.5" x2="14.5" y2="14.5" stroke-width="1.5"></line>
+                    </svg>
+                </div>
+                <div class="stock-info">
+                    <span class="stock-name" style="color: #f8fafc;">Ons Gümüş (XAG)</span>
+                    <span class="stock-owned">Portföy: 0 Adet</span>
+                </div>
+                <div class="stock-price-data">
+                    <span class="stock-price">$31.80</span>
+                    <span class="stock-change" style="color: #10b981;">▲ +1.1%</span>
+                </div>
+            </div>
+
+            <!-- 3. ONS PLATİN (XPT) - PLATİN KÜLÇE -->
+            <div class="stock-card trend-down" data-cat="metals" data-name="Ons Platin (XPT)">
+                <div class="stock-icon" style="background: rgba(56, 189, 248, 0.15);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px; filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.8));">
+                        <polygon points="4 18 20 18 22 11 2 11" fill="#38bdf8" fill-opacity="0.2"></polygon>
+                        <polygon points="2 11 6 5 18 5 22 11" fill="#38bdf8" fill-opacity="0.4"></polygon>
+                        <polygon points="7 10 9 7 15 7 17 10"></polygon>
+                        <line x1="9.5" y1="14.5" x2="14.5" y2="14.5" stroke-width="1.5"></line>
+                    </svg>
+                </div>
+                <div class="stock-info">
+                    <span class="stock-name" style="color: #bae6fd;">Ons Platin (XPT)</span>
+                    <span class="stock-owned">Portföy: 0 Adet</span>
+                </div>
+                <div class="stock-price-data">
+                    <span class="stock-price">$980.50</span>
+                    <span class="stock-change" style="color: #ef4444;">▼ -0.4%</span>
+                </div>
+            </div>
+
+            <!-- 4. ONS PALADYUM (XPD) - PALADYUM KÜLÇE -->
+            <div class="stock-card trend-up" data-cat="metals" data-name="Ons Paladyum (XPD)">
+                <div class="stock-icon" style="background: rgba(245, 158, 11, 0.15);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px; filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.8));">
+                        <polygon points="4 18 20 18 22 11 2 11" fill="#f59e0b" fill-opacity="0.25"></polygon>
+                        <polygon points="2 11 6 5 18 5 22 11" fill="#f59e0b" fill-opacity="0.4"></polygon>
+                        <polygon points="7 10 9 7 15 7 17 10"></polygon>
+                        <line x1="9.5" y1="14.5" x2="14.5" y2="14.5" stroke-width="1.5"></line>
+                    </svg>
+                </div>
+                <div class="stock-info">
+                    <span class="stock-name" style="color: #fde68a;">Ons Paladyum (XPD)</span>
+                    <span class="stock-owned">Portföy: 0 Adet</span>
+                </div>
+                <div class="stock-price-data">
+                    <span class="stock-price">$1020.00</span>
+                    <span class="stock-change" style="color: #10b981;">▲ +0.8%</span>
+                </div>
+            </div>
+
+            <!-- 5. BAKIR KONTRATI (HG) - BAKIR KÜLÇE -->
+            <div class="stock-card trend-down" data-cat="metals" data-name="Bakır Kontratı (HG)">
+                <div class="stock-icon" style="background: rgba(234, 88, 12, 0.15);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#ea580c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px; filter: drop-shadow(0 0 6px rgba(234, 88, 12, 0.8));">
+                        <polygon points="4 18 20 18 22 11 2 11" fill="#ea580c" fill-opacity="0.25"></polygon>
+                        <polygon points="2 11 6 5 18 5 22 11" fill="#ea580c" fill-opacity="0.4"></polygon>
+                        <polygon points="7 10 9 7 15 7 17 10"></polygon>
+                        <line x1="9.5" y1="14.5" x2="14.5" y2="14.5" stroke-width="1.5"></line>
+                    </svg>
+                </div>
+                <div class="stock-info">
+                    <span class="stock-name" style="color: #fdba74;">Bakır Kontratı (HG)</span>
+                    <span class="stock-owned">Portföy: 0 Adet</span>
+                </div>
+                <div class="stock-price-data">
+                    <span class="stock-price">$4.35</span>
+                    <span class="stock-change" style="color: #ef4444;">▼ -0.2%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 🏛️ ŞİRKET KURULUMU & HALKA ARZ MALİYET DÖKÜM MODALI -->
+        <!-- ========================================== -->
+        <div id="company-ipo-modal" style="display: none; position: fixed; inset: 0; background: rgba(5, 10, 24, 0.88); backdrop-filter: blur(8px); z-index: 999999; align-items: center; justify-content: center; padding: 18px;">
+            <div style="background: linear-gradient(145deg, #131127, #0b1126); border: 1.5px solid #a855f7; box-shadow: 0 0 35px rgba(168, 85, 247, 0.3); border-radius: 22px; width: 100%; max-width: 400px; padding: 22px; box-sizing: border-box;">
+                <div style="text-align: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px; margin-bottom: 14px;">
+                    <span style="font-size: 32px; display: block; margin-bottom: 4px;" id="ipo-modal-emoji">🏛️</span>
+                    <h3 style="color: #f3e8ff; font-size: 16px; font-weight: 900; margin: 0;" id="ipo-modal-name">ŞİRKET ADI A.Ş.</h3>
+                    <p style="color: #c084fc; font-size: 11px; margin: 2px 0 0 0; font-weight: 700;" id="ipo-modal-sector">Sektör: Yapay Zeka</p>
+                </div>
+                <p style="font-size: 11px; color: #94a3b8; text-align: center; margin-bottom: 14px;">
+                    Halka arz ve borsa kotasyonu için yasal ve operasyonel gider dökümü aşağıdadır:
+                </p>
+                <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(168, 85, 247, 0.25); border-radius: 12px; padding: 12px; margin-bottom: 16px; display: flex; flex-direction: column; gap: 8px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 11px;">
+                        <span style="color: #cbd5e1;">1. Başlangıç Esas Sermaye Blokesi</span>
+                        <strong style="color: #fff;">$300,000</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px;">
+                        <span style="color: #cbd5e1;">2. SPK & Borsa Kotasyon Harcı</span>
+                        <strong style="color: #fff;">$100,000</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px;">
+                        <span style="color: #cbd5e1;">3. Hukuki & Noter Tescil Masrafı</span>
+                        <strong style="color: #fff;">$50,000</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px;">
+                        <span style="color: #cbd5e1;">4. Bağımsız Denetim & Raporlama</span>
+                        <strong style="color: #fff;">$30,000</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px;">
+                        <span style="color: #cbd5e1;">5. Kurumsal Kimlik & Lansman Fonu</span>
+                        <strong style="color: #fff;">$20,000</strong>
+                    </div>
+                    <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 4px 0;"></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 12.5px;">
+                        <strong style="color: #a855f7;">TOPLAM HALKA ARZ BEDELİ</strong>
+                        <strong style="color: #fbbf24;">$500,000</strong>
+                    </div>
+                </div>
+                <p style="font-size: 10px; color: #64748b; line-height: 1.4; margin-bottom: 16px; text-align: center;">
+                    * Onay verildiğinde kasanızdan <strong>$500,000</strong> tahsil edilecek, şirketinizin 1.000.000 lotluk payının %51'i (510.000 lot) portföyünüze aktarılacaktır.
+                </p>
+                <div style="display: flex; gap: 10px;">
+                    <button type="button" onclick="closeCompanyIpoModal()" style="flex: 1; padding: 12px; background: #1e293b; color: #94a3b8; border: none; border-radius: 10px; font-weight: 800; font-size: 12px; cursor: pointer;">
+                        VAZGEÇ
+                    </button>
+                    <button type="button" onclick="confirmAndFoundCompany()" style="flex: 1.6; padding: 12px; background: linear-gradient(135deg, #a855f7, #6366f1); color: #fff; border: none; border-radius: 10px; font-weight: 900; font-size: 12px; cursor: pointer; box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);">
+                        ONAYLIYORUM VE ÖDE
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 🌟 PİYASA SEÇİMİ KAYAR PENCERESİ           -->
+        <!-- ========================================== -->
+        <div id="market-selector-overlay" class="market-selector-overlay"></div>
+        <div id="market-selector-sheet" class="market-selector-sheet">
+            <div class="sheet-handle-bar"></div>
+            <div class="sheet-header">
+                <div class="sheet-title-group">
+                    <span class="sheet-badge">FİNANS MERKEZİ</span>
+                    <h3 class="sheet-title">PİYASA SEÇİMİ</h3>
+                </div>
+                <button id="btn-close-market-sheet" class="sheet-close-btn">✕</button>
+            </div>
+            
+            <div class="sheet-market-list">
+                <!-- 1. Borsa (Neon Trend & Mum Grafiği) -->
+                <div class="sheet-market-card active" data-market="borsa">
+                    <div class="sheet-market-icon icon-borsa">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px; filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.8));">
+                            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                            <polyline points="16 7 22 7 22 13"></polyline>
+                            <rect x="5" y="13" width="2.5" height="4" fill="#10b981" fill-opacity="0.3" stroke="none"></rect>
+                            <rect x="10" y="9.5" width="2.5" height="6.5" fill="#10b981" fill-opacity="0.3" stroke="none"></rect>
+                            <rect x="15" y="6" width="2.5" height="7" fill="#10b981" fill-opacity="0.3" stroke="none"></rect>
+                        </svg>
+                    </div>
+                    <div class="sheet-market-info">
+                        <div class="sheet-market-title-row">
+                            <h4>Borsa</h4>
+                            <span class="market-status-pill pill-live">CANLI</span>
+                        </div>
+                        <p>30+ Şirket, Spot & Vadeli İşlemler, Sektörler</p>
+                    </div>
+                    <div class="sheet-arrow">›</div>
+                </div>
+
+                <!-- 2. Kripto (Neon Dijital Token / Bitcoin Rozeti) -->
+                <div class="sheet-market-card" data-market="crypto" id="sheet-card-crypto">
+                    <div class="sheet-market-icon icon-crypto">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px; filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.8));">
+                            <circle cx="12" cy="12" r="9" fill="#f59e0b" fill-opacity="0.15"></circle>
+                            <path d="M9.5 8h4a2 2 0 0 1 0 4h-4"></path>
+                            <path d="M9.5 12h4.5a2.5 2.5 0 0 1 0 5h-4.5"></path>
+                            <line x1="12" y1="5.5" x2="12" y2="8"></line>
+                            <line x1="12" y1="17" x2="12" y2="19.5"></line>
+                            <line x1="9.5" y1="8" x2="9.5" y2="17"></line>
+                        </svg>
+                    </div>
+                    <div class="sheet-market-info">
+                        <div class="sheet-market-title-row">
+                            <h4>Kripto</h4>
+                            <span class="market-status-pill pill-crypto" id="pill-crypto-status">VOLATİL</span>
+                        </div>
+                        <p>15+ Kripto Varlık, Yüksek Dalgalanma</p>
+                    </div>
+                    <div class="sheet-arrow">›</div>
+                </div>
+
+                <!-- 3. Şirket (Neon Holding Genel Merkezi & Kule) -->
+                <div class="sheet-market-card" data-market="company">
+                    <div class="sheet-market-icon icon-company">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px; filter: drop-shadow(0 0 6px rgba(192, 132, 252, 0.8));">
+                            <path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16" fill="#c084fc" fill-opacity="0.15"></path>
+                            <line x1="10" y1="7" x2="10.01" y2="7" stroke-width="2.5"></line>
+                            <line x1="14" y1="7" x2="14.01" y2="7" stroke-width="2.5"></line>
+                            <line x1="10" y1="11" x2="10.01" y2="11" stroke-width="2.5"></line>
+                            <line x1="14" y1="11" x2="14.01" y2="11" stroke-width="2.5"></line>
+                            <line x1="10" y1="15" x2="10.01" y2="15" stroke-width="2.5"></line>
+                            <line x1="14" y1="15" x2="14.01" y2="15" stroke-width="2.5"></line>
+                            <path d="M2 21h20"></path>
+                        </svg>
+                    </div>
+                    <div class="sheet-market-info">
+                        <div class="sheet-market-title-row">
+                            <h4>Şirket</h4>
+                            <span class="market-status-pill pill-company">HALKA ARZ</span>
+                        </div>
+                        <p>Kendi Şirketini Kur, Halka Arz Et, Basın Bülteni Yayınla</p>
+                    </div>
+                    <div class="sheet-arrow">›</div>
+                </div>
+
+                <!-- 4. Emlak (Neon Rezidans & Karma Mimari) -->
+                <div class="sheet-market-card" data-market="estate">
+                    <div class="sheet-market-icon icon-estate">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px; filter: drop-shadow(0 0 6px rgba(0, 242, 254, 0.8));">
+                            <path d="M3 21h18"></path>
+                            <path d="M4 21V9l5-4 5 4v12" fill="#00f2fe" fill-opacity="0.15"></path>
+                            <path d="M14 21v-7a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v7" fill="#00f2fe" fill-opacity="0.25"></path>
+                            <line x1="9" y1="11" x2="9.01" y2="11" stroke-width="2.2"></line>
+                            <line x1="9" y1="15" x2="9.01" y2="15" stroke-width="2.2"></line>
+                        </svg>
+                    </div>
+                    <div class="sheet-market-info">
+                        <div class="sheet-market-title-row">
+                            <h4>Emlak</h4>
+                            <span class="market-status-pill pill-estate">PASİF KİRA</span>
+                        </div>
+                        <p>New York, Londra, Tokyo, İstanbul Gayrimenkulleri</p>
+                    </div>
+                    <div class="sheet-arrow">›</div>
+                </div>
+
+                <!-- 5. Değerli Madenler (Neon Külçe Vektörü) -->
+                <div class="sheet-market-card" data-market="metals">
+                    <div class="sheet-market-icon icon-metals">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px; filter: drop-shadow(0 0 5px rgba(251, 191, 36, 0.8));">
+                            <polygon points="4 18 20 18 22 11 2 11" fill="#fbbf24" fill-opacity="0.25"></polygon>
+                            <polygon points="2 11 6 5 18 5 22 11" fill="#fbbf24" fill-opacity="0.45"></polygon>
+                            <polygon points="7 10 9 7 15 7 17 10"></polygon>
+                            <line x1="9.5" y1="14.5" x2="14.5" y2="14.5" stroke-width="1.5"></line>
+                        </svg>
+                    </div>
+                    <div class="sheet-market-info">
+                        <div class="sheet-market-title-row">
+                            <h4>Değerli Madenler</h4>
+                            <span class="market-status-pill pill-metals">EMTİA</span>
+                        </div>
+                        <p>Ons Altın, Gümüş, Platin & Güvenli Emtialar</p>
+                    </div>
+                    <div class="sheet-arrow">›</div>
+                </div>
+            </div>
+        </div>
         <div id="portfolio-container" class="market-container" style="display: none;">
     <!-- BAŞLIK VE VERGİ BUTONU SATIRI -->
     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
@@ -2688,8 +3198,8 @@ CTS KRİPTO BORSASI</h3>
     </div>
 
     <!-- ONCLICK BAĞLANDI -->
-<button type="button" class="trade-btn" id="btn-feed-mega-piggy" onclick="contributeKumbaraAction(true)" style="background: linear-gradient(135deg, #00f2fe 0%, #3b82f6 100%); color: #fff; box-shadow: 0 5px 15px rgba(0, 242, 254, 0.4); padding: 14px; font-size: 14px; font-weight: 900; letter-spacing: 1px; cursor: pointer;">HAVUZA ₺100 EKLE</button></div>
-
+<!-- YENİ VE DÜZELTİLMİŞ HALİ -->
+<button type="button" class="trade-btn" id="btn-feed-mega-piggy" onclick="feedMegaPiggyAction()" style="background: linear-gradient(135deg, #00f2fe 0%, #3b82f6 100%); color: #fff; box-shadow: 0 5px 15px rgba(0, 242, 254, 0.4); padding: 14px; font-size: 14px; font-weight: 900; letter-spacing: 1px; cursor: pointer;">HAVUZA ₺100 EKLE</button></div>
 
             <!-- ========================================== -->
             <!-- KÜRESEL KUMBARA (PIGGY BANK) ARAYÜZÜ       -->
@@ -2948,7 +3458,60 @@ CTS KRİPTO BORSASI</h3>
                 <button class="trade-btn" id="btn-short" style="background: #ef4444; color:#fff; box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);">SHORT (Düşüş)</button>
             </div>
 
-        </div> <!-- Bu kapanış zaten senin kodunun en sonundaki trade-panel kapanışıdır -->
+        </div> <!-- Trade panelin bittiği kapanış etiketi -->
+
+        <!-- 🟢 TAM OLARAK BURAYA YAPIŞTIRACAKSIN (BAŞLANGIÇ) 🟢 -->
+        <div id="estate-overlay" class="trade-overlay"></div>
+        <div id="estate-panel" class="trade-panel" style="max-height: 85vh; overflow-y: auto;">
+            <div class="trade-handle"></div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px;">
+                <div style="flex: 1; padding-right: 10px;">
+                    <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                        <span id="estate-panel-city-badge" class="estate-city-badge">İSTANBUL</span>
+                        <span id="estate-panel-country" style="color: #94a3b8; font-size: 11px; font-weight: 800;">Türkiye</span>
+                    </div>
+                    <h2 id="estate-panel-title" style="font-size: 18px; font-weight: 900; color: #fff; margin: 0;">Boğaz Manzaralı Yalı</h2>
+                    <div style="display: flex; align-items: center; gap: 5px; margin-top: 4px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2" style="width: 13px; height: 13px; flex-shrink: 0;"><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        <span id="estate-panel-coords" style="color: #00f2fe; font-size: 10.5px; font-family: monospace; font-weight: 700;">41.0082° K, 28.9784° D</span>
+                    </div>
+                </div>
+                <div id="estate-panel-icon-box" style="width: 48px; height: 48px; border-radius: 14px; background: rgba(0, 242, 254, 0.1); border: 1px solid rgba(0, 242, 254, 0.3); display: flex; align-items: center; justify-content: center; flex-shrink: 0;"></div>
+            </div>
+
+            <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid #1e293b; border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+                <span style="font-size: 10px; color: #94a3b8; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 4px;">🌍 ŞEHİR HAKKINDA</span>
+                <p id="estate-panel-city-desc" style="font-size: 11.5px; color: #cbd5e1; line-height: 1.45; margin: 0; font-weight: 600;">Şehir bilgisi buraya gelecek...</p>
+            </div>
+
+            <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid #1e293b; border-radius: 12px; padding: 12px; margin-bottom: 14px;">
+                <span style="font-size: 10px; color: #c084fc; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">🏢 MÜLK ÖZELLİKLERİ</span>
+                <ul id="estate-panel-features" style="margin: 0; padding-left: 18px; font-size: 11px; color: #cbd5e1; line-height: 1.6; font-weight: 700;"></ul>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 10px; border-radius: 10px;">
+                    <span style="font-size: 9.5px; color: #94a3b8; font-weight: 800; display: block;">DÖNGÜ BAŞI KİRA</span>
+                    <strong id="estate-panel-rent" style="color: #10b981; font-size: 14px; font-weight: 900;">+$80 / 4sn</strong>
+                </div>
+                <div style="background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.3); padding: 10px; border-radius: 10px;">
+                    <span style="font-size: 9.5px; color: #94a3b8; font-weight: 800; display: block;">GÜNCEL FİYAT</span>
+                    <div style="display: flex; align-items: baseline; gap: 4px;">
+                        <strong id="estate-panel-price" style="color: #fbbf24; font-size: 14px; font-weight: 900;">$0</strong>
+                        <span id="estate-panel-delta" style="font-size: 10px; font-weight: 800;"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; background: rgba(15, 23, 42, 0.75); border: 1px solid #334155; padding: 8px 12px; border-radius: 10px;">
+                <span style="font-size: 11px; font-weight: 800; color: #cbd5e1;">Komisyon (<span id="estate-panel-comm-rate">%1.0</span>): <strong id="estate-panel-commission-val" style="color: #ef4444;">$0</strong></span>
+                <span id="estate-panel-vip-badge" style="font-size: 10px; font-weight: 800; color: #fbbf24;">VIP ile %50 İndirim</span>
+            </div>
+
+            <div id="estate-panel-action-container"></div>
+        </div>
+        <!-- 🔴 YAPIŞTIRMA BİTİŞİ 🔴 -->
 
         <div class="bottom-tab-bar" style="display: flex; justify-content: space-around; z-index: 999 !important;">
     
@@ -3327,7 +3890,7 @@ function handleBGM() {
             const tradeOverlay = document.getElementById('trade-overlay');
             const tradePanel = document.getElementById('trade-panel');
             const marketContainer = document.getElementById('market-container');
-            const stockCards = document.querySelectorAll('#market-container .stock-card, #crypto-container .stock-card');
+            let stockCards = document.querySelectorAll('#market-container .stock-card, #crypto-container .stock-card, #metals-container .stock-card');
             const displayPlayerBalance = document.querySelector('.top-dashboard .text-gold');
 
             const displayTradeStockName = document.getElementById('trade-stock-name');
@@ -3429,10 +3992,11 @@ function checkRealTimeAiRights() {
     'energy': 1000000, 
     'ecom': 5000000, 
     'cyber': 15000000, 
-    'defense': 50000000, // 50 Milyon barajı gereksinimi
-    'quantum': 100000000, // YENİ: 100 Milyon barajı gereksinimi
+    'defense': 50000000, 
+    'quantum': 100000000, 
     'vip': Infinity, 
-    'crypto': 0 
+    'crypto': 0,
+    'metals': 0 // 🟢 Madenler başlangıçtan itibaren herkese açık
 };
 let currentCategoryFilter = 'all';
 const catBtns = document.querySelectorAll('.cat-btn');
@@ -4253,7 +4817,8 @@ function updateInterestRate() {
                 
                 marketContainer.innerHTML = '';
                 cardsArray.forEach(card => {
-                    if (card.dataset.cat === 'crypto') return; // Kriptoları ana borsaya karıştırma
+                    // Kripto ve Maden kartlarının ana borsa tarafından çalınmasını engelle:
+if (card.dataset.cat === 'crypto' || card.dataset.cat === 'metals') return;
                     if(currentCategoryFilter === 'all' || card.dataset.cat === currentCategoryFilter) {
                         marketContainer.appendChild(card);
                     }
@@ -4263,7 +4828,7 @@ function updateInterestRate() {
                 updateMarketCapUI();
             }
 
-            // --- CTS 32 ENDEKSİ HESAPLAMA ---
+            // --- CTS BORSASI ENDEKSİ HESAPLAMA ---
 function updateMarketCapUI() {
     try {
         let currentTotalUnitSum = 0;
@@ -4275,7 +4840,8 @@ function updateMarketCapUI() {
         // 1. Hisse kartlarındaki güncel fiyatları ve önceki taban fiyatları topla
         if (typeof stockCards !== 'undefined' && stockCards) {
             stockCards.forEach(card => {
-                if (card.dataset && card.dataset.cat === 'crypto') return;
+                // 🛑 Kripto ve Değerli Madenleri hisse senedi endeksine dahil etme
+                if (card.dataset && (card.dataset.cat === 'crypto' || card.dataset.cat === 'metals')) return;
 
                 // Fiyatı Çek
                 const priceEl = card.querySelector('.stock-price, h4, .price');
@@ -4328,9 +4894,9 @@ function updateMarketCapUI() {
         const downCountEl = document.getElementById('market-down-count');
         const titleEl = barEl ? barEl.querySelector('.index-title') : null;
 
-        // CTS 100 -> CTS 32 Başlık Kontrolü
-        if (titleEl && titleEl.innerText !== 'CTS 32') {
-            titleEl.innerText = 'CTS 32';
+        // Başlık Kontrolü (CTS BORSASI)
+        if (titleEl && titleEl.innerText !== 'CTS BORSASI') {
+            titleEl.innerText = 'CTS BORSASI';
         }
 
         // 🎨 AKTİF SEÇİLİ TEMA KONTROLÜ
@@ -5166,88 +5732,936 @@ function openFuturesPosition(type) {
             const catTabsContainer = document.getElementById('category-tabs'); 
 
             function hideAllScreens() {
-                marketContainer.style.display = 'none';
-                document.getElementById('crypto-container').style.display = 'none'; // YENİ EKLENEN
-                portfolioContainer.style.display = 'none';
-                newsArchiveContainer.style.display = 'none';
-                bankContainer.style.display = 'none';
-                storeContainer.style.display = 'none';
-                catTabsContainer.style.display = 'none';
+    if (marketContainer) marketContainer.style.display = 'none';
+    const cEl = document.getElementById('crypto-container'); if (cEl) cEl.style.display = 'none';
+    const compEl = document.getElementById('company-container'); if (compEl) compEl.style.display = 'none';
+    const reEl = document.getElementById('realestate-container'); if (reEl) reEl.style.display = 'none';
+    const metEl = document.getElementById('metals-container'); if (metEl) metEl.style.display = 'none';
+
+    if (portfolioContainer) portfolioContainer.style.display = 'none';
+    if (newsArchiveContainer) newsArchiveContainer.style.display = 'none';
+    if (bankContainer) bankContainer.style.display = 'none';
+    if (storeContainer) storeContainer.style.display = 'none';
+    if (catTabsContainer) catTabsContainer.style.display = 'none';
+}
+
+            // ==========================================================================
+// 🧭 ÇOKLU PİYASA VE KAYAR PENCERE (BOTTOM SHEET) YÖNETİCİSİ
+// ==========================================================================
+let currentMarketMode = 'borsa';
+
+function openMarketSelectorSheet() {
+    const sheet = document.getElementById('market-selector-sheet');
+    const overlay = document.getElementById('market-selector-overlay');
+    if (!sheet || !overlay) return;
+
+    const cryptoPill = document.getElementById('pill-crypto-status');
+    const isCryptoUnlocked = (playerBalance >= 20000000 || reachedMilestones.m20);
+    if (cryptoPill) {
+        cryptoPill.innerText = isCryptoUnlocked ? "VOLATİL" : "🔒 $20M";
+        cryptoPill.className = isCryptoUnlocked ? "market-status-pill pill-crypto" : "market-status-pill pill-locked";
+    }
+
+    document.querySelectorAll('.sheet-market-card').forEach(card => {
+        card.classList.toggle('active', card.dataset.market === currentMarketMode);
+    });
+
+    overlay.classList.add('active');
+    sheet.classList.add('open');
+}
+
+function closeMarketSelectorSheet() {
+    const sheet = document.getElementById('market-selector-sheet');
+    const overlay = document.getElementById('market-selector-overlay');
+    if (sheet) sheet.classList.remove('open');
+    if (overlay) overlay.classList.remove('active');
+}
+
+function switchMarketMode(mode, playAudio = true) {
+    if (playAudio) playSound('tick');
+
+    // 🔒 Kripto Kilit Kontrolü
+    if (mode === 'crypto') {
+        const isCryptoUnlocked = (playerBalance >= 20000000 || reachedMilestones.m20);
+        if (!isCryptoUnlocked) {
+            closeMarketSelectorSheet();
+            const nt = document.getElementById('news-toast');
+            if (nt) {
+                document.getElementById('news-title').innerText = "KİLİTLİ PİYASA";
+                document.getElementById('news-title').style.color = "#f59e0b";
+                document.getElementById('news-desc').innerHTML = "Gizli Kripto Borsası'na erişmek için en az <strong>$20 Milyon</strong> kasa bakiyesine ulaşmalısınız!";
+                triggerNewsToastShow(4000);
             }
+            return;
+        }
+    }
 
-            let isCryptoView = false;
-            tabMarket.addEventListener('click', () => {
-                playSound('tick');
-                if (tabMarket.classList.contains('active')) {
-                    // Sekme zaten seçiliyken bir kez daha tıklanırsa (GEÇİŞ YAP)
-                    if (playerBalance >= 20000000 || reachedMilestones.m20) { 
-                        isCryptoView = !isCryptoView;
-                        if (isCryptoView) {
-                            // KRİPTO (Tam Ortalanmış ve Hizalanmış SVG)
-                            tabMarket.querySelector('.tab-icon').innerHTML = `
-                                <svg class="static-menu-icon" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.6));">
-                                    <circle cx="12" cy="12" r="9"></circle>
-                                    <path d="M9.5 8h4a2 2 0 1 1 0 4h-4"></path>
-                                    <path d="M9.5 12h4.5a2.5 2.5 0 1 1 0 5h-4.5"></path>
-                                    <line x1="12" y1="5" x2="12" y2="8"></line>
-                                    <line x1="12" y1="17" x2="12" y2="20"></line>
-                                    <line x1="9.5" y1="8" x2="9.5" y2="17"></line>
-                                </svg>
-                            `;
-                            tabMarket.querySelector('.tab-text').innerText = 'Kripto';
-                            tabMarket.querySelector('.tab-text').style.color = '#f59e0b';
-                            hideAllScreens();
-                            document.getElementById('crypto-container').style.display = 'block';
-                        } else {
-                            // BORSA (Neon Yeşil Grafik SVG)
-                            tabMarket.querySelector('.tab-icon').innerHTML = `
-                                <svg class="static-menu-icon" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 0 5px rgba(16, 185, 129, 0.6));">
-                                    <polyline points="3 17 9 11 13 15 21 7"></polyline>
-                                    <polyline points="14 7 21 7 21 14"></polyline>
-                                </svg>
-                            `;
-                            tabMarket.querySelector('.tab-text').innerText = 'Borsa';
-                            tabMarket.querySelector('.tab-text').style.color = '';
-                            hideAllScreens();
-                            marketContainer.style.display = 'block';
-                            catTabsContainer.style.display = 'flex';
-                        }
-                    } else {
-// Parası henüz yetmiyorsa oyuncuya uyarı göster (Merak uyandır)
-                        document.getElementById('news-title').innerText = "KİLİTLİ BÖLÜM";
-                        document.getElementById('news-title').style.color = "#f59e0b";
-                        document.getElementById('news-desc').innerHTML = "Gizli <strong>Borsaya</strong> geçiş yapmak için en az <strong>$20 Milyon</strong> kasa bakiyesine ulaşmalısın!";
-                        const nt = document.getElementById('news-toast');
-                        if (nt) {
-                            nt.classList.remove('positive', 'negative');
-                            nt.style.borderColor = '#f59e0b';
-                            triggerNewsToastShow(4000); // 📌 GÜVENLİ AÇILIŞ VE SİLİNME
+    currentMarketMode = mode;
+    hideAllScreens();
 
-                            // 4.4 saniye sonra başlığı eski haline sıfırla
-                            setTimeout(() => {
-                                const titleEl = document.getElementById('news-title');
-                                if (titleEl) {
-                                    titleEl.innerText = "FLAŞ HABER";
-                                    titleEl.style.color = "";
-                                }
-                            }, 4400);
-                        }
-                    }
-                } else {
-                    // Başka bir sekmeden (Portföy vb.) Borsa'ya ilk kez dönülüyorsa
-                    document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active')); 
-                    tabMarket.classList.add('active');
-                    hideAllScreens();
-                    
-                    // Oyuncu en son Kripto'da kaldıysa Kripto'yu, Borsa'da kaldıysa Borsa'yı aç
-                    if (isCryptoView && (playerBalance >= 20000000 || reachedMilestones.m20)) {
-                        document.getElementById('crypto-container').style.display = 'block';
-                    } else {
-                        marketContainer.style.display = 'block'; 
-                        catTabsContainer.style.display = 'flex';
-                    }
-                }
-            });
+    const barEl = document.getElementById('market-index-bar');
+    const tabIcon = tabMarket.querySelector('.tab-icon');
+    const tabText = tabMarket.querySelector('.tab-text');
+
+    // 1. BORSA (Yeşil Çizgi & Trend)
+    if (mode === 'borsa') {
+        marketContainer.style.display = 'block';
+        catTabsContainer.style.display = 'flex';
+        if (barEl) barEl.style.display = 'flex';
+
+        if (tabIcon) {
+            tabIcon.innerHTML = `
+                <svg class="static-menu-icon" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 0 5px rgba(16, 185, 129, 0.7));">
+                    <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                    <polyline points="16 7 22 7 22 13"></polyline>
+                </svg>
+            `;
+        }
+        if (tabText) {
+            tabText.innerText = 'Borsa';
+            tabText.style.color = '#10b981';
+        }
+    } 
+    // 2. KRİPTO (Turuncu Token / Kripto Parası)
+    else if (mode === 'crypto') {
+        document.getElementById('crypto-container').style.display = 'block';
+        if (barEl) barEl.style.display = 'flex';
+
+        if (tabIcon) {
+            tabIcon.innerHTML = `
+                <svg class="static-menu-icon" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.7));">
+                    <circle cx="12" cy="12" r="9" fill="#f59e0b" fill-opacity="0.15"></circle>
+                    <path d="M9.5 8h4a2 2 0 1 1 0 4h-4"></path>
+                    <path d="M9.5 12h4.5a2.5 2.5 0 1 1 0 5h-4.5"></path>
+                    <line x1="12" y1="5.5" x2="12" y2="8"></line>
+                    <line x1="12" y1="17" x2="12" y2="19.5"></line>
+                    <line x1="9.5" y1="8" x2="9.5" y2="17"></line>
+                </svg>
+            `;
+        }
+        if (tabText) {
+            tabText.innerText = 'Kripto';
+            tabText.style.color = '#f59e0b';
+        }
+    }
+    // 3. ŞİRKET (Mor Holding / İş Kulesi)
+    else if (mode === 'company') {
+        document.getElementById('company-container').style.display = 'block';
+        if (barEl) barEl.style.display = 'none';
+
+        if (tabIcon) {
+            tabIcon.innerHTML = `
+                <svg class="static-menu-icon" viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 0 5px rgba(192, 132, 252, 0.7));">
+                    <path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16" fill="#c084fc" fill-opacity="0.15"></path>
+                    <line x1="10" y1="7" x2="10.01" y2="7" stroke-width="2.5"></line>
+                    <line x1="14" y1="7" x2="14.01" y2="7" stroke-width="2.5"></line>
+                    <line x1="10" y1="11" x2="10.01" y2="11" stroke-width="2.5"></line>
+                    <line x1="14" y1="11" x2="14.01" y2="11" stroke-width="2.5"></line>
+                    <line x1="10" y1="15" x2="10.01" y2="15" stroke-width="2.5"></line>
+                    <line x1="14" y1="15" x2="14.01" y2="15" stroke-width="2.5"></line>
+                    <path d="M2 21h20"></path>
+                </svg>
+            `;
+        }
+        if (tabText) {
+            tabText.innerText = 'Şirket';
+            tabText.style.color = '#c084fc';
+        }
+        renderCompanyDashboard();
+    }
+    // 4. EMLAK (Camgöbeği Rezidans / Mülk)
+    else if (mode === 'estate') {
+        document.getElementById('realestate-container').style.display = 'block';
+        if (barEl) barEl.style.display = 'none';
+
+        if (tabIcon) {
+            tabIcon.innerHTML = `
+                <svg class="static-menu-icon" viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 0 5px rgba(0, 242, 254, 0.7));">
+                    <path d="M3 21h18"></path>
+                    <path d="M4 21V9l5-4 5 4v12" fill="#00f2fe" fill-opacity="0.15"></path>
+                    <path d="M14 21v-7a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v7" fill="#00f2fe" fill-opacity="0.25"></path>
+                    <line x1="9" y1="11" x2="9.01" y2="11" stroke-width="2.2"></line>
+                    <line x1="9" y1="15" x2="9.01" y2="15" stroke-width="2.2"></line>
+                </svg>
+            `;
+        }
+        if (tabText) {
+            tabText.innerText = 'Emlak';
+            tabText.style.color = '#00f2fe';
+        }
+        renderRealEstateView();
+    }
+    // 5. DEĞERLİ MADENLER (Altın Külçe)
+    else if (mode === 'metals') {
+        document.getElementById('metals-container').style.display = 'block';
+        if (barEl) barEl.style.display = 'flex';
+
+        if (tabIcon) {
+            tabIcon.innerHTML = `
+                <svg class="static-menu-icon" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 0 5px rgba(251, 191, 36, 0.7));">
+                    <polygon points="4 18 20 18 22 11 2 11" fill="#fbbf24" fill-opacity="0.25"></polygon>
+                    <polygon points="2 11 6 5 18 5 22 11" fill="#fbbf24" fill-opacity="0.45"></polygon>
+                    <polygon points="7 10 9 7 15 7 17 10"></polygon>
+                    <line x1="9.5" y1="14.5" x2="14.5" y2="14.5" stroke-width="1.5"></line>
+                </svg>
+            `;
+        }
+        if (tabText) {
+            tabText.innerText = 'Madenler';
+            tabText.style.color = '#fbbf24';
+        }
+    }
+
+    closeMarketSelectorSheet();
+}
+
+tabMarket.addEventListener('click', () => {
+    playSound('tick');
+    if (!tabMarket.classList.contains('active')) {
+        document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+        tabMarket.classList.add('active');
+        switchMarketMode(currentMarketMode, false);
+    }
+    openMarketSelectorSheet();
+});
+
+document.querySelectorAll('.sheet-market-card').forEach(card => {
+    card.addEventListener('click', () => switchMarketMode(card.dataset.market));
+});
+
+const btnCloseMarketSheet = document.getElementById('btn-close-market-sheet');
+if (btnCloseMarketSheet) btnCloseMarketSheet.onclick = closeMarketSelectorSheet;
+
+const marketSelectorOverlay = document.getElementById('market-selector-overlay');
+if (marketSelectorOverlay) marketSelectorOverlay.onclick = closeMarketSelectorSheet;
+
+const metalsBox = document.getElementById('metals-container');
+if (metalsBox) {
+    metalsBox.addEventListener('click', (e) => {
+        const card = e.target.closest('.stock-card');
+        if (card) openTradePanelForCard(card);
+    });
+}
+
+// ==========================================================================
+// 🏛️ ŞİRKET KURMA, IPO VE BASIN BÜLTENİ MOTORU (DİNAMİK FİYAT & %49 SINIRI)
+// ==========================================================================
+let playerCompany = JSON.parse(localStorage.getItem('cts_player_company') || 'null');
+let selectedCompanyEmoji = 'bolt';
+
+function getCompanyAmblemSvg(key) {
+    switch (key) {
+        case 'bolt':
+            return `<svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.7));"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>`;
+        case 'rocket':
+            return `<svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 5px rgba(0, 242, 254, 0.7));"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path></svg>`;
+        case 'diamond':
+            return `<svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 5px rgba(56, 189, 248, 0.7));"><path d="M6 3h12l4 6-10 13L2 9z"></path><path d="M11 3L8 9l4 13 4-13-3-6"></path><line x1="2" y1="9" x2="22" y2="9"></line></svg>`;
+        case 'chip':
+            return `<svg viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 5px rgba(192, 132, 252, 0.7));"><rect x="4" y="4" width="16" height="16" rx="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line></svg>`;
+        case 'globe':
+            return `<svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 5px rgba(16, 185, 129, 0.7));"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>`;
+        case 'crown':
+            return `<svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; filter: drop-shadow(0 0 5px rgba(251, 191, 36, 0.8));"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7z"></path><path d="M2 20h20"></path></svg>`;
+        default:
+            return `<svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.2" style="width: 20px; height: 20px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>`;
+    }
+}
+
+let prCooldownTimer = null;
+let prCooldownSeconds = 0;
+
+document.querySelectorAll('.company-emoji-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.company-emoji-btn').forEach(b => b.style.borderColor = '#334155');
+        btn.style.borderColor = '#a855f7';
+        selectedCompanyEmoji = btn.dataset.emoji;
+    });
+});
+
+// Başlangıç fiyatına göre maliyet ve komisyon hesaplama (1$ altı korumalı)
+window.calculateCompanySetupCost = function() {
+    const priceInput = document.getElementById('setup-company-initial-price');
+    if (!priceInput) return;
+    
+    let initialPrice = parseFloat(priceInput.value);
+    
+    // 🛑 1 Doların altına düşerse otomatik 1 dolara sabitle
+    if (isNaN(initialPrice) || initialPrice < 1) {
+        initialPrice = 1;
+        priceInput.value = 1;
+    }
+
+    const totalCapital = initialPrice * 1000000; // 1 Milyon lot
+    const userIsPrem = (typeof window.isPremium !== 'undefined' && window.isPremium) || localStorage.getItem('cts_premium') === 'true';
+    const commissionRate = userIsPrem ? 0.005 : 0.01; // VIP %0.5, Standart %1.0
+    const commissionFee = totalCapital * commissionRate;
+    const totalCost = totalCapital + commissionFee;
+
+    const capEl = document.getElementById('setup-calc-capital');
+    const comEl = document.getElementById('setup-calc-commission');
+    const totEl = document.getElementById('setup-calc-total');
+
+    if (capEl) capEl.innerText = "$" + totalCapital.toLocaleString('en-US');
+    if (comEl) comEl.innerText = "$" + Math.round(commissionFee).toLocaleString('en-US');
+    if (totEl) totEl.innerText = "$" + Math.round(totalCost).toLocaleString('en-US');
+};
+// --- ŞİRKET BAŞLANGIÇ FİYATI - / + BUTONLARI İÇİN YARDIMCI FONKSİYON ---
+    window.adjustCompanyPrice = function(amount) {
+        if (typeof playSound === 'function') playSound('tick');
+        const priceInput = document.getElementById('setup-company-initial-price');
+        if (!priceInput) return;
+
+        let currentVal = parseInt(priceInput.value) || 10;
+        currentVal += amount;
+
+        if (currentVal < 1) currentVal = 1; // 1 doların altına düşemez
+        if (currentVal > 1000) currentVal = 1000; // Maksimum sınır
+
+        priceInput.value = currentVal;
+        
+        // Maliyet hesaplama fonksiyonunu tetikle
+        if (typeof calculateCompanySetupCost === 'function') {
+            calculateCompanySetupCost();
+        }
+    };
+function foundPlayerCompany() {
+    const nameInput = document.getElementById('setup-company-name');
+    const compName = nameInput.value.trim();
+    const sector = document.getElementById('setup-company-sector').value;
+    const priceInput = document.getElementById('setup-company-initial-price');
+    
+    let initialPrice = parseFloat(priceInput?.value);
+    
+    // 🛑 Kurulum anında da 1$ altı kontrolü
+    if (isNaN(initialPrice) || initialPrice < 1) {
+        playSound('error');
+        if (typeof showCustomAlert === 'function') {
+            showCustomAlert("Şirket hisse fiyatı 1 $'ın altında olamaz!", "GEÇERSİZ FİYAT ⚠️", "#ef4444");
+        } else {
+            alert("Şirket hisse fiyatı 1 $'ın altında olamaz!");
+        }
+        if (priceInput) priceInput.value = 1;
+        calculateCompanySetupCost();
+        return;
+    }
+
+    if (!compName) {
+        playSound('error');
+        if (typeof showCustomAlert === 'function') {
+            showCustomAlert("Şirket kurabilmek için lütfen geçerli bir ticari unvan belirleyin.", "EKSİK BİLGİ ⚠️", "#ef4444");
+        }
+        return;
+    }
+
+    const totalCapital = initialPrice * 1000000;
+    const userIsPrem = (typeof window.isPremium !== 'undefined' && window.isPremium) || localStorage.getItem('cts_premium') === 'true';
+    const commissionRate = userIsPrem ? 0.005 : 0.01;
+    const commissionFee = totalCapital * commissionRate;
+    const totalCost = totalCapital + commissionFee;
+
+    if (playerBalance < totalCost) {
+        playSound('error');
+        const desc = `Bu sermaye ve başlangıç fiyatı ile şirket kurmak için yeterli nakdiniz yok.<br><br>` +
+                     `Gerekli Toplam Nakit: <strong style="color: #fbbf24;">$${Math.round(totalCost).toLocaleString('en-US')}</strong><br>` +
+                     `Mevcut Kasanız: <strong style="color: #ef4444;">$${Math.round(playerBalance).toLocaleString('en-US')}</strong>`;
+        if (typeof showCustomAlert === 'function') {
+            showCustomAlert(desc, "YETERSİZ SERMAYE ⚠️", "#ef4444");
+        }
+        return;
+    }
+
+    playerBalance -= totalCost;
+    if (typeof trackTreasuryExpense === 'function') trackTreasuryExpense('commission', commissionFee);
+    updateBalanceUI();
+
+    playerCompany = {
+        name: compName,
+        sector: sector,
+        emoji: selectedCompanyEmoji,
+        price: initialPrice,
+        ownedShares: 1000000, 
+        totalShares: 1000000,
+        changePercent: 0.0,
+        isPubliclyTraded: false 
+    };
+
+    localStorage.setItem('cts_player_company', JSON.stringify(playerCompany));
+    stockAverages[playerCompany.name] = initialPrice;
+    localStorage.setItem('cts_averages', JSON.stringify(stockAverages));
+
+    playSound('milestone');
+    renderCompanyDashboard();
+
+    if (typeof showStoreModal === 'function') {
+        showStoreModal("ŞİRKET KURULDU 🏛️", `<b>${compName}</b> başarıyla kuruldu!<br><br>Şirketin 1.000.000 lotunun tamamı portföyünüze eklendi. İstediğiniz zaman Halka Arz panelinden dilediğiniz oranı halka açabilirsiniz.`, true);
+    }
+    saveGame();
+}
+
+// Halka Arz Slider Güncelleyici
+window.updateIpoSliderUI = function() {
+    const slider = document.getElementById('ipo-slider');
+    if (!slider || !playerCompany) return;
+
+    const percent = parseInt(slider.value) || 1;
+    const lotCount = Math.floor((playerCompany.totalShares * percent) / 100);
+    const estimatedRevenue = lotCount * playerCompany.price;
+
+    const percentEl = document.getElementById('ipo-percent-display');
+    const revEl = document.getElementById('ipo-revenue-preview');
+    const remEl = document.getElementById('ipo-remaining-share');
+
+    if (percentEl) percentEl.innerText = `%${percent} (${lotCount.toLocaleString('en-US')} Lot)`;
+    if (revEl) revEl.innerText = "$" + Math.round(estimatedRevenue).toLocaleString('en-US');
+    if (remEl) remEl.innerText = `%${100 - percent}`;
+};
+
+// Halka Arzı Gerçekleştirme Fonksiyonu (En Fazla %49)
+window.executePublicOffering = function() {
+    if (!playerCompany || playerCompany.isPubliclyTraded) return;
+
+    const slider = document.getElementById('ipo-slider');
+    const percent = parseInt(slider?.value) || 20;
+
+    if (percent > 49) {
+        if (typeof showCustomAlert === 'function') {
+            showCustomAlert("Yasal düzenlemeler gereği en fazla %49 halka arz edebilirsiniz!", "SINIR AŞIMI ⚠️", "#ef4444");
+        } else {
+            alert("En fazla %49 halka arz edebilirsiniz!");
+        }
+        return;
+    }
+
+    const lotToSell = Math.floor((playerCompany.totalShares * percent) / 100);
+    
+    if (playerCompany.ownedShares < lotToSell) {
+        alert("Halka arz edilecek kadar hisseniz bulunmuyor.");
+        return;
+    }
+
+    const cashRevenue = lotToSell * playerCompany.price;
+
+    playerCompany.isPubliclyTraded = true;
+    playerCompany.ownedShares -= lotToSell;
+    playerBalance += cashRevenue;
+
+    localStorage.setItem('cts_player_company', JSON.stringify(playerCompany));
+    updateBalanceUI();
+    playSound('buy');
+    renderCompanyDashboard();
+    injectCompanyIntoMarket();
+
+    if (typeof showStoreModal === 'function') {
+        showStoreModal("HALKA ARZ BAŞARILI (IPO) 🔔", `Tebrikler! <b>${playerCompany.name}</b> %${percent} oranla halka arz edildi.<br><br>Kasanıza net <strong style="color: #10b981;">+$${Math.round(cashRevenue).toLocaleString('en-US')}</strong> nakit eklendi ve hisseler borsada işlem görmeye başladı.`, true);
+    }
+    saveGame();
+};
+
+function injectCompanyIntoMarket() {
+    if (!playerCompany || !playerCompany.isPubliclyTraded) return; // Sadece halka arz edildiyse borsaya girer
+    let existingCard = document.querySelector(`.stock-card[data-name="${playerCompany.name}"]`);
+    if (!existingCard) {
+        const newCard = document.createElement('div');
+        newCard.className = 'stock-card trend-up';
+        newCard.dataset.cat = playerCompany.sector;
+        newCard.dataset.name = playerCompany.name;
+        newCard.innerHTML = `
+            <div class="stock-icon" style="background: rgba(168, 85, 247, 0.15); color: #c084fc;">${getCompanyAmblemSvg(playerCompany.emoji)}</div>
+            <div class="stock-info">
+                <span class="stock-name" style="color: #f3e8ff;">${playerCompany.name} <small style="color:#fbbf24; font-size:9px;">(SENİN)</small></span>
+                <span class="stock-owned">Portföy: ${playerCompany.ownedShares.toLocaleString('en-US')} Adet</span>
+            </div>
+            <div class="stock-price-data">
+                <span class="stock-price">$${playerCompany.price.toFixed(2)}</span>
+                <span class="stock-change" style="color:#10b981;">▲ +0.0%</span>
+            </div>
+        `;
+        marketContainer.appendChild(newCard);
+        stockCards = document.querySelectorAll('#market-container .stock-card, #crypto-container .stock-card, #metals-container .stock-card');
+    }
+}
+injectCompanyIntoMarket();
+
+function renderCompanyDashboard() {
+    const setupBox = document.getElementById('company-setup-box');
+    const mgmtBox = document.getElementById('company-mgmt-box');
+    const badge = document.getElementById('company-status-badge');
+
+    if (!playerCompany) {
+        setupBox.style.display = 'flex';
+        mgmtBox.style.display = 'none';
+        if (badge) {
+            badge.innerText = "KURULMADI";
+            badge.style.color = "#94a3b8";
+        }
+        if (typeof calculateCompanySetupCost === 'function') calculateCompanySetupCost();
+        return;
+    }
+
+    setupBox.style.display = 'none';
+    if (mgmtBox) mgmtBox.style.display = 'flex';
+    if (badge) {
+        badge.innerText = playerCompany.isPubliclyTraded ? "HALKA AÇIK (KOTE)" : "ÖZEL ŞİRKET (ARZ BEKLİYOR)";
+        badge.style.color = playerCompany.isPubliclyTraded ? "#10b981" : "#fbbf24";
+    }
+
+    const nameEl = document.getElementById('mgmt-company-name');
+    const priceEl = document.getElementById('mgmt-company-price');
+    const sharesEl = document.getElementById('mgmt-company-shares');
+
+    if (nameEl) nameEl.innerText = `${playerCompany.emoji} ${playerCompany.name.toUpperCase()}`;
+    if (priceEl) priceEl.innerText = `$${playerCompany.price.toFixed(2)}`;
+    
+    const card = document.querySelector(`.stock-card[data-name="${playerCompany.name}"]`);
+    if (card) {
+        const ownedText = card.querySelector('.stock-owned').innerText;
+        const owned = parseInt(ownedText.replace(/[^0-9]/g, '')) || playerCompany.ownedShares;
+        playerCompany.ownedShares = owned;
+        const percent = ((owned / playerCompany.totalShares) * 100).toFixed(1);
+        if (sharesEl) sharesEl.innerText = `${owned.toLocaleString('en-US')} Adet (%${percent})`;
+    } else if (sharesEl) {
+        const percent = ((playerCompany.ownedShares / playerCompany.totalShares) * 100).toFixed(1);
+        sharesEl.innerText = `${playerCompany.ownedShares.toLocaleString('en-US')} Adet (%${percent})`;
+    }
+
+    const ipoSliderContainer = document.getElementById('ipo-slider-container');
+    const ipoStatusBadge = document.getElementById('mgmt-ipo-status');
+    if (playerCompany.isPubliclyTraded) {
+        if (ipoSliderContainer) ipoSliderContainer.style.display = 'none';
+        if (ipoStatusBadge) ipoStatusBadge.innerText = "HALKA ARZ EDİLDİ";
+    } else {
+        if (ipoSliderContainer) ipoSliderContainer.style.display = 'flex';
+        if (ipoStatusBadge) ipoStatusBadge.innerText = "ÖZEL ŞİRKET";
+        updateIpoSliderUI();
+    }
+}
+
+function publishCompanyPRNews() {
+    if (!playerCompany) return;
+    if (prCooldownSeconds > 0) return;
+
+    const PR_COST = 25000;
+    if (playerBalance < PR_COST) {
+        playSound('error');
+        const desc = `Basın bülteni servisi için <strong style="color: #fbbf24;">$25.000</strong> bütçe gereklidir.<br><br>` +
+                     `Mevcut Kasanız: <strong style="color: #ef4444;">$${Math.round(playerBalance).toLocaleString('en-US')}</strong>`;
+        if (typeof showCustomAlert === 'function') {
+            showCustomAlert(desc, "YETERSİZ BÜTÇE ⚠️", "#ef4444");
+        } else if (typeof showStoreModal === 'function') {
+            showStoreModal("YETERSİZ BÜTÇE ⚠️", desc, false);
+        }
+        return;
+    }
+
+    playerBalance -= PR_COST;
+    updateBalanceUI();
+
+    const isPositive = Math.random() < 0.70;
+    let percentDelta = 0;
+    let headline = "";
+
+    if (isPositive) {
+        percentDelta = (Math.random() * 20 + 10);
+        const posNews = [
+            `${playerCompany.name} devrim niteliğinde bir ortaklık ve rekor kâr açıkladı!`,
+            `${playerCompany.name} yeni nesil patent onayını aldı, yatırımcılar hisseye akın ediyor!`,
+            `${playerCompany.name} uluslararası dev bir fon tarafından yüksek hedef fiyatla önerildi!`
+        ];
+        headline = posNews[Math.floor(Math.random() * posNews.length)];
+    } else {
+        percentDelta = -(Math.random() * 15 + 8);
+        const negNews = [
+            `${playerCompany.name} son çeyrekte tedarik aksaklığı bildirdi, kâr beklentilerin altında kaldı.`,
+            `${playerCompany.name} yönetim kurulundaki bazı harcamalar analistlerce eleştirildi.`,
+            `Sektördeki sert rekabet ${playerCompany.name} hisselerinde kâr satışlarına yol açtı.`
+        ];
+        headline = negNews[Math.floor(Math.random() * negNews.length)];
+    }
+
+    playerCompany.price = Math.max(0.01, playerCompany.price * (1 + (percentDelta / 100)));
+
+    const card = document.querySelector(`.stock-card[data-name="${playerCompany.name}"]`);
+    if (card) {
+        card.querySelector('.stock-price').innerText = `$${playerCompany.price.toFixed(2)}`;
+        const changeEl = card.querySelector('.stock-change');
+        changeEl.innerText = (isPositive ? "▲ +" : "▼ ") + Math.abs(percentDelta).toFixed(1) + "%";
+        changeEl.style.color = isPositive ? "#10b981" : "#ef4444";
+        card.classList.toggle('trend-up', isPositive);
+        card.classList.toggle('trend-down', !isPositive);
+    }
+
+    renderCompanyDashboard();
+    playSound(isPositive ? 'buy' : 'sell');
+
+    const nt = document.getElementById('news-toast');
+    if (nt) {
+        document.getElementById('news-title').innerText = isPositive ? "ŞİRKET BÜLTENİ (POZİTİF) 🚀" : "ŞİRKET GELİŞMESİ ⚠️";
+        document.getElementById('news-title').style.color = isPositive ? "#10b981" : "#ef4444";
+        document.getElementById('news-desc').innerText = headline;
+        triggerNewsToastShow(5000);
+    }
+
+    prCooldownSeconds = 30;
+    const cdText = document.getElementById('pr-cooldown-text');
+    const cdSec = document.getElementById('pr-cooldown-sec');
+    const prBtn = document.getElementById('btn-publish-pr');
+    if (cdText) cdText.style.display = 'block';
+    if (prBtn) {
+        prBtn.style.opacity = '0.5';
+        prBtn.disabled = true;
+    }
+
+    prCooldownTimer = setInterval(() => {
+        prCooldownSeconds--;
+        if (cdSec) cdSec.innerText = prCooldownSeconds;
+        if (prCooldownSeconds <= 0) {
+            clearInterval(prCooldownTimer);
+            if (cdText) cdText.style.display = 'none';
+            if (prBtn) {
+                prBtn.style.opacity = '1';
+                prBtn.disabled = false;
+            }
+        }
+    }, 1000);
+
+    saveGame();
+}
+
+// ==========================================================================
+// 🏙️ DİNAMİK KÜRESEL EMLAK PİYASASI MOTORU (KOMİSYON & VERGİ ENTEGRELİ)
+// ==========================================================================
+const globalRealEstate = [
+    { 
+        id: 'est_ist', 
+        city: 'İSTANBUL', 
+        country: 'Türkiye',
+        coords: '41.0082° K, 28.9784° D',
+        name: 'Boğaz Manzaralı Yalı', 
+        price: 250000, 
+        currentPrice: 250000, 
+        lastDeltaPercent: 0,
+        rent: 80, 
+        iconSvg: `<svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2" style="width:24px;height:24px;filter:drop-shadow(0 0 5px rgba(0,242,254,0.7));"><path d="M3 21h18M3 10h18M5 10v11M19 10v11M9 10v11M15 10v11M12 3l9 7H3l9-7z"></path></svg>`,
+        cityInfo: 'İki kıtayı birbirine bağlayan, zengin tarihi ve Boğaz hattıyla dünyanın en stratejik ve büyüleyici ticaret metropolü.',
+        features: ['650 m² Kullanım Alanı', 'Özel Tekne İskelesi & Rıhtım', 'Tarihi Eser Statüsü', 'Garantili Pasif Kira Getirisi']
+    },
+    { 
+        id: 'est_nyc', 
+        city: 'NEW YORK', 
+        country: 'ABD',
+        coords: '40.7128° K, 74.0060° B',
+        name: 'Manhattan Penthouse', 
+        price: 950000, 
+        currentPrice: 950000, 
+        lastDeltaPercent: 0,
+        rent: 320, 
+        iconSvg: `<svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" style="width:24px;height:24px;filter:drop-shadow(0 0 5px rgba(56,189,248,0.7));"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="9" y1="6" x2="9.01" y2="6"></line><line x1="15" y1="6" x2="15.01" y2="6"></line><line x1="9" y1="10" x2="9.01" y2="10"></line><line x1="15" y1="10" x2="15.01" y2="10"></line><line x1="9" y1="14" x2="9.01" y2="14"></line><line x1="15" y1="14" x2="15.01" y2="14"></line><line x1="9" y1="18" x2="15" y2="18"></line></svg>`,
+        cityInfo: 'Wall Street ve NASDAQ gibi devasa piyasaları barındıran, dünya finansının kalbinin attığı küresel sermaye başkenti.',
+        features: ['420 m² Dubleks Teras Katı', 'Central Park Panoramik Manzarası', '7/24 Özel Güvenlik & Konsiyerj', 'Ultra Lüks Akıllı Ev Altyapısı']
+    },
+    { 
+        id: 'est_lon', 
+        city: 'LONDRA', 
+        country: 'İngiltere',
+        coords: '51.5074° K, 0.1278° B',
+        name: 'Mayfair Townhouse', 
+        price: 2400000, 
+        currentPrice: 2400000, 
+        lastDeltaPercent: 0,
+        rent: 850, 
+        iconSvg: `<svg viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2" style="width:24px;height:24px;filter:drop-shadow(0 0 5px rgba(192,132,252,0.7));"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>`,
+        cityInfo: 'Avrupa ve dünya bankacılığının zirvesi, asırlık prestije ve katı mülkiyet güvenliğine sahip aristokrat finans merkezi.',
+        features: ['5 Katlı Viktorya Dönemi Konağı', 'Özel Kış Bahçesi & Şarap Mahzeni', 'Diplomatik Bölge Koruması', 'Yüksek Sermaye Değerleme Potansiyeli']
+    },
+    { 
+        id: 'est_tyo', 
+        city: 'TOKYO', 
+        country: 'Japonya',
+        coords: '35.6762° K, 139.6503° D',
+        name: 'Ginza İş Kulesi Katı', 
+        price: 7500000, 
+        currentPrice: 7500000, 
+        lastDeltaPercent: 0,
+        rent: 2800, 
+        iconSvg: `<svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" style="width:24px;height:24px;filter:drop-shadow(0 0 5px rgba(245,158,11,0.7));"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>`,
+        cityInfo: 'Asya’nın teknoloji, robotik ve inovasyon merkezi; dünyanın en güvenli ve dakik iş kültürüne sahip megakenti.',
+        features: ['850 m² Açık Ofis Katı', 'Depreme Dayanıklı Sismik Amortisörler', 'Uluslararası Kurumsal Kiracılı', 'Kesintisiz Yüksek Likidite Getirisi']
+    },
+    { 
+        id: 'est_dxb', 
+        city: 'DUBAİ', 
+        country: 'BAE',
+        coords: '25.2048° K, 55.2708° D',
+        name: 'Palm Jumeirah Malikane', 
+        price: 22000000, 
+        currentPrice: 22000000, 
+        lastDeltaPercent: 0,
+        rent: 9500, 
+        iconSvg: `<svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" style="width:24px;height:24px;filter:drop-shadow(0 0 5px rgba(16,185,129,0.7));"><path d="M12 22V8M12 8c-2-3-6-4-8-3 1 3 3 5 8 3zm0 0c2-3 6-4 8-3-1 3-3 5-8 3z"></path></svg>`,
+        cityInfo: 'Sıfır vergi politikası ve ultra lüks yaşam standartlarıyla küresel milyarderlerin ve serbest sermayenin gözdesi.',
+        features: ['1.800 m² Özel Ada Villası', 'Özel Helikopter Pisti', 'Özel Kumsal & Yat Yanaşma Alanı', '%0 Gelir Vergisi Avantajı']
+    }
+];
+
+let playerEstates = JSON.parse(localStorage.getItem('cts_player_estates') || '{}');
+let playerEstateCosts = JSON.parse(localStorage.getItem('cts_player_estate_costs') || '{}');
+
+let currentSelectedEstateId = null;
+
+function renderRealEstateView() {
+    const listEl = document.getElementById('realestate-items-list');
+    const passiveEl = document.getElementById('estate-total-passive-val');
+    const assetEl = document.getElementById('estate-total-asset-val');
+    if (!listEl) return;
+
+    let totalRent = 0;
+    let totalPortfolioVal = 0;
+    let html = '';
+
+    globalRealEstate.forEach(prop => {
+        // Eğer currentRent tanımlı değilse başlangıçtaki rent değerini ata
+        if (prop.currentRent === undefined) prop.currentRent = prop.rent;
+
+        const isOwned = playerEstates[prop.id] === true;
+        if (isOwned) {
+            totalRent += prop.currentRent; // 🟢 Sabit rent yerine anlık dalgalanan currentRent toplandı
+            totalPortfolioVal += prop.currentPrice;
+        }
+
+        const delta = prop.lastDeltaPercent !== undefined ? prop.lastDeltaPercent : 0;
+        const isUp = delta >= 0;
+        const changePercent = Math.abs(delta).toFixed(1);
+
+        html += `
+            <div class="stock-card" onclick="openEstateDetailsPanel('${prop.id}')" style="display: flex; justify-content: space-between; align-items: center; border-color: ${isOwned ? '#00f2fe' : '#1e293b'}; background: ${isOwned ? 'rgba(0, 242, 254, 0.05)' : '#0f172a'}; cursor: pointer;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(0, 242, 254, 0.1); display: flex; align-items: center; justify-content: center;">
+                        ${prop.iconSvg}
+                    </div>
+                    <div>
+                        <div style="display: flex; align-items: center;">
+                            <span class="estate-city-badge">${prop.city}</span>
+                            <h4 style="font-size: 13.5px; font-weight: 900; color: #fff; margin: 0;">${prop.name}</h4>
+                        </div>
+                        <div style="display: flex; gap: 8px; margin-top: 3px; font-size: 11px;">
+                            <span style="color: #10b981; font-weight: 800;">Kira: +$${prop.currentRent.toLocaleString('en-US')} / 4sn</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
+                    <span style="font-size: 13px; font-weight: 900; color: #fbbf24;">$${Math.round(prop.currentPrice).toLocaleString('en-US')}</span>
+                    <span style="font-size: 10px; font-weight: 900; color: ${isOwned ? '#00f2fe' : '#94a3b8'}; background: rgba(255,255,255,0.06); padding: 3px 8px; border-radius: 6px;">
+                        ${isOwned ? 'MÜLK SAHİBİSİNİZ' : 'DETAYLAR ›'}
+                    </span>
+                </div>
+            </div>
+        `;
+    });
+
+    listEl.innerHTML = html;
+    if (passiveEl) passiveEl.innerText = `+$${totalRent.toLocaleString('en-US')} / 4sn`;
+    if (assetEl) assetEl.innerText = `$${Math.round(totalPortfolioVal).toLocaleString('en-US')}`;
+
+    // Eğer gayrimenkul kayar paneli o anda açıksa içindeki fiyat ve verileri de canlı güncelle
+    if (currentSelectedEstateId && document.getElementById('estate-panel')?.classList.contains('open')) {
+        updateEstatePanelData(currentSelectedEstateId);
+    }
+}
+
+// 🟢 Gayrimenkul Kayar Panelini Açma Fonksiyonu
+window.openEstateDetailsPanel = function(id) {
+    currentSelectedEstateId = id;
+    playSound('tick');
+    updateEstatePanelData(id);
+
+    const panel = document.getElementById('estate-panel');
+    const overlay = document.getElementById('estate-overlay');
+    if (overlay) overlay.classList.add('active');
+    if (panel) panel.classList.add('open');
+};
+
+// 🟢 Gayrimenkul Kayar Panelini Kapatma Fonksiyonu
+window.closeEstateDetailsPanel = function() {
+    currentSelectedEstateId = null;
+    const panel = document.getElementById('estate-panel');
+    const overlay = document.getElementById('estate-overlay');
+    if (panel) panel.classList.remove('open');
+    if (overlay) overlay.classList.remove('active');
+};
+
+const estateOverlayEl = document.getElementById('estate-overlay');
+if (estateOverlayEl) estateOverlayEl.onclick = closeEstateDetailsPanel;
+
+// Panel Verilerini Dolduran Fonksiyon
+function updateEstatePanelData(id) {
+    const prop = globalRealEstate.find(p => p.id === id);
+    if (!prop) return;
+
+    const isOwned = playerEstates[prop.id] === true;
+    const userIsPrem = (typeof window.isPremium !== 'undefined' && window.isPremium) || 
+                       (typeof isPremium !== 'undefined' && isPremium) || 
+                       localStorage.getItem('cts_premium') === 'true';
+
+    const commissionRate = userIsPrem ? 0.005 : 0.01;
+    const commissionFee = prop.currentPrice * commissionRate;
+    const totalCost = prop.currentPrice + commissionFee;
+
+    const delta = prop.lastDeltaPercent !== undefined ? prop.lastDeltaPercent : 0;
+    const isUp = delta >= 0;
+
+    document.getElementById('estate-panel-city-badge').innerText = prop.city;
+    document.getElementById('estate-panel-country').innerText = prop.country;
+    document.getElementById('estate-panel-title').innerText = prop.name;
+    document.getElementById('estate-panel-coords').innerText = prop.coords;
+    document.getElementById('estate-panel-icon-box').innerHTML = prop.iconSvg;
+    document.getElementById('estate-panel-city-desc').innerText = prop.cityInfo;
+    
+    // Özellikler listesini oluştur
+    const featEl = document.getElementById('estate-panel-features');
+    featEl.innerHTML = prop.features.map(f => `<li style="margin-bottom: 2px;">${f}</li>`).join('');
+
+    // Eğer currentRent tanımlı değilse orijinal rent'i ata
+    if (prop.currentRent === undefined) prop.currentRent = prop.rent;
+
+    // Kira değişim yüzdesi hesaplaması
+    const rentDelta = prop.lastRentDeltaPercent !== undefined ? prop.lastRentDeltaPercent : 0;
+    const isRentUp = rentDelta >= 0;
+    const rentChangePercent = Math.abs(rentDelta).toFixed(1);
+
+    // Detay panelindeki kira kutusunu güncel değer ve renkli yüzde ile doldur
+    const rentPanelEl = document.getElementById('estate-panel-rent');
+    if (rentPanelEl) {
+        rentPanelEl.innerHTML = `+$${prop.currentRent.toLocaleString('en-US')} / 4sn <span style="font-size: 11px; color: ${isRentUp ? '#10b981' : '#ef4444'}; font-weight: 800;">(${isRentUp ? '▲ +' : '▼ -'}${rentChangePercent}%)</span>`;
+    }
+    document.getElementById('estate-panel-price').innerText = `$${Math.round(prop.currentPrice).toLocaleString('en-US')}`;
+    
+    const deltaEl = document.getElementById('estate-panel-delta');
+    deltaEl.innerText = `(${isUp ? '▲ +' : '▼ -'}${Math.abs(delta).toFixed(1)}%)`;
+    deltaEl.style.color = isUp ? '#10b981' : '#ef4444';
+
+    document.getElementById('estate-panel-comm-rate').innerText = userIsPrem ? '%0.5' : '%1.0';
+    document.getElementById('estate-panel-commission-val').innerText = `$${Math.round(commissionFee).toLocaleString('en-US')}`;
+
+    const vipBadge = document.getElementById('estate-panel-vip-badge');
+    if (userIsPrem) {
+        vipBadge.innerText = '👑 VIP Komisyon İndirimi Aktif';
+        vipBadge.style.color = '#10b981';
+    } else {
+        vipBadge.innerText = 'VIP ile %50 İndirim';
+        vipBadge.style.color = '#fbbf24';
+    }
+
+    // Butonları Duruma Göre Oluştur (Sahipse: Sat / Değilse: Satın Al)
+    const actionBox = document.getElementById('estate-panel-action-container');
+    if (isOwned) {
+        actionBox.innerHTML = `
+            <button type="button" onclick="sellEstateProperty('${prop.id}')" class="trade-btn btn-sell" style="width: 100%; padding: 14px; font-size: 13px; font-weight: 900; border: none; border-radius: 12px; cursor: pointer;">
+                MÜLKÜ SAT (+$${Math.round(prop.currentPrice).toLocaleString('en-US')})
+            </button>
+        `;
+    } else {
+        actionBox.innerHTML = `
+            <button type="button" onclick="buyEstateProperty('${prop.id}')" class="trade-btn btn-buy" style="width: 100%; padding: 14px; font-size: 13px; font-weight: 900; border: none; border-radius: 12px; cursor: pointer;">
+                $${Math.round(totalCost).toLocaleString('en-US')} İLE SATIN AL
+            </button>
+        `;
+    }
+}
+
+window.buyEstateProperty = function(id) {
+    const prop = globalRealEstate.find(p => p.id === id);
+    if (!prop) return;
+
+    const userIsPrem = (typeof window.isPremium !== 'undefined' && window.isPremium) || 
+                       (typeof isPremium !== 'undefined' && isPremium) || 
+                       localStorage.getItem('cts_premium') === 'true';
+
+    const commissionRate = userIsPrem ? 0.005 : 0.01;
+    const propertyCost = prop.currentPrice;
+    const commissionFee = propertyCost * commissionRate;
+    const totalCost = propertyCost + commissionFee;
+
+    // 🛑 YETERSİZ BAKİYE: Tarayıcı alert'i yerine oyun içi şık pop-up açılır
+    if (playerBalance < totalCost) {
+        playSound('error');
+        const desc = `Bu gayrimenkulü portföyünüze eklemek için yeterli nakdiniz bulunmuyor.<br><br>` +
+                     `Mülk Bedeli: <strong style="color:#fbbf24;">$${Math.round(propertyCost).toLocaleString('en-US')}</strong><br>` +
+                     `Komisyon: <strong style="color:#ef4444;">$${Math.round(commissionFee).toLocaleString('en-US')}</strong><br>` +
+                     `Toplam Gerekli Bakiye: <strong style="color:#00f2fe;">$${Math.round(totalCost).toLocaleString('en-US')}</strong>`;
+        
+        if (typeof showStoreModal === 'function') {
+            showStoreModal("YETERSİZ BAKİYE ⚠️", desc, false);
+        } else if (typeof showCustomAlert === 'function') {
+            showCustomAlert(desc, "YETERSİZ BAKİYE", "#ef4444");
+        }
+        return;
+    }
+
+    // Satın Alma Başarılı
+    playerBalance -= totalCost;
+    playerEstates[id] = true;
+    playerEstateCosts[id] = propertyCost;
+
+    if (typeof trackTreasuryExpense === 'function') {
+        trackTreasuryExpense('commission', commissionFee);
+    }
+
+    localStorage.setItem('cts_player_estates', JSON.stringify(playerEstates));
+    localStorage.setItem('cts_player_estate_costs', JSON.stringify(playerEstateCosts));
+
+    playSound('buy');
+    updateBalanceUI();
+    renderRealEstateView();
+    closeEstateDetailsPanel();
+
+    if (typeof showStoreModal === 'function') {
+        showStoreModal("YATIRIM BAŞARILI 🏢", `Tebrikler! <b>${prop.city} - ${prop.name}</b> mülkünü portföyünüze kattınız.<br><br>Artık her 4 saniyede bir kasanıza <strong style="color:#10b981;">+$${prop.rent}</strong> kira geliri eklenecektir.`, true);
+    }
+    saveGame();
+};
+
+window.sellEstateProperty = function(id) {
+    const prop = globalRealEstate.find(p => p.id === id);
+    if (!prop || !playerEstates[id]) return;
+
+    const userIsPrem = (typeof window.isPremium !== 'undefined' && window.isPremium) || 
+                       (typeof isPremium !== 'undefined' && isPremium) || 
+                       localStorage.getItem('cts_premium') === 'true';
+
+    const saleRevenue = prop.currentPrice;
+    const buyCost = playerEstateCosts[id] || prop.price;
+    const commissionRate = userIsPrem ? 0.005 : 0.01;
+    const commissionFee = saleRevenue * commissionRate;
+    const netRevenue = saleRevenue - commissionFee;
+
+    const capitalGain = saleRevenue - buyCost;
+    if (capitalGain > 0 && typeof addProfitTax === 'function') {
+        addProfitTax(capitalGain);
+    }
+
+    if (typeof trackTreasuryExpense === 'function') {
+        trackTreasuryExpense('commission', commissionFee);
+    }
+
+    playerBalance += netRevenue;
+    delete playerEstates[id];
+    delete playerEstateCosts[id];
+
+    localStorage.setItem('cts_player_estates', JSON.stringify(playerEstates));
+    localStorage.setItem('cts_player_estate_costs', JSON.stringify(playerEstateCosts));
+
+    playSound('sell');
+    updateBalanceUI();
+    renderRealEstateView();
+    closeEstateDetailsPanel();
+
+    if (typeof showStoreModal === 'function') {
+        showStoreModal("MÜLK SATILDI 💰", `<b>${prop.city} - ${prop.name}</b> başarıyla satıldı ve net <strong style="color:#10b981;">+$${Math.round(netRevenue).toLocaleString('en-US')}</strong> kasanıza aktarıldı.`, true);
+    }
+    saveGame();
+};
 
             tabPortfolio.addEventListener('click', () => {
                 playSound('tick');
@@ -5933,15 +7347,12 @@ if (btnBuyPremium) {
     });
 }
 
-            // ==========================================================================
-// 🛒 BORSA MANİPÜLASYONU SATIN ALMA
-// ==========================================================================
-async function buyManipulationAction() {
-    if (!canUseStorePurchase()) return;
-
-    // --- 1. ADIM: ÖNCE KONTROL (Kullanıcının hissesi yoksa boşuna para ödetmeyelim) ---
+            // ==========================================
+// 🛒 BORSA MANİPÜLASYONU SATIN ALMA (WINDOW'A BAĞLANDI)
+// ==========================================
+window.buyManipulationAction = async function() {
+    // 🛑 1. ADIM: KULLANICININ HİSSESİ VAR MI KONTROLÜ
     let affected = 0;
-    
     if (typeof stockCards !== 'undefined') {
         stockCards.forEach(card => {
             let owned = parseInt(card.querySelector('.stock-owned')?.textContent.replace(/[^0-9]/g, "")) || 0;
@@ -5953,42 +7364,45 @@ async function buyManipulationAction() {
     }
 
     if (affected === 0) {
-        if (typeof showStoreModal === 'function') {
-            showStoreModal("BAŞARISIZ", "Portföyünde veya vadeli işlemlerde hiç hissen olmadığı için manipülasyon yapılamaz. (Ödeme ekranı açılmadı)", false);
-        } else {
-            alert("Portföyünde veya vadeli işlemlerde hiç hissen olmadığı için manipülasyon yapılamaz.");
+        const noStockMsg = "Portföyünde veya vadeli işlemlerde hiç hissen olmadığı için manipülasyon yapılamaz. (Ödeme ekranı açılmadı)";
+        if (typeof showCustomAlert === 'function') {
+            showCustomAlert(noStockMsg, "HİSSE BULUNAMADI", "#ef4444");
+        } else if (typeof showStoreModal === 'function') {
+            showStoreModal("BAŞARISIZ", noStockMsg, false);
         }
-        return; // İşlemi tamamen kes, ödeme ekranını AÇMA!
+        if (typeof playSound === 'function') playSound('error');
+        return;
     }
 
+    // 🛑 2. ADIM: SATIN ALMA İŞLEMİ (Google Play Store Modeli)
     try {
-        // Hatanın çözümü: Ürünü nesne olarak alıp çalıştıran yardımcıyı çağırıyoruz
-        await buyStoreProductById('cts_manipulasyon');
-    } catch (error) {
-        if (!error.userCancelled && error.code !== "USER_CANCELLED") {
-            console.error("Manipülasyon satın alma hatası:", error);
+        if (typeof buyStoreProductById === 'function') {
+            await buyStoreProductById('cts_manipulasyon');
+        } else {
+            throw new Error("Satın alma sistemi sadece mobil cihazlarda çalışır.");
+        }
+    } catch (err) {
+        if (!err.userCancelled && err.code !== "USER_CANCELLED") {
+            const infoMsg = "Satın alma sistemi sadece mobil cihazlarda çalışır.";
             if (typeof showCustomAlert === 'function') {
-                showCustomAlert("Ödeme sırasında bir hata oluştu: " + (error.message || error));
-            } else {
-                alert("Ödeme sırasında bir hata oluştu: " + (error.message || error));
+                showCustomAlert(infoMsg, "BİLGİLENDİRME", "#00f2fe");
+            } else if (typeof showStoreModal === 'function') {
+                showStoreModal("BİLGİLENDİRME", infoMsg, false);
             }
         }
         return; // Hata veya iptal varsa işlemi kes, hisseleri artırma!
     }
 
-    // --- 3. ADIM: ÖDEME BAŞARILIYSA AĞIRLIKLI ŞANS ALGORİTMASINI ÇALIŞTIR ---
+    // 🛑 3. ADIM: ÖDEME BAŞARILIYSA HİSSELERİ UÇUR
     let roll = Math.random();
     let increasePercent = 0;
 
     if (roll < 0.65) {
-        // %65 İhtimal (Yaygın): %3 ile %5.5 arası rastgele artış
-        increasePercent = (Math.random() * 2.5) + 3; 
+        increasePercent = (Math.random() * 2.5) + 3; // %3 - %5.5
     } else if (roll < 0.92) {
-        // %27 İhtimal (Nadir): %5.5 ile %8 arası rastgele artış
-        increasePercent = (Math.random() * 2.5) + 5.5;
+        increasePercent = (Math.random() * 2.5) + 5.5; // %5.5 - %8
     } else {
-        // %8 İhtimal (Efsanevi): %8 ile %10 arası rastgele artış
-        increasePercent = (Math.random() * 2) + 8;
+        increasePercent = (Math.random() * 2) + 8; // %8 - %10
     }
 
     let multiplier = 1 + (increasePercent / 100);
@@ -6002,7 +7416,7 @@ async function buyManipulationAction() {
                 const priceEl = card.querySelector('.stock-price');
                 if (priceEl) {
                     let price = parseFloat(priceEl.textContent.replace(/[^0-9.-]+/g, "")) || 0;
-                    price = price * multiplier; 
+                    price = price * multiplier;
                     priceEl.innerText = "$" + price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 }
                 
@@ -6014,21 +7428,18 @@ async function buyManipulationAction() {
             }
         });
     }
-    
+
     if (typeof playSound === 'function') playSound('buy');
 
+    const successMsg = `Harika bir hamle! Portföyündeki ${affected} adet şirketin hisseleri anında %${increasePercent.toFixed(1)} değer kazandı.`;
     if (typeof showStoreModal === 'function') {
-        showStoreModal("MANİPÜLASYON BAŞARILI", `Harika bir hamle! Portföyündeki ${affected} adet şirketin hisseleri anında %${increasePercent.toFixed(1)} değer kazandı.`, true);
+        showStoreModal("MANİPÜLASYON BAŞARILI", successMsg, true);
+    } else if (typeof showCustomAlert === 'function') {
+        showCustomAlert(successMsg, "MANİPÜLASYON BAŞARILI", "#a855f7");
     }
 
     if (typeof saveGame === 'function') saveGame();
-}
-
-// Buton Bağlantısı (Çift tıklamayı ve mükerrer event'leri önler)
-const btnBuyManip = document.getElementById('btn-buy-manipulation');
-if (btnBuyManip) {
-    btnBuyManip.onclick = buyManipulationAction;
-}
+};
 
             // ==========================================================================
 // 🛒 REKLAMLARI KALDIR SATIN ALMA (TEK SEFERLİK)
@@ -6289,6 +7700,35 @@ priceElement.innerText = "$" + newPrice.toLocaleString('en-US', { minimumFractio
                 try { updateBalanceUI(); } catch (e) { console.warn('Balance live update:', e); }
                 try { updateWalletChartModal(); } catch (e) { console.warn('Wallet live update:', e); }
 
+                // --- EMLAK FİYAT DALGALANMASI & KİRA TOPLAMA ---
+if (typeof globalRealEstate !== 'undefined') {
+    globalRealEstate.forEach(prop => {
+        // 1. Fiyat Dalgalanması
+        let deltaPercent = (Math.random() * 3 - 1.5);
+        prop.lastDeltaPercent = deltaPercent; 
+        prop.currentPrice = Math.max(prop.price * 0.4, prop.currentPrice * (1 + (deltaPercent / 100)));
+
+        // 2. Kira Geliri Dalgalanması ve Yüzde Kaydı
+        if (prop.currentRent === undefined) prop.currentRent = prop.rent;
+        let rentDeltaPercent = (Math.random() * 2.4 - 1.2); 
+        prop.lastRentDeltaPercent = rentDeltaPercent; // Kira değişim yüzdesi kaydedildi
+        
+        prop.currentRent = Math.max(Math.round(prop.rent * 0.35), Math.min(Math.round(prop.rent * 3), Math.round(prop.currentRent * (1 + (rentDeltaPercent / 100)))));
+
+        if (playerEstates && playerEstates[prop.id]) {
+            playerBalance += prop.currentRent;
+        }
+    });
+
+    if (currentMarketMode === 'estate') renderRealEstateView();
+}
+
+                // --- OYUNCU ŞİRKETİ HİSSE DALGALANMASI ---
+                if (playerCompany) {
+                    let compDelta = (Math.random() * 8 - 4) / 100;
+                    playerCompany.price = Math.max(0.01, playerCompany.price * (1 + compDelta));
+                    if (currentMarketMode === 'company') renderCompanyDashboard();
+                }
                 // --- 1. KREDİ BORÇ FAİZİ İŞLEME DÖNGÜSÜ ---
 if (playerDebt > 0) {
     let multiplier = 1 + (currentInterestRate / 100);
@@ -6344,10 +7784,15 @@ if (typeof bankContainer !== 'undefined' && bankContainer && bankContainer.style
                 'cyber': 'SİBER GÜVENLİK',
                 'defense': 'SAVUNMA SANAYİİ',
                 'quantum': 'KUANTUM TEKNOLOJİLERİ',
-                'crypto': 'KRİPTO PARA PİYASASI'
+                'crypto': 'KRİPTO PARA PİYASASI',
+                'metals': 'DEĞERLİ MADENLER & EMTİA' // 🟢 Eklendi
             };
 
             const sectorNewsScenarios = {
+                'metals': {
+                    pos: "Küresel merkez bankaları ve rezerv fonları rekor fiziki emtia alımı açıkladı! Değerli madenler zirve tazeliyor.",
+                    neg: "Faiz artış sinyalleri ve güçlenen dolar endeksi kıymetli maden piyasasında sert kâr satışlarını tetikledi!"
+                },
                 'ai': {
                     pos: "Küresel çip konsorsiyumu yeni nesil mimariyi duyurdu! Sektör hisseleri tavan kilitledi.",
                     neg: "Nadir toprak elementleri tedarik zinciri koptu! Çip ve Yapay Zeka sektörü ağır darbe aldı."
@@ -6540,6 +7985,7 @@ let lastNewsText = "";
                     affectedCards = [card];
                     const sName = card.dataset.name;
                     const isCrypto = card.dataset.cat === 'crypto';
+                    const isMetals = card.dataset.cat === 'metals';
 
                     let displayName = sName;
                     const nameEl = card.querySelector('.stock-name');
@@ -6547,7 +7993,29 @@ let lastNewsText = "";
 
                     let pool = [];
 
-                    if (isCrypto) {
+                    if (isMetals) {
+                        // 1. DEĞERLİ MADENLER & EMTİA (MAKROEKONOMİK PİYASA HABERLERİ)
+                        pool = isPositive ? [
+                            `Küresel merkez bankaları rezervlerini güçlendirmek için rekor miktarda ${displayName} alımı yaptı!`,
+                            `Enflasyon ve faiz indirimi beklentileriyle yatırımcılar güvenli liman olan ${displayName} varlığına akın ediyor.`,
+                            `Jeopolitik gerilimler tırmanırken piyasaların güvenli sığınağı ${displayName} tarihi ralli başlattı.`,
+                            `Sanayi ve teknoloji devlerinden gelen yüklü fiziki talep spot ${displayName} fiyatlarını tırmandırdı.`,
+                            `Dünyanın en büyük maden havzalarındaki grevler ve tedarik aksaklıkları ${displayName} arzını kısıtladı.`,
+                            `Uluslararası fonlar portföylerindeki nakit ağırlığını azaltıp güvenli liman ${displayName} pozisyonlarını artırdı.`,
+                            `Dolar endeksindeki (DXY) sert geri çekilme ${displayName} talebini küresel çapta patlattı.`,
+                            `Önemli emtia analistleri ${displayName} için yıl sonu hedef fiyatlarını yukarı yönlü revize etti.`
+                        ] : [
+                            `Merkez bankalarından gelen şahin faiz sinyalleri ve güçlenen dolar ${displayName} fiyatını baskıladı.`,
+                            `Küresel piyasalarda risk iştahının artmasıyla güvenli liman olan ${displayName} cephesinde sert kâr satışları yaşandı.`,
+                            `Büyük üretici ülkelerin maden ihracat kotalarını artırması ${displayName} piyasasında arz fazlası yarattı.`,
+                            `Tahvil getirilerinin tırmanışa geçmesi faiz getirisi olmayan ${displayName} varlığından çıkışları hızlandırdı.`,
+                            `Enflasyonun beklentilerin altında kalmasıyla yatırımcıların ${displayName} üzerindeki risk koruma talebi zayıfladı.`,
+                            `Emtia borsalarındaki büyük spekülatif fonlar yüklü miktarda ${displayName} kontratını tasfiye etti.`,
+                            `Güçlü gelen büyüme verileri sonrası sermaye güvenli limanlardan çıkıp hisselere kaydı; ${displayName} geriliyor.`,
+                            `Vadeli işlem borsalarında ${displayName} için teminat tamamlama çağrıları satış baskısı yarattı.`
+                        ];
+                    } else if (isCrypto) {
+                        // 2. KRİPTO PARALAR
                         pool = isPositive ? [
                             `${displayName} ağında devasa bir güncelleme başarıyla tamamlandı.`,
                             `Kurumsal devler portföylerine yüklü miktarda ${displayName} ekliyor.`,
@@ -6560,7 +8028,7 @@ let lastNewsText = "";
                         ] : [
                             `Büyük bir "balina" borsalara devasa miktarda ${displayName} transfer etti.`,
                             `Bir ülkeden daha ${displayName} işlemlerine kısıtlama haberi geldi.`,
-                            `${displayName} ağında geçici bir tıkanıklık ve güvenlik endişesi yaşandı.`,
+                            ` ${displayName} ağında geçici bir tıkanıklık ve güvenlik endişesi yaşandı.`,
                             `Spekülatif bir panik satışı ${displayName} tahtasını derinden sarstı.`,
                             `${displayName} projesinin kurucu ortaklarından biri gizemli bir şekilde ayrıldı.`,
                             `Büyük bir siber saldırı sonucu ${displayName} cüzdanlarından fon çalındı!`,
@@ -6568,6 +8036,7 @@ let lastNewsText = "";
                             `${displayName} ağındaki kritik bir yazılım hatası işlemleri durma noktasına getirdi.`
                         ];
                     } else {
+                        // 3. ŞİRKET HİSSE SENETLERİ (CEO, KÂR, FABRİKA, ÜRÜN)
                         pool = isPositive ? [
                             `${displayName} şirketinin son çeyrek kârı beklentileri katbekat aştı.`,
                             `${displayName}, pazarı sarsacak yeni nesil bir ürün duyurdu.`,
@@ -10794,66 +12263,109 @@ megaPiggyRef.on('value', (snapshot) => {
 // ==========================================================================
 // 🐷 GÖNDERİCİ: Mega Kumbaraya Katkı Sağlama İşlemi (₺100)
 // ==========================================================================
-async function feedMegaPiggyAction() {
-    if (!canUseStorePurchase()) return;
+window.feedMegaPiggyAction = async function() {
+    console.log("Mega kumbara tetiklendi!");
+
+    if (typeof canUseStorePurchase === 'function' && !canUseStorePurchase()) {
+        console.warn("Mağaza henüz hazır değil.");
+    }
 
     let myUid = localStorage.getItem('cts_player_uid');
     if (!myUid) {
-        if (typeof showCustomAlert === 'function') {
-            showCustomAlert("Havuza katılmak için önce giriş yapmalısınız.");
-        } else {
-            alert("Havuza katılmak için önce giriş yapmalısınız.");
-        }
+        alert("Havuza katılmak için önce giriş yapmalısınız.");
         return;
     }
 
     // High Roller Kasa Barajı Kontrolü ($3M)
-    if (typeof playerBalance !== 'undefined' && playerBalance < 3000000) {
-        if (typeof playSound === 'function') playSound('error'); 
-        if (typeof showStoreModal === 'function') {
-            const neonAlertIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px; vertical-align: text-bottom; margin-right: 6px; filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.6));"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`;
-            
-            showStoreModal(`${neonAlertIcon} YETERSİZ KASA PERFORMANSI`, "Mega Küresel Kumbara sadece <strong>High Roller</strong> yatırımcılara özel VIP bir havuzdur.<br><br>Giriş yapabilmek için kasanızda minimum <strong style='color:#00f2fe;'>$3,000,000</strong> nakit bulunması gerekmektedir.", false);
-        } else if (typeof showCustomAlert === 'function') {
-            showCustomAlert("Mega havuza katılabilmek için kasanda minimum $3.000.000 olmalıdır!");
-        }
-        return; 
+    const currentWealth = typeof getNetWorth === 'function' ? getNetWorth() : (playerBalance || 0);
+    if (currentWealth < 3000000) {
+        if (typeof playSound === 'function') playSound('error');
+
+        // Varsa eski açık popup'ı temizle
+        const oldModal = document.getElementById('cts-highroller-popup');
+        if (oldModal) oldModal.remove();
+
+        // Doğrudan ekrana neon popup bas
+        const popupDiv = document.createElement('div');
+        popupDiv.id = 'cts-highroller-popup';
+        popupDiv.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(2, 6, 23, 0.88); display:flex; align-items:center; justify-content:center; z-index:999999; backdrop-filter:blur(8px); padding:20px; box-sizing:border-box; animation: fadeIn 0.2s ease;';
+
+        // Özgün Siberpunk Kalkan / Uyarı İkonu (SVG)
+        const customCyberAlertIcon = `
+            <div style="display:inline-flex; align-items:center; justify-content:center; width:64px; height:64px; border-radius:18px; background:radial-gradient(circle, rgba(239,68,68,0.2) 0%, rgba(15,23,42,0) 70%); margin-bottom:12px; border:1px solid rgba(239,68,68,0.3); box-shadow:0 0 20px rgba(239,68,68,0.25);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:34px; height:34px; filter: drop-shadow(0 0 8px #ef4444);">
+                    <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z"></path>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+            </div>
+        `;
+
+        popupDiv.innerHTML = `
+            <div style="background:#0b0f19; border:2px solid #ef4444; box-shadow:0 0 35px rgba(239,68,68,0.3); border-radius:18px; width:100%; max-width:340px; padding:24px 20px; text-align:center; box-sizing:border-box;">
+                ${customCyberAlertIcon}
+                <h3 style="color:#ef4444; font-size:18px; font-weight:900; margin:0 0 10px 0; text-shadow:0 0 12px rgba(239,68,68,0.6); letter-spacing:0.5px;">YETERSİZ KASA PERFORMANSI</h3>
+                <p style="color:#94a3b8; font-size:12px; line-height:1.5; margin:0 0 16px 0;">
+                    Mega Küresel Kumbara sadece <strong style="color:#00f2fe; text-shadow:0 0 6px rgba(0,242,254,0.5);">High Roller</strong> yatırımcılara özel VIP bir havuzdur.
+                </p>
+                <div style="background:#111827; border:1px solid #1f2937; border-radius:12px; padding:14px; margin-bottom:20px;">
+                    <div style="font-size:11px; color:#64748b; font-weight:700; letter-spacing:0.5px;">GEREKEN MİNİMUM KASA</div>
+                    <div style="font-size:18px; font-weight:900; color:#00f2fe; margin-top:2px; text-shadow:0 0 8px rgba(0,242,254,0.4);">$3,000,000</div>
+                    <div style="font-size:11px; color:#64748b; font-weight:700; margin-top:12px; letter-spacing:0.5px;">MEVCUT KASANIZ</div>
+                    <div style="font-size:15px; font-weight:900; color:#f43f5e; margin-top:2px;">$${Math.floor(currentWealth).toLocaleString()}</div>
+                </div>
+                <button type="button" id="btn-close-hr-popup" style="width:100%; padding:14px; background:linear-gradient(135deg, #ef4444 0%, #991b1b 100%); border:none; border-radius:10px; color:#fff; font-weight:900; font-size:13px; letter-spacing:1px; cursor:pointer; box-shadow:0 4px 16px rgba(239,68,68,0.4); transition: transform 0.1s ease;">
+                    ANLAŞILDI
+                </button>
+            </div>
+        `;
+
+        document.body.appendChild(popupDiv);
+
+        document.getElementById('btn-close-hr-popup').onclick = function() {
+            popupDiv.remove();
+        };
+
+        return;
     }
 
+    // Satın Alma İşlemi
     try {
-        await buyStoreProductById('cts_mega_kumbara_100');
+        if (typeof buyStoreProductById === 'function') {
+            await buyStoreProductById('cts_mega_kumbara_100');
+        } else {
+            alert("Satın alma sistemi sadece mobil cihazlarda çalışır.");
+            return;
+        }
     } catch (error) {
         if (!error.userCancelled && error.code !== "USER_CANCELLED") {
             console.error("Mega kumbara ödeme hatası:", error);
-            if (typeof showCustomAlert === 'function') {
-                showCustomAlert("Ödeme sırasında bir hata oluştu: " + (error.message || error));
-            } else {
-                alert("Ödeme sırasında bir hata oluştu: " + (error.message || error));
-            }
+            alert("Ödeme sırasında bir hata oluştu: " + (error.message || error));
         }
         return;
     }
 
     if (typeof playSound === 'function') playSound('buy'); 
-    if (typeof showStoreModal === 'function') {
-        showStoreModal("MEGA ÖDEME BAŞARILI", "₺100 ödemeniz alındı. Mega havuzdaki yerinizi aldınız!", true);
-    }
+    alert("₺100 ödemeniz alındı. Mega havuzdaki yerinizi aldınız!");
     
-    if (typeof megaPiggyRef !== 'undefined') {
-        megaPiggyRef.child('contributors').child(myUid).transaction((myTotal) => {
+    const targetRef = (typeof megaPiggyRef !== 'undefined') ? megaPiggyRef : null;
+
+    if (targetRef) {
+        targetRef.child('contributors').child(myUid).transaction((myTotal) => {
             return (myTotal || 0) + 100;
         }).then(() => {
-            megaPiggyRef.child('currentAmount').transaction((currentVal) => {
+            targetRef.child('currentAmount').transaction((currentVal) => {
                 let newVal = (currentVal || 0) + 100;
-                if (newVal >= 10000) {
+                let targetMax = 10000;
+                if (newVal >= targetMax) {
                     setTimeout(() => {
-                        megaPiggyRef.once('value').then((snap) => {
+                        targetRef.once('value').then((snap) => {
                             let data = snap.val() || {};
                             let nextRound = (data.round || 1) + 1; 
                             
-                            megaPiggyRef.set({ 
+                            targetRef.set({ 
                                 currentAmount: 0, 
-                                target: 10000, 
+                                target: targetMax, 
                                 contributors: {}, 
                                 rewardDestiny: (typeof generateNextMegaReward === 'function') ? generateNextMegaReward() : null, 
                                 round: nextRound
@@ -10865,12 +12377,24 @@ async function feedMegaPiggyAction() {
             });
         });
     }
-}
 
+    if (typeof saveGame === 'function') saveGame();
+};
+
+// 🔗 KÖPRÜ: HTML'deki onclick="contributeKumbaraAction(true)" çağrısını bağlar
+window.contributeKumbaraAction = function(isMega) {
+    if (isMega) {
+        window.feedMegaPiggyAction();
+    } else if (typeof feedPiggyAction === 'function') {
+        feedPiggyAction();
+    }
+};
+
+// Buton Olay Dinleyicisi
 const btnFeedMegaPiggy = document.getElementById('btn-feed-mega-piggy');
 if (btnFeedMegaPiggy) {
     btnFeedMegaPiggy.onclick = (e) => {
-        feedMegaPiggyAction();
+        window.feedMegaPiggyAction();
         btnFeedMegaPiggy.style.transform = 'scale(0.95)';
         setTimeout(() => { btnFeedMegaPiggy.style.transform = 'scale(1)'; }, 100);
     };
@@ -12000,8 +13524,9 @@ window.loadNextRewardedInterstitial = async function() {
             return;
         }
 
-        await AdMob.prepareRewardVideoAd({
-            adId: ADMOB_REWARDED_INTERSTITIAL_ID
+        // DÜZELTİLDİ: prepareRewardInterstitialAd çağrılıyor
+        await AdMob.prepareRewardInterstitialAd({
+            adId: 'ca-app-pub-2726900479316564/4954129494'
         });
         window.isRewardedInterstitialLoaded = true;
         window.isRewardedInterstitialLoading = false;
@@ -12015,32 +13540,15 @@ window.loadNextRewardedInterstitial = async function() {
 
 // 🎬 GÜN SONUNDA TETİKLENEN ÖDÜLLÜ GEÇİŞ REKLAMI
 window.showRewardedInterstitialAd = async function() {
-    if (isUserAdsRemoved()) {
-        console.log("🛡️ Reklamsız mod aktif: Reklam gösterilmedi.");
-        return;
-    }
-
-    if (!window.Capacitor || !Capacitor.isNativePlatform()) {
-        console.log("Tarayıcı modunda çalışıyor, reklam gösterilmedi.");
-        return;
-    }
+    if (isUserAdsRemoved()) return;
+    if (!window.Capacitor || !Capacitor.isNativePlatform()) return;
 
     const AdMob = getAdMobPlugin();
     if (!AdMob) return;
 
-    if (!window.isAdMobReady) {
-        try {
-            await AdMob.initialize({ initializeForTesting: false });
-            window.isAdMobReady = true;
-        } catch (e) {
-            return;
-        }
-    }
-
     try {
-        // Ödül dinleyicisini ekle (reklam sonuna kadar izlenirse ödülü ver)
         let rewardHandled = false;
-        const rewardSub = await AdMob.addListener('onRewardedVideoAdRewarded', (reward) => {
+        const rewardSub = await AdMob.addListener('onRewardInterstitialAdRewarded', (reward) => {
             if (!rewardHandled) {
                 rewardHandled = true;
                 grantRewardedBonus();
@@ -12051,14 +13559,14 @@ window.showRewardedInterstitialAd = async function() {
         // Reklam bellekte yoksa önce yükle
         if (!window.isRewardedInterstitialLoaded) {
             console.log("Reklam hazır değildi, yükleniyor...");
-            await AdMob.prepareRewardVideoAd({
-                adId: ADMOB_REWARDED_INTERSTITIAL_ID
+            await AdMob.prepareRewardInterstitialAd({
+                adId: 'ca-app-pub-2726900479316564/4954129494'
             });
             window.isRewardedInterstitialLoaded = true;
         }
 
-        // Reklamı Göster
-        await AdMob.showRewardVideoAd();
+        // DÜZELTİLDİ: showRewardInterstitialAd çağrılıyor
+        await AdMob.showRewardInterstitialAd();
         window.lastInterstitialTime = Date.now();
         window.isRewardedInterstitialLoaded = false;
         console.log("🟢 Ödüllü geçiş reklamı gösterildi.");
@@ -13877,6 +15385,51 @@ async function scheduleGameNotifications() {
 setTimeout(() => {
     initNotifications();
 }, 3000);
+// 🟢 Accordion Sektör Listesini Açma / Kapatma
+        window.toggleSectorDropdown = function() {
+            if (typeof playSound === 'function') playSound('tick');
+            const list = document.getElementById('sector-dropdown-list');
+            const arrow = document.getElementById('sector-arrow');
+            if (!list) return;
+
+            if (list.style.display === 'none' || list.style.display === '') {
+                list.style.display = 'block';
+                if (arrow) arrow.style.transform = 'rotate(180deg)';
+            } else {
+                list.style.display = 'none';
+                if (arrow) arrow.style.transform = 'rotate(0deg)';
+            }
+        };
+
+        // ⚡ Listeden Sektör Seçildiğinde
+        window.selectInlineSector = function(key, label, element) {
+    if (typeof playSound === 'function') playSound('tick');
+    const hiddenInput = document.getElementById('setup-company-sector');
+    const displayEl = document.getElementById('selected-sector-display');
+    const list = document.getElementById('sector-dropdown-list');
+    const arrow = document.getElementById('sector-arrow');
+
+    if (hiddenInput) hiddenInput.value = key;
+
+    // Her sektöre özel renk ve SVG vektör haritası
+    const sectorConfig = {
+        'ai': { color: '#c084fc', svg: '<rect x="4" y="4" width="16" height="16" rx="2"></rect><rect x="9" y="9" width="6" height="6"></rect>' },
+        'bio': { color: '#10b981', svg: '<path d="M2 15c6.667-6 13.333 0 20-6"></path><path d="M9 9l1 1"></path><path d="M14 14l1 1"></path>' },
+        'energy': { color: '#f59e0b', svg: '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>' },
+        'ecom': { color: '#00f2fe', svg: '<circle cx="9" cy="20" r="1"></circle><circle cx="20" cy="20" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>' },
+        'cyber': { color: '#3b82f6', svg: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>' },
+        'defense': { color: '#fbbf24', svg: '<circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>' }
+    };
+
+    const conf = sectorConfig[key] || sectorConfig['ai'];
+
+    if (displayEl) {
+        displayEl.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="${conf.color}" stroke-width="2" style="width: 16px; height: 16px; flex-shrink: 0;">${conf.svg}</svg> <span style="color: ${conf.color};">${label}</span>`;
+    }
+
+    if (list) list.style.display = 'none';
+    if (arrow) arrow.style.transform = 'rotate(0deg)';
+};
 </script>
 
 <!-- ========================================================================== -->
