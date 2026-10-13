@@ -2564,3 +2564,291 @@ body.premium-theme [class*="treasury"] {
     -webkit-appearance: none;
     margin: 0;
 }
+/* ==========================================================================
+   📱 MOBİL EKRANLAR İÇİN DİNAMİK SIKIŞMA VE TAŞMA ENGELLEME (RESPONSIVE FIX)
+   ========================================================================== */
+
+/* 1. Üst Barı Esnet ve Yan Boşlukları Daralt */
+.top-dashboard {
+    padding: calc(10px + env(safe-area-inset-top, 0px)) clamp(8px, 2.5vw, 14px) 10px clamp(8px, 2.5vw, 14px) !important;
+    gap: clamp(4px, 1.5vw, 8px) !important;
+    align-items: center !important;
+}
+
+/* Üst Paneldeki Kutuların Kırılmasını Engelle */
+.dashboard-box {
+    min-width: 0 !important;
+    flex-shrink: 1 !important;
+}
+
+.dash-label {
+    font-size: clamp(8px, 2.2vw, 10px) !important;
+    white-space: nowrap !important;
+    letter-spacing: 0.2px !important;
+    margin-bottom: 2px !important;
+}
+
+.dash-value {
+    font-size: clamp(13px, 3.8vw, 18px) !important;
+    white-space: nowrap !important;
+    line-height: 1.1 !important;
+}
+
+/* Menü Butonu & AI Analist Butonunun Dar Ekranlarda Ezilmesini Önleme */
+.btn-menu-back {
+    padding: 6px clamp(6px, 1.8vw, 10px) !important;
+    font-size: clamp(9.5px, 2.4vw, 11px) !important;
+    margin-right: 2px !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+}
+
+.btn-ai-nav {
+    padding: 6px clamp(6px, 1.8vw, 10px) !important;
+    font-size: clamp(9.5px, 2.4vw, 11px) !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+}
+
+/* 2. Piyasa & Liste Alanındaki Aşırı Yan Boşlukları Daralt */
+.market-container,
+.market-container.active-screen {
+    padding: 14px clamp(10px, 3vw, 16px) 90px clamp(10px, 3vw, 16px) !important;
+}
+
+/* 3. Hisse & Emlak Kartlarının İçini Kompakt Hale Getir */
+.stock-card {
+    padding: clamp(10px, 2.8vw, 14px) !important;
+    gap: 8px !important;
+}
+
+.stock-icon {
+    width: clamp(36px, 9vw, 42px) !important;
+    height: clamp(36px, 9vw, 42px) !important;
+    margin-right: 8px !important;
+    font-size: 18px !important;
+}
+
+.stock-info {
+    min-width: 0 !important; /* Başlığın ve metnin taşmadan flex içinde daralmasını sağlar */
+}
+
+.stock-name {
+    font-size: clamp(12.5px, 3.4vw, 15px) !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+.stock-price {
+    font-size: clamp(13px, 3.6vw, 16px) !important;
+    white-space: nowrap !important;
+}
+
+.stock-change {
+    font-size: clamp(10px, 2.6vw, 12px) !important;
+    white-space: nowrap !important;
+}
+
+/* Emlak Şehir Rozeti & Satır Düzeni */
+.estate-city-badge {
+    font-size: 8px !important;
+    padding: 2px 4px !important;
+    margin-right: 4px !important;
+    flex-shrink: 0 !important;
+}
+
+/* 4. Küçük Ekranlar (Örn: iPhone SE, Galaxy A serisi - 380px ve altı) */
+@media (max-width: 380px) {
+    .top-dashboard {
+        padding-left: 6px !important;
+        padding-right: 6px !important;
+        gap: 3px !important;
+    }
+    .stock-card {
+        padding: 10px 8px !important;
+    }
+}
+/* ==========================================================================
+   👑 TAM KAPSAMLI PREMİUM (ALTIN & OBSİDYEN) TEMA DÖNÜŞÜMÜ
+   ========================================================================== */
+
+/* 1. PİYASA SEÇİMİ KAYAR PENCERESİ (FİNANS MERKEZİ) */
+body.premium-theme .market-selector-sheet {
+    background: linear-gradient(180deg, #141008 0%, #0b0904 100%) !important;
+    border-top: 2px solid #fbbf24 !important;
+    box-shadow: 0 -10px 40px rgba(251, 191, 36, 0.22), 0 -20px 60px rgba(0, 0, 0, 0.95) !important;
+}
+
+body.premium-theme .sheet-handle-bar,
+body.premium-theme .trade-handle {
+    background: rgba(251, 191, 36, 0.35) !important;
+}
+
+body.premium-theme .sheet-header {
+    border-bottom: 1px solid rgba(251, 191, 36, 0.2) !important;
+}
+
+body.premium-theme .sheet-badge {
+    color: #fbbf24 !important;
+    text-shadow: 0 0 8px rgba(251, 191, 36, 0.4) !important;
+}
+
+body.premium-theme .sheet-title {
+    color: #fef3c7 !important;
+    text-shadow: 0 0 10px rgba(251, 191, 36, 0.25) !important;
+}
+
+body.premium-theme .sheet-close-btn {
+    background: rgba(251, 191, 36, 0.1) !important;
+    border: 1px solid rgba(251, 191, 36, 0.35) !important;
+    color: #fbbf24 !important;
+}
+
+body.premium-theme .sheet-market-card {
+    background: #141008 !important;
+    border: 1px solid rgba(251, 191, 36, 0.18) !important;
+}
+
+body.premium-theme .sheet-market-card.active {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(20, 16, 8, 0.95) 100%) !important;
+    border-color: #fbbf24 !important;
+    box-shadow: 0 0 18px rgba(251, 191, 36, 0.22), inset 0 0 10px rgba(251, 191, 36, 0.08) !important;
+}
+
+body.premium-theme .sheet-market-card.active .sheet-arrow {
+    color: #fbbf24 !important;
+}
+
+/* 2. ALIM-SATIM PANELİ VE EMLAK KAYAR DETAY PANELİ */
+body.premium-theme .trade-panel,
+body.premium-theme #estate-panel {
+    background: linear-gradient(180deg, #141008 0%, #0b0904 100%) !important;
+    border-top: 2px solid #fbbf24 !important;
+    box-shadow: 0 -10px 40px rgba(251, 191, 36, 0.2), 0 -20px 60px rgba(0, 0, 0, 0.95) !important;
+}
+
+body.premium-theme .trade-mode-tabs {
+    background: #0b0904 !important;
+    border: 1px solid rgba(251, 191, 36, 0.2) !important;
+}
+
+body.premium-theme .trade-mode-btn.active {
+    background: rgba(251, 191, 36, 0.15) !important;
+    color: #fbbf24 !important;
+}
+
+body.premium-theme .trade-controls {
+    background: #0b0904 !important;
+    border-color: rgba(251, 191, 36, 0.25) !important;
+}
+
+body.premium-theme .qty-btn {
+    background: #1c160b !important;
+    color: #fbbf24 !important;
+    border: 1px solid rgba(251, 191, 36, 0.25) !important;
+}
+
+body.premium-theme .trade-owned-badge {
+    background: rgba(251, 191, 36, 0.08) !important;
+    border-color: rgba(251, 191, 36, 0.3) !important;
+}
+
+/* 3. EMLAK PİYASASI & DETAY KUTULARI */
+body.premium-theme .estate-city-badge {
+    background: rgba(251, 191, 36, 0.15) !important;
+    color: #fbbf24 !important;
+    border-color: rgba(251, 191, 36, 0.4) !important;
+}
+
+body.premium-theme #estate-panel-coords {
+    color: #fbbf24 !important;
+}
+
+body.premium-theme #estate-panel-icon-box {
+    background: rgba(251, 191, 36, 0.12) !important;
+    border-color: rgba(251, 191, 36, 0.35) !important;
+}
+
+body.premium-theme #estate-panel > div[style*="rgba(15, 23, 42"] {
+    background: #18130a !important;
+    border-color: rgba(251, 191, 36, 0.22) !important;
+}
+
+body.premium-theme #realestate-items-list .stock-card {
+    background: #141008 !important;
+    border-color: rgba(251, 191, 36, 0.22) !important;
+}
+
+/* 4. ŞİRKET KURULUM, SEKTÖR LİSTESİ & İNPUT ALANLARI */
+body.premium-theme .custom-form-input,
+body.premium-theme #sector-dropdown-box,
+body.premium-theme #sector-dropdown-list {
+    background: #120e07 !important;
+    border-color: rgba(251, 191, 36, 0.35) !important;
+}
+
+body.premium-theme .company-emoji-btn {
+    background: #18130a !important;
+    border-color: rgba(251, 191, 36, 0.25) !important;
+}
+
+/* 5. KİLİTLİ PİYASA POP-UP'I VE DİĞER TÜM OYUN İÇİ MODALLAR */
+body.premium-theme #in-game-lock-popup > div,
+body.premium-theme #roadmap-modal-overlay > div,
+body.premium-theme #treasury-modal > div,
+body.premium-theme #tax-detail-modal > div,
+body.premium-theme #company-ipo-modal > div,
+body.premium-theme #tutorial-modal,
+body.premium-theme #patch-notes-modal,
+body.premium-theme .gem-modal-box {
+    background: linear-gradient(180deg, #161108 0%, #0c0904 100%) !important;
+    border-color: #fbbf24 !important;
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.95), 0 0 25px rgba(251, 191, 36, 0.2) !important;
+}
+
+body.premium-theme #tutorial-title,
+body.premium-theme #patch-notes-modal h2,
+body.premium-theme #roadmap-modal-overlay h3,
+body.premium-theme #treasury-modal h3,
+body.premium-theme #btn-open-treasury span {
+    color: #fbbf24 !important;
+    text-shadow: 0 0 10px rgba(251, 191, 36, 0.4) !important;
+}
+
+body.premium-theme #btn-open-treasury,
+body.premium-theme #tax-header-btn {
+    background: rgba(251, 191, 36, 0.08) !important;
+    border-color: rgba(251, 191, 36, 0.35) !important;
+}
+
+body.premium-theme #btn-tutorial-next,
+body.premium-theme #btn-close-patch-notes,
+body.premium-theme #btn-close-roadmap,
+body.premium-theme #treasury-modal button {
+    background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%) !important;
+    color: #000000 !important;
+    box-shadow: 0 4px 15px rgba(251, 191, 36, 0.35) !important;
+}
+
+/* 6. FLAŞ HABER TOAST, HABER ARŞİVİ VE PROFİL KUTULARI */
+body.premium-theme .news-toast {
+    background: rgba(18, 14, 7, 0.96) !important;
+    border-color: rgba(251, 191, 36, 0.4) !important;
+}
+
+body.premium-theme .archive-news-card,
+body.premium-theme .profile-stat-box {
+    background: #141008 !important;
+    border-color: rgba(251, 191, 36, 0.2) !important;
+}
+
+/* 7. PREMİUM TEMADA SCROLLBAR ALTIN RENGİ OLSUN */
+body.premium-theme ::-webkit-scrollbar-track {
+    background: #0b0904 !important;
+}
+
+body.premium-theme ::-webkit-scrollbar-thumb {
+    background: #fbbf24 !important;
+    box-shadow: 0 0 8px rgba(251, 191, 36, 0.6) !important;
+}
