@@ -5756,7 +5756,8 @@ function openMarketSelectorSheet() {
     if (!sheet || !overlay) return;
 
     const cryptoPill = document.getElementById('pill-crypto-status');
-    const isCryptoUnlocked = (playerBalance >= 20000000 || reachedMilestones.m20);
+    const currentWealth = typeof getNetWorth === 'function' ? getNetWorth() : playerBalance;
+    const isCryptoUnlocked = (currentWealth >= 20000000 || reachedMilestones.m20);
     if (cryptoPill) {
         cryptoPill.innerText = isCryptoUnlocked ? "VOLATİL" : "🔒 $20M";
         cryptoPill.className = isCryptoUnlocked ? "market-status-pill pill-crypto" : "market-status-pill pill-locked";
@@ -5766,15 +5767,23 @@ function openMarketSelectorSheet() {
         card.classList.toggle('active', card.dataset.market === currentMarketMode);
     });
 
+    // Önceki kaydırma (swipe) stillerini temizle
+    sheet.style.transform = '';
+    sheet.style.transition = '';
+
     overlay.classList.add('active');
     sheet.classList.add('open');
-    updateMarketSelectorUI();
+    if (typeof updateMarketSelectorUI === 'function') updateMarketSelectorUI();
 }
 
 function closeMarketSelectorSheet() {
     const sheet = document.getElementById('market-selector-sheet');
     const overlay = document.getElementById('market-selector-overlay');
-    if (sheet) sheet.classList.remove('open');
+    if (sheet) {
+        sheet.style.transform = '';
+        sheet.style.transition = '';
+        sheet.classList.remove('open');
+    }
     if (overlay) overlay.classList.remove('active');
 }
 
@@ -5933,11 +5942,67 @@ document.querySelectorAll('.sheet-market-card').forEach(card => {
     card.addEventListener('click', () => switchMarketMode(card.dataset.market));
 });
 
-const btnCloseMarketSheet = document.getElementById('btn-close-market-sheet');
-if (btnCloseMarketSheet) btnCloseMarketSheet.onclick = closeMarketSelectorSheet;
+// 📱 PİYASA SEÇİMİ PENCERESİ - AŞAĞI KAYDIRARAK (SWIPE) & DOKUNARAK KAPATMA
+(function initMarketSelectorGestures() {
+    const sheet = document.getElementById('market-selector-sheet');
+    const overlay = document.getElementById('market-selector-overlay');
+    const btnClose = document.getElementById('btn-close-market-sheet');
 
-const marketSelectorOverlay = document.getElementById('market-selector-overlay');
-if (marketSelectorOverlay) marketSelectorOverlay.onclick = closeMarketSelectorSheet;
+    if (btnClose) btnClose.onclick = closeMarketSelectorSheet;
+
+    if (overlay) {
+        overlay.onclick = closeMarketSelectorSheet;
+        overlay.ontouchend = function(e) {
+            e.preventDefault();
+            closeMarketSelectorSheet();
+        };
+    }
+
+    if (sheet) {
+        let startY = 0;
+        let currentY = 0;
+        let isDragging = false;
+
+        sheet.addEventListener('touchstart', (e) => {
+            // Pencere en üstteyse aşağı çekme hareketini başlat
+            if (sheet.scrollTop <= 5) {
+                startY = e.touches[0].clientY;
+                currentY = startY;
+                isDragging = true;
+            }
+        }, { passive: true });
+
+        sheet.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            currentY = e.touches[0].clientY;
+            const diffY = currentY - startY;
+
+            // Sadece aşağı doğru sürükleniyorsa pencereyi parmakla birlikte indir
+            if (diffY > 0) {
+                sheet.style.transition = 'none';
+                sheet.style.transform = `translate(-50%, ${diffY}px)`;
+            }
+        }, { passive: true });
+
+        sheet.addEventListener('touchend', () => {
+            if (!isDragging) return;
+            isDragging = false;
+            const diffY = currentY - startY;
+
+            // 70 pikselden fazla aşağı çekildiyse pencereyi kapat
+            if (diffY > 70) {
+                closeMarketSelectorSheet();
+            } else {
+                // Yeterince çekilmediyse yaylanarak eski yerine otursun
+                sheet.style.transition = 'transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.25)';
+                sheet.style.transform = 'translate(-50%, 0)';
+            }
+
+            startY = 0;
+            currentY = 0;
+        }, { passive: true });
+    }
+})();
 
 const metalsBox = document.getElementById('metals-container');
 if (metalsBox) {
