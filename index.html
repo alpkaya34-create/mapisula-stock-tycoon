@@ -4443,7 +4443,50 @@ function checkLiquidations() {
         refreshLiveUI(false);
     }
 
+    // ⚡ Açık kalan vadeli işlemler için %0.01 sabit fonlama ücreti kes
+    applyFuturesFundingFees();
+
     return liquidatedAny;
+}
+
+// ==========================================================================
+// ⚡ VADELİ İŞLEM SABİT FONLAMA ÜCRETİ SİSTEMİ (%0.01 / FİYAT GÜNCELLEMESİ)
+// ==========================================================================
+function applyFuturesFundingFees() {
+    if (typeof isGamePaused !== 'undefined' && isGamePaused) return;
+    if (!Array.isArray(activePositions) || activePositions.length === 0) return;
+    if (typeof playerBalance === 'undefined' || playerBalance <= 0) return;
+
+    let totalDeductedFee = 0;
+
+    activePositions.forEach(pos => {
+        if (!pos) return;
+
+        const margin = Number(pos.margin) || 0;
+        const leverage = Number(pos.leverage) || 1;
+        const positionSize = margin > 0 
+            ? (margin * leverage) 
+            : ((Number(pos.amount) || 0) * (Number(pos.entryPrice) || 0));
+
+        const fundingFee = positionSize * 0.0001; // %0.01
+
+        if (fundingFee > 0 && playerBalance >= fundingFee) {
+            playerBalance -= fundingFee;
+            totalDeductedFee += fundingFee;
+
+            // ⚡ Pozisyonun kendi içinde ödenen toplam fonlama ücretini biriktir
+            pos.totalFundingPaid = (Number(pos.totalFundingPaid) || 0) + fundingFee;
+        }
+    });
+
+    if (totalDeductedFee > 0) {
+        if (typeof trackTreasuryExpense === 'function') {
+            trackTreasuryExpense('commission', totalDeductedFee);
+        }
+        if (typeof updateBalanceUI === 'function') {
+            updateBalanceUI();
+        }
+    }
 }
 
             const summaryOverlay = document.getElementById('summary-overlay');
@@ -6935,7 +6978,10 @@ window.sellEstateProperty = function(id) {
                 }
             }
 
-            function renderFuturesPositions() {
+            // ==========================================================================
+// 🏆 VADELİ İŞLEMLER POZİSYON LİSTELEME (FONLAMA ÜCRETİ ENTEGRELİ)
+// ==========================================================================
+function renderFuturesPositions() {
     const positionsList = document.getElementById('positions-list');
     if (!positionsList) return; 
 
@@ -6954,7 +7000,7 @@ window.sellEstateProperty = function(id) {
     const emptyState = positionsList.querySelector('.empty-state');
     if (emptyState) emptyState.remove();
 
-    // YENİ EKLENEN: Akıllı Güncelleme Kontrolü (DOM Re-render Koruması)
+    // Akıllı Güncelleme Kontrolü (DOM Re-render Koruması)
     const existingCards = positionsList.querySelectorAll('.position-card');
     const needsFullRender = existingCards.length !== activePositions.length;
 
@@ -6975,7 +7021,6 @@ window.sellEstateProperty = function(id) {
         }
         
         let currentMarketPrice = pos.entryPrice;
-        let companyName = pos.name;
 
         stockCards.forEach(card => {
             if (card.dataset.name === pos.name) {
@@ -7000,6 +7045,9 @@ window.sellEstateProperty = function(id) {
         const typeText = pos.type === 'LONG' ? 'LONG ' + pos.leverage + 'x' : 'SHORT ' + pos.leverage + 'x';
         const positionSizeDisplay = pos.margin * pos.leverage;
 
+        // ⚡ Biriken Toplam Fonlama Ücreti
+        const totalFundingPaid = Number(pos.totalFundingPaid) || 0;
+
         let existingCard = positionsList.querySelector(`.position-card[data-index="${index}"]`);
 
         if (!needsFullRender && existingCard) {
@@ -7007,15 +7055,19 @@ window.sellEstateProperty = function(id) {
             
             const pnlSpan = existingCard.querySelector('.pos-pnl');
             pnlSpan.className = `pos-pnl ${pnlClass}`;
-            // Kâr/Zarar için artı/eksi işaretini koruyarak formatMoney kullanıyoruz
             let formattedPnl = formatMoney(Math.abs(pnl)).replace('$', '');
             pnlSpan.innerText = `${pnlSign}$${formattedPnl}`;
+
+            // Fonlama ücreti anlık güncellensin
+            const fundingEl = existingCard.querySelector('.val-funding-paid');
+            if (fundingEl) {
+                fundingEl.innerText = formatMoney(totalFundingPaid);
+            }
         } else {
             const card = document.createElement('div');
             card.className = `position-card ${typeClass}`;
             card.dataset.index = index; 
             
-            // --- formatMoney İLE DÜZENLENMİŞ OKUNABİLİR KART TASARIMI ---
             let formattedPnl = formatMoney(Math.abs(pnl)).replace('$', '');
 
             card.innerHTML = `
@@ -7036,6 +7088,12 @@ window.sellEstateProperty = function(id) {
                     <div class="pos-stat" style="align-items:flex-end; margin-top: 5px; padding-top: 8px; border-top: 1px dashed #1e293b;">
                         <span class="pos-label">Likidasyon Fiyatı</span>
                         <span class="pos-val" style="color:#ef4444; font-weight: 900;">${formatMoney(liqPrice)}</span>
+                    </div>
+
+                    <!-- ⚡ ORİJİNAL SINIFLARLA (%0.01 AÇIKLAMALI) FONLAMA ÜCRETİ SATIRI -->
+                    <div class="pos-stat" style="grid-column: span 2; margin-top: 5px; padding-top: 8px; border-top: 1px dashed #1e293b;">
+                        <span class="pos-label" title="Pozisyon büyüklüğünün %0.01'i oranında kesilir">Fonlama Ücreti (%0.01)</span>
+                        <span class="pos-val val-funding-paid" style="color:#f87171;">-${formatMoney(totalFundingPaid)}</span>
                     </div>
                 </div>
                 <button class="btn-close-pos" style="margin-top: 10px;">POZİSYONU KAPAT</button>
@@ -7058,20 +7116,19 @@ window.sellEstateProperty = function(id) {
 
                 recordFuturesResult(livePnl >= 0);
 
-                // ⚖️ VADELİ İŞLEMLER VERGİ ENTEGRASYONU (Pozisyon kârla kapatıldıysa)
                 if (livePnl > 0 && typeof addProfitTax === 'function') {
                     addProfitTax(livePnl);
                 }
 
                 playerBalance = currentBalance + currentMargin + livePnl; 
                 updateBalanceUI();
-                                                    
+                                    
                 const posIndex = activePositions.indexOf(pos);
                 if (posIndex > -1) activePositions.splice(posIndex, 1);
-                                                    
+                                    
                 gameStats.trades++;
                 dailyTrades++;
-                                                    
+                                    
                 positionsList.innerHTML = '';
                 renderFuturesPositions();
                 saveGame();
