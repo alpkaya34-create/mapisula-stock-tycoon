@@ -2975,10 +2975,18 @@ CTS KRİPTO BORSASI</h3>
         <strong id="portfolio-total-value" class="summary-value text-gold">$0.00</strong>
     </div>
 
-    <!-- PORTFÖY SEKME BUTONLARI -->
+    <!-- PORTFÖY SEKME VE GEÇMİŞ BUTONLARI -->
     <div style="display: flex; gap: 10px; margin: 15px 0;">
-        <button id="tab-spot-btn" class="portfolio-tab-btn active" onclick="switchPortfolioTab('spot')">Spot Cüzdan</button>
-        <button id="tab-futures-btn" class="portfolio-tab-btn" onclick="switchPortfolioTab('futures')">Vadeli İşlemler</button>
+        <button id="tab-spot-btn" class="portfolio-tab-btn active" onclick="switchPortfolioTab('spot')" style="flex: 1;">Spot Cüzdan</button>
+        <button id="tab-futures-btn" class="portfolio-tab-btn" onclick="switchPortfolioTab('futures')" style="flex: 1;">Vadeli İşlemler</button>
+        <button id="btn-open-trade-history" onclick="openTradeHistoryModal()" style="background: rgba(0, 242, 254, 0.1); border: 1px solid #00f2fe; color: #00f2fe; border-radius: 12px; padding: 0 14px; font-weight: 900; font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap; box-shadow: inset 0 0 10px rgba(0, 242, 254, 0.1);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; filter: drop-shadow(0 0 5px rgba(0, 242, 254, 0.8)); flex-shrink: 0;">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                <polyline points="3 3 3 8 8 8"></polyline>
+                <polyline points="12 7 12 12 15 15"></polyline>
+            </svg>
+            GEÇMİŞ
+        </button>
     </div>
 
     <!-- SPOT CÜZDAN İÇERİK ALANI -->
@@ -5362,7 +5370,6 @@ if (cryptoContainerEl) {
 let stockAverages = {}; // YENİ: Hisse maliyet ortalamalarını tutan obje
 
 const executeBuyAction = () => {
-    // 👑 VIP Garantili Kontrol (Günlük Limit Devre Dışı Bırakma)
     let userIsPremium = (typeof window.isPremium !== 'undefined' && window.isPremium) || 
                         (typeof isPremium !== 'undefined' && isPremium) || 
                         localStorage.getItem('cts_premium') === 'true' || 
@@ -5384,10 +5391,8 @@ const executeBuyAction = () => {
     let qty = parseInt(inputQty.value);
     let currentOwned = parseInt(displayTradeOwned.innerText.replace(/[^0-9]/g, "")) || 0;
     
-    // --- KRİPTO KONTROLÜ (KARTA KAZINAN BİLGİYİ OKU) ---
     let isCryptoCheck = currentStockCard && currentStockCard.dataset.isCrypto === "true";
     
-    // --- %100 HİSSE SINIRI KONTROLÜ (UYARISIZ / SESSİZ DÜZELTME) ---
     if (!isCryptoCheck && currentOwned + qty > 1000000) {
         const remaining = 1000000 - currentOwned;
         if (remaining <= 0) return;
@@ -5396,15 +5401,13 @@ const executeBuyAction = () => {
     }
 
     const totalCost = qty * currentStockPrice;
-    
-    // 👑 YENİ ORANLAR: Premium %0.3 (0.003) | Standart %0.6 (0.006)
     let commissionRate = userIsPremium ? 0.003 : 0.006;
-    
     let commissionFee = totalCost * commissionRate;
     let totalCostWithFee = totalCost + commissionFee;
 
     if (playerBalance >= totalCostWithFee) {
         const stockName = currentStockCard.dataset.name;
+        const displayName = (typeof customBrands !== 'undefined' && customBrands[stockName]) ? customBrands[stockName].name : stockName;
         
         let oldTotalSpent = currentOwned * (stockAverages[stockName] || currentStockPrice);
         let newTotalSpent = oldTotalSpent + totalCost;
@@ -5413,16 +5416,28 @@ const executeBuyAction = () => {
 
         playerBalance -= totalCostWithFee;
 
-        // 🏛️ Spot Alış Komisyonunu Hazine Havuzuna Ekle
         if (typeof trackTreasuryExpense === 'function') {
             trackTreasuryExpense('commission', commissionFee);
+        }
+
+        // 📋 İŞLEM GEÇMİŞİNE KAYDET (SPOT ALIM)
+        if (typeof window.recordTradeHistory === 'function') {
+            window.recordTradeHistory(
+                'SPOT ALIM',
+                displayName,
+                `${qty.toLocaleString('tr-TR')} Adet @ ${formatMoney(currentStockPrice)}`,
+                totalCostWithFee,
+                'buy'
+            );
         }
 
         playSound('buy');
         updateBalanceUI();
         displayTradeOwned.innerText = newOwned.toLocaleString('tr-TR');
         
-        // KRİPTO DEĞİLSE ŞİRKET PAYINI GÜNCELLE VE YÖNETİM KURULUNU AÇ
+        let justReachedMajority = false;
+
+        // 👑 KRİPTO DEĞİLSE ŞİRKET PAYINI GÜNCELLE VE %51 BARAJINI KONTROL ET
         if (!isCryptoCheck) {
             let ownershipPercent = (newOwned / 1000000) * 100;
             const ownershipEl = document.getElementById('trade-ownership-percent');
@@ -5433,7 +5448,11 @@ const executeBuyAction = () => {
 
             if (newOwned >= 510000) {
                 const takeoverBtn = document.getElementById('btn-open-takeover');
-                if(takeoverBtn) takeoverBtn.style.display = 'block';
+                if (takeoverBtn) takeoverBtn.style.display = 'block';
+
+                if (currentOwned < 510000) {
+                    justReachedMajority = true;
+                }
             }
         }
 
@@ -5442,17 +5461,14 @@ const executeBuyAction = () => {
         gameStats.trades++;
         dailyTrades++;
 
-        // 📋 --- GÜNLÜK GÖREV TETİKLEYİCİLERİ (ALIŞ) ---
         if (typeof triggerTaskProgress === 'function') {
             triggerTaskProgress('trade_5_times', 1);
-
             if (qty >= 100) {
                 triggerTaskProgress('buy_single_100', 1);
                 triggerTaskProgress('buy_single_50', 1);
             } else if (qty >= 50) {
                 triggerTaskProgress('buy_single_50', 1);
             }
-
             try {
                 let tradedStocksToday = JSON.parse(localStorage.getItem('cts_traded_stocks_today') || '[]');
                 if (!tradedStocksToday.includes(stockName)) {
@@ -5462,7 +5478,6 @@ const executeBuyAction = () => {
                 }
             } catch(e) {}
         }
-        // ----------------------------------------------
 
         tradePanel.style.pointerEvents = 'none';
         tradePanel.classList.remove('open');
@@ -5471,9 +5486,21 @@ const executeBuyAction = () => {
         
         saveGame();
         refreshLiveUI(true);
-
-        // DÜZELTME: UI ezilmesin diye işlem limiti en son güncelleniyor!
         if (typeof updateTradeLimitUI === 'function') updateTradeLimitUI();
+
+        // 👑 %51 ÇOĞUNLUK ELE GEÇİRİLDİĞİNDE POP-UP GÖSTER
+        if (justReachedMajority) {
+            setTimeout(() => {
+                if (typeof playSound === 'function') playSound('milestone');
+                if (typeof showStoreModal === 'function') {
+                    showStoreModal(
+                        "YÖNETİM KURULUNDASINIZ! 👑",
+                        `<strong style="color:#fbbf24;">${displayName}</strong> hisselerinin <strong>%51</strong>'inden fazlasını topladınız ve yönetim kurulu başkanlığını ele geçirdiniz!<br><br>Hisse işlem panelindeki <strong>"YÖNETİM KURULU"</strong> butonuna tıklayarak şirketin adını ve logosunu değiştirebilirsiniz.`,
+                        true
+                    );
+                }
+            }, 300);
+        }
 
     } else {
         playSound('error');
@@ -5481,7 +5508,6 @@ const executeBuyAction = () => {
         setTimeout(() => { displayTotalCost.style.color = '#ffd700'; }, 600);
     }
     
-    // Profil ekranı açıksa state'i de yenile.
     if (window.getComputedStyle(profileScreen).display !== 'none') {
         btnProfile.click();
     }
@@ -5497,11 +5523,8 @@ const executeSellAction = () => {
     const qty = parseInt(inputQty.value);
     const totalRevenue = qty * currentStockPrice;
     
-    // --- KRİPTO KONTROLÜ (KARTA KAZINAN BİLGİYİ OKU) ---
     let isCryptoCheck = currentStockCard && currentStockCard.dataset.isCrypto === "true";
-    // ---------------------------------------------------
     
-    // 👑 Garantili VIP Komisyon Oranı Kontrolü
     const userIsPremium = (typeof window.isPremium !== 'undefined' && window.isPremium) || 
                           (typeof isPremium !== 'undefined' && isPremium) || 
                           localStorage.getItem('cts_premium') === 'true';
@@ -5513,27 +5536,35 @@ const executeSellAction = () => {
 
     if (currentOwned >= qty) {
         const stockName = currentStockCard.dataset.name;
+        const displayName = (typeof customBrands !== 'undefined' && customBrands[stockName]) ? customBrands[stockName].name : stockName;
 
-        // ⚖️ DİNAMİK GELİR VERGİSİ HESABI (Maliyetin üstündeki kâr için)
-        if (stockName) {
-            if (typeof stockAverages !== 'undefined' && stockAverages[stockName]) {
-                const avgCost = stockAverages[stockName];
-                const profitPerShare = currentStockPrice - avgCost;
-
-                if (profitPerShare > 0) {
-                    const totalProfit = profitPerShare * qty;
-                    if (typeof addProfitTax === 'function') {
-                        addProfitTax(totalProfit);
-                    }
-                }
+        let avgCost = currentStockPrice;
+        if (stockName && typeof stockAverages !== 'undefined' && stockAverages[stockName]) {
+            avgCost = stockAverages[stockName];
+            const profitPerShare = currentStockPrice - avgCost;
+            if (profitPerShare > 0 && typeof addProfitTax === 'function') {
+                addProfitTax(profitPerShare * qty);
             }
         }
 
+        const spotPnl = (currentStockPrice - avgCost) * qty;
+
         playerBalance += netRevenue;
 
-        // 🏛️ Spot Satış Komisyonunu Hazine Havuzuna Ekle
         if (typeof trackTreasuryExpense === 'function') {
             trackTreasuryExpense('commission', commissionFee);
+        }
+
+        // 📋 İŞLEM GEÇMİŞİNE KAYDET (SPOT SATIŞ)
+        if (typeof window.recordTradeHistory === 'function') {
+            const pnlSign = spotPnl >= 0 ? '+' : '-';
+            window.recordTradeHistory(
+                'SPOT SATIŞ',
+                displayName,
+                `${qty.toLocaleString('tr-TR')} Adet @ ${formatMoney(currentStockPrice)} (${pnlSign}${formatMoney(Math.abs(spotPnl))})`,
+                netRevenue,
+                spotPnl >= 0 ? 'profit' : 'loss'
+            );
         }
 
         playSound('sell');
@@ -5542,7 +5573,9 @@ const executeSellAction = () => {
         let newOwned = currentOwned - qty;
         displayTradeOwned.innerText = newOwned.toLocaleString('tr-TR');
         
-        // KRİPTO DEĞİLSE ŞİRKET PAYINI GÜNCELLE VE YÖNETİM KURULUNU KAPAT
+        let lostMajorityPopupData = null;
+
+        // 👑 KRİPTO DEĞİLSE ŞİRKET PAYINI GÜNCELLE VE %51 KAYBINI KONTROL ET
         if (!isCryptoCheck) {
             let ownershipPercent = (newOwned / 1000000) * 100;
             const ownershipEl = document.getElementById('trade-ownership-percent');
@@ -5555,37 +5588,45 @@ const executeSellAction = () => {
                 const takeoverBtn = document.getElementById('btn-open-takeover');
                 if (takeoverBtn) takeoverBtn.style.display = 'none';
 
-                // YENİ: YÖNETİM KURULU DÜŞERSE ŞİRKETİ YENİ YATIRIMCILAR DEVRALIR!
                 const sName = currentStockCard.dataset.name;
-                
-                if (customBrands[sName] && customBrands[sName].isLost !== true) {
+                const hadMajorityBefore = currentOwned >= 510000;
+                const hadCustomBrand = typeof customBrands !== 'undefined' && customBrands[sName] && customBrands[sName].isLost !== true;
+
+                if (hadMajorityBefore || hadCustomBrand) {
                     const lostNames = [
                         "Apex Finans", "Global Yatırım", "Atlas Sermaye", "Zirve Holding", 
                         "Kuzey Endüstri", "Nova Ortaklık", "Bosphorus Teknoloji", "Orion Madencilik", 
                         "Zenith Girişim", "Vega Lojistik", "Merkez Bank", "Eko Dağıtım", 
                         "Prime Ticaret", "Omega Sanayi", "Vesta Gelişim", "Kuantum Portföy", 
-                        "Alfa Sistemleri", "Ege Konsorsiyum", "Truva Enerji", "Sirius Gayrimenkul", 
-                        "Magna Telekom", "İnovasyon A.Ş.", "Meridyen Danışmanlık", "Kapital Varlık", 
-                        "Sentetik Ağlar", "Avrasya Çözümleri", "Dinamik Yapı", "Prestij İnşaat", 
-                        "Vizyon Medya", "Okyanus Denizcilik", "Pusula Havacılık", "Spektrum Kimya", 
-                        "Sinerji Yazılım", "Momentum Otomotiv", "Vertex Bilişim"
+                        "Alfa Sistemleri", "Ege Konsorsiyum", "Truva Enerji", "Sirius Gayrimenkul"
                     ];
-                    
-                    const lostEmojis = ["🏛️", "💼", "🌐", "🏢", "📊", "💎", "📈", "🚢", "✈️", "🏗️", "🏭", "💻", "📱", "🔋", "🛡️", "⚙️", "🚄", "📦", "💡", "💰", "💳", "🔬", "📡"];
-                    
-                    let rName = lostNames[Math.floor(Math.random() * lostNames.length)];
-                    let rEmoji = lostEmojis[Math.floor(Math.random() * lostEmojis.length)];
-                    
-                    customBrands[sName] = { name: rName, emoji: rEmoji, isLost: true };
-                    localStorage.setItem('cts_custom_brands', JSON.stringify(customBrands));
-                    
-                    document.getElementById('trade-stock-name').innerText = rName;
-                    applyCustomBrands();
-                    if (typeof updatePortfolioView === 'function') updatePortfolioView();
-                    
-                    if (typeof showStoreModal === 'function') {
-                        showStoreModal("YÖNETİM EL DEĞİŞTİRDİ! ⚠️", `Hisse payın %51'in altına düştüğü için şirketteki kontrolünü kaybettin.<br><br>Şirket yeni bir yatırım grubuna devredildi ve marka adı <strong style="color: #00f2fe; display: inline-flex; align-items: center;">${window.getNeonIcon ? window.getNeonIcon(rEmoji) : rEmoji} ${rName}</strong> olarak güncellendi.`, false);
-                        if (typeof playSound === 'function') playSound('error');
+                    const lostEmojis = ["🏛️", "💼", "🌐", "🏢", "📊", "💎", "📈", "🔋", "🛡️", "⚡"];
+
+                    if (hadCustomBrand) {
+                        let rName = lostNames[Math.floor(Math.random() * lostNames.length)];
+                        let rEmoji = lostEmojis[Math.floor(Math.random() * lostEmojis.length)];
+                        
+                        customBrands[sName] = { name: rName, emoji: rEmoji, isLost: true };
+                        localStorage.setItem('cts_custom_brands', JSON.stringify(customBrands));
+                        
+                        document.getElementById('trade-stock-name').innerText = rName;
+                        if (typeof applyCustomBrands === 'function') applyCustomBrands();
+                        if (typeof updatePortfolioView === 'function') updatePortfolioView();
+                        if (typeof renderFuturesPositions === 'function') {
+                            const posList = document.getElementById('positions-list');
+                            if (posList) posList.innerHTML = '';
+                            renderFuturesPositions();
+                        }
+
+                        lostMajorityPopupData = {
+                            title: "YÖNETİM EL DEĞİŞTİRDİ! ⚠️",
+                            desc: `Hisse payınız <strong>%51</strong>'in altına düştüğü için şirketteki yönetim kontrolünü kaybettin.<br><br>Şirket yeni bir yatırım grubuna devredildi ve ticari unvanı <strong style="color: #00f2fe;">${rName}</strong> olarak güncellendi.`
+                        };
+                    } else {
+                        lostMajorityPopupData = {
+                            title: "YÖNETİM KURULU KAYBEDİLDİ! ⚠️",
+                            desc: `<strong style="color: #fbbf24;">${sName}</strong> şirketindeki hisse payınız <strong>%51</strong>'in altına düştüğü için yönetim kurulundaki çoğunluk hakkınızı kaybettin.`
+                        };
                     }
                 }
             }
@@ -5596,11 +5637,9 @@ const executeSellAction = () => {
         gameStats.trades++;
         dailyTrades++;
 
-        // 📋 --- GÜNLÜK GÖREV TETİKLEYİCİLERİ (SATIŞ) ---
         if (typeof triggerTaskProgress === 'function') {
             triggerTaskProgress('trade_5_times', 1);
             triggerTaskProgress('sell_shares', 1);
-
             try {
                 let tradedStocksToday = JSON.parse(localStorage.getItem('cts_traded_stocks_today') || '[]');
                 if (!tradedStocksToday.includes(stockName)) {
@@ -5610,7 +5649,6 @@ const executeSellAction = () => {
                 }
             } catch(e) {}
         }
-        // ----------------------------------------------
 
         tradePanel.style.pointerEvents = 'none';
         tradePanel.classList.remove('open');
@@ -5618,6 +5656,17 @@ const executeSellAction = () => {
         setTimeout(() => { tradePanel.style.pointerEvents = 'auto'; }, 400);
         saveGame();
         refreshLiveUI(true);
+
+        // ⚠️ %51 ALTINA DÜŞÜLDÜĞÜNDE POP-UP'I GÖSTER
+        if (lostMajorityPopupData) {
+            setTimeout(() => {
+                if (typeof playSound === 'function') playSound('error');
+                if (typeof showStoreModal === 'function') {
+                    showStoreModal(lostMajorityPopupData.title, lostMajorityPopupData.desc, false);
+                }
+            }, 300);
+        }
+
     } else {
         displayTradeOwned.style.color = '#ef4444'; 
         setTimeout(() => { displayTradeOwned.style.color = '#ffffff'; }, 600);
@@ -5639,7 +5688,6 @@ let futuresActionLock = false;
 function openFuturesPosition(type) {
     if (futuresActionLock) return false;
 
-    // YENİ EKLENEN: GÜNLÜK İŞLEM LİMİTİ KONTROLÜ
     let userIsPremium = (typeof isPremium !== 'undefined' && isPremium) || localStorage.getItem('cts_theme_active') === 'true';
     
     if (!userIsPremium && (typeof dailyTrades !== 'undefined' ? dailyTrades : 0) >= 5) {
@@ -5680,7 +5728,6 @@ function openFuturesPosition(type) {
         const margin = qty * price;
         const effectiveAmount = qty * lev;
         
-        // 👑 VIP Komisyon Kontrolü
         const userIsPrem = (typeof window.isPremium !== 'undefined' && window.isPremium) || 
                            (typeof isPremium !== 'undefined' && isPremium) || 
                            localStorage.getItem('cts_premium') === 'true';
@@ -5688,7 +5735,6 @@ function openFuturesPosition(type) {
         
         const positionSize = margin * lev; 
         const commissionFee = positionSize * commissionRate;
-        
         const totalRequiredMoney = margin + commissionFee;
 
         if (playerBalance < totalRequiredMoney) {
@@ -5701,6 +5747,7 @@ function openFuturesPosition(type) {
         }
 
         const stockName = currentStockCard.dataset.name;
+        const displayName = (typeof customBrands !== 'undefined' && customBrands[stockName]) ? customBrands[stockName].name : stockName;
         const entryPrice = price;
         const position = {
             id: Date.now() + Math.floor(Math.random() * 1000),
@@ -5714,7 +5761,6 @@ function openFuturesPosition(type) {
 
         playerBalance -= totalRequiredMoney;
 
-        // 🏛️ Vadeli İşlem Komisyonunu Hazine Havuzuna Ekle
         if (typeof trackTreasuryExpense === 'function') {
             trackTreasuryExpense('commission', commissionFee);
         }
@@ -5723,7 +5769,17 @@ function openFuturesPosition(type) {
         gameStats.trades++;
         dailyTrades++;
 
-        // 📋 --- GÜNLÜK GÖREV TETİKLEYİCİLERİ (VADELİ) ---
+        // 📋 İŞLEM GEÇMİŞİNE KAYDET (VADELİ AÇILIŞ)
+        if (typeof window.recordTradeHistory === 'function') {
+            window.recordTradeHistory(
+                `VADELİ ${positionType} ${lev}x`,
+                displayName,
+                `Giriş: ${formatMoney(entryPrice)} • Büyüklük: ${formatMoney(positionSize)}`,
+                margin,
+                'open'
+            );
+        }
+
         if (typeof triggerTaskProgress === 'function') {
             triggerTaskProgress('make_futures', 1);
             triggerTaskProgress('trade_5_times', 1);
@@ -5743,7 +5799,6 @@ function openFuturesPosition(type) {
                 }
             } catch(e) {}
         }
-        // ------------------------------------------------
 
         playSound('buy');
         closeTradePanelSafely();
@@ -7013,12 +7068,10 @@ function renderFuturesPositions() {
 
     activePositions.forEach((pos, index) => {
         // --- Orijinal isme karşılık gelen özel ismi bul ---
-        let displayName = pos.name;
-        const matchedCard = document.querySelector(`.stock-card[data-name="${pos.name}"]`);
-        if (matchedCard) {
-            const nameEl = matchedCard.querySelector('.stock-name');
-            if (nameEl) displayName = nameEl.innerText;
-        }
+        // --- Orijinal isme karşılık gelen güncel özel ismi bul ---
+let displayName = (typeof customBrands !== 'undefined' && customBrands[pos.name] && customBrands[pos.name].name)
+    ? customBrands[pos.name].name
+    : pos.name;
         
         let currentMarketPrice = pos.entryPrice;
 
@@ -7051,7 +7104,13 @@ function renderFuturesPositions() {
         let existingCard = positionsList.querySelector(`.position-card[data-index="${index}"]`);
 
         if (!needsFullRender && existingCard) {
-            existingCard.querySelector('.val-current-price').innerText = formatMoney(currentMarketPrice);
+    // 👑 Şirket adı değiştirildiyse vadeli işlem kartında da anında güncelle
+    const nameSpan = existingCard.querySelector('.pos-name');
+    if (nameSpan && nameSpan.innerText !== displayName) {
+        nameSpan.innerText = displayName;
+    }
+
+    existingCard.querySelector('.val-current-price').innerText = formatMoney(currentMarketPrice);
             
             const pnlSpan = existingCard.querySelector('.pos-pnl');
             pnlSpan.className = `pos-pnl ${pnlClass}`;
@@ -7122,6 +7181,16 @@ function renderFuturesPositions() {
 
                 playerBalance = currentBalance + currentMargin + livePnl; 
                 updateBalanceUI();
+                // 📋 İŞLEM GEÇMİŞİNE KAYDET (VADELİ KAPANIŞ)
+                if (typeof window.recordTradeHistory === 'function') {
+                    window.recordTradeHistory(
+                        `VADELİ KAPANIŞ (${pos.type} ${pos.leverage}x)`,
+                        displayName,
+                        `Giriş: ${formatMoney(pos.entryPrice)} → Çıkış: ${formatMoney(liveMarketPrice)}`,
+                        livePnl,
+                        livePnl >= 0 ? 'profit' : 'loss'
+                    );
+                }
                                     
                 const posIndex = activePositions.indexOf(pos);
                 if (posIndex > -1) activePositions.splice(posIndex, 1);
@@ -10276,26 +10345,38 @@ if(btnRebrand) {
         document.getElementById('trade-stock-name').innerText = newName;
         applyCustomBrands();
         
+        // 🔄 Açık vadeli işlemleri ve portföyü anında yenile
+        if (typeof updatePortfolioView === 'function') updatePortfolioView();
+        if (typeof renderFuturesPositions === 'function') {
+            const posList = document.getElementById('positions-list');
+            if (posList) posList.innerHTML = '';
+            renderFuturesPositions();
+        }
+        if (typeof saveGame === 'function') saveGame();
+        
         // Modalı Kapat
         const modal = document.getElementById('takeover-modal');
         modal.style.opacity = '0';
         modal.style.pointerEvents = 'none';
         modal.style.transform = 'translate(-50%, -50%) scale(0.9)';
         
-        // YENİ: Neon Taç ve Özel SVG Şirket İkonu Entegrasyonu
-        if(typeof showStoreModal === 'function'){
-            // Parlayan Altın Taç Vektörü
-            const crownSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 26px; height: 26px; filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.8)); vertical-align: text-bottom; margin-left: 6px;"><polygon points="2 20 22 20 19 6 15 12 12 4 9 12 5 6 2 20"></polygon></svg>`;
-            
-            // Girdiği emojiyi oyundaki Neon SVG motorundan geçiriyoruz
-            const dynamicIcon = typeof window.getNeonIcon === 'function' ? window.getNeonIcon(newEmoji) : newEmoji;
-            
-            showStoreModal(
-                `ŞİRKET SİZİN! ${crownSvg}`, 
-                `Tebrikler! Yönetim kurulu kararıyla şirketin yeni adı <br><br><span style="display: inline-flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.03); padding: 10px 18px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); margin: 10px 0;"><span style="transform: scale(1.4); margin-right: 12px; display: inline-block;">${dynamicIcon}</span> <strong style="color: #fff; font-size: 16px; letter-spacing: 0.5px;">${newName}</strong></span><br><br>olarak tescillendi.`, 
-                true
-            );
-        }
+        // 👑 YENİ: Z-index güvencesiyle Şirket Adı Değiştirme Pop-up'ını tetikle
+        setTimeout(() => {
+            const storeModal = document.getElementById('store-modal');
+            if (storeModal) storeModal.style.zIndex = '100010'; // İşlem panelinin üstüne çıkar
+
+            if(typeof showStoreModal === 'function'){
+                const crownSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 26px; height: 26px; filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.8)); vertical-align: text-bottom; margin-left: 6px;"><polygon points="2 20 22 20 19 6 15 12 12 4 9 12 5 6 2 20"></polygon></svg>`;
+                const dynamicIcon = typeof window.getNeonIcon === 'function' ? window.getNeonIcon(newEmoji) : newEmoji;
+                
+                if (typeof playSound === 'function') playSound('milestone');
+                showStoreModal(
+                    `ŞİRKET SİZİN! ${crownSvg}`, 
+                    `Tebrikler! Yönetim kurulu kararıyla şirketin yeni adı <br><br><span style="display: inline-flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.03); padding: 10px 18px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); margin: 10px 0;"><span style="transform: scale(1.4); margin-right: 12px; display: inline-block;">${dynamicIcon}</span> <strong style="color: #fff; font-size: 16px; letter-spacing: 0.5px;">${newName}</strong></span><br><br>olarak tescillendi.`, 
+                    true
+                );
+            }
+        }, 150);
     });
 }
 // --- TİCARET PANELİNİ AŞAĞI KAYDIRARAK KAPATMA (SWIPE DOWN) ---
@@ -16234,5 +16315,415 @@ setTimeout(() => {
         </div>
     </div>
 </div>
+<script>
+// ==========================================================================
+// 👑 YÖNETİM KURULU POP-UP GARANTİ SİSTEMİ (TEK PARÇA ÇÖZÜM)
+// ==========================================================================
+(function fixBoardPopups() {
+    let lastModalTime = 0;
+
+    // 1. showStoreModal fonksiyonunu her şeyin üstünde açılacak şekilde ez
+    window.showStoreModal = function(title, desc, isSuccess = true) {
+        lastModalTime = Date.now();
+
+        const overlay = document.getElementById('summary-overlay');
+        const modal = document.getElementById('store-modal');
+        const titleEl = document.getElementById('store-modal-title');
+        const descEl = document.getElementById('store-modal-desc');
+        const closeBtn = document.getElementById('btn-close-store-modal');
+
+        if (!modal) return;
+
+        // Açık panelleri kapat
+        const tradePanel = document.getElementById('trade-panel');
+        const tradeOverlay = document.getElementById('trade-overlay');
+        const takeoverModal = document.getElementById('takeover-modal');
+        if (tradePanel) tradePanel.classList.remove('open');
+        if (tradeOverlay) tradeOverlay.classList.remove('active');
+        if (takeoverModal) {
+            takeoverModal.style.opacity = '0';
+            takeoverModal.style.pointerEvents = 'none';
+            takeoverModal.classList.remove('show');
+        }
+
+        // En üst katmana çıkması için body'nin sonuna taşı
+        if (overlay && overlay.parentElement !== document.body) document.body.appendChild(overlay);
+        if (modal.parentElement !== document.body) document.body.appendChild(modal);
+
+        if (titleEl) {
+            titleEl.innerHTML = title;
+            titleEl.style.color = isSuccess ? '#fbbf24' : '#ef4444';
+        }
+        if (descEl) {
+            descEl.innerHTML = desc;
+        }
+
+        if (overlay) {
+            overlay.classList.add('active');
+            overlay.style.setProperty('display', 'block', 'important');
+            overlay.style.setProperty('opacity', '1', 'important');
+            overlay.style.setProperty('pointer-events', 'auto', 'important');
+            overlay.style.setProperty('z-index', '999998', 'important');
+        }
+
+        modal.classList.add('show');
+        modal.style.setProperty('display', 'block', 'important');
+        modal.style.setProperty('visibility', 'visible', 'important');
+        modal.style.setProperty('opacity', '1', 'important');
+        modal.style.setProperty('pointer-events', 'auto', 'important');
+        modal.style.setProperty('z-index', '999999', 'important');
+        modal.style.setProperty('transform', 'translate(-50%, -50%) scale(1)', 'important');
+
+        if (closeBtn) {
+            closeBtn.onclick = function() {
+                modal.classList.remove('show');
+                modal.style.setProperty('opacity', '0', 'important');
+                modal.style.setProperty('pointer-events', 'none', 'important');
+                modal.style.setProperty('display', 'none', 'important');
+                if (overlay) {
+                    overlay.classList.remove('active');
+                    overlay.style.setProperty('display', 'none', 'important');
+                }
+            };
+        }
+    };
+
+    // 2. Alım / Satım / İsim Değiştirme yedek tetikleyicileri
+    let prevOwnedBeforeTrade = 0;
+
+    function getOwnedCount() {
+        if (!currentStockCard) return 0;
+        const ownedEl = currentStockCard.querySelector('.stock-owned');
+        return ownedEl ? (parseInt(ownedEl.innerText.replace(/[^0-9]/g, '')) || 0) : 0;
+    }
+
+    const buyBtn = document.getElementById('btn-buy');
+    const sellBtn = document.getElementById('btn-sell');
+    const rebrandBtn = document.getElementById('btn-rebrand-company');
+
+    if (buyBtn) {
+        buyBtn.addEventListener('pointerdown', () => { prevOwnedBeforeTrade = getOwnedCount(); }, true);
+        buyBtn.addEventListener('click', () => {
+            setTimeout(() => {
+                if (!currentStockCard || currentStockCard.dataset.cat === 'crypto' || currentStockCard.dataset.cat === 'metals') return;
+                const newOwned = getOwnedCount();
+                if (prevOwnedBeforeTrade < 510000 && newOwned >= 510000 && (Date.now() - lastModalTime > 1000)) {
+                    const sName = currentStockCard.dataset.name;
+                    const dName = (typeof customBrands !== 'undefined' && customBrands[sName]) ? customBrands[sName].name : sName;
+                    if (typeof playSound === 'function') playSound('milestone');
+                    window.showStoreModal(
+                        "YÖNETİM KURULUNDASINIZ! 👑",
+                        `<strong style="color:#fbbf24;">${dName}</strong> hisselerinin <strong>%51</strong>'inden fazlasını topladınız ve yönetim kurulu başkanlığını ele geçirdiniz!<br><br>Hisse işlem panelindeki <strong>"YÖNETİM KURULU"</strong> butonuna tıklayarak şirketin adını ve logosunu değiştirebilirsiniz.`,
+                        true
+                    );
+                }
+            }, 350);
+        });
+    }
+
+    if (sellBtn) {
+        sellBtn.addEventListener('pointerdown', () => { prevOwnedBeforeTrade = getOwnedCount(); }, true);
+        sellBtn.addEventListener('click', () => {
+            setTimeout(() => {
+                if (!currentStockCard || currentStockCard.dataset.cat === 'crypto' || currentStockCard.dataset.cat === 'metals') return;
+                const newOwned = getOwnedCount();
+                if (prevOwnedBeforeTrade >= 510000 && newOwned < 510000 && (Date.now() - lastModalTime > 1000)) {
+                    const sName = currentStockCard.dataset.name;
+                    if (typeof playSound === 'function') playSound('error');
+                    window.showStoreModal(
+                        "YÖNETİM KURULU KAYBEDİLDİ! ⚠️",
+                        `<strong style="color:#fbbf24;">${sName}</strong> şirketindeki hisse payınız <strong>%51</strong>'in altına düştüğü için yönetim kurulundaki çoğunluk hakkınızı kaybettin.`,
+                        false
+                    );
+                }
+            }, 350);
+        });
+    }
+
+    if (rebrandBtn) {
+        rebrandBtn.addEventListener('click', () => {
+            setTimeout(() => {
+                if (typeof renderFuturesPositions === 'function') {
+                    const posList = document.getElementById('positions-list');
+                    if (posList) posList.innerHTML = '';
+                    renderFuturesPositions();
+                }
+                if (Date.now() - lastModalTime > 1000) {
+                    const newName = document.getElementById('new-company-name')?.value.trim();
+                    if (newName) {
+                        if (typeof playSound === 'function') playSound('milestone');
+                        window.showStoreModal(
+                            "ŞİRKET SİZİN! 👑",
+                            `Tebrikler! Yönetim kurulu kararıyla şirketin yeni adı <strong style="color:#fbbf24;">${newName}</strong> olarak tescillendi.`,
+                            true
+                        );
+                    }
+                }
+            }, 200);
+        });
+    }
+})();
+// ==========================================================================
+// 📋 SON 10 İŞLEM GEÇMİŞİ VE POP-UP KATMAN MOTORU (FIREBASE + LOCALSTORAGE)
+// ==========================================================================
+(function initCtsHistoryAndModalFix() {
+    const HISTORY_KEY = 'cts_trade_history';
+    window.tradeHistory = [];
+
+    // 1. LocalStorage'dan Yükle
+    try {
+        const saved = localStorage.getItem(HISTORY_KEY);
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            if (Array.isArray(parsed)) window.tradeHistory = parsed.slice(0, 10);
+        }
+    } catch (e) {}
+
+    // 2. Çıkış Yapılırken (btn-exit) İşlem Geçmişini Koru
+    const exitBtnEl = document.getElementById('btn-exit');
+    if (exitBtnEl) {
+        exitBtnEl.addEventListener('click', function() {
+            const backup = JSON.stringify(window.tradeHistory || []);
+            setTimeout(function() {
+                localStorage.setItem(HISTORY_KEY, backup);
+            }, 50);
+        }, true);
+    }
+
+    // 3. Firebase Bulut Senkronizasyonu (Çık-Gir Yapınca Geri Yükler)
+    function syncHistoryWithCloud(uid) {
+        if (!uid || typeof database === 'undefined') return;
+        database.ref('users/' + uid + '/tradeHistory').once('value').then(function(snap) {
+            const cloudList = snap.val();
+            if (Array.isArray(cloudList) && cloudList.length > 0) {
+                window.tradeHistory = cloudList.slice(0, 10);
+                localStorage.setItem(HISTORY_KEY, JSON.stringify(window.tradeHistory));
+            } else if (window.tradeHistory.length > 0) {
+                database.ref('users/' + uid + '/tradeHistory').set(window.tradeHistory);
+            }
+        }).catch(function() {});
+    }
+
+    if (typeof auth !== 'undefined') {
+        auth.onAuthStateChanged(function(user) {
+            const uid = user ? user.uid : localStorage.getItem('cts_player_uid');
+            if (uid) syncHistoryWithCloud(uid);
+        });
+    } else {
+        const uid = localStorage.getItem('cts_player_uid');
+        if (uid) syncHistoryWithCloud(uid);
+    }
+
+    // 4. İşlem Kaydetme Fonksiyonu (Tarih + Saat + Oyun Günü)
+    window.recordTradeHistory = function(category, stockName, details, amount, status) {
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        const timeStr = now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const dayStr = (typeof gameStats !== 'undefined' && gameStats.days) ? (' • Gün ' + gameStats.days) : '';
+
+        const item = {
+            id: Date.now() + Math.floor(Math.random() * 1000),
+            category: category,
+            name: stockName,
+            details: details,
+            amount: Number(amount) || 0,
+            status: status,
+            timestamp: dateStr + ' ' + timeStr + dayStr
+        };
+
+        window.tradeHistory.unshift(item);
+        if (window.tradeHistory.length > 10) {
+            window.tradeHistory = window.tradeHistory.slice(0, 10);
+        }
+
+        try {
+            localStorage.setItem(HISTORY_KEY, JSON.stringify(window.tradeHistory));
+        } catch (e) {}
+
+        const uid = (typeof auth !== 'undefined' && auth.currentUser) ? auth.currentUser.uid : localStorage.getItem('cts_player_uid');
+        if (uid && typeof database !== 'undefined') {
+            database.ref('users/' + uid + '/tradeHistory').set(window.tradeHistory).catch(function() {});
+        }
+    };
+
+    // 5. İşlem Geçmişi Penceresini (Modal) Oluştur ve Aç
+    // 5. İşlem Geçmişi Penceresini (Modal) Özgün Neon SVG İkonlarla Oluştur ve Aç
+    function createHistoryModalIfNeeded() {
+        if (document.getElementById('trade-history-modal')) return;
+        const m = document.createElement('div');
+        m.id = 'trade-history-modal';
+        m.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.95);width:92%;max-width:390px;background:#0b1126;border:1.5px solid #00f2fe;border-radius:20px;padding:20px;z-index:999999;opacity:0;pointer-events:none;display:none;transition:all 0.25s ease;box-shadow:0 15px 50px rgba(0,0,0,0.9);box-sizing:border-box;';
+        
+        // Başlık için parlayan siber kayıt terminali SVG'si
+        const headerSvg = '<div style="width:36px;height:36px;border-radius:10px;background:rgba(0,242,254,0.12);border:1px solid rgba(0,242,254,0.35);display:flex;align-items:center;justify-content:center;box-shadow:0 0 12px rgba(0,242,254,0.2);flex-shrink:0;">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:19px;height:19px;filter:drop-shadow(0 0 5px rgba(0,242,254,0.8));">' +
+                '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>' +
+                '<polyline points="14 2 14 8 20 8"></polyline>' +
+                '<line x1="16" y1="13" x2="8" y2="13"></line>' +
+                '<line x1="16" y1="17" x2="8" y2="17"></line>' +
+                '<line x1="10" y1="9" x2="8" y2="9"></line>' +
+            '</svg>' +
+        '</div>';
+
+        m.innerHTML = '' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #1e293b;padding-bottom:12px;margin-bottom:14px;">' +
+                '<div style="display:flex;align-items:center;gap:10px;">' +
+                    headerSvg +
+                    '<div>' +
+                        '<h3 style="color:#00f2fe;font-size:15px;font-weight:900;margin:0;letter-spacing:0.4px;text-shadow:0 0 8px rgba(0,242,254,0.35);">SON 10 İŞLEM GEÇMİŞİ</h3>' +
+                        '<span style="color:#64748b;font-size:10px;font-weight:700;">Spot & Vadeli İşlem Kayıtları</span>' +
+                    '</div>' +
+                '</div>' +
+                '<button type="button" onclick="closeTradeHistoryModal()" style="background:rgba(255,255,255,0.05);border:1px solid #334155;border-radius:8px;width:28px;height:28px;color:#94a3b8;font-size:14px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>' +
+            '</div>' +
+            '<div id="trade-history-list" class="custom-scroll-cyan" style="max-height:330px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding-right:4px;margin-bottom:15px;"></div>' +
+            '<button type="button" onclick="closeTradeHistoryModal()" class="trade-btn" style="width:100%;background:#1e293b;color:#fff;padding:12px;font-size:13px;font-weight:900;border:1px solid #334155;border-radius:10px;cursor:pointer;">KAPAT</button>';
+        document.body.appendChild(m);
+    }
+
+    window.openTradeHistoryModal = function() {
+        createHistoryModalIfNeeded();
+        if (typeof playSound === 'function') playSound('tick');
+
+        const modal = document.getElementById('trade-history-modal');
+        const overlay = document.getElementById('summary-overlay');
+        const listEl = document.getElementById('trade-history-list');
+
+        // Mini saat SVG ikonu
+        const clockSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:11px;height:11px;vertical-align:-1.5px;margin-right:4px;filter:drop-shadow(0 0 3px rgba(56,189,248,0.6));"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>';
+
+        if (listEl) {
+            if (!window.tradeHistory || window.tradeHistory.length === 0) {
+                listEl.innerHTML = '<div style="text-align:center;padding:30px 10px;color:#64748b;font-size:12px;font-weight:700;">Henüz kayıtlı bir işleminiz bulunmuyor.</div>';
+            } else {
+                let html = '';
+                window.tradeHistory.forEach(function(item) {
+                    let badgeBg = 'rgba(56, 189, 248, 0.15)';
+                    let badgeColor = '#38bdf8';
+                    let amountColor = '#f8fafc';
+                    let sign = '';
+
+                    if (item.status === 'profit') {
+                        badgeBg = 'rgba(16, 185, 129, 0.15)';
+                        badgeColor = '#10b981';
+                        amountColor = '#10b981';
+                        sign = '+';
+                    } else if (item.status === 'loss') {
+                        badgeBg = 'rgba(239, 68, 68, 0.15)';
+                        badgeColor = '#ef4444';
+                        amountColor = '#ef4444';
+                        sign = '-';
+                    } else if (item.status === 'buy') {
+                        badgeBg = 'rgba(0, 242, 254, 0.15)';
+                        badgeColor = '#00f2fe';
+                        amountColor = '#cbd5e1';
+                        sign = '-';
+                    } else if (item.status === 'open') {
+                        badgeBg = 'rgba(245, 158, 11, 0.15)';
+                        badgeColor = '#fbbf24';
+                        amountColor = '#fbbf24';
+                    }
+
+                    const formattedAmt = typeof formatMoney === 'function' ? formatMoney(Math.abs(item.amount)) : ('$' + Math.abs(item.amount).toFixed(2));
+
+                    html += '' +
+                        '<div style="background:rgba(15,23,42,0.85);border:1px solid #1e293b;border-radius:10px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;gap:8px;">' +
+                            '<div style="flex:1;min-width:0;">' +
+                                '<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;flex-wrap:wrap;">' +
+                                    '<span style="font-size:9px;font-weight:900;background:' + badgeBg + ';color:' + badgeColor + ';padding:2px 6px;border-radius:4px;">' + item.category + '</span>' +
+                                    '<strong style="color:#fff;font-size:12px;">' + item.name + '</strong>' +
+                                '</div>' +
+                                '<div style="font-size:10.5px;color:#94a3b8;font-weight:700;">' + item.details + '</div>' +
+                                '<div style="font-size:9.5px;color:#64748b;margin-top:3px;display:flex;align-items:center;">' + clockSvg + item.timestamp + '</div>' +
+                            '</div>' +
+                            '<div style="text-align:right;flex-shrink:0;">' +
+                                '<strong style="color:' + amountColor + ';font-size:12.5px;font-weight:900;">' + sign + formattedAmt + '</strong>' +
+                            '</div>' +
+                        '</div>';
+                });
+                listEl.innerHTML = html;
+            }
+        }
+
+        if (overlay) {
+            overlay.classList.add('active');
+            overlay.style.setProperty('display', 'block', 'important');
+            overlay.style.setProperty('opacity', '1', 'important');
+            overlay.style.setProperty('z-index', '999998', 'important');
+        }
+        if (modal) {
+            modal.style.display = 'block';
+            setTimeout(function() {
+                modal.style.opacity = '1';
+                modal.style.pointerEvents = 'auto';
+                modal.style.transform = 'translate(-50%, -50%) scale(1)';
+            }, 10);
+        }
+    };
+
+    window.closeTradeHistoryModal = function() {
+        const modal = document.getElementById('trade-history-modal');
+        const overlay = document.getElementById('summary-overlay');
+        if (modal) {
+            modal.style.opacity = '0';
+            modal.style.pointerEvents = 'none';
+            modal.style.transform = 'translate(-50%, -50%) scale(0.95)';
+            setTimeout(function() { modal.style.display = 'none'; }, 220);
+        }
+        if (overlay) {
+            overlay.classList.remove('active');
+            overlay.style.setProperty('display', 'none', 'important');
+        }
+    };
+
+    // 6. Yönetim Kurulu ve Mağaza Pop-up'larını En Üst Katmana Zorla
+    window.showStoreModal = function(title, desc, isSuccess) {
+        const overlay = document.getElementById('summary-overlay');
+        const modal = document.getElementById('store-modal');
+        const titleEl = document.getElementById('store-modal-title');
+        const descEl = document.getElementById('store-modal-desc');
+        const closeBtn = document.getElementById('btn-close-store-modal');
+        if (!modal) return;
+
+        if (overlay && overlay.parentElement !== document.body) document.body.appendChild(overlay);
+        if (modal.parentElement !== document.body) document.body.appendChild(modal);
+
+        if (titleEl) {
+            titleEl.innerHTML = title;
+            titleEl.style.color = (isSuccess !== false) ? '#fbbf24' : '#ef4444';
+        }
+        if (descEl) descEl.innerHTML = desc;
+
+        if (overlay) {
+            overlay.classList.add('active');
+            overlay.style.setProperty('display', 'block', 'important');
+            overlay.style.setProperty('opacity', '1', 'important');
+            overlay.style.setProperty('pointer-events', 'auto', 'important');
+            overlay.style.setProperty('z-index', '999998', 'important');
+        }
+
+        modal.classList.add('show');
+        modal.style.setProperty('display', 'block', 'important');
+        modal.style.setProperty('visibility', 'visible', 'important');
+        modal.style.setProperty('opacity', '1', 'important');
+        modal.style.setProperty('pointer-events', 'auto', 'important');
+        modal.style.setProperty('z-index', '999999', 'important');
+        modal.style.setProperty('transform', 'translate(-50%, -50%) scale(1)', 'important');
+
+        if (closeBtn) {
+            closeBtn.onclick = function() {
+                modal.classList.remove('show');
+                modal.style.setProperty('opacity', '0', 'important');
+                modal.style.setProperty('pointer-events', 'none', 'important');
+                modal.style.setProperty('display', 'none', 'important');
+                if (overlay) {
+                    overlay.classList.remove('active');
+                    overlay.style.setProperty('display', 'none', 'important');
+                }
+            };
+        }
+    };
+})();
+</script>
 </body>
 </html>
